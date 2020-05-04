@@ -91,9 +91,9 @@
             </li>
 
             <li class="nav-item mr-1">
-              <router-link :to="{ name: 'queries' }" active-class="active" class="nav-link">
+              <router-link :to="{ name: 'jobs' }" active-class="active" class="nav-link">
                 <i class="fa fa-search fa-fw"></i>
-                <span class="d-none d-md-inline ml-1">{{ $t('queries') }}</span>
+                <span class="d-none d-md-inline ml-1">{{ $t('jobs') }}</span>
               </router-link>
             </li>
 

@@ -1,29 +1,32 @@
 // state
 import axios from "axios";
 import * as types from "../mutation-types";
+import {apiDomain} from "../../config";
 
 export const state = {
+  path: apiDomain + 'agents',
+  response: null,
   records: null,
-  count: 0
+  record: {}
 }
 
 // getters
 export const getters = {
+  record: state => state.record,
   records: state => state.records,
-  count: state => state.count
+  response: state => state.response,
 }
 
 // mutations
 export const mutations = {
   [types.FETCH_AGENTS_SUCCESS](state, {response}) {
-    state.records = response.agents;
-    state.count = response.agents.length
+    state.response = response;
+    state.records = response.data;
   },
 
   [types.DESTROY_AGENT_SUCCESS](state, {response}) {
-    console.log(response);
-    state.records = response;
-    state.count = response.length
+    state.response = response;
+    state.records = response.data;
   },
 
   [types.DESTROY_AGENT_FAILURE](state) {
@@ -38,6 +41,15 @@ export const mutations = {
     console.log(state);
   },
 
+  [types.FETCH_AGENT_SUCCESS](state, {response}) {
+    state.record = response.data;
+    console.log(response.data);
+  },
+
+  [types.FETCH_AGENT_FAILURE](state) {
+    console.log(state);
+  },
+
   [types.FETCH_AGENTS_FAILURE](state) {
     state.records = null
   },
@@ -46,21 +58,37 @@ export const mutations = {
 
 // actions
 export const actions = {
-  async fetchRecords({commit}) {
-    try {
-      const {data} = await axios.get('/api/agents')
+  async fetchRecords({dispatch, commit, rootState}, payload) {
+    let url = (payload.page) ? apiDomain + 'agents?page=' + payload.page : apiDomain + 'agents';
 
+    try {
+      const {data} = await axios.get(url)
       commit(types.FETCH_AGENTS_SUCCESS, {response: data})
+
+      // Update pagination
+      // https://vuex.vuejs.org/guide/modules.html
+      dispatch('pagination/update', data, {root: true})
+
     } catch (e) {
       commit(types.FETCH_AGENTS_FAILURE)
     }
-
   },
-  async destroyRecord({commit}, payload) {
+  async fetchRecord({commit}, payload) {
 
     try {
-      const {data} = await axios.delete('/api/agents/' + payload.id)
+      const {data} = await axios.get(apiDomain + 'agents/' + payload.id)
+      commit(types.FETCH_AGENT_SUCCESS, {response: data})
+
+    } catch (e) {
+      commit(types.FETCH_AGENT_FAILURE)
+    }
+  },
+  async destroyRecord({dispatch, commit}, payload) {
+
+    try {
+      const {data} = await axios.delete(apiDomain + 'agents/' + payload.id)
       commit(types.DESTROY_AGENT_SUCCESS, {response: data})
+      dispatch('pagination/update', data, {root: true})
     } catch (e) {
       commit(types.DESTROY_AGENT_FAILURE)
     }
@@ -68,8 +96,6 @@ export const actions = {
   async createRecord({commit}, payload) {
 
     try {
-      const {data} = await axios.post('/api/agents/' + payload)
-      console.log(payload, data);
       //commit(types.CREATE_AGENT_SUCCESS, {response: data})
     } catch (e) {
       //commit(types.CREATE_AGENT_FAILURE)

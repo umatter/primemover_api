@@ -1,12 +1,8 @@
 <template>
   <div class="row">
     <div class="col-lg-12 m-auto">
-      <card :title="$t('agent')" v-if="mustVerifyEmail">
-        <div class="alert alert-success" role="alert">
-          {{ $t('verify_email_address') }}
-        </div>
-      </card>
-      <card :title="$t('agent')" v-else>
+
+      <card :title="$t('agent')" v-if="!loading">
         <form @keydown="form.onKeydown($event)" @submit.prevent="create">
           <!-- Name -->
           <div class="form-group row">
@@ -33,7 +29,8 @@
           <div class="form-group row">
             <label class="col-md-3 col-form-label text-md-right">{{ $t('identification') }}</label>
             <div class="col-md-7">
-              <input :class="{ 'is-invalid': form.errors.has('identification') }" :placeholder="$t('identification')" class="form-control"
+              <input :class="{ 'is-invalid': form.errors.has('identification') }" :placeholder="$t('identification')"
+                     class="form-control"
                      name="identification" type="text" v-model="form.identification">
               <has-error :form="form" field="identification"/>
             </div>
@@ -60,6 +57,11 @@
                 {{ $t('save') }}
               </v-button>
 
+              <!-- Cancel Button -->
+              <button @click.prevent="$router.go(-1)" class="btn btn-light ml-2" type="reset">
+                {{ $t('cancel') }}
+              </button>
+
             </div>
           </div>
         </form>
@@ -70,6 +72,8 @@
 
 <script>
   import Form from 'vform'
+  import {apiDomain} from "../config";
+  import {mapGetters} from "vuex";
 
   export default {
     middleware: 'auth',
@@ -79,6 +83,10 @@
     },
 
     data: () => ({
+      loading: true,
+      model: 'agent',
+      id: 0,
+      edit: false,
       form: new Form({
         name: '',
         active: 0,
@@ -88,12 +96,36 @@
       mustVerifyEmail: false
     }),
 
+    computed: mapGetters({
+      record: 'agent/record',
+    }),
+
+    created() {
+      this.id = this.$route.params.id;
+      this.read(this.id);
+      this.loading = false;
+    },
+
     methods: {
       async create() {
-        if (this.form.post('/api/agents')) {
+        if (this.form.post(apiDomain + 'agents')) {
           this.$router.push({name: 'agents'})
         }
-      }
+      },
+      async read(id) {
+        this.loading = true;
+        if (this.id) {
+          let type = this.model + '/fetchRecord';
+          await this.$store.dispatch(type, {
+            id: this.id
+          }).then(() => {
+            //console.log(this.id)
+            this.form.fill(this.record);
+            this.loading = false;
+            //console.log(this.record)
+          });
+        }
+      },
     }
   }
 </script>

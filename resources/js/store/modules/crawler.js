@@ -1,6 +1,7 @@
 // state
 import axios from "axios";
 import * as types from "../mutation-types";
+import {apiDomain} from "../../config";
 
 export const state = {
   records: null,
@@ -48,7 +49,7 @@ export const mutations = {
 export const actions = {
   async fetchRecords({commit}) {
     try {
-      const {data} = await axios.get('/api/crawlers')
+      const {data} = await axios.get(apiDomain + 'crawlers')
 
       commit(types.FETCH_CRAWLERS_SUCCESS, {response: data})
     } catch (e) {
@@ -59,7 +60,7 @@ export const actions = {
   async destroyRecord({commit}, payload) {
     //console.log(commit, payload)
     try {
-      const {data} = await axios.delete('/api/crawlers/' + payload.id)
+      const {data} = await axios.delete(apiDomain + 'crawlers/' + payload.id)
       commit(types.DESTROY_CRAWLER_SUCCESS, {response: data})
     } catch (e) {
       commit(types.DESTROY_CRAWLER_FAILURE)

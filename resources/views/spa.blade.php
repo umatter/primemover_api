@@ -22,8 +22,8 @@
 
   <!-- Fonts and Styles -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Nunito+Sans:300,400,400i,600,700">
-  <link rel="stylesheet" id="css-main" href="{{ mix('css/dashmix.css') }}">
-  <link rel="stylesheet" id="css-theme" href="{{ mix('css/themes/xwork.css') }}">
+  <link rel="stylesheet" id="css-main" href="{{ mix('dist/css/dashmix.css') }}">
+  <link rel="stylesheet" id="css-theme" href="{{ mix('dist/css/themes/xwork.css') }}">
   <style>
     html {
       min-height: 101vh !important;
@@ -41,12 +41,13 @@
 
   <script src="{{ mix('dist/js/dashmix.app.js') }}"></script>
   <script src="{{ mix('dist/js/app.js') }}"></script>
+  <script src="{{ mix('dist/js/vendor.js') }}"></script>
 
   <!-- Page JS Helpers (Table Tools helpers) -->
   <script>
     jQuery(function(){
-      console.log(Dashmix);
-      Dashmix.helpers(['table-tools-checkable', 'table-tools-sections']);
+      //console.log(Dashmix);
+      //Dashmix.helpers(['table-tools-checkable', 'table-tools-sections']);
     });
   </script>
 

@@ -118,7 +118,7 @@ class User extends Authenticatable implements JWTSubject //, MustVerifyEmail
 
     public function search()
     {
-        return $this->hasOne('App\Query');
+        return $this->hasOne('App\Job');
     }
 
     public function agent()

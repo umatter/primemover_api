@@ -1,6 +1,7 @@
 // state
 import axios from "axios";
 import * as types from "../mutation-types";
+import {apiDomain} from "../../config";
 
 export const state = {
   records: null,
@@ -48,7 +49,7 @@ export const mutations = {
 export const actions = {
   async fetchRecords({commit}) {
     try {
-      const {data} = await axios.get('/api/proxies')
+      const {data} = await axios.get(apiDomain + 'proxies')
 
       commit(types.FETCH_PROXIES_SUCCESS, {response: data})
     } catch (e) {
@@ -57,9 +58,9 @@ export const actions = {
 
   },
   async destroyRecord({commit}, payload) {
-  //console.log(commit, payload)
+    //console.log(commit, payload)
     try {
-      const {data} = await axios.delete('/api/proxies/' + payload.id)
+      const {data} = await axios.delete(apiDomain + 'proxies/' + payload.id)
       commit(types.DESTROY_PROXY_SUCCESS, {response: data})
     } catch (e) {
       commit(types.DESTROY_PROXY_FAILURE)
@@ -68,8 +69,7 @@ export const actions = {
   async createRecord({commit}, payload) {
 
     try {
-      const {data} = await axios.post('/api/proxies/' + payload)
-      console.log(payload, data);
+
       //commit(types.CREATE_PROXY_SUCCESS, {response: data})
     } catch (e) {
       //commit(types.CREATE_PROXY_FAILURE)

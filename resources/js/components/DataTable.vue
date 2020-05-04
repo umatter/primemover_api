@@ -29,9 +29,11 @@
         </td>
         <td class="text-right d-none d-md-table-cell">{{ $d(item.date, 'long') }}</td>
         <td class="text-right">
-          <button class="btn btn-info btn-sm">
+
+          <router-link :to="{ name: 'agent/edit', params: { id: item.id } }" class="btn btn-info btn-sm">
             <i class="si si-pencil"></i>
-          </button>
+          </router-link>
+
           <button @click="destroyRecord(item.id)" class="btn btn-danger btn-sm">
             <i class="si si-trash"></i>
           </button>

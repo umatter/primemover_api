@@ -13,32 +13,33 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::group(['middleware' => 'auth:api'], function () {
-    Route::post('logout', 'Auth\LoginController@logout');
+Route::prefix('v1')->group(function () {
+    Route::group(['middleware' => 'auth:api'], function () {
+        Route::post('logout', 'Auth\LoginController@logout');
+        Route::get('/user', 'Auth\UserController@current');
 
-    Route::get('/user', 'Auth\UserController@current');
+        Route::resource('configurations', 'API\v1\ConfigurationController');
+        Route::resource('agents', 'API\v1\AgentController');
+        Route::resource('proxies', 'API\v1\ProxyController');
+        Route::resource('jobs', 'API\v1\JobController');
+        Route::resource('crawlers', 'API\v1\CrawlerController');
+        Route::resource('posts', 'API\v1\PostController');
 
-    Route::resource('configurations', 'ConfigurationController');
-    Route::resource('agents', 'AgentController');
-    Route::resource('proxies', 'ProxyController');
-    Route::resource('queries', 'QueryController');
-    Route::resource('crawlers', 'CrawlerController');
-    Route::resource('posts', 'PostController');
+        Route::patch('settings/profile', 'API\v1\Settings\ProfileController@update');
+        Route::patch('settings/password', 'API\v1\Settings\PasswordController@update');
+    });
 
-    Route::patch('settings/profile', 'Settings\ProfileController@update');
-    Route::patch('settings/password', 'Settings\PasswordController@update');
-});
+    Route::group(['middleware' => 'guest:api'], function () {
+        Route::post('login', 'Auth\LoginController@login');
+        Route::post('register', 'Auth\RegisterController@register');
 
-Route::group(['middleware' => 'guest:api'], function () {
-    Route::post('login', 'Auth\LoginController@login');
-    Route::post('register', 'Auth\RegisterController@register');
+        Route::post('password/email', 'Auth\ForgotPasswordController@sendResetLinkEmail');
+        Route::post('password/reset', 'Auth\ResetPasswordController@reset');
 
-    Route::post('password/email', 'Auth\ForgotPasswordController@sendResetLinkEmail');
-    Route::post('password/reset', 'Auth\ResetPasswordController@reset');
+        Route::post('email/verify/{user}', 'Auth\VerificationController@verify')->name('verification.verify');
+        Route::post('email/resend', 'Auth\VerificationController@resend');
 
-    Route::post('email/verify/{user}', 'Auth\VerificationController@verify')->name('verification.verify');
-    Route::post('email/resend', 'Auth\VerificationController@resend');
-
-    Route::post('oauth/{driver}', 'Auth\OAuthController@redirectToProvider');
-    Route::get('oauth/{driver}/callback', 'Auth\OAuthController@handleProviderCallback')->name('oauth.callback');
+        Route::post('oauth/{driver}', 'Auth\OAuthController@redirectToProvider');
+        Route::get('oauth/{driver}/callback', 'Auth\OAuthController@handleProviderCallback')->name('oauth.callback');
+    });
 });

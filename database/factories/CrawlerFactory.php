@@ -13,7 +13,7 @@ $factory->define(Crawler::class, function (Faker $faker) {
         'active' => $faker->randomElement([1, 0]),
         'proxy_id' => $faker->randomElement([1, 2]),
         'agent_id' => $faker->randomElement([1, 2]),
-        'query_id' => $faker->randomElement([1, 2]),
+        'job_id' => $faker->randomElement([1, 2]),
         'configuration_id' => $faker->randomElement([1, 2]),
     ];
 });

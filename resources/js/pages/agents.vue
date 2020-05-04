@@ -1,7 +1,9 @@
 <template>
-  <card :count="count" :nogutter="true" :title="title" model="agent" >
+  <card :count="meta.total" :links="links" :meta="meta" :nogutter="true" :title="title"
+        @fetchRecords="fetchRecords($event)"
+        model="agent">
     <p v-if="loading">{{ $t('loading') }}</p>
-    <data-table :records="response" model="agent" size="md" type="striped" v-if="!loading"></data-table>
+    <data-table :records="records" model="agent" size="md" type="striped" v-if="!loading"></data-table>
   </card>
 </template>
 
@@ -26,17 +28,23 @@
     },
 
     computed: mapGetters({
-      response: 'agent/records',
-      count: 'agent/count',
+      response: 'agent/response',
+      links: 'pagination/links',
+      meta: 'pagination/meta',
+      records: 'agent/records',
+      record: 'agent/record',
     }),
 
     methods: {
-      async fetchRecords() {
-        await this.$store.dispatch('agent/fetchRecords').then(() => {
-          this.loading = false;
-        }).catch(e => {
-          console.warn(e);
-        });
+      async fetchRecords(page, id) {
+
+        await this.$store.dispatch('agent/fetchRecords', {page: page, single: id})
+          .then(() => {
+            this.loading = false;
+          })
+          .catch(e => {
+            console.warn(e);
+          });
       },
     },
     created() {

@@ -1,6 +1,7 @@
 // state
 import axios from "axios";
 import * as types from "../mutation-types";
+import {apiDomain} from "../../config";
 
 export const state = {
   records: null,
@@ -48,7 +49,7 @@ export const mutations = {
 export const actions = {
   async fetchRecords({commit}) {
     try {
-      const {data} = await axios.get('/api/configurations')
+      const {data} = await axios.get(apiDomain + 'configurations')
 
       commit(types.FETCH_CONFIGURATIONS_SUCCESS, {response: data})
     } catch (e) {
@@ -59,7 +60,7 @@ export const actions = {
   async destroyRecord({commit}, payload) {
     //console.log(commit, payload)
     try {
-      const {data} = await axios.delete('/api/configurations/' + payload.id)
+      const {data} = await axios.delete(apiDomain + 'configurations/' + payload.id)
       commit(types.DESTROY_CONFIGURATION_SUCCESS, {response: data})
     } catch (e) {
       commit(types.DESTROY_CONFIGURATION_FAILURE)
@@ -68,8 +69,6 @@ export const actions = {
   async createRecord({commit}, payload) {
 
     try {
-      const {data} = await axios.post('/api/configurations/' + payload)
-      console.log(payload, data);
       //commit(types.CREATE_CONFIGURATION_SUCCESS, {response: data})
     } catch (e) {
       //commit(types.CREATE_CONFIGURATION_FAILURE)

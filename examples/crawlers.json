@@ -1,0 +1,60 @@
+{
+  "crawlers": [
+    {
+      "id": 1,
+      "user_id": 1,
+      "proxy_id": 2,
+      "job_id": 1,
+      "agent_id": 1,
+      "configuration_id": 2,
+      "name": "Bednar",
+      "description": "Rerum repudiandae quia molestiae. Nesciunt aut exercitationem doloremque at velit dolorem. Suscipit vel quia itaque eos. Alias aperiam cumque ea quis vel accusantium repellendus.",
+      "active": 1,
+      "updated_at": "2020-05-04T12:33:42.000000Z",
+      "created_at": "2020-05-04T12:33:42.000000Z",
+      "proxy": {
+        "id": 2,
+        "user_id": 1,
+        "name": "Hauck",
+        "description": "Sapiente velit modi eaque iusto minus aperiam repellat. Dolorem atque enim molestiae officia. Ut esse ratione voluptas velit.",
+        "hostname": "some.proxy.net",
+        "port": 8181,
+        "username": "proxyuser",
+        "password": "inventore",
+        "active": 0,
+        "updated_at": "2020-05-04T12:33:42.000000Z",
+        "created_at": "2020-05-04T12:33:42.000000Z"
+      },
+      "agent": {
+        "id": 1,
+        "user_id": 1,
+        "name": "Zemlak",
+        "description": "Non ad placeat non animi. Occaecati quis eum velit id. Atque temporibus quo quo beatae officia deserunt. Illo cumque beatae delectus quaerat quia. Amet ratione vitae eos non.",
+        "identification": "User-Agent: Mozilla\/6.0",
+        "active": 0,
+        "updated_at": "2020-05-04T12:33:42.000000Z",
+        "created_at": "2020-05-04T12:33:42.000000Z"
+      },
+      "configuration": {
+        "id": 2,
+        "user_id": 1,
+        "name": "Beahan",
+        "description": "Molestiae rerum harum est est. Earum aut saepe ducimus laboriosam. Aperiam aut error animi sequi quia quam. Voluptates ipsum sequi exercitationem voluptas neque accusantium nisi quos.",
+        "active": 1,
+        "updated_at": "2020-05-04T12:33:42.000000Z",
+        "created_at": "2020-05-04T12:33:42.000000Z"
+      },
+      "job": {
+        "id": 1,
+        "user_id": 1,
+        "name": "Roob",
+        "description": "Et nihil omnis ab ad incidunt culpa. Esse eum pariatur aspernatur repellendus delectus provident quis. Numquam aut voluptas voluptatem molestiae fugit. Consequatur sit eius aliquam et.",
+        "url": "yahoo.com",
+        "query": "hello",
+        "active": 1,
+        "updated_at": "2020-05-04T12:33:42.000000Z",
+        "created_at": "2020-05-04T12:33:42.000000Z"
+      }
+    }
+  ]
+}

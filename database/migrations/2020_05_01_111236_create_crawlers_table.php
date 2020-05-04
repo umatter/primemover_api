@@ -18,7 +18,7 @@ class CreateCrawlersTable extends Migration
 
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('proxy_id');
-            $table->unsignedBigInteger('query_id');
+            $table->unsignedBigInteger('job_id');
             $table->unsignedBigInteger('agent_id');
             $table->unsignedBigInteger('configuration_id');
 
@@ -32,7 +32,7 @@ class CreateCrawlersTable extends Migration
             // Foreign keys
             $table->foreign('user_id')->references('id')->on('users')->onDelete('restrict');
             $table->foreign('proxy_id')->references('id')->on('proxies')->onDelete('restrict');
-            $table->foreign('query_id')->references('id')->on('queries')->onDelete('restrict');
+            $table->foreign('job_id')->references('id')->on('jobs')->onDelete('restrict');
             $table->foreign('agent_id')->references('id')->on('agents')->onDelete('restrict');
             $table->foreign('configuration_id')->references('id')->on('configurations')->onDelete('restrict');
         });

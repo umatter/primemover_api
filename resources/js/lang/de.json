@@ -58,6 +58,8 @@
   "contact": "Kontakt",
   "configuration": "Konfiguration",
   "query": "Abfrage",
+  "job": "Aufgabe",
+  "jobs": "Aufgaben",
   "agent": "Agent",
   "proxy": "Proxy",
   "crawler": "Crawler",
@@ -74,6 +76,8 @@
   "hostname": "Hostname",
   "username": "Benutzername",
   "port": "Port",
+  "previous": "Zurück",
+  "next": "Vor",
   "project_intro": "Our teaching activities aim to provide the students of the University of St.Gallen with thorough training in international economic theory and policy as well as political and public economics. We teach in Bachelor, Master and PhD programmes in both economics and international affairs. In addition to this, we engage in the training of executives as we participate in the continuing education programmes of our university. In this respect, on-going research and consulting at our institute help us quickly integrate new important developments in the world economy into our curriculum. This assures both timeliness and an appropriate balance of theoretical and practical aspects with regard to the courses we offer.",
   "home_intro": "The SIAW Institute at the University of St.Gallen has been founded in 1943. Since this time, issues related to the international economic order and economic policies have been a traditional focus of our institute's activities. Additionally, our journal Aussenwirtschaft (The Swiss Review of International Economic Relations) has provided both academic thinkers and policymakers with valuable analyses of the world economy for more than half a century.",
   "company_intro": "«A place where knowledge is created» - As one of Europe's leading universities of economics and business administration, the University of St.Gallen (HSG), Switzerland, is committed to the education of over 8500 students and is one of the largest employers in the region, providing around 3100 employees with an attractive and innovative environment for research."

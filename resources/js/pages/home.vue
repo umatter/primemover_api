@@ -6,7 +6,7 @@
     <h2 class="h3 font-w400">{{ $t('the_university') }}</h2>
     <p>{{ $t('company_intro') }}</p>
     <h2 class="h3 font-w400">{{ $t('the_project') }}</h2>
-    <p>Something ...</p>
+    <p>Something else...</p>
 
   </card>
 </template>

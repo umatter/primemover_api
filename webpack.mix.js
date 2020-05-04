@@ -2,6 +2,7 @@ const path = require('path')
 const fs = require('fs-extra')
 const mix = require('laravel-mix')
 require('laravel-mix-versionhash')
+const publicDir = path.resolve(__dirname, './public')
 //const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')
 
 /*
@@ -17,15 +18,15 @@ require('laravel-mix-versionhash')
 
 mix
   /* CSS */
-  .sass('resources/sass/main.scss', 'public/css/dashmix.css')
-  .sass('resources/sass/dashmix/themes/xeco.scss', 'public/css/themes/')
-  .sass('resources/sass/dashmix/themes/xinspire.scss', 'public/css/themes/')
-  .sass('resources/sass/dashmix/themes/xmodern.scss', 'public/css/themes/')
-  .sass('resources/sass/dashmix/themes/xsmooth.scss', 'public/css/themes/')
-  .sass('resources/sass/dashmix/themes/xwork.scss', 'public/css/themes/')
-  .sass('resources/sass/dashmix/themes/xdream.scss', 'public/css/themes/')
-  .sass('resources/sass/dashmix/themes/xpro.scss', 'public/css/themes/')
-  .sass('resources/sass/dashmix/themes/xplay.scss', 'public/css/themes/')
+  .sass('resources/sass/main.scss', 'public/dist/css/dashmix.css')
+  .sass('resources/sass/dashmix/themes/xeco.scss', 'public/dist/css/themes/')
+  .sass('resources/sass/dashmix/themes/xinspire.scss', 'public/dist/css/themes/')
+  .sass('resources/sass/dashmix/themes/xmodern.scss', 'public/dist/css/themes/')
+  .sass('resources/sass/dashmix/themes/xsmooth.scss', 'public/dist/css/themes/')
+  .sass('resources/sass/dashmix/themes/xwork.scss', 'public/dist/css/themes/')
+  .sass('resources/sass/dashmix/themes/xdream.scss', 'public/dist/css/themes/')
+  .sass('resources/sass/dashmix/themes/xpro.scss', 'public/dist/css/themes/')
+  .sass('resources/sass/dashmix/themes/xplay.scss', 'public/dist/css/themes/')
   //.sass('resources/sass/app.scss', 'public/dist/css')
 
   /* JS */
@@ -44,7 +45,9 @@ if (mix.inProduction()) {
     .versionHash()
 } else {
   mix.sourceMaps()
+  mix.copyDirectory(path.join(publicDir, 'build', 'dist'), path.join(publicDir, 'dist'))
 }
+
 
 mix.webpackConfig({
   plugins: [
@@ -59,6 +62,18 @@ mix.webpackConfig({
   output: {
     chunkFilename: 'dist/js/[chunkhash].js',
     path: mix.config.hmr ? '/' : path.resolve(__dirname, './public/build')
+  },
+  optimization: {
+    splitChunks: {
+      cacheGroups: {
+        default: false,
+        vendors: {
+          chunks: 'initial',
+          name: 'vendor',
+          filename: 'dist/js/[name].js'
+        }
+      }
+    },
   }
 })
 
@@ -69,7 +84,7 @@ mix.then(() => {
 })
 
 function publishAseets() {
-  const publicDir = path.resolve(__dirname, './public')
+  //const publicDir = path.resolve(__dirname, './public')
 
   if (mix.inProduction()) {
     fs.removeSync(path.join(publicDir, 'dist'))
