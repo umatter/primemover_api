@@ -1,0 +1,39 @@
+{
+  "id": 1,
+  "user_id": 1,
+  "name": "Roob",
+  "behavior_parameters": [{
+    "arguments_runner":[{
+      "rho": "",
+      "beta": "",
+      "alpha": "",
+      "tau": "",
+      }],
+    "arguments_config":[{
+      "pi": ""
+      }]
+}]
+  "joblist": [{
+      "starttime": "2020-06-18T12:00:00.000+02:00",
+      "jobs": [
+        {
+          "id": 1,
+          "user_id": 1,
+          "name": "Roob",
+          "job_type": "login",
+          "description": "Log in to a page. (human-like cursor movement and typing)",
+          "field1_xpath": "",
+          "field1_css":"",
+          "field2_xpath":"",
+          "field2_css":"",
+          "type_text1": "username",
+          "type_text2": "pw",
+          "active": 1
+        }, {
+          ... JOB 2 ...
+      }, {
+          ... JOB 3 ...
+      }
+      ]
+  }]
+}

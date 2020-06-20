@@ -1,0 +1,10 @@
+{
+  "id": 1,
+  "user_id": 1,
+  "name": "Roob",
+  "job_type": "parse_urls",
+  "description": "Parse and cache (all/specific) URLs found in the current webpage (open in browser).",
+  "xpath": "",
+  "css": "",
+  "active": 1
+}

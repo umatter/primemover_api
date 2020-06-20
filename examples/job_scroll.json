@@ -1,0 +1,11 @@
+{
+  "id": 1,
+  "user_id": 1,
+  "name": "Roob",
+  "job_type": "scroll",
+  "description": "Systematically scroll down/up in an open page (in order to ’get somewhere’ on the page). (human-like scrolling)",
+  "scroll_direction": "up",
+  "length": "",
+  "duration": "",
+  "active": 1
+}

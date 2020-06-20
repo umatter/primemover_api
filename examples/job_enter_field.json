@@ -1,0 +1,11 @@
+{
+  "id": 1,
+  "user_id": 1,
+  "name": "Roob",
+  "job_type": "enter_field",
+  "description": "Type  a  term  into  a  (search)  field  on  the  page  currently  open  in  the  browser  and  hit  enter  (for  example,  the current page open in the browser is google.com, select the search field, type a term into it, hit enter).  (with human-like typing and cursor movements).",
+  "xpath": "",
+  "css": "",
+  "type_text": "hello world",
+  "active": 1
+}

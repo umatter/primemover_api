@@ -1,0 +1,10 @@
+{
+  "id": 1,
+  "user_id": 1,
+  "name": "Roob",
+  "job_type": "select_url",
+  "description": "Select a specific link with the cursor (human-like cursor movement).  That is, open a webpage by clicking on a URL or a field/image/button etc.  in the currently loaded page.",
+  "xpath": "",
+  "css": "",
+  "active": 1
+}

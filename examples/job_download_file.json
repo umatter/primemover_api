@@ -1,0 +1,11 @@
+{
+  "id": 1,
+  "user_id": 1,
+  "name": "Roob",
+  "job_type": "download_file",
+  "description": "Select a file/link on the page to download content and save this file in the bot’s ’data folder’. (human-like cursor movement)",
+  "xpath_field": "",
+  "css_field": "",
+  "type_text": "hello world",
+  "active": 1
+}

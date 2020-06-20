@@ -1,0 +1,12 @@
+{
+  "id": 1,
+  "user_id": 1,
+  "name": "Roob",
+  "job_type": "rest_random",
+  "description": "Log in to a page. (human-like cursor movement and typing)",
+  "duration": [0,5],
+  "active": 1
+}
+
+
+Log in to a page. Parameters: id/xpath of login fields and buttons, credentials to type in.

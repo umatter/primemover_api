@@ -1,0 +1,13 @@
+{
+  "id": 1,
+  "user_id": 1,
+  "name": "Roob",
+  "job_type": "enter_field_button",
+  "description": "Type a term into a (search) field on the page currently open in the browser and submit by clicking on a button.  Same job as enter_field, but using a button on the page instead of hitting enter. (with human-like typing and cursor movements).",
+  "xpath_field": "",
+  "css_field": "",
+  "xpath_button": "",
+  "css_button": "",
+  "type_text": "hello world",
+  "active": 1
+}

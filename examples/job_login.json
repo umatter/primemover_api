@@ -1,0 +1,14 @@
+{
+  "id": 1,
+  "user_id": 1,
+  "name": "Roob",
+  "job_type": "login",
+  "description": "Log in to a page. (human-like cursor movement and typing)",
+  "field1_xpath": "",
+  "field1_css":"",
+  "field2_xpath":"",
+  "field2_css":"",
+  "type_text1": "username",
+  "type_text2": "pw",
+  "active": 1
+}
