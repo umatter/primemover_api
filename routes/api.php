@@ -24,6 +24,7 @@ Route::prefix('v1')->group(function () {
         Route::resource('jobs', 'API\v1\JobController');
         Route::resource('crawlers', 'API\v1\CrawlerController');
         Route::resource('posts', 'API\v1\PostController');
+        Route::resource('behaviors', 'API\v1\BehaviorController');
 
         Route::patch('settings/profile', 'API\v1\Settings\ProfileController@update');
         Route::patch('settings/password', 'API\v1\Settings\PasswordController@update');

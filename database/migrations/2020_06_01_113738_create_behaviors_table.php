@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateJobsTable extends Migration
+class CreateBehaviorsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,22 +13,22 @@ class CreateJobsTable extends Migration
      */
     public function up()
     {
-        Schema::create('jobs', function (Blueprint $table) {
+        Schema::create('behaviors', function (Blueprint $table) {
             $table->id();
+            $table->string('name');
+            $table->string('description');
+            $table->string('value');
+            $table->boolean('active')->default(1);
 
             $table->unsignedBigInteger('user_id');
-
-            $table->string('name')->default('Query 111');
-            $table->string('description')->nullable();
-            $table->string('url')->default('http://www.google.com');
-            $table->string('query')->default('Hallo Welt');
-            $table->boolean('active')->default(1);
+            $table->unsignedBigInteger('job_id');
 
             $table->timestamp('updated_at')->useCurrent();
             $table->timestamp('created_at')->useCurrent();
 
             // Foreign keys
             $table->foreign('user_id')->references('id')->on('users')->onDelete('restrict');
+            $table->foreign('job_id')->references('id')->on('jobs')->onDelete('restrict');
         });
     }
 
@@ -39,6 +39,6 @@ class CreateJobsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('jobs');
+        Schema::dropIfExists('behaviors');
     }
 }

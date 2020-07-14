@@ -17,7 +17,7 @@ class CrawlerController extends Controller
     {
         return response()->json([
 
-            'crawlers' => Crawler::latest()->with('proxy', 'agent', 'configuration', 'job')->get()
+            'crawlers' => Crawler::latest()->with('proxy', 'agent', 'configuration', 'jobs')->get()
 
         ], Response::HTTP_OK);
     }
