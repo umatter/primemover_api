@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::prefix('v1')->group(function () {
+
     Route::group(['middleware' => 'auth:api'], function () {
         Route::post('logout', 'Auth\LoginController@logout');
         Route::get('/user', 'Auth\UserController@current');
@@ -43,4 +44,6 @@ Route::group(['middleware' => 'guest:api'], function () {
 
     Route::post('oauth/{driver}', 'Auth\OAuthController@redirectToProvider');
     Route::get('oauth/{driver}/callback', 'Auth\OAuthController@handleProviderCallback')->name('oauth.callback');
+
 });
+

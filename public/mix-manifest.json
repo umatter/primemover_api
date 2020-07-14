@@ -1,14 +1,14 @@
 {
-    "/dist/js/app.js": "/dist/js/app.js",
-    "/dist/css/dashmix.css": "/dist/css/dashmix.css",
-    "/dist/css/themes/xeco.css": "/dist/css/themes/xeco.css",
-    "/dist/css/themes/xinspire.css": "/dist/css/themes/xinspire.css",
-    "/dist/css/themes/xmodern.css": "/dist/css/themes/xmodern.css",
-    "/dist/css/themes/xsmooth.css": "/dist/css/themes/xsmooth.css",
-    "/dist/css/themes/xwork.css": "/dist/css/themes/xwork.css",
-    "/dist/css/themes/xdream.css": "/dist/css/themes/xdream.css",
-    "/dist/css/themes/xpro.css": "/dist/css/themes/xpro.css",
-    "/dist/css/themes/xplay.css": "/dist/css/themes/xplay.css",
-    "/dist/js/dashmix.app.js": "/dist/js/dashmix.app.js",
-    "/dist/js/vendor.js": "/dist/js/vendor.js"
+    "/dist/js/vendor.js": "/dist/js/vendor.js",
+    "/dist/css/dashmix.css": "/dist/css/dashmix.27f4f1.css",
+    "/dist/css/themes/xeco.css": "/dist/css/themes/xeco.27f4f1.css",
+    "/dist/css/themes/xinspire.css": "/dist/css/themes/xinspire.27f4f1.css",
+    "/dist/css/themes/xmodern.css": "/dist/css/themes/xmodern.27f4f1.css",
+    "/dist/css/themes/xsmooth.css": "/dist/css/themes/xsmooth.27f4f1.css",
+    "/dist/css/themes/xwork.css": "/dist/css/themes/xwork.27f4f1.css",
+    "/dist/css/themes/xdream.css": "/dist/css/themes/xdream.27f4f1.css",
+    "/dist/css/themes/xpro.css": "/dist/css/themes/xpro.27f4f1.css",
+    "/dist/css/themes/xplay.css": "/dist/css/themes/xplay.27f4f1.css",
+    "/dist/js/app.js": "/dist/js/app.fe0303.js",
+    "/dist/js/dashmix.app.js": "/dist/js/dashmix.app.368f1f.js"
 }

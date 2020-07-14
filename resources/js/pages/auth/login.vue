@@ -37,18 +37,29 @@
 
           <div class="form-group row">
             <div class="col-md-7 offset-md-3 d-flex">
-              <!-- Submit Button -->
-              <v-button :loading="form.busy" class="mr-2">
-                {{ $t('login') }}
-              </v-button>
 
               <!-- GitHub Login Button -->
               <login-with-github />
 
+              <!-- Submit Button -->
+              <v-button :loading="form.busy" class="ml-2">
+                {{ $t('login') }}
+              </v-button>
+
+
+            </div>
+
+            <div class="col-12">
+              <hr>
+            </div>
+            <div class="col-md-7 offset-md-3 d-flex">
+
               <!-- Register button -->
-              <router-link :to="{ name: 'register' }" active-class="active" class="btn btn-light ml-auto">
-                {{ $t('register') }}
+              <router-link :to="{ name: 'register' }" active-class="active" class="btn btn-warning mr-auto">
+                {{ $t('back_to_register') }}
               </router-link>
+
+
 
             </div>
           </div>
