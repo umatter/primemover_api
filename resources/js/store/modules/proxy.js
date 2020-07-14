@@ -17,8 +17,8 @@ export const getters = {
 // mutations
 export const mutations = {
   [types.FETCH_PROXIES_SUCCESS](state, {response}) {
-    state.records = response.proxies;
-    state.count = response.proxies.length
+    state.records = response.data;
+    state.count = response.data.length
   },
 
   [types.DESTROY_PROXY_SUCCESS](state, {response}) {

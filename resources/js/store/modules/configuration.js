@@ -17,8 +17,8 @@ export const getters = {
 // mutations
 export const mutations = {
   [types.FETCH_CONFIGURATIONS_SUCCESS](state, {response}) {
-    state.records = response.configurations;
-    state.count = response.configurations.length
+    state.records = response.data;
+    state.count = response.data.length
   },
 
   [types.DESTROY_CONFIGURATION_SUCCESS](state, {response}) {

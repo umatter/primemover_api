@@ -17,8 +17,8 @@ export const getters = {
 // mutations
 export const mutations = {
   [types.FETCH_CRAWLERS_SUCCESS](state, {response}) {
-    state.records = response.crawlers;
-    state.count = response.crawlers.length
+    state.records = response.data;
+    state.count = response.data.length
   },
 
   [types.DESTROY_CRAWLER_SUCCESS](state, {response}) {

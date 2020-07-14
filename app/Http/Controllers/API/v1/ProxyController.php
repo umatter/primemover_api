@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API\v1;
 
 use App\Http\Resources\v1\ProxyResource;
+use App\Http\Resources\v1\ProxyResourceCollection;
 use App\Proxy;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -14,13 +15,11 @@ class ProxyController extends Controller
      *
      * @return Response
      */
-    public function index()
+    public function index(Request $request): ProxyResourceCollection
     {
-        return response()->json([
-
-            'proxies' => Proxy::latest()->get()
-
-        ], Response::HTTP_OK);
+        $keyword = $request->input('keyword');
+        $response = Proxy::with('user')->latest()->get();
+        return new ProxyResourceCollection($response);
     }
 
     /**

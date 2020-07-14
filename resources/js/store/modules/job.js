@@ -17,8 +17,8 @@ export const getters = {
 // mutations
 export const mutations = {
   [types.FETCH_JOBS_SUCCESS](state, {response}) {
-    state.records = response.jobs;
-    state.count = response.jobs.length
+    state.records = response.data;
+    state.count = response.data.length
   },
 
   [types.DESTROY_JOB_SUCCESS](state, {response}) {

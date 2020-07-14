@@ -67,7 +67,7 @@ export const actions = {
 
       // Update pagination
       // https://vuex.vuejs.org/guide/modules.html
-      dispatch('pagination/update', data, {root: true})
+      //dispatch('pagination/update', data, {root: true})
 
     } catch (e) {
       commit(types.FETCH_AGENTS_FAILURE)
