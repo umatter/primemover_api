@@ -27,8 +27,8 @@ Route::prefix('v1')->group(function () {
         Route::resource('posts', 'API\v1\PostController');
         Route::resource('behaviors', 'API\v1\BehaviorController');
 
-        Route::patch('settings/profile', 'API\v1\Settings\ProfileController@update');
-        Route::patch('settings/password', 'API\v1\Settings\PasswordController@update');
+        Route::patch('settings/profile', 'Settings\ProfileController@update');
+        Route::patch('settings/password', 'Settings\PasswordController@update');
     });
 
     Route::group(['middleware' => 'guest:api'], function () {

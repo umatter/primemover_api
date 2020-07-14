@@ -1,0 +1,136 @@
++--------+-----------+--------------------------------------------+------------------------+-----------------------------------------------------------------------+--------------+
+| Domain | Method    | URI                                        | Name                   | Action                                                                | Middleware   |
++--------+-----------+--------------------------------------------+------------------------+-----------------------------------------------------------------------+--------------+
+|        | GET|HEAD  | _dusk/login/{userId}/{guard?}              |                        | Laravel\Dusk\Http\Controllers\UserController@login                    | web          |
+|        | GET|HEAD  | _dusk/logout/{guard?}                      |                        | Laravel\Dusk\Http\Controllers\UserController@logout                   | web          |
+|        | GET|HEAD  | _dusk/user/{guard?}                        |                        | Laravel\Dusk\Http\Controllers\UserController@user                     | web          |
+|        | GET|HEAD  | api/v1/agents                              | agents.index           | App\Http\Controllers\API\v1\AgentController@index                     | api          |
+|        |           |                                            |                        |                                                                       | auth:api     |
+|        | POST      | api/v1/agents                              | agents.store           | App\Http\Controllers\API\v1\AgentController@store                     | api          |
+|        |           |                                            |                        |                                                                       | auth:api     |
+|        | GET|HEAD  | api/v1/agents/create                       | agents.create          | App\Http\Controllers\API\v1\AgentController@create                    | api          |
+|        |           |                                            |                        |                                                                       | auth:api     |
+|        | PUT|PATCH | api/v1/agents/{agent}                      | agents.update          | App\Http\Controllers\API\v1\AgentController@update                    | api          |
+|        |           |                                            |                        |                                                                       | auth:api     |
+|        | GET|HEAD  | api/v1/agents/{agent}                      | agents.show            | App\Http\Controllers\API\v1\AgentController@show                      | api          |
+|        |           |                                            |                        |                                                                       | auth:api     |
+|        | DELETE    | api/v1/agents/{agent}                      | agents.destroy         | App\Http\Controllers\API\v1\AgentController@destroy                   | api          |
+|        |           |                                            |                        |                                                                       | auth:api     |
+|        | GET|HEAD  | api/v1/agents/{agent}/edit                 | agents.edit            | App\Http\Controllers\API\v1\AgentController@edit                      | api          |
+|        |           |                                            |                        |                                                                       | auth:api     |
+|        | POST      | api/v1/behaviors                           | behaviors.store        | App\Http\Controllers\API\v1\BehaviorController@store                  | api          |
+|        |           |                                            |                        |                                                                       | auth:api     |
+|        | GET|HEAD  | api/v1/behaviors                           | behaviors.index        | App\Http\Controllers\API\v1\BehaviorController@index                  | api          |
+|        |           |                                            |                        |                                                                       | auth:api     |
+|        | GET|HEAD  | api/v1/behaviors/create                    | behaviors.create       | App\Http\Controllers\API\v1\BehaviorController@create                 | api          |
+|        |           |                                            |                        |                                                                       | auth:api     |
+|        | GET|HEAD  | api/v1/behaviors/{behavior}                | behaviors.show         | App\Http\Controllers\API\v1\BehaviorController@show                   | api          |
+|        |           |                                            |                        |                                                                       | auth:api     |
+|        | DELETE    | api/v1/behaviors/{behavior}                | behaviors.destroy      | App\Http\Controllers\API\v1\BehaviorController@destroy                | api          |
+|        |           |                                            |                        |                                                                       | auth:api     |
+|        | PUT|PATCH | api/v1/behaviors/{behavior}                | behaviors.update       | App\Http\Controllers\API\v1\BehaviorController@update                 | api          |
+|        |           |                                            |                        |                                                                       | auth:api     |
+|        | GET|HEAD  | api/v1/behaviors/{behavior}/edit           | behaviors.edit         | App\Http\Controllers\API\v1\BehaviorController@edit                   | api          |
+|        |           |                                            |                        |                                                                       | auth:api     |
+|        | POST      | api/v1/configurations                      | configurations.store   | App\Http\Controllers\API\v1\ConfigurationController@store             | api          |
+|        |           |                                            |                        |                                                                       | auth:api     |
+|        | GET|HEAD  | api/v1/configurations                      | configurations.index   | App\Http\Controllers\API\v1\ConfigurationController@index             | api          |
+|        |           |                                            |                        |                                                                       | auth:api     |
+|        | GET|HEAD  | api/v1/configurations/create               | configurations.create  | App\Http\Controllers\API\v1\ConfigurationController@create            | api          |
+|        |           |                                            |                        |                                                                       | auth:api     |
+|        | DELETE    | api/v1/configurations/{configuration}      | configurations.destroy | App\Http\Controllers\API\v1\ConfigurationController@destroy           | api          |
+|        |           |                                            |                        |                                                                       | auth:api     |
+|        | GET|HEAD  | api/v1/configurations/{configuration}      | configurations.show    | App\Http\Controllers\API\v1\ConfigurationController@show              | api          |
+|        |           |                                            |                        |                                                                       | auth:api     |
+|        | PUT|PATCH | api/v1/configurations/{configuration}      | configurations.update  | App\Http\Controllers\API\v1\ConfigurationController@update            | api          |
+|        |           |                                            |                        |                                                                       | auth:api     |
+|        | GET|HEAD  | api/v1/configurations/{configuration}/edit | configurations.edit    | App\Http\Controllers\API\v1\ConfigurationController@edit              | api          |
+|        |           |                                            |                        |                                                                       | auth:api     |
+|        | GET|HEAD  | api/v1/crawlers                            | crawlers.index         | App\Http\Controllers\API\v1\CrawlerController@index                   | api          |
+|        |           |                                            |                        |                                                                       | auth:api     |
+|        | POST      | api/v1/crawlers                            | crawlers.store         | App\Http\Controllers\API\v1\CrawlerController@store                   | api          |
+|        |           |                                            |                        |                                                                       | auth:api     |
+|        | GET|HEAD  | api/v1/crawlers/create                     | crawlers.create        | App\Http\Controllers\API\v1\CrawlerController@create                  | api          |
+|        |           |                                            |                        |                                                                       | auth:api     |
+|        | GET|HEAD  | api/v1/crawlers/{crawler}                  | crawlers.show          | App\Http\Controllers\API\v1\CrawlerController@show                    | api          |
+|        |           |                                            |                        |                                                                       | auth:api     |
+|        | DELETE    | api/v1/crawlers/{crawler}                  | crawlers.destroy       | App\Http\Controllers\API\v1\CrawlerController@destroy                 | api          |
+|        |           |                                            |                        |                                                                       | auth:api     |
+|        | PUT|PATCH | api/v1/crawlers/{crawler}                  | crawlers.update        | App\Http\Controllers\API\v1\CrawlerController@update                  | api          |
+|        |           |                                            |                        |                                                                       | auth:api     |
+|        | GET|HEAD  | api/v1/crawlers/{crawler}/edit             | crawlers.edit          | App\Http\Controllers\API\v1\CrawlerController@edit                    | api          |
+|        |           |                                            |                        |                                                                       | auth:api     |
+|        | POST      | api/v1/email/resend                        |                        | App\Http\Controllers\Auth\VerificationController@resend               | api          |
+|        |           |                                            |                        |                                                                       | guest:api    |
+|        |           |                                            |                        |                                                                       | throttle:6,1 |
+|        | POST      | api/v1/email/verify/{user}                 | verification.verify    | App\Http\Controllers\Auth\VerificationController@verify               | api          |
+|        |           |                                            |                        |                                                                       | guest:api    |
+|        |           |                                            |                        |                                                                       | throttle:6,1 |
+|        | GET|HEAD  | api/v1/jobs                                | jobs.index             | App\Http\Controllers\API\v1\JobController@index                       | api          |
+|        |           |                                            |                        |                                                                       | auth:api     |
+|        | POST      | api/v1/jobs                                | jobs.store             | App\Http\Controllers\API\v1\JobController@store                       | api          |
+|        |           |                                            |                        |                                                                       | auth:api     |
+|        | GET|HEAD  | api/v1/jobs/create                         | jobs.create            | App\Http\Controllers\API\v1\JobController@create                      | api          |
+|        |           |                                            |                        |                                                                       | auth:api     |
+|        | DELETE    | api/v1/jobs/{job}                          | jobs.destroy           | App\Http\Controllers\API\v1\JobController@destroy                     | api          |
+|        |           |                                            |                        |                                                                       | auth:api     |
+|        | PUT|PATCH | api/v1/jobs/{job}                          | jobs.update            | App\Http\Controllers\API\v1\JobController@update                      | api          |
+|        |           |                                            |                        |                                                                       | auth:api     |
+|        | GET|HEAD  | api/v1/jobs/{job}                          | jobs.show              | App\Http\Controllers\API\v1\JobController@show                        | api          |
+|        |           |                                            |                        |                                                                       | auth:api     |
+|        | GET|HEAD  | api/v1/jobs/{job}/edit                     | jobs.edit              | App\Http\Controllers\API\v1\JobController@edit                        | api          |
+|        |           |                                            |                        |                                                                       | auth:api     |
+|        | POST      | api/v1/login                               |                        | App\Http\Controllers\Auth\LoginController@login                       | api          |
+|        |           |                                            |                        |                                                                       | guest:api    |
+|        |           |                                            |                        |                                                                       | guest        |
+|        | POST      | api/v1/logout                              |                        | App\Http\Controllers\Auth\LoginController@logout                      | api          |
+|        |           |                                            |                        |                                                                       | auth:api     |
+|        | POST      | api/v1/oauth/{driver}                      |                        | App\Http\Controllers\Auth\OAuthController@redirectToProvider          | api          |
+|        |           |                                            |                        |                                                                       | guest:api    |
+|        | GET|HEAD  | api/v1/oauth/{driver}/callback             | oauth.callback         | App\Http\Controllers\Auth\OAuthController@handleProviderCallback      | api          |
+|        |           |                                            |                        |                                                                       | guest:api    |
+|        | POST      | api/v1/password/email                      |                        | App\Http\Controllers\Auth\ForgotPasswordController@sendResetLinkEmail | api          |
+|        |           |                                            |                        |                                                                       | guest:api    |
+|        |           |                                            |                        |                                                                       | guest        |
+|        | POST      | api/v1/password/reset                      |                        | App\Http\Controllers\Auth\ResetPasswordController@reset               | api          |
+|        |           |                                            |                        |                                                                       | guest:api    |
+|        |           |                                            |                        |                                                                       | guest        |
+|        | GET|HEAD  | api/v1/posts                               | posts.index            | App\Http\Controllers\API\v1\PostController@index                      | api          |
+|        |           |                                            |                        |                                                                       | auth:api     |
+|        | POST      | api/v1/posts                               | posts.store            | App\Http\Controllers\API\v1\PostController@store                      | api          |
+|        |           |                                            |                        |                                                                       | auth:api     |
+|        | GET|HEAD  | api/v1/posts/create                        | posts.create           | App\Http\Controllers\API\v1\PostController@create                     | api          |
+|        |           |                                            |                        |                                                                       | auth:api     |
+|        | GET|HEAD  | api/v1/posts/{post}                        | posts.show             | App\Http\Controllers\API\v1\PostController@show                       | api          |
+|        |           |                                            |                        |                                                                       | auth:api     |
+|        | PUT|PATCH | api/v1/posts/{post}                        | posts.update           | App\Http\Controllers\API\v1\PostController@update                     | api          |
+|        |           |                                            |                        |                                                                       | auth:api     |
+|        | DELETE    | api/v1/posts/{post}                        | posts.destroy          | App\Http\Controllers\API\v1\PostController@destroy                    | api          |
+|        |           |                                            |                        |                                                                       | auth:api     |
+|        | GET|HEAD  | api/v1/posts/{post}/edit                   | posts.edit             | App\Http\Controllers\API\v1\PostController@edit                       | api          |
+|        |           |                                            |                        |                                                                       | auth:api     |
+|        | POST      | api/v1/proxies                             | proxies.store          | App\Http\Controllers\API\v1\ProxyController@store                     | api          |
+|        |           |                                            |                        |                                                                       | auth:api     |
+|        | GET|HEAD  | api/v1/proxies                             | proxies.index          | App\Http\Controllers\API\v1\ProxyController@index                     | api          |
+|        |           |                                            |                        |                                                                       | auth:api     |
+|        | GET|HEAD  | api/v1/proxies/create                      | proxies.create         | App\Http\Controllers\API\v1\ProxyController@create                    | api          |
+|        |           |                                            |                        |                                                                       | auth:api     |
+|        | GET|HEAD  | api/v1/proxies/{proxy}                     | proxies.show           | App\Http\Controllers\API\v1\ProxyController@show                      | api          |
+|        |           |                                            |                        |                                                                       | auth:api     |
+|        | PUT|PATCH | api/v1/proxies/{proxy}                     | proxies.update         | App\Http\Controllers\API\v1\ProxyController@update                    | api          |
+|        |           |                                            |                        |                                                                       | auth:api     |
+|        | DELETE    | api/v1/proxies/{proxy}                     | proxies.destroy        | App\Http\Controllers\API\v1\ProxyController@destroy                   | api          |
+|        |           |                                            |                        |                                                                       | auth:api     |
+|        | GET|HEAD  | api/v1/proxies/{proxy}/edit                | proxies.edit           | App\Http\Controllers\API\v1\ProxyController@edit                      | api          |
+|        |           |                                            |                        |                                                                       | auth:api     |
+|        | POST      | api/v1/register                            |                        | App\Http\Controllers\Auth\RegisterController@register                 | api          |
+|        |           |                                            |                        |                                                                       | guest:api    |
+|        |           |                                            |                        |                                                                       | guest        |
+|        | PATCH     | api/v1/settings/password                   |                        | App\Http\Controllers\Settings\PasswordController@update               | api          |
+|        |           |                                            |                        |                                                                       | auth:api     |
+|        | PATCH     | api/v1/settings/profile                    |                        | App\Http\Controllers\Settings\ProfileController@update                | api          |
+|        |           |                                            |                        |                                                                       | auth:api     |
+|        | GET|HEAD  | api/v1/user                                |                        | App\Http\Controllers\Auth\UserController@current                      | api          |
+|        |           |                                            |                        |                                                                       | auth:api     |
+|        | GET|HEAD  | {path}                                     |                        | App\Http\Controllers\SpaController                                    | spa          |
++--------+-----------+--------------------------------------------+------------------------+-----------------------------------------------------------------------+--------------+
