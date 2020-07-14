@@ -6,26 +6,35 @@ use App\Crawler;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
+use App\Http\Resources\v1\CrawlerResource;
+use App\Http\Resources\v1\CrawlerResourceCollection;
+
 class CrawlerController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
-    public function index()
+    public function index(Request $request): CrawlerResourceCollection
     {
+        /*
         return response()->json([
 
             'crawlers' => Crawler::latest()->with('proxy', 'agent', 'configuration', 'jobs')->get()
 
         ], Response::HTTP_OK);
+        */
+
+        $keyword = $request->input('keyword');
+        $crawlers = Crawler::with('jobs', 'agent', 'proxy', 'configuration')->latest()->get();
+        return new CrawlerResourceCollection($crawlers);
     }
 
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function create()
     {
@@ -35,8 +44,8 @@ class CrawlerController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @return Response
      */
     public function store(Request $request)
     {
@@ -54,19 +63,20 @@ class CrawlerController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Crawler  $crawler
-     * @return \Illuminate\Http\Response
+     * @param Crawler $crawler
+     * @return Response
      */
-    public function show(Crawler $crawler)
+    public function show($id): CrawlerResource
     {
-        //
+        $crawler = Crawler::with('jobs', 'agent', 'configuration', 'proxy')->findOrFail($id);
+        return new CrawlerResource($crawler);
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Crawler  $crawler
-     * @return \Illuminate\Http\Response
+     * @param Crawler $crawler
+     * @return Response
      */
     public function edit(Crawler $crawler)
     {
@@ -76,9 +86,9 @@ class CrawlerController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Crawler  $crawler
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @param Crawler $crawler
+     * @return Response
      */
     public function update(Request $request, Crawler $crawler)
     {
@@ -88,12 +98,12 @@ class CrawlerController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Crawler  $crawler
-     * @return \Illuminate\Http\Response
+     * @param Crawler $crawler
+     * @return Response
      */
     public function destroy(Crawler $crawler)
     {
-        if($crawler) {
+        if ($crawler) {
             $crawler->delete();
             return Crawler::latest()->get();
         }

@@ -67,10 +67,10 @@ class BehaviorController extends Controller
      * @param \App\Behavior $behavior
      * @return \Illuminate\Http\Response
      */
-    public function show($id): AgentResource
+    public function show($id): BehaviorResource
     {
-        $behavior = Behavior::with(['user', 'crawler'])->findOrFail($id);
-        return new AgentResource($behavior);
+        $behavior = Behavior::with(['job'])->findOrFail($id);
+        return new BehaviorResource($behavior);
     }
 
     /**

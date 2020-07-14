@@ -25,7 +25,7 @@ class AgentController extends Controller
         ], Response::HTTP_OK);*/
 
         $keyword = $request->input('keyword');
-        $agents = Agent::latest()->paginate(5);
+        $agents = Agent::with('crawler')->latest()->get();
         return new AgentResourceCollection($agents);
     }
 

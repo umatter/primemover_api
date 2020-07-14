@@ -7,6 +7,10 @@ use App\Job;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
+
+use App\Http\Resources\v1\JobResource;
+use App\Http\Resources\v1\JobResourceCollection;
+
 class JobController extends Controller
 {
     /**
@@ -14,13 +18,11 @@ class JobController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request): JobResourceCollection
     {
-        return response()->json([
-
-            'jobs' => Job::latest()->get()
-
-        ], Response::HTTP_OK);
+        $keyword = $request->input('keyword');
+        $jobs = Job::with('behaviors')->latest()->get();
+        return new JobResourceCollection($jobs);
     }
 
     /**
@@ -58,9 +60,10 @@ class JobController extends Controller
      * @param  \App\Job  $job
      * @return \Illuminate\Http\Response
      */
-    public function show(Job $job)
+    public function show($id): JobResource
     {
-        //
+        $proxy = Job::with(['behaviors'])->findOrFail($id);
+        return new JobResource($proxy);
     }
 
     /**

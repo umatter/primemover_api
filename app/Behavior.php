@@ -13,6 +13,6 @@ class Behavior extends Model
 
     public function job()
     {
-        return $this->hasOne('App\Job');
+        return $this->belongsTo('App\Job');
     }
 }

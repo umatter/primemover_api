@@ -6,6 +6,10 @@ use App\Configuration;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
+
+use App\Http\Resources\v1\ConfigurationResource;
+use App\Http\Resources\v1\ConfigurationResourceCollection;
+
 class ConfigurationController extends Controller
 {
     /**
@@ -13,14 +17,11 @@ class ConfigurationController extends Controller
      *
      * @return Response
      */
-    public function index()
+    public function index(Request $request): ConfigurationResourceCollection
     {
-        //return Configuration::all();
-        return response()->json([
-
-            'configurations' => Configuration::latest()->get()
-
-        ], Response::HTTP_OK);
+        $keyword = $request->input('keyword');
+        $configurations = Configuration::with('crawler')->latest()->get();
+        return new ConfigurationResourceCollection($configurations);
     }
 
     /**
@@ -58,9 +59,10 @@ class ConfigurationController extends Controller
      * @param Configuration $configuration
      * @return Response
      */
-    public function show(Configuration $configuration)
+    public function show($id): ConfigurationResource
     {
-        //
+        $configuration = Configuration::with(['crawler'])->findOrFail($id);
+        return new ConfigurationResource($configuration);
     }
 
     /**

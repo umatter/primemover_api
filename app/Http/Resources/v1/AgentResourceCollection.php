@@ -23,7 +23,7 @@ class AgentResourceCollection extends ResourceCollection
         $columns = [
             'name',
             'description',
-            'email',
+            'identification',
             'updated_at',
         ];
 
