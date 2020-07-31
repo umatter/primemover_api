@@ -48,8 +48,7 @@ class JobController extends Controller
         ]);
 
         $data = $request->all();
-        //$data['user_id'] = auth()->user()->id;
-        $data['user_id'] = 1;
+        $data['user_id'] = auth()->user() ? auth()->user()->id : 1;
 
         $job = Job::create($data);
         return $job;

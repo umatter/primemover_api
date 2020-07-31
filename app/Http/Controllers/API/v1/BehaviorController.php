@@ -54,8 +54,7 @@ class BehaviorController extends Controller
         ]);
 
         $data = $request->all();
-        //$data['user_id'] = auth()->user()->id;
-        $data['user_id'] = 1;
+        $data['user_id'] = auth()->user() ? auth()->user()->id : 1;
 
         $behavior = Behavior::create($data);
         $behaviors = Behavior::latest()->paginate(5);
