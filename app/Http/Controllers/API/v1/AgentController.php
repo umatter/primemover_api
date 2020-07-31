@@ -54,7 +54,7 @@ class AgentController extends Controller
         ]);
 
         $data = $request->all();
-        $data['user_id'] = auth()->user()->id ? auth()->user()->id : 1;
+        $data['user_id'] = 1;
 
         $agent = Agent::create($data);
         $agents = Agent::latest()->paginate(5);
