@@ -54,7 +54,8 @@ class CrawlerController extends Controller
         ]);
 
         $data = $request->all();
-        $data['user_id'] = auth()->user()->id;
+        //$data['user_id'] = auth()->user()->id;
+        $data['user_id'] = 1;
 
         $crawler = Crawler::create($data);
         return $crawler;

@@ -47,7 +47,8 @@ class ConfigurationController extends Controller
         ]);
 
         $data = $request->all();
-        $data['user_id'] = auth()->user()->id;
+        //$data['user_id'] = auth()->user()->id;
+        $data['user_id'] = 1;
 
         $configuration = Configuration::create($data);
         return $configuration;

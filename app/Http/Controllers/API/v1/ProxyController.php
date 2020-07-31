@@ -45,7 +45,8 @@ class ProxyController extends Controller
         ]);
 
         $data = $request->all();
-        $data['user_id'] = auth()->user()->id;
+        //$data['user_id'] = auth()->user()->id;
+        $data['user_id'] = 1;
 
         $proxy = Proxy::create($data);
         return $proxy;
