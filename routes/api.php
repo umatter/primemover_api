@@ -19,14 +19,6 @@ Route::prefix('v1')->group(function () {
         Route::post('logout', 'Auth\LoginController@logout');
         Route::get('/user', 'Auth\UserController@current');
 
-        Route::resource('configurations', 'API\v1\ConfigurationController');
-        Route::resource('agents', 'API\v1\AgentController');
-        Route::resource('proxies', 'API\v1\ProxyController');
-        Route::resource('jobs', 'API\v1\JobController');
-        Route::resource('crawlers', 'API\v1\CrawlerController');
-        Route::resource('posts', 'API\v1\PostController');
-        Route::resource('behaviors', 'API\v1\BehaviorController');
-
         Route::patch('settings/profile', 'Settings\ProfileController@update');
         Route::patch('settings/password', 'Settings\PasswordController@update');
     });
@@ -43,6 +35,14 @@ Route::prefix('v1')->group(function () {
 
         Route::post('oauth/{driver}', 'Auth\OAuthController@redirectToProvider');
         Route::get('oauth/{driver}/callback', 'Auth\OAuthController@handleProviderCallback')->name('oauth.callback');
+
+        Route::resource('configurations', 'API\v1\ConfigurationController');
+        Route::resource('agents', 'API\v1\AgentController');
+        Route::resource('proxies', 'API\v1\ProxyController');
+        Route::resource('jobs', 'API\v1\JobController');
+        Route::resource('crawlers', 'API\v1\CrawlerController');
+        Route::resource('posts', 'API\v1\PostController');
+        Route::resource('behaviors', 'API\v1\BehaviorController');
     });
 
 });

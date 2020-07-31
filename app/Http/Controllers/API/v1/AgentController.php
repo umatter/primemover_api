@@ -4,7 +4,6 @@ namespace App\Http\Controllers\API\v1;
 
 use App\Agent;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 
 use App\Http\Resources\v1\AgentResource;
 use App\Http\Resources\v1\AgentResourceCollection;
@@ -14,7 +13,7 @@ class AgentController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return AgentResourceCollection
      */
     public function index(Request $request): AgentResourceCollection
     {
@@ -38,6 +37,7 @@ class AgentController extends Controller
     public function create()
     {
         //
+        return;
     }
 
     /**
@@ -82,6 +82,7 @@ class AgentController extends Controller
     public function edit(Agent $agent)
     {
         //
+        return;
     }
 
     /**
@@ -94,6 +95,7 @@ class AgentController extends Controller
     public function update(Request $request, Agent $agent)
     {
         //
+        return;
     }
 
     /**
