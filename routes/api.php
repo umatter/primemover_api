@@ -20,10 +20,13 @@ Route::prefix('v1')->group(function () {
         Route::resource('agents', 'API\v1\AgentController');
         Route::resource('proxies', 'API\v1\ProxyController');
         Route::resource('jobs', 'API\v1\JobController');
+        Route::resource('queues', 'API\v1\QueueController');
         Route::resource('crawlers', 'API\v1\CrawlerController');
         Route::resource('posts', 'API\v1\PostController');
         Route::resource('behaviors', 'API\v1\BehaviorController');
+        Route::get('ip/{ip}', 'API\v1\CrawlerController@ip');
     });
+
 
     Route::group(['middleware' => 'auth:api'], function () {
         Route::post('logout', 'Auth\LoginController@logout');

@@ -10,12 +10,17 @@ class Job extends Model
 
     public function crawler()
     {
-        return $this->hasOne('App\Crawler');
+        return $this->belongsTo('App\Crawler');
     }
 
     public function user()
     {
         return $this->belongsTo('App\User');
+    }
+
+    public function queue()
+    {
+        return $this->belongsTo('App\Queue');
     }
 
     public function behaviors()

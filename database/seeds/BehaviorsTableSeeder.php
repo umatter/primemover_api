@@ -12,6 +12,8 @@ class BehaviorsTableSeeder extends Seeder
     public function run()
     {
 
+        $fake = factory(App\Behavior::class, 100)->create();
+
         DB::table('behaviors')->insert([
             // Job parameters: download file
             [

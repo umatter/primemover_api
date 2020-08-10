@@ -106,23 +106,23 @@ class User extends Authenticatable implements JWTSubject //, MustVerifyEmail
         return [];
     }
 
-    public function proxy()
+    public function proxies()
     {
-        return $this->hasOne('App\Proxy');
+        return $this->hasMany('App\Proxy');
     }
 
-    public function configuration()
+    public function configurations()
     {
-        return $this->hasOne('App\Configuration');
+        return $this->hasMany('App\Configuration');
     }
 
-    public function search()
+    public function agents()
     {
-        return $this->hasOne('App\Job');
+        return $this->hasMany('App\Agent');
     }
 
-    public function agent()
+    public function jobs()
     {
-        return $this->hasOne('App\Agent');
+        return $this->hasMany('App\Job');
     }
 }

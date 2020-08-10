@@ -18,9 +18,9 @@ class Crawler extends Model
         return $this->belongsTo('App\Configuration');
     }
 
-    public function jobs()
+    public function queues()
     {
-        return $this->hasMany('App\Job')->with('behaviors');
+        return $this->hasMany('App\Queue')->with('jobs');
     }
 
     public function agent()
