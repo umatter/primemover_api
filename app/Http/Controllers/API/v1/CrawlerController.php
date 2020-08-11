@@ -71,7 +71,7 @@ class CrawlerController extends Controller
      */
     public function show($id): CrawlerResource
     {
-        $crawler = Crawler::with('jobs', 'agent', 'configuration', 'proxy')->findOrFail($id);
+        $crawler = Crawler::with('queues', 'agent', 'configuration', 'proxy')->findOrFail($id);
         return new CrawlerResource($crawler);
     }
 
