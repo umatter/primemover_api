@@ -1,204 +1,576 @@
 {
-    "data": [
+  "data": [
+    {
+      "id": 1,
+      "user_id": 1,
+      "proxy_id": 2,
+      "agent_id": 1,
+      "configuration_id": 2,
+      "name": "I am a bot",
+      "description": "Amazing description goes here.",
+      "active": 1,
+      "queues": [
         {
-            "id": 1,
-            "user_id": 1,
-            "proxy_id": 2,
-            "agent_id": 1,
-            "configuration_id": 2,
-            "name": "I am a bot",
-            "description": "Amazing description goes here.",
-            "active": 1,
-            "updated_at": "2020-08-10T19:04:53.000000Z",
-            "created_at": "2020-08-10T19:04:53.000000Z",
-            "queues": [
+          "id": 2,
+          "name": "Jobs",
+          "description": "This is a job list.",
+          "active": 0,
+          "started": 0,
+          "success": 0,
+          "failure": 0,
+          "order": 1,
+          "user_id": 1,
+          "crawler_id": 1,
+          "start_at": "2020-08-10 21:04:53",
+          "jobs": [
+            {
+              "id": 12,
+              "user_id": 1,
+              "queue_id": 2,
+              "name": "Download file",
+              "description": "Select a file/link on the page to download content and save this file in the bot’s ’data folder’. (human-like cursor movement)",
+              "started": 0,
+              "success": 0,
+              "failure": 0,
+              "order": 1,
+              "active": 1,
+              "behaviors": [
                 {
-                    "id": 2,
-                    "name": "Jobs",
-                    "description": "This is a job list.",
-                    "active": 0,
-                    "started": 0,
-                    "success": 0,
-                    "failure": 0,
-                    "order": 1,
-                    "user_id": 1,
-                    "crawler_id": 1,
-                    "start_at": "2020-08-10 21:04:53",
-                    "updated_at": "2020-08-10T19:04:53.000000Z",
-                    "created_at": "2020-08-10T19:04:53.000000Z",
-                    "jobs": [
-                        {
-                            "id": 7,
-                            "user_id": 1,
-                            "queue_id": 2,
-                            "name": "Download",
-                            "description": "Select a file/link on the page to download content and save this file in the bot’s ’data folder’. (human-like cursor movement)",
-                            "started": 0,
-                            "success": 0,
-                            "failure": 0,
-                            "order": 1,
-                            "active": 1,
-                            "updated_at": "2020-08-10T19:04:53.000000Z",
-                            "created_at": "2020-08-10T19:04:53.000000Z",
-                            "behaviors": [
-                                {
-                                    "id": 12,
-                                    "name": "type",
-                                    "description": "Job-Typ.",
-                                    "value": "download",
-                                    "active": 0,
-                                    "user_id": 1,
-                                    "job_id": 7,
-                                    "updated_at": "2020-08-10T19:04:54.000000Z",
-                                    "created_at": "2020-08-10T19:04:54.000000Z"
-                                },
-                                {
-                                    "id": 39,
-                                    "name": "url",
-                                    "description": "URL for download.",
-                                    "value": "https://example.com/file.pdf",
-                                    "active": 1,
-                                    "user_id": 1,
-                                    "job_id": 7,
-                                    "updated_at": "2020-08-10T19:04:54.000000Z",
-                                    "created_at": "2020-08-10T19:04:54.000000Z"
-                                }
-                            ]
-                        },
-                        {
-                            "id": 12,
-                            "user_id": 1,
-                            "queue_id": 2,
-                            "name": "Scroll",
-                            "description": "Systematically scroll down/up in an open page (in order to ’get somewhere’ on the page). (human-like scrolling)",
-                            "started": 0,
-                            "success": 0,
-                            "failure": 0,
-                            "order": 1,
-                            "active": 1,
-                            "updated_at": "2020-08-10T19:04:53.000000Z",
-                            "created_at": "2020-08-10T19:04:53.000000Z",
-                            "behaviors": [
-                                {
-                                    "id": 77,
-                                    "name": "type",
-                                    "description": "Job-Type.",
-                                    "value": "scroll",
-                                    "active": 1,
-                                    "user_id": 2,
-                                    "job_id": 12,
-                                    "updated_at": "2020-08-10T19:04:54.000000Z",
-                                    "created_at": "2020-08-10T19:04:54.000000Z"
-                                },
-                                {
-                                  "id": 76,
-                                  "name": "direction",
-                                  "description": "Argument.",
-                                  "value": "up",
-                                  "active": 1,
-                                  "user_id": 2,
-                                  "job_id": 12,
-                                  "updated_at": "2020-08-10T19:04:54.000000Z",
-                                  "created_at": "2020-08-10T19:04:54.000000Z"
-                              },
-                              {
-                                "id": 77,
-                                "name": "length",
-                                "description": "Argument.",
-                                "value": "123",
-                                "active": 1,
-                                "user_id": 2,
-                                "job_id": 12,
-                                "updated_at": "2020-08-10T19:04:54.000000Z",
-                                "created_at": "2020-08-10T19:04:54.000000Z"
-                              },
-                              {
-                                "id": 78,
-                                "name": "duration",
-                                "description": "Argument.",
-                                "value": "122",
-                                "active": 1,
-                                "user_id": 2,
-                                "job_id": 12,
-                                "updated_at": "2020-08-10T19:04:54.000000Z",
-                                "created_at": "2020-08-10T19:04:54.000000Z"
-                              }
-                            ]
-                        },
-                        {
-                            "id": 14,
-                            "user_id": 1,
-                            "queue_id": 2,
-                            "name": "Enter field",
-                            "description": "Type  a  term  into  a  (search)  field  on  the  page  currently  open  in  the  browser  and  hit  enter  (for  example,  the current page open in the browser is google.com, select the search field, type a term into it, hit enter).  (with human-like typing and cursor movements).",
-                            "started": 0,
-                            "success": 0,
-                            "failure": 0,
-                            "order": 1,
-                            "active": 1,
-                            "updated_at": "2020-08-10T19:04:53.000000Z",
-                            "created_at": "2020-08-10T19:04:53.000000Z",
-                            "behaviors": [
-                                {
-                                    "id": 85,
-                                    "name": "field",
-                                    "description": "Amazing description goes here.",
-                                    "value": "address",
-                                    "active": 0,
-                                    "user_id": 1,
-                                    "job_id": 14,
-                                    "updated_at": "2020-08-10T19:04:54.000000Z",
-                                    "created_at": "2020-08-10T19:04:54.000000Z"
-                                },
-                                {
-                                    "id": 93,
-                                    "name": "term",
-                                    "description": "Amazing description goes here.",
-                                    "value": "hello world",
-                                    "active": 1,
-                                    "user_id": 2,
-                                    "job_id": 14,
-                                    "updated_at": "2020-08-10T19:04:54.000000Z",
-                                    "created_at": "2020-08-10T19:04:54.000000Z"
-                                }
-                            ]
-                        }
-                    ]
+                  "name": "type",
+                  "description": "Type of Job is download_file.",
+                  "value": "download_file",
+                  "active": 0
+                },
+                {
+                  "name": "url",
+                  "description": "URL for download.",
+                  "value": "https://example.com/file.pdf",
+                  "active": 1
                 }
-            ],
-            "agent": {
-                "id": 1,
-                "user_id": 1,
-                "name": "Schmidt",
-                "description": "Amazing description goes here.",
-                "identification": "User-Agent: Multilogin",
-                "multilogin_id": "d85f5679-6159-3efd-8ffb-9a2b4f49f681",
-                "active": 0,
-                "updated_at": "2020-08-10T19:04:53.000000Z",
-                "created_at": "2020-08-10T19:04:53.000000Z"
+              ]
             },
-            "proxy": {
-                "id": 2,
-                "user_id": 1,
-                "name": "Cummerata",
-                "description": "Amazing description goes here.",
-                "hostname": "my.proxy.com",
-                "port": 8280,
-                "username": "proxyuser",
-                "password": "placeat",
-                "active": 1,
-                "updated_at": "2020-08-10T19:04:53.000000Z",
-                "created_at": "2020-08-10T19:04:53.000000Z"
+            {
+              "id": 13,
+              "user_id": 1,
+              "queue_id": 2,
+              "name": "Scroll",
+              "description": "Systematically scroll down/up in an open page (in order to ’get somewhere’ on the page). (human-like scrolling)",
+              "started": 0,
+              "success": 0,
+              "failure": 0,
+              "order": 1,
+              "active": 1,
+              "behaviors": [
+                {
+                  "name": "type",
+                  "description": "Job type is scroll.",
+                  "value": "scroll",
+                  "active": 1
+                },
+                {
+                  "name": "direction",
+                  "description": "Scroll up.",
+                  "value": "up",
+                  "active": 1
+                },
+                {
+                  "name": "length",
+                  "description": "Keep scrolling until.",
+                  "value": "2",
+                  "active": 1
+                },
+                {
+                  "name": "duration",
+                  "description": "Scroll for 5 seconds.",
+                  "value": "5",
+                  "active": 1
+                }
+              ]
             },
-            "configuration": {
-                "id": 2,
-                "user_id": 1,
-                "name": "Carter",
-                "description": "Amazing description goes here.",
-                "active": 1,
-                "updated_at": "2020-08-10T19:04:53.000000Z",
-                "created_at": "2020-08-10T19:04:53.000000Z"
+            {
+              "id": 14,
+              "user_id": 1,
+              "queue_id": 2,
+              "name": "Enter field",
+              "description": "Type  a  term  into  a  (search)  field  on  the  page  currently  open  in  the  browser  and  hit  enter  (for  example,  the current page open in the browser is google.com, select the search field, type a term into it, hit enter).  (with human-like typing and cursor movements).",
+              "started": 0,
+              "success": 0,
+              "failure": 0,
+              "order": 1,
+              "active": 1,
+              "behaviors": [
+                {
+                  "name": "field",
+                  "description": "Name of the field is address.",
+                  "value": "address",
+                  "active": 0
+                },
+                {
+                  "name": "text",
+                  "description": "Enter hello world into field address.",
+                  "value": "hello world",
+                  "active": 1
+                },
+                {
+                  "name": "css",
+                  "description": "",
+                  "value": "",
+                  "active": 1
+                },
+                {
+                  "name": "xpath",
+                  "description": "",
+                  "value": "",
+                  "active": 1
+                }
+              ]
+            },
+            {
+              "id": 15,
+              "user_id": 1,
+              "queue_id": 2,
+              "name": "Enter field button",
+              "description": "Type a term into a (search) field on the page currently open in the browser and submit by clicking on a button.  Same job as enter_field, but using a button on the page instead of hitting enter. (with human-like typing and cursor movements).",
+              "started": 0,
+              "success": 0,
+              "failure": 0,
+              "order": 1,
+              "active": 1,
+              "behaviors": [
+                {
+                  "name": "job_type",
+                  "description": "Enter field button",
+                  "value": "enter_field_button",
+                  "active": 1
+                },
+                {
+                  "name": "xpath_field",
+                  "description": "",
+                  "value": "",
+                  "active": 1
+                },
+                {
+                  "name": "css_field",
+                  "description": "",
+                  "value": "",
+                  "active": 1
+                },
+                {
+                  "name": "xpath_button",
+                  "description": "",
+                  "value": "",
+                  "active": 1
+                },
+                {
+                  "name": "css_button",
+                  "description": "",
+                  "value": "",
+                  "active": 1
+                },
+                {
+                  "name": "text",
+                  "description": "",
+                  "value": "",
+                  "active": 1
+                }
+              ]
+            },
+            {
+              "id": 16,
+              "user_id": 1,
+              "queue_id": 2,
+              "name": "Log-in",
+              "description": "Log in to a page. (human-like cursor movement and typing)",
+              "started": 0,
+              "success": 0,
+              "failure": 0,
+              "order": 1,
+              "active": 1,
+              "behaviors": [
+                {
+                  "name": "job_type",
+                  "description": "Login",
+                  "value": "login",
+                  "active": 1
+                },
+                {
+                  "name": "xpath_username",
+                  "description": "",
+                  "value": "",
+                  "active": 1
+                },
+                {
+                  "name": "css_username",
+                  "description": "",
+                  "value": "",
+                  "active": 1
+                },
+                {
+                  "name": "xpath_password",
+                  "description": "",
+                  "value": "",
+                  "active": 1
+                },
+                {
+                  "name": "css_password",
+                  "description": "",
+                  "value": "",
+                  "active": 1
+                },
+                {
+                  "name": "username",
+                  "description": "",
+                  "value": "",
+                  "active": 1
+                },
+                {
+                  "name": "password",
+                  "description": "",
+                  "value": "",
+                  "active": 1
+                }
+              ]
+            },
+            {
+              "id": 17,
+              "user_id": 1,
+              "queue_id": 2,
+              "name": "Parse URLs",
+              "description": "Parse and cache (all/specific) URLs found in the current webpage (open in browser).",
+              "started": 0,
+              "success": 0,
+              "failure": 0,
+              "order": 1,
+              "active": 1,
+              "behaviors": [
+                {
+                  "name": "job_type",
+                  "description": "Parse URL",
+                  "value": "parse_urls",
+                  "active": 1
+                },
+                {
+                  "name": "xpath",
+                  "description": "",
+                  "value": "",
+                  "active": 1
+                },
+                {
+                  "name": "css",
+                  "description": "",
+                  "value": "",
+                  "active": 1
+                }
+              ]
+            },
+            {
+              "id": 18,
+              "user_id": 1,
+              "queue_id": 2,
+              "name": "REST random",
+              "description": "",
+              "started": 0,
+              "success": 0,
+              "failure": 0,
+              "order": 1,
+              "active": 1,
+              "behaviors": [
+                {
+                  "name": "job_type",
+                  "description": "",
+                  "value": "rest_random",
+                  "active": 1
+                },
+                {
+                  "name": "duration",
+                  "description": "",
+                  "value": [
+                    0,
+                    5
+                  ],
+                  "active": 1
+                }
+              ]
+            },
+            {
+              "id": 19,
+              "user_id": 1,
+              "queue_id": 2,
+              "name": "Scroll random",
+              "description": "Systematically scroll down/up in an open page (in order to ’get somewhere’ on the page). (human-like scrolling)",
+              "started": 0,
+              "success": 0,
+              "failure": 0,
+              "order": 1,
+              "active": 1,
+              "behaviors": [
+                {
+                  "name": "type",
+                  "description": "Job type is scroll_random.",
+                  "value": "scroll_random",
+                  "active": 1
+                },
+                {
+                  "name": "pause_interval",
+                  "description": "Pause intervall",
+                  "value": [
+                    0,
+                    1
+                  ],
+                  "active": 1
+                },
+                {
+                  "name": "no_of_scrolls",
+                  "description": "Repeat twice",
+                  "value": "2",
+                  "active": 1
+                },
+                {
+                  "name": "duration",
+                  "description": "Scroll for 5 seconds.",
+                  "value": "5",
+                  "active": 1
+                }
+              ]
+            },
+            {
+              "id": 20,
+              "user_id": 1,
+              "queue_id": 2,
+              "name": "Select URL",
+              "description": "Select a specific link with the cursor (human-like cursor movement).  That is, open a webpage by clicking on a URL or a field/image/button etc.  in the currently loaded page.",
+              "started": 0,
+              "success": 0,
+              "failure": 0,
+              "order": 1,
+              "active": 1,
+              "behaviors": [
+                {
+                  "name": "job_type",
+                  "description": "",
+                  "value": "select_url",
+                  "active": 1
+                },
+                {
+                  "name": "xpath",
+                  "description": "",
+                  "value": "",
+                  "active": 1
+                },
+                {
+                  "name": "css",
+                  "description": "",
+                  "value": "",
+                  "active": 1
+                }
+              ]
+            },
+            {
+              "id": 21,
+              "user_id": 1,
+              "queue_id": 2,
+              "name": "Visit favorites",
+              "description": "Parse and process (all/specific) URLs found in the current webpage (open in browser).",
+              "started": 0,
+              "success": 0,
+              "failure": 0,
+              "order": 1,
+              "active": 1,
+              "behaviors": [
+                {
+                  "name": "type",
+                  "description": "Visit webpage favorites.",
+                  "value": "visit_webpage_favorites",
+                  "active": 1
+                },
+                {
+                  "name": "url",
+                  "description": "URL",
+                  "value": "https://www.yahoo.com",
+                  "active": 1
+                },
+                {
+                  "name": "favorites_url_id",
+                  "description": "",
+                  "value": "",
+                  "active": 1
+                },
+                {
+                  "name": "active_probability",
+                  "description": "",
+                  "value": 0.5,
+                  "active": 1
+                },
+                {
+                  "name": "start_time",
+                  "description": "Start job at...",
+                  "value": "2020-08-10T19:04:53.000000Z",
+                  "active": 1
+                }
+              ]
+            },
+            {
+              "id": 23,
+              "user_id": 1,
+              "queue_id": 2,
+              "name": "Visit webpage",
+              "description": "Open webpage by typing URL into web browser bar",
+              "started": 0,
+              "success": 0,
+              "failure": 0,
+              "order": 1,
+              "active": 1,
+              "behaviors": [
+                {
+                  "name": "type",
+                  "description": "Visit webpage",
+                  "value": "visit_webpage_browserbar",
+                  "active": 1
+                },
+                {
+                  "name": "url",
+                  "description": "URL to visit",
+                  "value": "https://www.yahoo.com",
+                  "active": 1
+                },
+                {
+                  "name": "active_probability",
+                  "description": "",
+                  "value": 0.5,
+                  "active": 1
+                },
+                {
+                  "name": "start_time",
+                  "description": "Start job at...",
+                  "value": "2020-08-10T19:04:53.000000Z",
+                  "active": 1
+                }
+              ]
+            },
+            {
+              "id": 24,
+              "user_id": 1,
+              "queue_id": 2,
+              "name": "Visit webpage",
+              "description": "Open webpage by selecting URL from browser favorites.",
+              "started": 0,
+              "success": 0,
+              "failure": 0,
+              "order": 1,
+              "active": 1,
+              "behaviors": [
+                {
+                  "name": "type",
+                  "description": "Visit webpage favorites",
+                  "value": "visit_webpage_favorites",
+                  "active": 1
+                },
+                {
+                  "name": "url",
+                  "description": "URL",
+                  "value": "https://www.yahoo.com",
+                  "active": 1
+                },
+                {
+                  "name": "favorites_url_id",
+                  "description": "URL ID",
+                  "value": "",
+                  "active": 1
+                },
+                {
+                  "name": "active_probability",
+                  "description": "",
+                  "value": 0.5,
+                  "active": 1
+                },
+                {
+                  "name": "start_time",
+                  "description": "Start job at...",
+                  "value": "2020-08-10T19:04:53.000000Z",
+                  "active": 1
+                }
+              ]
+            },
+            {
+              "id": 25,
+              "user_id": 1,
+              "queue_id": 2,
+              "name": "Visit history",
+              "description": "Open webpage by selecting URL from browser history.",
+              "started": 0,
+              "success": 0,
+              "failure": 0,
+              "order": 1,
+              "active": 1,
+              "behaviors": [
+                {
+                  "name": "type",
+                  "description": "Visit from history.",
+                  "value": "visit_webpage_history",
+                  "active": 1
+                },
+                {
+                  "name": "url",
+                  "description": "URL",
+                  "value": "https://www.yahoo.com",
+                  "active": 1
+                },
+                {
+                  "name": "history_url_id",
+                  "description": "URL ID",
+                  "value": "",
+                  "active": 1
+                },
+                {
+                  "name": "active_probability",
+                  "description": "",
+                  "value": 0.5,
+                  "active": 1
+                },
+                {
+                  "name": "start_time",
+                  "description": "Start job at...",
+                  "value": "2020-08-10T19:04:53.000000Z",
+                  "active": 1
+                }
+              ]
             }
+          ]
         }
-    ]
+      ],
+      "agent": {
+        "id": 1,
+        "user_id": 1,
+        "name": "Schmidt",
+        "description": "Amazing description goes here.",
+        "identification": "User-Agent: Multilogin",
+        "multilogin_id": "d85f5679-6159-3efd-8ffb-9a2b4f49f681",
+        "active": 0,
+        "updated_at": "2020-08-10T19:04:53.000000Z",
+        "created_at": "2020-08-10T19:04:53.000000Z"
+      },
+      "proxy": {
+        "id": 2,
+        "user_id": 1,
+        "name": "Cummerata",
+        "description": "Amazing description goes here.",
+        "hostname": "my.proxy.com",
+        "port": 8280,
+        "username": "proxyuser",
+        "password": "placeat",
+        "active": 1,
+        "updated_at": "2020-08-10T19:04:53.000000Z",
+        "created_at": "2020-08-10T19:04:53.000000Z"
+      },
+      "configuration": {
+        "id": 2,
+        "user_id": 1,
+        "name": "Carter",
+        "description": "Amazing description goes here.",
+        "active": 1,
+        "updated_at": "2020-08-10T19:04:53.000000Z",
+        "created_at": "2020-08-10T19:04:53.000000Z"
+      }
+    }
+  ]
 }
