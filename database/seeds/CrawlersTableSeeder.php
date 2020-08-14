@@ -11,6 +11,6 @@ class CrawlersTableSeeder extends Seeder
      */
     public function run()
     {
-        $fake = factory(App\Crawler::class, 10)->create();
+        $fake = factory(App\Crawler::class, 1)->create();
     }
 }

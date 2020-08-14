@@ -11,6 +11,6 @@ class QueuesTableSeeder extends Seeder
      */
     public function run()
     {
-        $fake = factory(App\Queue::class, 20)->create();
+        $fake = factory(App\Queue::class, 1)->create();
     }
 }
