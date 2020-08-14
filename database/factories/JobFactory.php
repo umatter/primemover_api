@@ -12,6 +12,7 @@ $factory->define(Job::class, function (Faker $faker) {
         'queue_id' => 1,
         'name' => $faker->lastName,
         'description' => $faker->text,
+        'type' => $faker->word,
         'active' => $faker->randomElement([1, 0]),
     ];
 });
