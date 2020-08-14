@@ -19,7 +19,7 @@ class AgentsTableSeeder extends Seeder
                 'description' => 'Multilogin',
                 'user_id' => 1,
                 'identification' => 'User-Agent: Multilogin',
-                'multilogin_id' => '000000+US-MA-BOSTON+000000-378870',
+                'multilogin_id' => 'fec6f490-7c12-4551-afe3-163ea11a5b3b',
             ]
         );
     }
