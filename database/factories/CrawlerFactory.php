@@ -10,9 +10,9 @@ $factory->define(Crawler::class, function (Faker $faker) {
         'user_id' => 1,
         'name' => $faker->lastName,
         'description' => $faker->text,
-        'active' => $faker->randomElement([1, 0]),
+        'active' => 1,
         'proxy_id' => 1,
-        'agent_id' => $faker->randomElement([1, 2]),
-        'configuration_id' => $faker->randomElement([1, 2]),
+        'agent_id' => 1,
+        'configuration_id' => 1,
     ];
 });
