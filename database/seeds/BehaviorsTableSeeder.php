@@ -68,8 +68,8 @@ class BehaviorsTableSeeder extends Seeder
             [
                 // Visit
                 'name' => 'url',
-                'description' => 'URL',
-                'value' => 'https://www.washingtonpost.com/',
+                'description' => 'Target URL',
+                'value' => 'https://edition.cnn.com/',
                 'user_id' => 1,
                 'job_id' => 5,
             ],
@@ -85,25 +85,9 @@ class BehaviorsTableSeeder extends Seeder
                 // Visit
                 'name' => 'url',
                 'description' => 'Target URL',
-                'value' => 'https://edition.cnn.com/',
-                'user_id' => 1,
-                'job_id' => 7,
-            ],
-            [
-                // Wait
-                'name' => 'seconds',
-                'description' => 'Wait time',
-                'value' => 30,
-                'user_id' => 1,
-                'job_id' => 8,
-            ],
-            [
-                // Visit
-                'name' => 'url',
-                'description' => 'Target URL',
                 'value' => 'https://www.google.com/',
                 'user_id' => 1,
-                'job_id' => 9,
+                'job_id' => 7,
             ],
             [
                 // Enter text
@@ -111,21 +95,21 @@ class BehaviorsTableSeeder extends Seeder
                 'description' => 'Text to enter',
                 'value' => 'climate crisis',
                 'user_id' => 1,
-                'job_id' => 10,
+                'job_id' => 8,
             ],
             [
                 'name' => 'selectionType',
                 'description' => 'Type of selection',
                 'value' => 'XPATH',
                 'user_id' => 1,
-                'job_id' => 10,
+                'job_id' => 8,
             ],
             [
                 'name' => 'selector',
                 'description' => 'CSS Selector',
                 'value' => "//input[@name='q']",
                 'user_id' => 1,
-                'job_id' => 10,
+                'job_id' => 8,
             ],
             [
                 // Click
@@ -133,21 +117,21 @@ class BehaviorsTableSeeder extends Seeder
                 'description' => 'Type of selection',
                 'value' => 'XPATH',
                 'user_id' => 1,
-                'job_id' => 11,
+                'job_id' => 9,
             ],
             [
                 'name' => 'selector',
                 'description' => 'CSS Selector',
                 'value' => ".//div[@id='rso']/div/div/div/a",
                 'user_id' => 1,
-                'job_id' => 11,
+                'job_id' => 9,
             ],
             [
                 'name' => 'decisionType',
                 'description' => 'Decission type',
                 'value' => "FIRST",
                 'user_id' => 1,
-                'job_id' => 11,
+                'job_id' => 9,
             ],
             [
                 // Wait
@@ -155,7 +139,7 @@ class BehaviorsTableSeeder extends Seeder
                 'description' => 'Wait time',
                 'value' => 30,
                 'user_id' => 1,
-                'job_id' => 12,
+                'job_id' => 10,
             ],
             [
                 // Visit
@@ -163,7 +147,7 @@ class BehaviorsTableSeeder extends Seeder
                 'description' => 'Target URL',
                 'value' => 'https://www.google.com/',
                 'user_id' => 1,
-                'job_id' => 12,
+                'job_id' => 11,
             ],
             [
                 // Enter text
@@ -171,21 +155,21 @@ class BehaviorsTableSeeder extends Seeder
                 'description' => 'Text to enter',
                 'value' => 'lgbt america',
                 'user_id' => 1,
-                'job_id' => 13,
+                'job_id' => 12,
             ],
             [
                 'name' => 'selectionType',
                 'description' => 'Type of selection',
                 'value' => 'XPATH',
                 'user_id' => 1,
-                'job_id' => 13,
+                'job_id' => 12,
             ],
             [
                 'name' => 'selector',
                 'description' => 'CSS Selector',
                 'value' => "//input[@name='q']",
                 'user_id' => 1,
-                'job_id' => 13,
+                'job_id' => 12,
             ],
             [
                 // Click
@@ -193,21 +177,21 @@ class BehaviorsTableSeeder extends Seeder
                 'description' => 'Type of selection',
                 'value' => 'XPATH',
                 'user_id' => 1,
-                'job_id' => 14,
+                'job_id' => 13,
             ],
             [
                 'name' => 'selector',
                 'description' => 'CSS Selector',
                 'value' => ".//div[@id='rso']/div/div/div/a",
                 'user_id' => 1,
-                'job_id' => 14,
+                'job_id' => 13,
             ],
             [
                 'name' => 'decisionType',
                 'description' => 'Decission type',
                 'value' => "FIRST",
                 'user_id' => 1,
-                'job_id' => 14,
+                'job_id' => 13,
             ],
             [
                 // Wait
@@ -215,7 +199,7 @@ class BehaviorsTableSeeder extends Seeder
                 'description' => 'Wait time',
                 'value' => 30,
                 'user_id' => 1,
-                'job_id' => 15,
+                'job_id' => 14,
             ],
             [
                 // Visit
@@ -223,7 +207,7 @@ class BehaviorsTableSeeder extends Seeder
                 'description' => 'Target URL',
                 'value' => 'https://www.google.com/',
                 'user_id' => 1,
-                'job_id' => 16,
+                'job_id' => 15,
             ],
             [
                 // Enter text
@@ -231,21 +215,21 @@ class BehaviorsTableSeeder extends Seeder
                 'description' => 'Text to enter',
                 'value' => 'Kamala Harris',
                 'user_id' => 1,
-                'job_id' => 17,
+                'job_id' => 16,
             ],
             [
                 'name' => 'selectionType',
                 'description' => 'Type of selection',
                 'value' => 'XPATH',
                 'user_id' => 1,
-                'job_id' => 17,
+                'job_id' => 16,
             ],
             [
                 'name' => 'selector',
                 'description' => 'CSS Selector',
                 'value' => "//input[@name='q']",
                 'user_id' => 1,
-                'job_id' => 17,
+                'job_id' => 16,
             ],
             [
                 // Click
@@ -253,21 +237,21 @@ class BehaviorsTableSeeder extends Seeder
                 'description' => 'Type of selection',
                 'value' => 'XPATH',
                 'user_id' => 1,
-                'job_id' => 18,
+                'job_id' => 17,
             ],
             [
                 'name' => 'selector',
                 'description' => 'CSS Selector',
                 'value' => ".//div[@id='rso']/div/div/div/a",
                 'user_id' => 1,
-                'job_id' => 18,
+                'job_id' => 17,
             ],
             [
                 'name' => 'decisionType',
                 'description' => 'Decission type',
                 'value' => "FIRST",
                 'user_id' => 1,
-                'job_id' => 18,
+                'job_id' => 17,
             ],
 
         ]);

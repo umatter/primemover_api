@@ -15,7 +15,7 @@ class JobsTableSeeder extends Seeder
 
 
         DB::table('jobs')->insert([
-            // 1. Visit job
+            // Visit job
             [
                 'description' => 'Visit job',
                 'name' => 'Visit',
@@ -24,7 +24,7 @@ class JobsTableSeeder extends Seeder
                 'queue_id' => 1
             ],
 
-            // 2. Wait job
+            // Wait job
             [
                 'description' => 'Wait job',
                 'name' => 'Wait',
@@ -33,7 +33,7 @@ class JobsTableSeeder extends Seeder
                 'queue_id' => 1
             ],
 
-            // 3. Visit job
+            // Visit job
             [
                 'description' => 'Visit job',
                 'name' => 'Visit',
@@ -42,26 +42,7 @@ class JobsTableSeeder extends Seeder
                 'queue_id' => 1
             ],
 
-            // 4. Wait job
-            [
-                'description' => 'Wait job',
-                'name' => 'Wait',
-                'type' => 'waitjob',
-                'user_id' => 1,
-                'queue_id' => 1
-            ],
-
-
-            // 5. Visit job
-            [
-                'description' => 'Visit job',
-                'name' => 'Visit',
-                'type' => 'visitjob',
-                'user_id' => 1,
-                'queue_id' => 1
-            ],
-
-            // 6. Wait job
+            // Wait job
             [
                 'description' => 'Wait job',
                 'name' => 'Wait',
@@ -71,7 +52,7 @@ class JobsTableSeeder extends Seeder
             ],
 
 
-            // 7. Visit job
+            // Visit job
             [
                 'description' => 'Visit job',
                 'name' => 'Visit',
@@ -80,7 +61,7 @@ class JobsTableSeeder extends Seeder
                 'queue_id' => 1
             ],
 
-            // 8. Wait job
+            // Wait job
             [
                 'description' => 'Wait job',
                 'name' => 'Wait',
@@ -89,7 +70,16 @@ class JobsTableSeeder extends Seeder
                 'queue_id' => 1
             ],
 
-            // 9. Enter text
+            // Visit job
+            [
+                'description' => 'Visit job',
+                'name' => 'Visit',
+                'type' => 'visitjob',
+                'user_id' => 1,
+                'queue_id' => 1
+            ],
+
+            // Enter text
             [
                 'description' => 'Enter field',
                 'name' => 'Enter',
@@ -98,7 +88,7 @@ class JobsTableSeeder extends Seeder
                 'queue_id' => 1
             ],
 
-            // 10. Select result from search
+            // Select result from search
             [
                 'description' => 'Select and click',
                 'name' => 'Select',
@@ -107,7 +97,7 @@ class JobsTableSeeder extends Seeder
                 'queue_id' => 1
             ],
 
-            // 11. Wait job
+            // Wait job
             [
                 'description' => 'Wait job',
                 'name' => 'Wait',
@@ -116,7 +106,7 @@ class JobsTableSeeder extends Seeder
                 'queue_id' => 1
             ],
 
-            // 12. Visit job
+            // Visit job
             [
                 'description' => 'Visit webpage',
                 'name' => 'Visit',
@@ -125,7 +115,7 @@ class JobsTableSeeder extends Seeder
                 'queue_id' => 1
             ],
 
-            // 13. Enter field
+            // Enter field
             [
                 'description' => 'Enter field',
                 'name' => 'Enter',
@@ -134,7 +124,7 @@ class JobsTableSeeder extends Seeder
                 'queue_id' => 1
             ],
 
-            // 14. Select result from search
+            // Select result from search
             [
                 'description' => 'Select and click',
                 'name' => 'Select',
@@ -143,7 +133,7 @@ class JobsTableSeeder extends Seeder
                 'queue_id' => 1
             ],
 
-            // 15. Wait job
+            // Wait job
             [
                 'description' => 'Wait job',
                 'name' => 'Wait',
@@ -152,8 +142,7 @@ class JobsTableSeeder extends Seeder
                 'queue_id' => 1
             ],
 
-
-            // 16. Visit job
+            // Visit job
             [
                 'description' => 'Visit job',
                 'name' => 'Visit',
@@ -162,7 +151,7 @@ class JobsTableSeeder extends Seeder
                 'queue_id' => 1
             ],
 
-            // 17. Enter field
+            // Enter field
             [
                 'description' => 'Enter field',
                 'name' => 'Enter',
@@ -171,7 +160,7 @@ class JobsTableSeeder extends Seeder
                 'queue_id' => 1
             ],
 
-            // 18. Select result from search
+            // Select result from search
             [
                 'description' => 'Select and click',
                 'name' => 'Select',
