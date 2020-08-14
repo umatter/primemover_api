@@ -27,7 +27,7 @@ class CreateQueuesTable extends Migration
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('crawler_id');
 
-            $table->timestamp('start_at')->useCurrent();
+            $table->timestampTz('start_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent();
             $table->timestamp('created_at')->useCurrent();
 
