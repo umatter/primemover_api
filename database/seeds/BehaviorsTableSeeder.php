@@ -33,240 +33,243 @@ class BehaviorsTableSeeder extends Seeder
         //$fake = factory(App\Behavior::class, 100)->create();
 
         DB::table('behaviors')->insert([
-            // Job parameters: download file
             [
-                // 1. Visit job
-                'name' => 'type',
-                'description' => 'Visit webpage',
-                'value' => 'visit_webpage_browserbar',
-                'user_id' => 1,
-                'job_id' => 1,
-            ],
-            [
+                // Visit
                 'name' => 'url',
                 'description' => 'Target URL',
                 'value' => 'https://www.motherjones.com/',
                 'user_id' => 1,
                 'job_id' => 1,
             ],
-
-            // 2. Visit job
             [
-                'name' => 'type',
-                'description' => 'Visit webpage',
-                'value' => 'visit_webpage_browserbar',
+                // Wait
+                'name' => 'seconds',
+                'description' => 'Wait time',
+                'value' => 30,
                 'user_id' => 1,
                 'job_id' => 2,
             ],
             [
+                // Visit
                 'name' => 'url',
                 'description' => 'Target URL',
                 'value' => 'https://www.washingtonpost.com/',
                 'user_id' => 1,
-                'job_id' => 2,
-            ],
-
-            // 3. Visit job
-            [
-                'name' => 'type',
-                'description' => 'Visit webpage',
-                'value' => 'visit_webpage_browserbar',
-                'user_id' => 1,
                 'job_id' => 3,
             ],
             [
+                // Wait
+                'name' => 'seconds',
+                'description' => 'Wait time',
+                'value' => 30,
+                'user_id' => 1,
+                'job_id' => 4,
+            ],
+            [
+                // Visit
+                'name' => 'url',
+                'description' => 'URL',
+                'value' => 'https://www.washingtonpost.com/',
+                'user_id' => 1,
+                'job_id' => 5,
+            ],
+            [
+                // Wait
+                'name' => 'seconds',
+                'description' => 'Wait time',
+                'value' => 30,
+                'user_id' => 1,
+                'job_id' => 6,
+            ],
+            [
+                // Visit
                 'name' => 'url',
                 'description' => 'Target URL',
                 'value' => 'https://edition.cnn.com/',
                 'user_id' => 1,
-                'job_id' => 3,
+                'job_id' => 7,
             ],
-
-            // 4. Visit job
             [
-                'name' => 'type',
-                'description' => 'Visit webpage',
-                'value' => 'visit_webpage_browserbar',
+                // Wait
+                'name' => 'seconds',
+                'description' => 'Wait time',
+                'value' => 30,
                 'user_id' => 1,
-                'job_id' => 4,
+                'job_id' => 8,
             ],
             [
+                // Visit
                 'name' => 'url',
                 'description' => 'Target URL',
                 'value' => 'https://www.google.com/',
                 'user_id' => 1,
-                'job_id' => 4,
-            ],
-
-            // 5. Enter text
-            [
-                'name' => 'type',
-                'description' => 'Enter field',
-                'value' => 'enter_field',
-                'user_id' => 1,
-                'job_id' => 5,
+                'job_id' => 9,
             ],
             [
+                // Enter text
                 'name' => 'text',
                 'description' => 'Text to enter',
                 'value' => 'climate crisis',
                 'user_id' => 1,
-                'job_id' => 5,
+                'job_id' => 10,
             ],
             [
-                'name' => 'css',
+                'name' => 'selectionType',
+                'description' => 'Type of selection',
+                'value' => 'XPATH',
+                'user_id' => 1,
+                'job_id' => 10,
+            ],
+            [
+                'name' => 'selector',
                 'description' => 'CSS Selector',
-                'value' => 'search',
+                'value' => "//input[@name='q']",
                 'user_id' => 1,
-                'job_id' => 5,
+                'job_id' => 10,
             ],
             [
-                'name' => 'xpath',
-                'description' => 'XPath',
-                'value' => '',
+                // Click
+                'name' => 'selectionType',
+                'description' => 'Type of selection',
+                'value' => 'XPATH',
                 'user_id' => 1,
-                'job_id' => 5,
-            ],
-
-            // 6. Select result from search
-            [
-                'name' => 'type',
-                'description' => 'Click',
-                'value' => 'visit_webpage_browserbar',
-                'user_id' => 1,
-                'job_id' => 6,
+                'job_id' => 11,
             ],
             [
-                'name' => 'target',
-                'description' => 'Target link',
-                'value' => 'random',
+                'name' => 'selector',
+                'description' => 'CSS Selector',
+                'value' => ".//div[@id='rso']/div/div/div/a",
                 'user_id' => 1,
-                'job_id' => 6,
-            ],
-
-            // 7. Visit job
-            [
-                'name' => 'type',
-                'description' => 'Visit webpage',
-                'value' => 'visit_webpage_browserbar',
-                'user_id' => 1,
-                'job_id' => 7,
+                'job_id' => 11,
             ],
             [
+                'name' => 'decisionType',
+                'description' => 'Decission type',
+                'value' => "FIRST",
+                'user_id' => 1,
+                'job_id' => 11,
+            ],
+            [
+                // Wait
+                'name' => 'seconds',
+                'description' => 'Wait time',
+                'value' => 30,
+                'user_id' => 1,
+                'job_id' => 12,
+            ],
+            [
+                // Visit
                 'name' => 'url',
                 'description' => 'Target URL',
                 'value' => 'https://www.google.com/',
                 'user_id' => 1,
-                'job_id' => 7,
-            ],
-
-            // 8. Enter field
-            [
-                'name' => 'type',
-                'description' => 'Enter field',
-                'value' => 'enter_field',
-                'user_id' => 1,
-                'job_id' => 8,
+                'job_id' => 12,
             ],
             [
+                // Enter text
                 'name' => 'text',
                 'description' => 'Text to enter',
                 'value' => 'lgbt america',
                 'user_id' => 1,
-                'job_id' => 8,
+                'job_id' => 13,
             ],
             [
-                'name' => 'css',
+                'name' => 'selectionType',
+                'description' => 'Type of selection',
+                'value' => 'XPATH',
+                'user_id' => 1,
+                'job_id' => 13,
+            ],
+            [
+                'name' => 'selector',
                 'description' => 'CSS Selector',
-                'value' => 'search',
+                'value' => "//input[@name='q']",
                 'user_id' => 1,
-                'job_id' => 8,
+                'job_id' => 13,
             ],
             [
-                'name' => 'xpath',
-                'description' => 'XPath',
-                'value' => '',
+                // Click
+                'name' => 'selectionType',
+                'description' => 'Type of selection',
+                'value' => 'XPATH',
                 'user_id' => 1,
-                'job_id' => 8,
-            ],
-
-            // 9. Select result from search
-            [
-                'name' => 'type',
-                'description' => 'Click',
-                'value' => 'visit_webpage_browserbar',
-                'user_id' => 1,
-                'job_id' => 9,
+                'job_id' => 14,
             ],
             [
-                'name' => 'target',
-                'description' => 'Target link',
-                'value' => 'random',
+                'name' => 'selector',
+                'description' => 'CSS Selector',
+                'value' => ".//div[@id='rso']/div/div/div/a",
                 'user_id' => 1,
-                'job_id' => 9,
-            ],
-
-            // 10. Visit job
-            [
-                'name' => 'type',
-                'description' => 'Visit webpage',
-                'value' => 'visit_webpage_browserbar',
-                'user_id' => 1,
-                'job_id' => 10,
+                'job_id' => 14,
             ],
             [
+                'name' => 'decisionType',
+                'description' => 'Decission type',
+                'value' => "FIRST",
+                'user_id' => 1,
+                'job_id' => 14,
+            ],
+            [
+                // Wait
+                'name' => 'seconds',
+                'description' => 'Wait time',
+                'value' => 30,
+                'user_id' => 1,
+                'job_id' => 15,
+            ],
+            [
+                // Visit
                 'name' => 'url',
                 'description' => 'Target URL',
                 'value' => 'https://www.google.com/',
                 'user_id' => 1,
-                'job_id' => 10,
-            ],
-
-            // 11. Enter field
-            [
-                'name' => 'type',
-                'description' => 'Enter field',
-                'value' => 'enter_field',
-                'user_id' => 1,
-                'job_id' => 11,
+                'job_id' => 16,
             ],
             [
+                // Enter text
                 'name' => 'text',
                 'description' => 'Text to enter',
                 'value' => 'Kamala Harris',
                 'user_id' => 1,
-                'job_id' => 11,
+                'job_id' => 17,
             ],
             [
-                'name' => 'css',
+                'name' => 'selectionType',
+                'description' => 'Type of selection',
+                'value' => 'XPATH',
+                'user_id' => 1,
+                'job_id' => 17,
+            ],
+            [
+                'name' => 'selector',
                 'description' => 'CSS Selector',
-                'value' => 'search',
+                'value' => "//input[@name='q']",
                 'user_id' => 1,
-                'job_id' => 11,
+                'job_id' => 17,
             ],
             [
-                'name' => 'xpath',
-                'description' => 'XPath',
-                'value' => '',
+                // Click
+                'name' => 'selectionType',
+                'description' => 'Type of selection',
+                'value' => 'XPATH',
                 'user_id' => 1,
-                'job_id' => 11,
+                'job_id' => 18,
+            ],
+            [
+                'name' => 'selector',
+                'description' => 'CSS Selector',
+                'value' => ".//div[@id='rso']/div/div/div/a",
+                'user_id' => 1,
+                'job_id' => 18,
+            ],
+            [
+                'name' => 'decisionType',
+                'description' => 'Decission type',
+                'value' => "FIRST",
+                'user_id' => 1,
+                'job_id' => 18,
             ],
 
-            // 12. Select result from search
-            [
-                'name' => 'type',
-                'description' => 'Click',
-                'value' => 'visit_webpage_browserbar',
-                'user_id' => 1,
-                'job_id' => 12,
-            ],
-            [
-                'name' => 'target',
-                'description' => 'Target link',
-                'value' => 'random',
-                'user_id' => 1,
-                'job_id' => 12,
-            ],
         ]);
 
 

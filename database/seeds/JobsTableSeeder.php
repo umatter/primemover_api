@@ -15,99 +15,167 @@ class JobsTableSeeder extends Seeder
 
 
         DB::table('jobs')->insert([
-            // Job parameters: download file
+            // 1. Visit job
             [
-                // 1. Visit job
-                'description' => 'Visit webpage',
-                'name' => 'visit_webpage_browserbar',
+                'description' => 'Visit job',
+                'name' => 'Visit',
+                'type' => 'visitjob',
                 'user_id' => 1,
                 'queue_id' => 1
             ],
 
-            // 2. Visit job
+            // 2. Wait job
             [
-                'description' => 'Visit webpage',
-                'name' => 'visit_webpage_browserbar',
+                'description' => 'Wait job',
+                'name' => 'Wait',
+                'type' => 'waitjob',
                 'user_id' => 1,
                 'queue_id' => 1
             ],
 
             // 3. Visit job
             [
-                'description' => 'Visit webpage',
-                'name' => 'visit_webpage_browserbar',
+                'description' => 'Visit job',
+                'name' => 'Visit',
+                'type' => 'visitjob',
                 'user_id' => 1,
                 'queue_id' => 1
             ],
 
-            // 4. Visit job
+            // 4. Wait job
             [
-                'description' => 'Visit webpage',
-                'name' => 'visit_webpage_browserbar',
+                'description' => 'Wait job',
+                'name' => 'Wait',
+                'type' => 'waitjob',
                 'user_id' => 1,
                 'queue_id' => 1
             ],
 
-            // 5. Enter text
+
+            // 5. Visit job
             [
-                'description' => 'Enter field',
-                'name' => 'enter_field',
+                'description' => 'Visit job',
+                'name' => 'Visit',
+                'type' => 'visitjob',
                 'user_id' => 1,
                 'queue_id' => 1
             ],
 
-            // 6. Select result from search
+            // 6. Wait job
             [
-                'description' => 'Select and click',
-                'name' => 'select_single',
+                'description' => 'Wait job',
+                'name' => 'Wait',
+                'type' => 'waitjob',
                 'user_id' => 1,
                 'queue_id' => 1
             ],
+
 
             // 7. Visit job
             [
-                'description' => 'Visit webpage',
-                'name' => 'visit_webpage_browserbar',
+                'description' => 'Visit job',
+                'name' => 'Visit',
+                'type' => 'visitjob',
                 'user_id' => 1,
                 'queue_id' => 1
             ],
 
-            // 8. Enter field
+            // 8. Wait job
+            [
+                'description' => 'Wait job',
+                'name' => 'Wait',
+                'type' => 'waitjob',
+                'user_id' => 1,
+                'queue_id' => 1
+            ],
+
+            // 9. Enter text
             [
                 'description' => 'Enter field',
-                'name' => 'enter_field',
+                'name' => 'Enter',
+                'type' => 'entertextfieldjob',
                 'user_id' => 1,
                 'queue_id' => 1
             ],
 
-            // 9. Select result from search
+            // 10. Select result from search
             [
                 'description' => 'Select and click',
-                'name' => 'select_single',
+                'name' => 'Select',
+                'type' => 'singleselecturljob',
                 'user_id' => 1,
                 'queue_id' => 1
             ],
 
-            // 10. Visit job
+            // 11. Wait job
+            [
+                'description' => 'Wait job',
+                'name' => 'Wait',
+                'type' => 'waitjob',
+                'user_id' => 1,
+                'queue_id' => 1
+            ],
+
+            // 12. Visit job
             [
                 'description' => 'Visit webpage',
-                'name' => 'visit_webpage_browserbar',
+                'name' => 'Visit',
+                'type' => 'visitjob',
                 'user_id' => 1,
                 'queue_id' => 1
             ],
 
-            // 11. Enter field
+            // 13. Enter field
             [
                 'description' => 'Enter field',
-                'name' => 'enter_field',
+                'name' => 'Enter',
+                'type' => 'entertextfieldjob',
                 'user_id' => 1,
                 'queue_id' => 1
             ],
 
-            // 12. Select result from search
+            // 14. Select result from search
             [
-                'description' => 'Click',
-                'name' => 'visit_webpage_browserbar',
+                'description' => 'Select and click',
+                'name' => 'Select',
+                'type' => 'singleselecturljob',
+                'user_id' => 1,
+                'queue_id' => 1
+            ],
+
+            // 15. Wait job
+            [
+                'description' => 'Wait job',
+                'name' => 'Wait',
+                'type' => 'waitjob',
+                'user_id' => 1,
+                'queue_id' => 1
+            ],
+
+
+            // 16. Visit job
+            [
+                'description' => 'Visit job',
+                'name' => 'Visit',
+                'type' => 'visitjob',
+                'user_id' => 1,
+                'queue_id' => 1
+            ],
+
+            // 17. Enter field
+            [
+                'description' => 'Enter field',
+                'name' => 'Enter',
+                'type' => 'entertextfieldjob',
+                'user_id' => 1,
+                'queue_id' => 1
+            ],
+
+            // 18. Select result from search
+            [
+                'description' => 'Select and click',
+                'name' => 'Select',
+                'type' => 'singleselecturljob',
                 'user_id' => 1,
                 'queue_id' => 1
             ],
