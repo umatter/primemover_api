@@ -20,7 +20,7 @@ class CreateConfigurationsTable extends Migration
             $table->string('description')->nullable();
             $table->boolean('active')->default(1);
 
-            $table->timestamp('updated_at')->useCurrent();
+            $table->timestamp('updated_at')->useCurrent()->default(\DB::raw('CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP'));
             $table->timestamp('created_at')->useCurrent();
 
             // Foreign keys

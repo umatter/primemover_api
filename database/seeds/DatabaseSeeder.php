@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
         $this->call(QueuesTableSeeder::class);
         $this->call(JobsTableSeeder::class);
         $this->call(BehaviorsTableSeeder::class);
+        $this->call(ReportsTableSeeder::class);
 
     }
 }

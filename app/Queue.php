@@ -20,6 +20,6 @@ class Queue extends Model
 
     public function jobs()
     {
-        return $this->hasMany('App\Job')->with('behaviors');
+        return $this->hasMany('App\Job')->with('behaviors', 'reports');
     }
 }

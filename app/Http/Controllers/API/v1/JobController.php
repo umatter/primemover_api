@@ -21,7 +21,7 @@ class JobController extends Controller
     public function index(Request $request): JobResourceCollection
     {
         $keyword = $request->input('keyword');
-        $jobs = Job::with('behaviors')->latest()->get();
+        $jobs = Job::with(['behaviors', 'reports'])->latest()->get();
         return new JobResourceCollection($jobs);
     }
 
@@ -35,10 +35,11 @@ class JobController extends Controller
         //
     }
 
+
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -57,7 +58,7 @@ class JobController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Job  $job
+     * @param \App\Job $job
      * @return \Illuminate\Http\Response
      */
     public function show($id): JobResource
@@ -69,7 +70,7 @@ class JobController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Job  $job
+     * @param \App\Job $job
      * @return \Illuminate\Http\Response
      */
     public function edit(Job $job)
@@ -80,8 +81,8 @@ class JobController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Job  $job
+     * @param \Illuminate\Http\Request $request
+     * @param \App\Job $job
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Job $job)
@@ -92,12 +93,12 @@ class JobController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Job  $job
+     * @param \App\Job $job
      * @return \Illuminate\Http\Response
      */
     public function destroy(Job $job)
     {
-        if($job) {
+        if ($job) {
             $job->delete();
             return Job::latest()->get();
         }

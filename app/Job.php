@@ -18,6 +18,11 @@ class Job extends Model
         return $this->belongsTo('App\User');
     }
 
+    public function reports()
+    {
+        return $this->hasMany('App\Report');
+    }
+
     public function queue()
     {
         return $this->belongsTo('App\Queue');

@@ -24,6 +24,7 @@ Route::prefix('v1')->group(function () {
         Route::resource('crawlers', 'API\v1\CrawlerController');
         Route::resource('posts', 'API\v1\PostController');
         Route::resource('behaviors', 'API\v1\BehaviorController');
+        Route::resource('reports', 'API\v1\ReportController');
         Route::get('ip/{ip}', 'API\v1\CrawlerController@ip');
     });
 
