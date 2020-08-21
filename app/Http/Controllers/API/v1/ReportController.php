@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API\v1;
 
 
+use App\Job;
 use App\Report;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -46,15 +47,16 @@ class ReportController extends Controller
     public function store(Request $request)
     {
         $this->validate($request, [
-            'description' => 'required',
             'job_id' => 'required',
             'filecontent' => 'required',
             'mimetype' => 'required',
         ]);
 
+        $job = Job::findOrFail($request->job_id);
+        $desc = "Bot: " . $job->queue->crawler->name . " | Job-Name: " . $job->name . ", Job-ID: " . $job->id . ", Job-Type: " . $job->type . ")";
 
         $data['job_id'] = $request->job_id;
-        $data['description'] = $request->description;
+        $data['description'] = ($request->description) ? $request->description : $desc;
         $data['user_id'] = auth()->user() ? auth()->user()->id : 1;
         $data['filecontent'] = $request->filecontent;
         $data['mimetype'] = $request->mimetype;
