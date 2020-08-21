@@ -47,20 +47,43 @@ class ReportController extends Controller
     {
         $this->validate($request, [
             'description' => 'required',
-            'job_id' => 'required'
+            'job_id' => 'required',
+            'filecontent' => 'required',
+            'mimetype' => 'required',
         ]);
 
 
         $data['job_id'] = $request->job_id;
         $data['description'] = $request->description;
         $data['user_id'] = auth()->user() ? auth()->user()->id : 1;
+        $data['filecontent'] = $request->filecontent;
+        $data['mimetype'] = $request->mimetype;
+
+        //$this->storeFile();
+
+        $report = Report::create($data);
+        return $report;
+    }
+
+    public function getFile($report_id)
+    {
+        $report = Report::findOrFail($report_id);
+        return response(base64_decode($report->filecontent))->header('Content-Type', $report->mimetype);
+
+    }
+
+
+    /**
+     * Display the specified resource.
+     */
+    public function storeFile($data, $request)
+    {
         $path = public_path() . '/reports/' . $data['job_id'];
 
         if (!File::exists($path)) {
             File::makeDirectory($path, $mode = 0777, true, true);
         }
 
-        // Backup
         $path = File::exists($path) ? $path : public_path();
 
         if ($request->hasFile('file')) {
@@ -70,9 +93,6 @@ class ReportController extends Controller
             $file->move($path, $filename);
             $data['path'] = url('/reports/' . $data['job_id'] . '/' . $filename);
         }
-
-        $report = Report::create($data);
-        return $report;
     }
 
     /**

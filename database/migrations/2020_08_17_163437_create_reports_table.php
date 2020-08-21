@@ -20,7 +20,8 @@ class CreateReportsTable extends Migration
             $table->boolean('active')->default(1);
             $table->text('path')->nullable();
             $table->text('filename')->nullable();
-            $table->text('details')->nullable();
+            $table->longText('filecontent')->nullable();
+            $table->string('mimetype')->nullable();
 
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('job_id');
