@@ -26,6 +26,7 @@ class CreateJobsTable extends Migration
             $table->boolean('started')->default(0);
             $table->boolean('success')->default(0);
             $table->boolean('failure')->default(0);
+            $table->boolean('timeout')->default(0);
             $table->integer('order')->default(1);
             $table->boolean('active')->default(1);
 

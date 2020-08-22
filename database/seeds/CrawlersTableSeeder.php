@@ -11,6 +11,59 @@ class CrawlersTableSeeder extends Seeder
      */
     public function run()
     {
-        $fake = factory(App\Crawler::class, 1)->create();
+        //$fake = factory(App\Crawler::class, 6)->create();
+
+        DB::table('crawlers')->insert([
+                [
+                    'name' => 'Otto',
+                    'description' => 'Ich bin ein Crawler Otto',
+                    'user_id' => 1,
+                    'proxy_id' => 1,
+                    'agent_id' => 1,
+                    'configuration_id' => 1
+                ],
+                [
+                    'name' => 'Saban',
+                    'description' => 'Ich bin ein Crawler Saban',
+                    'user_id' => 1,
+                    'proxy_id' => 2,
+                    'agent_id' => 1,
+                    'configuration_id' => 1
+                ],
+                [
+                    'name' => 'Maria',
+                    'description' => 'Ich bin ein Crawler Maria',
+                    'user_id' => 1,
+                    'proxy_id' => 3,
+                    'agent_id' => 1,
+                    'configuration_id' => 1
+                ],
+                [
+                    'name' => 'Gerard',
+                    'description' => 'Ich bin ein Crawler Gerard',
+                    'user_id' => 1,
+                    'proxy_id' => 4,
+                    'agent_id' => 1,
+                    'configuration_id' => 1
+                ],
+                [
+                    'name' => 'Stabilo',
+                    'description' => 'Ich bin ein Crawler Stabilo',
+                    'user_id' => 1,
+                    'proxy_id' => 5,
+                    'agent_id' => 1,
+                    'configuration_id' => 1
+                ],
+                [
+                    'name' => 'Flyer',
+                    'description' => 'Ich bin ein Crawler Flyer',
+                    'user_id' => 1,
+                    'proxy_id' => 6,
+                    'agent_id' => 1,
+                    'configuration_id' => 1
+                ],
+
+            ]
+        );
     }
 }

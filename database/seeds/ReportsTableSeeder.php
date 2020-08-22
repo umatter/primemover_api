@@ -12,7 +12,7 @@ class ReportsTableSeeder extends Seeder
      */
     public function run()
     {
-        $fake = factory(App\Report::class, 50)->create();
+        $fake = factory(App\Report::class, 1)->create();
 
     }
 
