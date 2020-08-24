@@ -71,8 +71,11 @@ class ReportController extends Controller
         //$this->storeFile();
 
         $report = Report::create($data);
-        $report->path = $path . '/file/' . $report->id;
-        $report->save();
+        if ($report) {
+            $report->path = $path . '/file/' . $report->id;
+            $report->save();
+
+        }
 
         return $report;
     }

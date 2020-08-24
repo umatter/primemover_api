@@ -15,56 +15,56 @@ class ProxiesTableSeeder extends Seeder
 
         DB::table('proxies')->insert([
                 [
-                    'name' => 'Multilogin Proxy 1',
-                    'description' => 'Proxy for Multilogin',
+                    'name' => 'Proxy 01',
+                    'description' => 'US-MA-BOSTON',
                     'user_id' => 1,
                     'hostname' => 'us-30m.geosurf.io',
-                    'username' => '000000+US-MA-BOSTON+000000-378870',
+                    'username' => '000000+US-MA-BOSTON+000000-982060',
                     'port' => 8000,
                     'password' => 'CHANGEME-password'
                 ],
                 [
-                    'name' => 'Multilogin Proxy 2',
-                    'description' => 'Proxy for Multilogin',
+                    'name' => 'Proxy 02',
+                    'description' => 'US-MA-BOSTON',
                     'user_id' => 1,
                     'hostname' => 'us-30m.geosurf.io',
-                    'username' => '000000+US-MA-BOSTON+000000-378870',
+                    'username' => '000000+US-MA-BOSTON+000000-933738',
                     'port' => 8000,
                     'password' => 'CHANGEME-password'
                 ],
                 [
-                    'name' => 'Multilogin Proxy 3',
-                    'description' => 'Proxy for Multilogin',
+                    'name' => 'Proxy 03',
+                    'description' => 'US-OK-OKLAHOMA_CITY',
                     'user_id' => 1,
                     'hostname' => 'us-30m.geosurf.io',
-                    'username' => '000000+US-MA-BOSTON+000000-378870',
+                    'username' => '000000+US-OK-OKLAHOMA_CITY+000000-902115',
                     'port' => 8000,
                     'password' => 'CHANGEME-password'
                 ],
                 [
-                    'name' => 'Multilogin Proxy 4',
-                    'description' => 'Proxy for Multilogin',
+                    'name' => 'Proxy 04',
+                    'description' => 'US-OK-OKLAHOMA_CITY',
                     'user_id' => 1,
                     'hostname' => 'us-30m.geosurf.io',
-                    'username' => '000000+US-MA-BOSTON+000000-378870',
+                    'username' => '000000+US-OK-OKLAHOMA_CITY+000000-240288',
                     'port' => 8000,
                     'password' => 'CHANGEME-password'
                 ],
                 [
-                    'name' => 'Multilogin Proxy 5',
-                    'description' => 'Proxy for Multilogin',
+                    'name' => 'Proxy 05',
+                    'description' => 'US-CA-SAN_FRANCISCO',
                     'user_id' => 1,
                     'hostname' => 'us-30m.geosurf.io',
-                    'username' => '000000+US-MA-BOSTON+000000-378870',
+                    'username' => '000000+US-CA-SAN_FRANCISCO+000000-502835',
                     'port' => 8000,
                     'password' => 'CHANGEME-password'
                 ],
                 [
-                    'name' => 'Multilogin Proxy 6',
-                    'description' => 'Proxy for Multilogin',
+                    'name' => 'Proxy 06',
+                    'description' => 'US-CA-SAN_FRANCISCO',
                     'user_id' => 1,
                     'hostname' => 'us-30m.geosurf.io',
-                    'username' => '000000+US-MA-BOSTON+000000-378870',
+                    'username' => '000000+US-CA-SAN_FRANCISCO+000000-683540',
                     'port' => 8000,
                     'password' => 'CHANGEME-password'
                 ],
