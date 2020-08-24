@@ -27,7 +27,7 @@ class CrawlersTableSeeder extends Seeder
                     'description' => 'Ich bin ein Crawler Saban',
                     'user_id' => 1,
                     'proxy_id' => 2,
-                    'agent_id' => 1,
+                    'agent_id' => 2,
                     'configuration_id' => 1
                 ],
                 [
@@ -35,31 +35,31 @@ class CrawlersTableSeeder extends Seeder
                     'description' => 'Ich bin ein Crawler Maria',
                     'user_id' => 1,
                     'proxy_id' => 3,
-                    'agent_id' => 1,
+                    'agent_id' => 3,
                     'configuration_id' => 1
                 ],
                 [
                     'name' => 'Gerard',
-                    'description' => 'Ich bin ein Crawler Gerard',
+                    'description' => 'Ich bin ein Crawler Bukva',
                     'user_id' => 1,
                     'proxy_id' => 4,
-                    'agent_id' => 1,
+                    'agent_id' => 4,
                     'configuration_id' => 1
                 ],
                 [
                     'name' => 'Stabilo',
-                    'description' => 'Ich bin ein Crawler Stabilo',
+                    'description' => 'Ich bin ein Crawler Stablo',
                     'user_id' => 1,
                     'proxy_id' => 5,
-                    'agent_id' => 1,
+                    'agent_id' => 5,
                     'configuration_id' => 1
                 ],
                 [
                     'name' => 'Flyer',
-                    'description' => 'Ich bin ein Crawler Flyer',
+                    'description' => 'Ich bin ein Crawler Kesten',
                     'user_id' => 1,
                     'proxy_id' => 6,
-                    'agent_id' => 1,
+                    'agent_id' => 6,
                     'configuration_id' => 1
                 ],
 
