@@ -1,0 +1,189 @@
+{
+    "jobs": [{
+            "id": 1,
+            "user_id": 1,
+            "queue_id": 1,
+            "name": "Visit",
+            "description": "Visit the giben URL",
+            "type": "visitjob",
+            "started": 0,
+            "success": 0,
+            "failure": 0,
+            "timeout": 0,
+            "order": 1,
+            "active": 1,
+            "updated_at": "2020-08-24T16:38:17.000000Z",
+            "created_at": "2020-08-24T16:38:17.000000Z",
+            "behaviors": [{
+                    "id": 1,
+                    "name": "url",
+                    "description": "Target URL",
+                    "value": "https:\/\/www.motherjones.com\/",
+                    "active": 1,
+                    "user_id": 1,
+                    "job_id": 1,
+                    "updated_at": "2020-08-24T16:38:17.000000Z",
+                    "created_at": "2020-08-24T16:38:17.000000Z"
+                }
+            ]
+        }, {
+            "id": 2,
+            "user_id": 1,
+            "queue_id": 1,
+            "name": "Wait",
+            "description": "Wait for the given amount of time",
+            "type": "waitjob",
+            "started": 0,
+            "success": 0,
+            "failure": 0,
+            "timeout": 0,
+            "order": 1,
+            "active": 1,
+            "updated_at": "2020-08-24T16:38:17.000000Z",
+            "created_at": "2020-08-24T16:38:17.000000Z",
+            "behaviors": [{
+                    "id": 2,
+                    "name": "seconds",
+                    "description": "Wait time in seconds",
+                    "value": "20",
+                    "active": 1,
+                    "user_id": 1,
+                    "job_id": 2,
+                    "updated_at": "2020-08-24T16:38:17.000000Z",
+                    "created_at": "2020-08-24T16:38:17.000000Z"
+                }
+            ]
+        }, {
+            "id": 8,
+            "user_id": 1,
+            "queue_id": 1,
+            "name": "Enter Text",
+            "description": "Enter text into the defined field",
+            "type": "entertextfieldjob",
+            "started": 0,
+            "success": 0,
+            "failure": 0,
+            "timeout": 0,
+            "order": 1,
+            "active": 1,
+            "updated_at": "2020-08-24T16:38:17.000000Z",
+            "created_at": "2020-08-24T16:38:17.000000Z",
+            "behaviors": [{
+                    "id": 8,
+                    "name": "text",
+                    "description": "Text to enter",
+                    "value": "climate crisis",
+                    "active": 1,
+                    "user_id": 1,
+                    "job_id": 8,
+                    "updated_at": "2020-08-24T16:38:17.000000Z",
+                    "created_at": "2020-08-24T16:38:17.000000Z"
+                }, {
+                    "id": 9,
+                    "name": "selectionType",
+                    "description": "Type of selection",
+                    "value": "XPATH|CSS|CLASS|ID", -- Choose one, will change the way the selector is interpreted
+                    "active": 1,
+                    "user_id": 1,
+                    "job_id": 8,
+                    "updated_at": "2020-08-24T16:38:17.000000Z",
+                    "created_at": "2020-08-24T16:38:17.000000Z"
+                }, {
+                    "id": 10,
+                    "name": "selector",
+                    "description": "XPATH example",
+                    "value": "\/\/input[@name='q']",
+                    "active": 1,
+                    "user_id": 1,
+                    "job_id": 8,
+                    "updated_at": "2020-08-24T16:38:17.000000Z",
+                    "created_at": "2020-08-24T16:38:17.000000Z"
+                }
+            ]
+        }, {
+            "id": 9,
+            "user_id": 1,
+            "queue_id": 1,
+            "name": "Select",
+            "description": "Select an item and click",
+            "type": "singleselecturljob",
+            "started": 0,
+            "success": 0,
+            "failure": 0,
+            "timeout": 0,
+            "order": 1,
+            "active": 1,
+            "updated_at": "2020-08-24T16:38:17.000000Z",
+            "created_at": "2020-08-24T16:38:17.000000Z",
+            "behaviors": [{
+                    "id": 11,
+                    "name": "selectionType",
+                    "description": "Type of selection",
+                    "value": "XPATH|CSS|CLASS|ID",
+                    "active": 1,
+                    "user_id": 1,
+                    "job_id": 9,
+                    "updated_at": "2020-08-24T16:38:17.000000Z",
+                    "created_at": "2020-08-24T16:38:17.000000Z"
+                }, {
+                    "id": 12,
+                    "name": "selector",
+                    "description": "Example XPATH selector",
+                    "value": ".\/\/div[@id='rso']\/div\/div\/div\/a",
+                    "active": 1,
+                    "user_id": 1,
+                    "job_id": 9,
+                    "updated_at": "2020-08-24T16:38:17.000000Z",
+                    "created_at": "2020-08-24T16:38:17.000000Z"
+                }, {
+                    "id": 13,
+                    "name": "decisionType",
+                    "description": "Decision type for choosing an item out of the list given by the selector",
+                    "value": "FIRST|LAST|RANDOM",
+                    "active": 1,
+                    "user_id": 1,
+                    "job_id": 9,
+                    "updated_at": "2020-08-24T16:38:17.000000Z",
+                    "created_at": "2020-08-24T16:38:17.000000Z"
+                }
+            ]
+        }, {
+            "id": 9,
+            "user_id": 1,
+            "queue_id": 1,
+            "name": "tryclickjob",
+            "description": "Select an item and try to click if it exists",
+            "type": "singleselecturljob",
+            "started": 0,
+            "success": 0,
+            "failure": 0,
+            "timeout": 0,
+            "order": 1,
+            "active": 1,
+            "updated_at": "2020-08-24T16:38:17.000000Z",
+            "created_at": "2020-08-24T16:38:17.000000Z",
+            "behaviors": [{
+                    "id": 11,
+                    "name": "selectionType",
+                    "description": "Type of selection",
+                    "value": "XPATH|CSS|CLASS|ID",
+                    "active": 1,
+                    "user_id": 1,
+                    "job_id": 9,
+                    "updated_at": "2020-08-24T16:38:17.000000Z",
+                    "created_at": "2020-08-24T16:38:17.000000Z"
+                }, {
+                    "id": 12,
+                    "name": "selector",
+                    "description": "Example XPATH selector",
+                    "value": ".\/\/div[@id='rso']\/div\/div\/div\/a",
+                    "active": 1,
+                    "user_id": 1,
+                    "job_id": 9,
+                    "updated_at": "2020-08-24T16:38:17.000000Z",
+                    "created_at": "2020-08-24T16:38:17.000000Z"
+                }
+            ]
+        }
+	]
+}
