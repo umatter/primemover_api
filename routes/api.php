@@ -15,17 +15,24 @@ use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1')->group(function () {
 
-    Route::group(['middleware' => 'auth:api'], function () {
-        Route::post('logout', 'Auth\LoginController@logout');
-        Route::get('/user', 'Auth\UserController@current');
-
+    Route::group(['middleware' => 'api'], function () {
         Route::resource('configurations', 'API\v1\ConfigurationController');
         Route::resource('agents', 'API\v1\AgentController');
         Route::resource('proxies', 'API\v1\ProxyController');
         Route::resource('jobs', 'API\v1\JobController');
+        Route::resource('queues', 'API\v1\QueueController');
         Route::resource('crawlers', 'API\v1\CrawlerController');
         Route::resource('posts', 'API\v1\PostController');
         Route::resource('behaviors', 'API\v1\BehaviorController');
+        Route::resource('reports', 'API\v1\ReportController');
+        Route::get('ip/{ip}', 'API\v1\CrawlerController@ip');
+        Route::get('file/{report}', 'API\v1\ReportController@getFile');
+    });
+
+
+    Route::group(['middleware' => 'auth:api'], function () {
+        Route::post('logout', 'Auth\LoginController@logout');
+        Route::get('/user', 'Auth\UserController@current');
 
         Route::patch('settings/profile', 'Settings\ProfileController@update');
         Route::patch('settings/password', 'Settings\PasswordController@update');
@@ -43,6 +50,7 @@ Route::prefix('v1')->group(function () {
 
         Route::post('oauth/{driver}', 'Auth\OAuthController@redirectToProvider');
         Route::get('oauth/{driver}/callback', 'Auth\OAuthController@handleProviderCallback')->name('oauth.callback');
+
     });
 
 });

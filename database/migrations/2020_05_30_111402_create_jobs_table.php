@@ -18,20 +18,24 @@ class CreateJobsTable extends Migration
             $table->id();
 
             $table->unsignedBigInteger('user_id');
-            $table->unsignedBigInteger('crawler_id');
+            $table->unsignedBigInteger('queue_id');
 
             $table->string('name')->default('Query 111');
             $table->string('description')->nullable();
+            $table->string('type')->default('visit_webpage_browserbar');
+            $table->boolean('started')->default(0);
+            $table->boolean('success')->default(0);
+            $table->boolean('failure')->default(0);
+            $table->boolean('timeout')->default(0);
             $table->integer('order')->default(1);
             $table->boolean('active')->default(1);
 
-            $table->dateTime('start_time')->default(Carbon::now());
-            $table->timestamp('updated_at')->useCurrent();
+            $table->timestamp('updated_at')->useCurrent()->default(\DB::raw('CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP'));
             $table->timestamp('created_at')->useCurrent();
 
             // Foreign keys
             $table->foreign('user_id')->references('id')->on('users')->onDelete('restrict');
-            $table->foreign('crawler_id')->references('id')->on('crawlers')->onDelete('restrict');
+            $table->foreign('queue_id')->references('id')->on('queues')->onDelete('restrict');
 
         });
     }

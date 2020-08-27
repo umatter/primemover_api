@@ -6,6 +6,10 @@ use App\Crawler;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
+use Arimolzer\IPStackFinder\Exceptions\InvalidConfiguration;
+use Arimolzer\IPStackFinder\Facade\IPStackFinderFacade;
+use Arimolzer\IPStackFinder\IPStackFinder;
+
 use App\Http\Resources\v1\CrawlerResource;
 use App\Http\Resources\v1\CrawlerResourceCollection;
 
@@ -27,7 +31,7 @@ class CrawlerController extends Controller
         */
 
         $keyword = $request->input('keyword');
-        $crawlers = Crawler::with('jobs', 'agent', 'proxy', 'configuration')->latest()->get();
+        $crawlers = Crawler::with('queues', 'agent', 'proxy', 'configuration')->latest()->get();
         return new CrawlerResourceCollection($crawlers);
     }
 
@@ -38,7 +42,6 @@ class CrawlerController extends Controller
      */
     public function create()
     {
-
     }
 
     /**
@@ -54,7 +57,7 @@ class CrawlerController extends Controller
         ]);
 
         $data = $request->all();
-        $data['user_id'] = auth()->user()->id;
+        $data['user_id'] = auth()->user() ? auth()->user()->id : 1;
 
         $crawler = Crawler::create($data);
         return $crawler;
@@ -68,7 +71,7 @@ class CrawlerController extends Controller
      */
     public function show($id): CrawlerResource
     {
-        $crawler = Crawler::with('jobs', 'agent', 'configuration', 'proxy')->findOrFail($id);
+        $crawler = Crawler::with('queues', 'agent', 'configuration', 'proxy')->findOrFail($id);
         return new CrawlerResource($crawler);
     }
 
@@ -108,5 +111,12 @@ class CrawlerController extends Controller
             return Crawler::latest()->get();
         }
         return false;
+    }
+
+    public function ip($ip)
+    {
+        return response()->json([
+            'result' => IPStackFinderFacade::get($ip)
+        ], Response::HTTP_OK);
     }
 }
