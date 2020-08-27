@@ -21,7 +21,7 @@ class JobController extends Controller
     public function index(Request $request): JobResourceCollection
     {
         $keyword = $request->input('keyword');
-        $jobs = Job::with(['behaviors', 'reports'])->latest()->get();
+        $jobs = Job::with(['behaviors', 'reports:id,job_id,path'])->latest()->get();
         return new JobResourceCollection($jobs);
     }
 

@@ -23,10 +23,8 @@ class CreateJobsTable extends Migration
             $table->string('name')->default('Query 111');
             $table->string('description')->nullable();
             $table->string('type')->default('visit_webpage_browserbar');
-            $table->boolean('started')->default(0);
-            $table->boolean('success')->default(0);
-            $table->boolean('failure')->default(0);
-            $table->boolean('timeout')->default(0);
+            $table->string('status_code')->nullable();
+            $table->text('status_message')->nullable();
             $table->integer('order')->default(1);
             $table->boolean('active')->default(1);
 
