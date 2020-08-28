@@ -30,6 +30,9 @@ class CreateQueuesTable extends Migration
             $table->timestamp('updated_at')->useCurrent();
             $table->timestamp('created_at')->useCurrent();
 
+            $table->string('started_at')->nullable();
+            $table->string('finished_at')->nullable();
+
             // Foreign keys
             $table->foreign('user_id')->references('id')->on('users')->onDelete('restrict');
             $table->foreign('crawler_id')->references('id')->on('crawlers')->onDelete('restrict');

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API\v1;
 
 use App\Queue;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 use App\Http\Resources\v1\QueueResource;
@@ -52,7 +53,7 @@ class QueueController extends Controller
         $data['user_id'] = auth()->user() ? auth()->user()->id : 1;
 
         $queue = Queue::create($data);
-        $queues = Queue::latest()->paginate(5);
+        $queues = Queue::all();
         return new QueueResourceCollection($queues, $queue);
     }
 
@@ -89,8 +90,11 @@ class QueueController extends Controller
      */
     public function update(Request $request, Queue $queue)
     {
-        //
-        return;
+        $data = $request->all();
+        $data['started_at'] = Carbon::parse($data['started_at'])->toISOString();
+        $data['finished_at'] = Carbon::parse($data['finished_at'])->toISOString();
+        $queue->update($data);
+        return $queue;
     }
 
     /**

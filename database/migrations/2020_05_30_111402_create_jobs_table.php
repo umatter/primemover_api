@@ -31,6 +31,9 @@ class CreateJobsTable extends Migration
             $table->timestamp('updated_at')->useCurrent()->default(\DB::raw('CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP'));
             $table->timestamp('created_at')->useCurrent();
 
+            $table->string('started_at')->nullable();
+            $table->string('finished_at')->nullable();
+
             // Foreign keys
             $table->foreign('user_id')->references('id')->on('users')->onDelete('restrict');
             $table->foreign('queue_id')->references('id')->on('queues')->onDelete('restrict');

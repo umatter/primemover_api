@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API\v1;
 
 
 use App\Job;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
@@ -63,8 +64,8 @@ class JobController extends Controller
      */
     public function show($id): JobResource
     {
-        $proxy = Job::with(['behaviors'])->findOrFail($id);
-        return new JobResource($proxy);
+        $job = Job::with(['behaviors'])->findOrFail($id);
+        return new JobResource($job);
     }
 
     /**
@@ -87,7 +88,18 @@ class JobController extends Controller
      */
     public function update(Request $request, Job $job)
     {
-        //
+        /*$this->validate($request, [
+            'id' => 'required',
+        ]);*/
+
+        $data['started_at'] = Carbon::parse($data['started_at'])->toISOString();
+        $data['finished_at'] = Carbon::parse($data['finished_at'])->toISOString();
+
+        $data = $request->all();
+
+        $job->update($data);
+        return $job;
+
     }
 
     /**
