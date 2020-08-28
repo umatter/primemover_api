@@ -91,11 +91,10 @@ class JobController extends Controller
         /*$this->validate($request, [
             'id' => 'required',
         ]);*/
+        $data = $request->all();
 
         $data['started_at'] = Carbon::parse($data['started_at'])->toISOString();
         $data['finished_at'] = Carbon::parse($data['finished_at'])->toISOString();
-
-        $data = $request->all();
 
         $job->update($data);
         return $job;
