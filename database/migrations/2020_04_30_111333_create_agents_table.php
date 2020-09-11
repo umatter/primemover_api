@@ -20,7 +20,7 @@ class CreateAgentsTable extends Migration
 
             $table->string('name')->default('Chrome');
             $table->string('description')->nullable();
-            $table->string('identification')->default('User-Agent: Mozilla/5.0');
+            $table->string('identification')->default('Multilogin');
             $table->string('multilogin_id')->nullable();
             $table->longText('multilogin_profile')->nullable();
             $table->boolean('active')->default(1);

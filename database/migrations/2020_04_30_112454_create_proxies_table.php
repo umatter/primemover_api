@@ -24,6 +24,7 @@ class CreateProxiesTable extends Migration
             $table->integer('port');
             $table->string('username');
             $table->string('password');
+            $table->string('type')->nullable();
             $table->boolean('active')->default(1);
 
             $table->timestamp('updated_at')->useCurrent()->default(\DB::raw('CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP'));

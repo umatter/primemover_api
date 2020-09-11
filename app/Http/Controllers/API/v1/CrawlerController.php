@@ -31,7 +31,19 @@ class CrawlerController extends Controller
         */
 
         $keyword = $request->input('keyword');
-        $crawlers = Crawler::with('queues', 'agent', 'proxy', 'configuration')->latest()->get();
+        $crawlers = Crawler::where('testing', 0)->with('queues', 'agent', 'proxy', 'configuration')->latest()->get();
+        return new CrawlerResourceCollection($crawlers);
+    }
+
+    /**
+     * Display a listing of the resource for testing.
+     *
+     * @return Response
+     */
+    public function testing(Request $request): CrawlerResourceCollection
+    {
+        $keyword = $request->input('keyword');
+        $crawlers = Crawler::where('testing', 1)->with('queues', 'agent', 'proxy', 'configuration')->latest()->get();
         return new CrawlerResourceCollection($crawlers);
     }
 

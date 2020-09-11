@@ -20,6 +20,7 @@ class CrawlersTableSeeder extends Seeder
                     'user_id' => 1,
                     'proxy_id' => 1,
                     'agent_id' => 1,
+                    'testing' => 1,
                     'configuration_id' => 1
                 ],
                 [
@@ -28,6 +29,7 @@ class CrawlersTableSeeder extends Seeder
                     'user_id' => 1,
                     'proxy_id' => 2,
                     'agent_id' => 2,
+                    'testing' => 1,
                     'configuration_id' => 1
                 ],
                 [
@@ -36,6 +38,7 @@ class CrawlersTableSeeder extends Seeder
                     'user_id' => 1,
                     'proxy_id' => 3,
                     'agent_id' => 3,
+                    'testing' => 1,
                     'configuration_id' => 1
                 ],
                 [
@@ -44,6 +47,7 @@ class CrawlersTableSeeder extends Seeder
                     'user_id' => 1,
                     'proxy_id' => 4,
                     'agent_id' => 4,
+                    'testing' => 1,
                     'configuration_id' => 1
                 ],
                 [
@@ -52,6 +56,7 @@ class CrawlersTableSeeder extends Seeder
                     'user_id' => 1,
                     'proxy_id' => 5,
                     'agent_id' => 5,
+                    'testing' => 1,
                     'configuration_id' => 1
                 ],
                 [
@@ -60,6 +65,7 @@ class CrawlersTableSeeder extends Seeder
                     'user_id' => 1,
                     'proxy_id' => 6,
                     'agent_id' => 6,
+                    'testing' => 1,
                     'configuration_id' => 1
                 ],
 

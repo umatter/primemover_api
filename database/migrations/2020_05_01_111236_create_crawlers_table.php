@@ -24,6 +24,7 @@ class CreateCrawlersTable extends Migration
             $table->string('name')->default('Crawly');
             $table->string('description')->nullable();
             $table->boolean('active')->default(1);
+            $table->boolean('testing')->default(0);
 
             $table->timestamp('updated_at')->useCurrent()->default(\DB::raw('CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP'));
             $table->timestamp('created_at')->useCurrent();
