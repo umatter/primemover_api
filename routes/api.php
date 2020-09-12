@@ -28,6 +28,7 @@ Route::prefix('v1')->group(function () {
         Route::get('ip/{ip}', 'API\v1\CrawlerController@ip');
         Route::get('file/{report}', 'API\v1\ReportController@getFile');
         Route::get('crawlers-testing', 'API\v1\CrawlerController@testing');
+        Route::post('load', 'API\v1\CrawlerController@load');
     });
 
 
