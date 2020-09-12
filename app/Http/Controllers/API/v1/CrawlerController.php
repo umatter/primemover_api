@@ -7,6 +7,7 @@ use App\Behavior;
 use App\Configuration;
 use App\Crawler;
 use App\Job;
+use App\Param;
 use App\Proxy;
 use App\Queue;
 use Illuminate\Http\Request;
@@ -250,12 +251,31 @@ class CrawlerController extends Controller
     public function makeConfigurations($data)
     {
         $configuration = $data[0];
+        $params = $configuration['params'];
+
         $new = new Configuration([
             "user_id" => 1,
             "name" => $configuration['name'],
             "description" => $configuration['description'],
         ]);
         $new->save();
+
+        foreach ($params as $param) {
+            $parameter = new Param([
+                "user_id" => 1,
+                "configuration_id" => $new->id,
+                "pi" => $param['pi'],
+                "psi" => $param['psi'],
+                "kappa" => $param['kappa'],
+                "tau" => $param['tau'],
+                "beta" => $param['beta'],
+                "alpha" => $param['alpha'],
+                "search_terms" => json_encode($param['search_terms']),
+                "media_outlet_urls" => json_encode($param['media_outlet_urls']),
+            ]);
+            $parameter->save();
+        }
+
         return $new;
     }
 

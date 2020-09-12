@@ -15,7 +15,7 @@ class Crawler extends Model
 
     public function configuration()
     {
-        return $this->belongsTo('App\Configuration')->where('active', 1);
+        return $this->belongsTo('App\Configuration')->where('active', 1)->with('params');
     }
 
     public function queues()

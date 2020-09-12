@@ -20,7 +20,7 @@ class ConfigurationController extends Controller
     public function index(Request $request): ConfigurationResourceCollection
     {
         $keyword = $request->input('keyword');
-        $configurations = Configuration::with('crawler')->latest()->get();
+        $configurations = Configuration::with('crawler', 'params')->latest()->get();
         return new ConfigurationResourceCollection($configurations);
     }
 
@@ -61,7 +61,7 @@ class ConfigurationController extends Controller
      */
     public function show($id): ConfigurationResource
     {
-        $configuration = Configuration::with(['crawler'])->findOrFail($id);
+        $configuration = Configuration::with(['crawler', 'params'])->findOrFail($id);
         return new ConfigurationResource($configuration);
     }
 

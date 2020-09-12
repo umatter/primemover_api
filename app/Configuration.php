@@ -17,4 +17,10 @@ class Configuration extends Model
     {
         return $this->belongsTo('App\User');
     }
+
+    public function params()
+    {
+        return $this->hasMany('App\Param');
+    }
+
 }
