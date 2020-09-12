@@ -12,9 +12,7 @@ use App\Queue;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
-use Arimolzer\IPStackFinder\Exceptions\InvalidConfiguration;
 use Arimolzer\IPStackFinder\Facade\IPStackFinderFacade;
-use Arimolzer\IPStackFinder\IPStackFinder;
 
 use App\Http\Resources\v1\CrawlerResource;
 use App\Http\Resources\v1\CrawlerResourceCollection;
@@ -37,7 +35,9 @@ class CrawlerController extends Controller
         */
 
         $keyword = $request->input('keyword');
-        $crawlers = Crawler::where('testing', 0)->with('queues', 'agent', 'proxy', 'configuration')->latest()->get();
+        $crawlers = Crawler::where('testing', 0)
+            ->where('active', 1)
+            ->with('queues', 'agent', 'proxy', 'configuration')->latest()->get();
         return new CrawlerResourceCollection($crawlers);
     }
 
@@ -49,7 +49,9 @@ class CrawlerController extends Controller
     public function testing(Request $request): CrawlerResourceCollection
     {
         $keyword = $request->input('keyword');
-        $crawlers = Crawler::where('testing', 1)->with('queues', 'agent', 'proxy', 'configuration')->latest()->get();
+        $crawlers = Crawler::where('testing', 1)
+            ->where('active', 1)
+            ->with('queues', 'agent', 'proxy', 'configuration')->latest()->get();
         return new CrawlerResourceCollection($crawlers);
     }
 

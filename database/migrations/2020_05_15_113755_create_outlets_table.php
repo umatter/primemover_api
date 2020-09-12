@@ -15,7 +15,27 @@ class CreateOutletsTable extends Migration
     {
         Schema::create('outlets', function (Blueprint $table) {
             $table->id();
-            $table->timestamps();
+            $table->text('title')->nullable();
+            $table->string('outlet')->nullable();
+            $table->string('yhat_n')->nullable();
+            $table->string('congress')->nullable();
+            $table->string('domain')->nullable();
+            $table->string('url')->nullable();
+            $table->string('redirect_url')->nullable();
+            $table->string('media_type')->nullable();
+            $table->string('pub_state')->nullable();
+            $table->string('avg_reach_rank')->nullable();
+            $table->string('avg_reach_permillion')->nullable();
+            $table->longText('awis_categories')->nullable();
+            $table->string('source')->nullable();
+            $table->string('pi')->nullable();
+
+            $table->timestamp('updated_at')->useCurrent()->default(\DB::raw('CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP'));
+            $table->timestamp('created_at')->useCurrent();
+
+            // Foreign keys
+            $table->unsignedBigInteger('user_id')->default(1);
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('restrict');
         });
     }
 

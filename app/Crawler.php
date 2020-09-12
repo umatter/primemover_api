@@ -10,22 +10,22 @@ class Crawler extends Model
 
     public function proxy()
     {
-        return $this->belongsTo('App\Proxy');
+        return $this->belongsTo('App\Proxy')->where('active', 1);
     }
 
     public function configuration()
     {
-        return $this->belongsTo('App\Configuration');
+        return $this->belongsTo('App\Configuration')->where('active', 1);
     }
 
     public function queues()
     {
-        return $this->hasMany('App\Queue')->with('jobs');
+        return $this->hasMany('App\Queue')->with('jobs')->where('active', 1);
     }
 
     public function agent()
     {
-        return $this->belongsTo('App\Agent');
+        return $this->belongsTo('App\Agent')->where('active', 1);
     }
 
     public function user()
