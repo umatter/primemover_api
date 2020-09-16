@@ -91,8 +91,8 @@ class QueueController extends Controller
     public function update(Request $request, Queue $queue)
     {
         $data = $request->all();
-        $data['started_at'] = Carbon::parse($data['started_at'])->toISOString();
-        $data['finished_at'] = Carbon::parse($data['finished_at'])->toISOString();
+        //$data['started_at'] = Carbon::parse($data['started_at'])->toISOString();
+        //$data['finished_at'] = Carbon::parse($data['finished_at'])->toISOString();
         $queue->update($data);
         return $queue;
     }

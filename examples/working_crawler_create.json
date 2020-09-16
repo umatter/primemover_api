@@ -1,23 +1,44 @@
 [
   {
-    "name": "Erster Crawler",
-    "description": "erstellt via API",
-    "configurations": [
+    "name": "Just a Crawler",
+    "description": "Crawler created through API",
+    "active": 1,
+    "testing": 1,
+    "configuration": [
       {
         "name": "Configuration created through API",
-        "description": "A basic Configuration"
+        "description": "A basic Configuration",
+        "params": [
+          {
+            "pi": -0.8441270315193785,
+            "psi": -0.15200161677194193,
+            "kappa": "",
+            "tau": "",
+            "beta": "",
+            "alpha": "",
+            "search_terms": [
+              "intimate partner",
+              "american energy"
+            ],
+            "media_outlet_urls": [
+              "https://whoradio.iheart.com/",
+              "https://www.newschannel10.com/"
+            ]
+          }
+        ]
       }
     ],
-    "agents": [
+    "agent": [
       {
         "name": "Agent created through API",
         "description": "A basic Agent",
+        "location": "",
         "identification": "Multilogin",
         "multilogin_id": "c6e70352-aa50-4ce0-bd6c-f1d538f6a1dd",
         "multilogin_profile": "{ \"key\": \"value\" }"
       }
     ],
-    "proxies": [
+    "proxy": [
       {
         "name": "Proxy created through API",
         "description": "A basic Proxy",
@@ -32,7 +53,7 @@
       {
         "name": "GoogleSearch",
         "description": "Open Google, enter a search querry and select a result.",
-        "start_at": "",
+        "start_at": "2020-09-11T17:32:01.000+02:00",
         "jobs": [
           {
             "name": "Visit 1",
@@ -112,7 +133,7 @@
       {
         "name": "Visit Direct",
         "description": "Visit a media outlet and scroll for 2-3 minutes.",
-        "start_at": "",
+        "start_at": "2020-09-11T17:32:01.000+02:00",
         "jobs": [
           {
             "name": "Visit",
@@ -149,15 +170,20 @@
   },
   {
     "name": "Zweiter Crawler",
+    "active": 1,
+    "testing": 1,
     "description": "erstellt via API",
-    "configurations": [],
-    "proxies": [],
-    "agents": [],
+    "configuration": [
+    ],
+    "proxy": [
+    ],
+    "agent": [
+    ],
     "queues": [
       {
         "name": "GoogleSearch",
         "description": "Open Google, enter a search querry and select a result.",
-        "start_at": "",
+        "start_at": "2020-09-11T17:32:01.000+02:00",
         "jobs": [
           {
             "name": "Visit",
@@ -237,7 +263,7 @@
       {
         "name": "Visit Direct",
         "description": "Visit a media outlet and scroll for 2-3 minutes.",
-        "start_at": "",
+        "start_at": "2020-09-11T17:32:01.000+02:00",
         "jobs": [
           {
             "name": "Visit",
