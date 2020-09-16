@@ -134,6 +134,12 @@ class CrawlerController extends Controller
         return false;
     }
 
+
+    /**
+     * Resolve IP
+     * @param $ip
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function ip($ip)
     {
         return response()->json([
@@ -141,18 +147,23 @@ class CrawlerController extends Controller
         ], Response::HTTP_OK);
     }
 
+    /**
+     * Create new crawler from script, POST data sent
+     */
     public function load()
     {
         $incoming = json_decode(request()->getContent(), true);
         return $this->makeCrawlers($incoming);
-
     }
 
+    /**
+     * Make a new crawler and other appended objects
+     * @param $data
+     */
     public function makeCrawlers($data)
     {
         foreach ($data as $crawler) {
 
-            // Premare data for a crawler
             $new = new Crawler([
                 "user_id" => 1,
                 "proxy_id" => 1,
@@ -167,26 +178,31 @@ class CrawlerController extends Controller
             $this->makeQueues($crawler['queues'], $new);
 
             // Add agent
-            if ($crawler['agents']) {
-                $agent = $this->makeAgents($crawler['agents']);
+            if ($crawler['agent']) {
+                $agent = $this->makeAgents($crawler['agent']);
                 $new->agent_id = $agent->id;
             }
 
             // Add proxy
-            if ($crawler['proxies']) {
-                $proxy = $this->makeProxies($crawler['proxies']);
+            if ($crawler['proxy']) {
+                $proxy = $this->makeProxies($crawler['proxy']);
                 $new->proxy_id = $proxy->id;
             }
 
             // Add configuration
-            if ($crawler['configurations']) {
-                $configuration = $this->makeConfigurations($crawler['configurations']);
+            if ($crawler['configuration']) {
+                $configuration = $this->makeConfigurations($crawler['configuration']);
                 $new->configuration_id = $configuration->id;
             }
             $new->update();
         }
     }
 
+    /**
+     * Creates Queues for Crawler
+     * @param $data
+     * @param $crawler
+     */
     public function makeQueues($data, $crawler)
     {
         foreach ($data as $queue) {
@@ -202,6 +218,11 @@ class CrawlerController extends Controller
         }
     }
 
+    /**
+     * Creates Jobs in Queues
+     * @param $data
+     * @param $queue
+     */
     public function makeJobs($data, $queue)
     {
         foreach ($data as $job) {
@@ -217,6 +238,11 @@ class CrawlerController extends Controller
         }
     }
 
+    /**
+     * Creates Behaviors for Jobs
+     * @param $data
+     * @param $job
+     */
     public function makeBehaviors($data, $job)
     {
         foreach ($data as $behavior) {
@@ -231,6 +257,11 @@ class CrawlerController extends Controller
         }
     }
 
+    /**
+     * Creates Proxy for Crawler
+     * @param $data
+     * @return Proxy
+     */
     public function makeProxies($data)
     {
         $proxy = $data[0];
@@ -248,6 +279,11 @@ class CrawlerController extends Controller
         return $new;
     }
 
+    /**
+     * Creates Configuration with Params for Crawler
+     * @param $data
+     * @return Configuration
+     */
     public function makeConfigurations($data)
     {
         $configuration = $data[0];
@@ -279,6 +315,11 @@ class CrawlerController extends Controller
         return $new;
     }
 
+    /**
+     * Creates Agents for Crawler
+     * @param $data
+     * @return Agent
+     */
     public function makeAgents($data)
     {
         $agent = $data[0];
@@ -289,6 +330,7 @@ class CrawlerController extends Controller
             "identification" => $agent['identification'],
             "multilogin_id" => $agent['multilogin_id'],
             "multilogin_profile" => $agent['multilogin_profile'],
+            "location" => $agent['location']
         ]);
         $new->save();
         return $new;

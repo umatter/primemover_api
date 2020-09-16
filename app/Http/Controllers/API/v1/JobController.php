@@ -93,8 +93,11 @@ class JobController extends Controller
         ]);*/
         $data = $request->all();
 
-        $data['started_at'] = Carbon::parse($data['started_at'])->toISOString();
-        $data['finished_at'] = Carbon::parse($data['finished_at'])->toISOString();
+        //$started_at = Carbon::parse($data['started_at'])->toISOString();
+        //$finished_at = Carbon::parse($data['finished_at'])->toISOString();
+
+        //$data['started_at'] = $started_at;
+        //$data['finished_at'] = $finished_at;
 
         $job->update($data);
         return $job;

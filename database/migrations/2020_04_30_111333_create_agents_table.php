@@ -23,6 +23,7 @@ class CreateAgentsTable extends Migration
             $table->string('identification')->default('Multilogin');
             $table->string('multilogin_id')->nullable();
             $table->longText('multilogin_profile')->nullable();
+            $table->string('location')->nullable();
             $table->boolean('active')->default(1);
 
             $table->timestamp('updated_at')->useCurrent()->default(\DB::raw('CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP'));
