@@ -98,6 +98,26 @@
                     "job_id": 8,
                     "updated_at": "2020-08-24T16:38:17.000000Z",
                     "created_at": "2020-08-24T16:38:17.000000Z"
+                }, {
+                    "id": 11,
+                    "name": "appendReturn",
+                    "description": "Optional field: appends a return key after the text given if true",
+                    "value": true|false, -- choose one, defaults to true
+                    "active": 1,
+                    "user_id": 1,
+                    "job_id": 8,
+                    "updated_at": "2020-08-24T16:38:17.000000Z",
+                    "created_at": "2020-08-24T16:38:17.000000Z"
+                }, {
+                    "id": 12,
+                    "name": "typingMode",
+                    "description": "Optional field: How the text is entered into the field",
+                    "value": "DIRECT|SIMULATED_KEEPINGTYPOS|SIMULATED_FIXINGTYPOS|SIMULATED_NOTYPOS", -- Choose one, defaults to SIMULATED_NOTYPOS
+                    "active": 1,
+                    "user_id": 1,
+                    "job_id": 8,
+                    "updated_at": "2020-08-24T16:38:17.000000Z",
+                    "created_at": "2020-08-24T16:38:17.000000Z"
                 }
             ]
         }, {
