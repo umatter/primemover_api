@@ -302,7 +302,7 @@ class CrawlerController extends Controller
     public function makeConfigurations($data)
     {
         $configuration = $data[0];
-        $params = $configuration['parameters'];
+        $params = $configuration['params'];
 
         $new = new Configuration([
             "user_id" => 1,
