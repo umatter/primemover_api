@@ -18,9 +18,9 @@ class CreateAgentsTable extends Migration
 
             $table->unsignedBigInteger('user_id');
 
-            $table->string('name')->default('Chrome');
+            $table->string('name')->nullable();
             $table->string('description')->nullable();
-            $table->string('identification')->default('Multilogin');
+            $table->string('identification')->nullable();
             $table->string('multilogin_id')->nullable();
             $table->longText('multilogin_profile')->nullable();
             $table->string('location')->nullable();

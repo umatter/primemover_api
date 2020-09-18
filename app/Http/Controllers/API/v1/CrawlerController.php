@@ -17,6 +17,8 @@ use Arimolzer\IPStackFinder\Facade\IPStackFinderFacade;
 
 use App\Http\Resources\v1\CrawlerResource;
 use App\Http\Resources\v1\CrawlerResourceCollection;
+use Illuminate\Support\Arr;
+use phpDocumentor\Reflection\Types\Collection;
 
 class CrawlerController extends Controller
 {
@@ -162,6 +164,9 @@ class CrawlerController extends Controller
      */
     public function makeCrawlers($data)
     {
+        Crawler::query()->update(['updated' => 0]);
+
+        $crawlers = [];
         foreach ($data as $crawler) {
 
             $new = new Crawler([
@@ -171,6 +176,9 @@ class CrawlerController extends Controller
                 "agent_id" => 1,
                 "name" => $crawler['name'],
                 "description" => $crawler['description'],
+                "testing" => $crawler['testing'],
+                "active" => $crawler['active'],
+                "updated" => 1,
             ]);
             $new->save();
 
@@ -195,7 +203,14 @@ class CrawlerController extends Controller
                 $new->configuration_id = $configuration->id;
             }
             $new->update();
+            array_push($crawlers, $new);
         }
+        return response()->json([
+            'crawlers' => Crawler::latest()
+                ->with('proxy', 'agent', 'configuration', 'queues')
+                ->where('updated', 1)
+                ->get()
+        ], Response::HTTP_OK);
     }
 
     /**
@@ -287,7 +302,7 @@ class CrawlerController extends Controller
     public function makeConfigurations($data)
     {
         $configuration = $data[0];
-        $params = $configuration['params'];
+        $params = $configuration['parameters'];
 
         $new = new Configuration([
             "user_id" => 1,

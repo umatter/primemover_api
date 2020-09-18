@@ -19,6 +19,8 @@ class CreateQueuesTable extends Migration
             $table->string('name');
             $table->string('description');
             $table->boolean('active')->default(1);
+            $table->boolean('processed')->default(0);
+            $table->boolean('reviewed')->default(0);
             $table->string('status_code')->nullable();
             $table->text('status_message')->nullable();
             $table->integer('order')->default(1);
