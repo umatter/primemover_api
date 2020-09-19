@@ -16,10 +16,6 @@ class CreateJobsTable extends Migration
     {
         Schema::create('jobs', function (Blueprint $table) {
             $table->id();
-
-            $table->unsignedBigInteger('user_id');
-            $table->unsignedBigInteger('queue_id');
-
             $table->string('name')->default('Query 111');
             $table->string('description')->nullable();
             $table->string('type')->default('visit_webpage_browserbar');
@@ -35,8 +31,8 @@ class CreateJobsTable extends Migration
             $table->string('finished_at')->nullable();
 
             // Foreign keys
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('restrict');
-            $table->foreign('queue_id')->references('id')->on('queues')->onDelete('restrict');
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->foreignId('queue_id')->constrained()->onDelete('cascade');
 
         });
     }

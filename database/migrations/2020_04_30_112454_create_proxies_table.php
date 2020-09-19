@@ -15,9 +15,6 @@ class CreateProxiesTable extends Migration
     {
         Schema::create('proxies', function (Blueprint $table) {
             $table->id();
-
-            $table->unsignedBigInteger('user_id');
-
             $table->string('name');
             $table->string('description')->nullable();
             $table->string('hostname');
@@ -31,7 +28,7 @@ class CreateProxiesTable extends Migration
             $table->timestamp('created_at')->useCurrent();
 
             // Foreign keys
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('restrict');
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
         });
     }
 

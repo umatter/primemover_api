@@ -3,10 +3,11 @@
 namespace App\Http\Controllers\API\v1;
 
 use App\Outlet;
+use Exception;
 use Illuminate\Http\Request;
-
 use App\Http\Resources\v1\OutletResource;
 use App\Http\Resources\v1\OutletResourceCollection;
+use Illuminate\Validation\ValidationException;
 
 class OutletController extends Controller
 {
@@ -17,96 +18,83 @@ class OutletController extends Controller
      */
     public function index(Request $request): OutletResourceCollection
     {
-
         $keyword = $request->input('keyword');
-        $outlets = Outlet::latest()->get();
+        $outlets = Outlet::with(['user'])->latest()->get();
         return new OutletResourceCollection($outlets);
     }
-
 
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return OutletResourceCollection
      */
     public function create()
     {
         //
-        return;
+        return new OutletResourceCollection(new Outlet);
     }
 
     /**
-     * Store a newly created resource in storage.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @return OutletResourceCollection
+     * Store a new resource.
+     * @param Request $request
+     * @return OutletResource
+     * @throws ValidationException
      */
-    public function store(Request $request): OutletResourceCollection
+    public function store(Request $request): OutletResource
     {
-
-        $this->validate($request, [
-            //'name' => 'required',
-        ]);
-
         $data = $request->all();
         $data['user_id'] = auth()->user() ? auth()->user()->id : 1;
 
         $outlet = Outlet::create($data);
-        $outlets = Outlet::latest()->paginate(5);
-        return new OutletResourceCollection($outlets, $outlet);
+        return new OutletResource($outlet);
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param \App\Outlet $outlet
-     * @return \Illuminate\Http\Response
+     * Show a resource.
+     * @param $id
+     * @return OutletResource
      */
     public function show($id): OutletResource
     {
-        $outlet = Outlet::findOrFail($id);
+        $outlet = Outlet::with(['user'])->findOrFail($id);
         return new OutletResource($outlet);
     }
 
     /**
      * Show the form for editing the specified resource.
-     *
-     * @param \App\Outlet $outlet
-     * @return \Illuminate\Http\Response
+     * @param Outlet $outlet
+     * @return mixed
      */
-    public function edit(Outlet $outlet)
+    public function edit(Outlet $outlet): OutletResource
     {
-        //
-        return;
+        return new OutletResource($outlet);
     }
 
     /**
      * Update the specified resource in storage.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @param \App\Outlet $outlet
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @param Outlet $outlet
+     * @return OutletResource
      */
-    public function update(Request $request, Outlet $outlet)
+    public function update(Request $request, Outlet $outlet): OutletResource
     {
-        //
-        return;
+        $data = $request->all();
+        $outlet->update($data);
+        return new OutletResource($outlet);
     }
 
     /**
      * Remove the specified resource from storage.
-     *
-     * @param \App\Outlet $outlet
-     * @return \Illuminate\Http\Response
+     * @param Outlet $outlet
+     * @return OutletResourceCollection
+     * @throws Exception
      */
     public function destroy(Outlet $outlet): OutletResourceCollection
     {
-        if ($outlet) {
-            $outlet->delete();
-            //return Outlet::latest()->get();
-            $outlets = Outlet::latest()->paginate(5);
-            return new OutletResourceCollection($outlets);
-        }
-        return false;
+        $outlet->delete();
+        return new OutletResourceCollection(
+            Outlet::with(
+                ['user']
+            )->latest()->get());
     }
 }

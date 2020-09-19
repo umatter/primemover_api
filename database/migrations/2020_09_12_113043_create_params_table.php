@@ -29,11 +29,8 @@ class CreateParamsTable extends Migration
             $table->timestamp('created_at')->useCurrent();
 
             // Foreign keys
-            $table->unsignedBigInteger('user_id');
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('restrict');
-
-            $table->unsignedBigInteger('configuration_id');
-            $table->foreign('configuration_id')->references('id')->on('configurations')->onDelete('restrict');
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->foreignId('configuration_id')->constrained()->onDelete('cascade');
         });
     }
 

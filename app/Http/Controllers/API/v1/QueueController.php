@@ -3,11 +3,11 @@
 namespace App\Http\Controllers\API\v1;
 
 use App\Queue;
-use Carbon\Carbon;
+use Exception;
 use Illuminate\Http\Request;
-
 use App\Http\Resources\v1\QueueResource;
 use App\Http\Resources\v1\QueueResourceCollection;
+use Illuminate\Validation\ValidationException;
 
 class QueueController extends Controller
 {
@@ -18,99 +18,93 @@ class QueueController extends Controller
      */
     public function index(Request $request): QueueResourceCollection
     {
-
         $keyword = $request->input('keyword');
-        $queues = Queue::with(['crawler', 'jobs'])->latest()->get();
+        $queues = Queue::with(
+            [
+                'user',
+                'crawler',
+                'jobs'
+            ]
+        )->latest()->get();
         return new QueueResourceCollection($queues);
     }
-
 
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return QueueResourceCollection
      */
     public function create()
     {
         //
-        return;
+        return new QueueResourceCollection(new Queue);
     }
 
     /**
-     * Store a newly created resource in storage.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @return QueueResourceCollection
+     * Store a new resource.
+     * @param Request $request
+     * @return QueueResource
+     * @throws ValidationException
      */
-    public function store(Request $request): QueueResourceCollection
+    public function store(Request $request): QueueResource
     {
-
-        $this->validate($request, [
-            'name' => 'required',
-        ]);
-
         $data = $request->all();
         $data['user_id'] = auth()->user() ? auth()->user()->id : 1;
 
         $queue = Queue::create($data);
-        $queues = Queue::all();
-        return new QueueResourceCollection($queues, $queue);
+        return new QueueResource($queue);
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param \App\Queue $queue
-     * @return \Illuminate\Http\Response
+     * Show a resource.
+     * @param $id
+     * @return QueueResource
      */
     public function show($id): QueueResource
     {
-        $queue = Queue::with(['user', 'crawler'])->findOrFail($id);
+        $queue = Queue::with(['user'])->findOrFail($id);
         return new QueueResource($queue);
     }
 
     /**
      * Show the form for editing the specified resource.
-     *
-     * @param \App\Queue $queue
-     * @return \Illuminate\Http\Response
+     * @param Queue $queue
+     * @return mixed
      */
-    public function edit(Queue $queue)
+    public function edit(Queue $queue): QueueResource
     {
-        //
-        return;
+        return new QueueResource($queue);
     }
 
     /**
      * Update the specified resource in storage.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @param \App\Queue $queue
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @param Queue $queue
+     * @return QueueResource
      */
-    public function update(Request $request, Queue $queue)
+    public function update(Request $request, Queue $queue): QueueResource
     {
         $data = $request->all();
-        //$data['started_at'] = Carbon::parse($data['started_at'])->toISOString();
-        //$data['finished_at'] = Carbon::parse($data['finished_at'])->toISOString();
         $queue->update($data);
-        return $queue;
+        return new QueueResource($queue);
     }
 
     /**
      * Remove the specified resource from storage.
-     *
-     * @param \App\Queue $queue
-     * @return \Illuminate\Http\Response
+     * @param Queue $queue
+     * @return QueueResourceCollection
+     * @throws Exception
      */
     public function destroy(Queue $queue): QueueResourceCollection
     {
-        if ($queue) {
-            $queue->delete();
-            //return Queue::latest()->get();
-            $queues = Queue::latest()->paginate(5);
-            return new QueueResourceCollection($queues);
-        }
-        return false;
+        $queue->delete();
+        return new QueueResourceCollection(
+            Queue::with(
+                [
+                    'user',
+                    'crawler',
+                    'jobs'
+                ]
+            )->latest()->get());
     }
 }

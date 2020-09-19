@@ -45,8 +45,7 @@ class CreateTermsTable extends Migration
             $table->timestamp('created_at')->useCurrent();
 
             // Foreign keys
-            $table->unsignedBigInteger('user_id')->default(1);
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('restrict');
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
         });
     }
 

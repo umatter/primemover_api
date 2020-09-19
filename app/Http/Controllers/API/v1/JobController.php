@@ -22,45 +22,49 @@ class JobController extends Controller
     public function index(Request $request): JobResourceCollection
     {
         $keyword = $request->input('keyword');
-        $jobs = Job::with(['behaviors', 'reports:id,job_id,path'])->latest()->get();
+        $jobs = Job::with(
+            [
+                'behaviors',
+                'reports:id,job_id,path'
+            ]
+        )->latest()->get();
+
         return new JobResourceCollection($jobs);
     }
 
     /**
      * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
+     * @return JobResourceCollection
      */
-    public function create()
+    public function create(): JobResourceCollection
     {
-        //
+        return new JobResourceCollection(new Job);
     }
-
 
     /**
      * Store a newly created resource in storage.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @return JobResource
+     * @throws \Illuminate\Validation\ValidationException
      */
-    public function store(Request $request)
+    public function store(Request $request): JobResource
     {
+        $data = $request->all();
+
         $this->validate($request, [
             'name' => 'required',
         ]);
 
-        $data = $request->all();
         $data['user_id'] = auth()->user() ? auth()->user()->id : 1;
 
         $job = Job::create($data);
-        return $job;
+        return new JobResource($job);
     }
 
     /**
      * Display the specified resource.
-     *
-     * @param \App\Job $job
-     * @return \Illuminate\Http\Response
+     * @param $id
+     * @return JobResource
      */
     public function show($id): JobResource
     {
@@ -70,52 +74,38 @@ class JobController extends Controller
 
     /**
      * Show the form for editing the specified resource.
-     *
-     * @param \App\Job $job
-     * @return \Illuminate\Http\Response
+     * @param Job $job
+     * @return JobResource
      */
-    public function edit(Job $job)
+    public function edit(Job $job): JobResource
     {
-        //
+        return new JobResource($job);
     }
 
     /**
      * Update the specified resource in storage.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @param \App\Job $job
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @param Job $job
+     * @return JobResource
      */
-    public function update(Request $request, Job $job)
+    public function update(Request $request, Job $job): JobResource
     {
-        /*$this->validate($request, [
-            'id' => 'required',
-        ]);*/
         $data = $request->all();
-
-        //$started_at = Carbon::parse($data['started_at'])->toISOString();
-        //$finished_at = Carbon::parse($data['finished_at'])->toISOString();
-
-        //$data['started_at'] = $started_at;
-        //$data['finished_at'] = $finished_at;
-
         $job->update($data);
-        return $job;
-
+        return new JobResource($job);
     }
 
     /**
      * Remove the specified resource from storage.
-     *
-     * @param \App\Job $job
-     * @return \Illuminate\Http\Response
+     * @param Job $job
+     * @return JobResourceCollection
+     * @throws \Exception
      */
-    public function destroy(Job $job)
+    public function destroy(Job $job): JobResourceCollection
     {
-        if ($job) {
-            $job->delete();
-            return Job::latest()->get();
-        }
-        return false;
+        $job->delete();
+        return new JobResourceCollection(
+            Job::with(['behaviors', 'reports:id,job_id,path'])->latest()->get()
+        );
     }
 }

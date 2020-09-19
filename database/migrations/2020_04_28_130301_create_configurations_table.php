@@ -15,7 +15,6 @@ class CreateConfigurationsTable extends Migration
     {
         Schema::create('configurations', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id');
             $table->string('name')->default('Konfiguration xyz');
             $table->string('description')->nullable();
             $table->boolean('active')->default(1);
@@ -24,7 +23,7 @@ class CreateConfigurationsTable extends Migration
             $table->timestamp('created_at')->useCurrent();
 
             // Foreign keys
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('restrict');
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
         });
     }
 

@@ -2,102 +2,104 @@
 
 namespace App\Http\Controllers\API\v1;
 
+use App\Proxy;
+use Exception;
+use Illuminate\Http\Request;
 use App\Http\Resources\v1\ProxyResource;
 use App\Http\Resources\v1\ProxyResourceCollection;
-use App\Proxy;
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
+use Illuminate\Validation\ValidationException;
 
 class ProxyController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
-     * @return Response
+     * @return ProxyResourceCollection
      */
     public function index(Request $request): ProxyResourceCollection
     {
         $keyword = $request->input('keyword');
-        $response = Proxy::with('user')->latest()->get();
-        return new ProxyResourceCollection($response);
+        $proxies = Proxy::with(
+            [
+                'user',
+                'crawler'
+            ]
+        )->latest()->get();
+        return new ProxyResourceCollection($proxies);
     }
 
     /**
      * Show the form for creating a new resource.
      *
-     * @return Response
+     * @return ProxyResourceCollection
      */
     public function create()
     {
         //
+        return new ProxyResourceCollection(new Proxy);
     }
 
     /**
-     * Store a newly created resource in storage.
-     *
+     * Store a new resource.
      * @param Request $request
-     * @return Response
+     * @return ProxyResource
+     * @throws ValidationException
      */
-    public function store(Request $request)
+    public function store(Request $request): ProxyResource
     {
-        $this->validate($request, [
-            'name' => 'required',
-        ]);
-
         $data = $request->all();
         $data['user_id'] = auth()->user() ? auth()->user()->id : 1;
 
         $proxy = Proxy::create($data);
-        return $proxy;
+        return new ProxyResource($proxy);
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param Proxy $proxy
-     * @return Response
+     * Show a resource.
+     * @param $id
+     * @return ProxyResource
      */
     public function show($id): ProxyResource
     {
-        $proxy = Proxy::with(['crawler'])->findOrFail($id);
+        $proxy = Proxy::with(['user'])->findOrFail($id);
         return new ProxyResource($proxy);
     }
 
     /**
      * Show the form for editing the specified resource.
-     *
      * @param Proxy $proxy
-     * @return Response
+     * @return mixed
      */
-    public function edit(Proxy $proxy)
+    public function edit(Proxy $proxy): ProxyResource
     {
-        //
+        return new ProxyResource($proxy);
     }
 
     /**
      * Update the specified resource in storage.
-     *
      * @param Request $request
      * @param Proxy $proxy
-     * @return Response
+     * @return ProxyResource
      */
-    public function update(Request $request, Proxy $proxy)
+    public function update(Request $request, Proxy $proxy): ProxyResource
     {
-        //
+        $data = $request->all();
+        $proxy->update($data);
+        return new ProxyResource($proxy);
     }
 
     /**
      * Remove the specified resource from storage.
-     *
      * @param Proxy $proxy
-     * @return Response
+     * @return ProxyResourceCollection
+     * @throws Exception
      */
-    public function destroy(Proxy $proxy)
+    public function destroy(Proxy $proxy): ProxyResourceCollection
     {
-        if ($proxy) {
-            $proxy->delete();
-            return Proxy::latest()->get();
-        }
-        return false;
+        $proxy->delete();
+        return new ProxyResourceCollection(
+            Proxy::with(
+                ['user', 'crawler']
+            )->latest()->get());
     }
 }

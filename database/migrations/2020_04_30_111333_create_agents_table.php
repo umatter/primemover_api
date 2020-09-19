@@ -15,9 +15,6 @@ class CreateAgentsTable extends Migration
     {
         Schema::create('agents', function (Blueprint $table) {
             $table->id();
-
-            $table->unsignedBigInteger('user_id');
-
             $table->string('name')->nullable();
             $table->string('description')->nullable();
             $table->string('identification')->nullable();
@@ -30,7 +27,7 @@ class CreateAgentsTable extends Migration
             $table->timestamp('created_at')->useCurrent();
 
             // Foreign keys
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('restrict');
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
         });
     }
 

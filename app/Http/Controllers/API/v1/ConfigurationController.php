@@ -3,61 +3,67 @@
 namespace App\Http\Controllers\API\v1;
 
 use App\Configuration;
+use App\Param;
+use Exception;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
-
-
 use App\Http\Resources\v1\ConfigurationResource;
 use App\Http\Resources\v1\ConfigurationResourceCollection;
+use Illuminate\Validation\ValidationException;
 
 class ConfigurationController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
-     * @return Response
+     * @return ConfigurationResourceCollection
      */
     public function index(Request $request): ConfigurationResourceCollection
     {
         $keyword = $request->input('keyword');
-        $configurations = Configuration::with('crawler', 'params')->latest()->get();
+        $configurations = Configuration::with(['crawler', 'params'])->latest()->get();
         return new ConfigurationResourceCollection($configurations);
     }
 
     /**
      * Show the form for creating a new resource.
      *
-     * @return Response
+     * @return ConfigurationResourceCollection
      */
     public function create()
     {
         //
+        return new ConfigurationResourceCollection(new Configuration);
     }
 
     /**
-     * Store a newly created resource in storage.
-     *
+     * Store a new resource.
      * @param Request $request
-     * @return Response
+     * @return ConfigurationResource
+     * @throws ValidationException
      */
-    public function store(Request $request)
+    public function store(Request $request): ConfigurationResource
     {
-        $this->validate($request, [
-            'name' => 'required',
-        ]);
-
-        $data = $request->all();
+        //$data = $request->all();
         $data['user_id'] = auth()->user() ? auth()->user()->id : 1;
-
+        $data['name'] = $request->name;
+        $data['description'] = $request->description;
+        $data['active'] = $request->active;
         $configuration = Configuration::create($data);
-        return $configuration;
+
+        $params = collect($request->params)->first();
+        $params['configuration_id'] = $configuration->id;
+        $params['user_id'] = auth()->user() ? auth()->user()->id : 1;
+
+        $newparam = new Param($params);
+        $newparam->save();
+
+        return new ConfigurationResource($configuration);
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param Configuration $configuration
-     * @return Response
+     * Show a resource.
+     * @param $id
+     * @return ConfigurationResource
      */
     public function show($id): ConfigurationResource
     {
@@ -67,36 +73,42 @@ class ConfigurationController extends Controller
 
     /**
      * Show the form for editing the specified resource.
-     *
      * @param Configuration $configuration
-     * @return Response
+     * @return mixed
      */
-    public function edit(Configuration $configuration)
+    public function edit(Configuration $configuration): ConfigurationResource
     {
-        //
+        return new ConfigurationResource($configuration);
     }
 
     /**
      * Update the specified resource in storage.
-     *
      * @param Request $request
      * @param Configuration $configuration
-     * @return Response
+     * @return ConfigurationResource
      */
-    public function update(Request $request, Configuration $configuration)
+    public function update(Request $request, Configuration $configuration): ConfigurationResource
     {
-        //
+        //$data = $request->all();
+        //$configuration->update($data);
+        $data['user_id'] = auth()->user() ? auth()->user()->id : 1;
+        $data['name'] = $request->name;
+        $data['description'] = $request->description;
+        $data['active'] = $request->active;
+        $configuration->update($data);
+
+        return new ConfigurationResource($configuration);
     }
 
     /**
      * Remove the specified resource from storage.
-     *
      * @param Configuration $configuration
-     * @return Response
+     * @return ConfigurationResourceCollection
+     * @throws Exception
      */
-    public function destroy(Configuration $configuration)
+    public function destroy(Configuration $configuration): ConfigurationResourceCollection
     {
         $configuration->delete();
-        return Configuration::latest()->get();
+        return new ConfigurationResourceCollection(Configuration::all());
     }
 }

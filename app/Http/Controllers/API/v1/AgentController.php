@@ -3,10 +3,13 @@
 namespace App\Http\Controllers\API\v1;
 
 use App\Agent;
+use App\Crawler;
+use Illuminate\Http\Client\RequestException;
 use Illuminate\Http\Request;
 
 use App\Http\Resources\v1\AgentResource;
 use App\Http\Resources\v1\AgentResourceCollection;
+use mysql_xdevapi\Exception;
 
 class AgentController extends Controller
 {
@@ -17,12 +20,6 @@ class AgentController extends Controller
      */
     public function index(Request $request): AgentResourceCollection
     {
-        /*return response()->json([
-
-            'agents' => Agent::latest()->get()
-
-        ], Response::HTTP_OK);*/
-
         $keyword = $request->input('keyword');
         $agents = Agent::with('crawler')->latest()->get();
         return new AgentResourceCollection($agents);
@@ -32,40 +29,33 @@ class AgentController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return AgentResourceCollection
      */
     public function create()
     {
         //
-        return;
+        return new AgentResourceCollection(new Agent);
     }
 
     /**
-     * Store a newly created resource in storage.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @return AgentResourceCollection
+     * Store a new resource.
+     * @param Request $request
+     * @return AgentResource
+     * @throws \Illuminate\Validation\ValidationException
      */
-    public function store(Request $request): AgentResourceCollection
+    public function store(Request $request): AgentResource
     {
-
-        $this->validate($request, [
-            'name' => 'required',
-        ]);
-
         $data = $request->all();
         $data['user_id'] = auth()->user() ? auth()->user()->id : 1;
 
         $agent = Agent::create($data);
-        $agents = Agent::latest()->paginate(5);
-        return new AgentResourceCollection($agents, $agent);
+        return new AgentResource($agent);
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param \App\Agent $agent
-     * @return \Illuminate\Http\Response
+     * Show a resource.
+     * @param $id
+     * @return AgentResource
      */
     public function show($id): AgentResource
     {
@@ -75,43 +65,36 @@ class AgentController extends Controller
 
     /**
      * Show the form for editing the specified resource.
-     *
-     * @param \App\Agent $agent
-     * @return \Illuminate\Http\Response
+     * @param Agent $agent
+     * @return mixed
      */
-    public function edit(Agent $agent)
+    public function edit(Agent $agent): AgentResource
     {
-        //
-        return;
+        return new AgentResource($agent);
     }
 
     /**
      * Update the specified resource in storage.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @param \App\Agent $agent
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @param Agent $agent
+     * @return AgentResource
      */
-    public function update(Request $request, Agent $agent)
+    public function update(Request $request, Agent $agent): AgentResource
     {
-        //
-        return;
+        $data = $request->all();
+        $agent->update($data);
+        return new AgentResource($agent);
     }
 
     /**
      * Remove the specified resource from storage.
-     *
-     * @param \App\Agent $agent
-     * @return \Illuminate\Http\Response
+     * @param Agent $agent
+     * @return AgentResourceCollection
+     * @throws \Exception
      */
     public function destroy(Agent $agent): AgentResourceCollection
     {
-        if ($agent) {
-            $agent->delete();
-            //return Agent::latest()->get();
-            $agents = Agent::latest()->paginate(5);
-            return new AgentResourceCollection($agents);
-        }
-        return false;
+        $agent->delete();
+        return new AgentResourceCollection(Agent::all());
     }
 }

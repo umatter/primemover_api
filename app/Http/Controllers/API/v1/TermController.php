@@ -3,10 +3,11 @@
 namespace App\Http\Controllers\API\v1;
 
 use App\Term;
+use Exception;
 use Illuminate\Http\Request;
-
 use App\Http\Resources\v1\TermResource;
 use App\Http\Resources\v1\TermResourceCollection;
+use Illuminate\Validation\ValidationException;
 
 class TermController extends Controller
 {
@@ -17,96 +18,90 @@ class TermController extends Controller
      */
     public function index(Request $request): TermResourceCollection
     {
-
         $keyword = $request->input('keyword');
-        $terms = Term::latest()->get();
+        $terms = Term::with(
+            [
+                'user'
+            ]
+        )->latest()->get();
         return new TermResourceCollection($terms);
     }
-
 
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return TermResourceCollection
      */
     public function create()
     {
         //
-        return;
+        return new TermResourceCollection(new Term);
     }
 
     /**
-     * Store a newly created resource in storage.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @return TermResourceCollection
+     * Store a new resource.
+     * @param Request $request
+     * @return TermResource
+     * @throws ValidationException
      */
-    public function store(Request $request): TermResourceCollection
+    public function store(Request $request): TermResource
     {
-
-        $this->validate($request, [
-            //'name' => 'required',
-        ]);
-
         $data = $request->all();
         $data['user_id'] = auth()->user() ? auth()->user()->id : 1;
 
         $term = Term::create($data);
-        $terms = Term::latest()->paginate(5);
-        return new TermResourceCollection($terms, $term);
+        return new TermResource($term);
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param \App\Term $term
-     * @return \Illuminate\Http\Response
+     * Show a resource.
+     * @param $id
+     * @return TermResource
      */
     public function show($id): TermResource
     {
-        $term = Term::findOrFail($id);
+        $term = Term::with(['user'])->findOrFail($id);
         return new TermResource($term);
     }
 
     /**
      * Show the form for editing the specified resource.
-     *
-     * @param \App\Term $term
-     * @return \Illuminate\Http\Response
+     * @param Term $term
+     * @return mixed
      */
-    public function edit(Term $term)
+    public function edit(Term $term): TermResource
     {
-        //
-        return;
+        return new TermResource($term);
     }
 
     /**
      * Update the specified resource in storage.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @param \App\Term $term
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @param Term $term
+     * @return TermResource
      */
-    public function update(Request $request, Term $term)
+    public function update(Request $request, Term $term): TermResource
     {
-        //
-        return;
+        $data = $request->all();
+        $term->update($data);
+        return new TermResource($term);
     }
 
     /**
      * Remove the specified resource from storage.
-     *
-     * @param \App\Term $term
-     * @return \Illuminate\Http\Response
+     * @param Term $term
+     * @return TermResourceCollection
+     * @throws Exception
      */
     public function destroy(Term $term): TermResourceCollection
     {
-        if ($term) {
-            $term->delete();
-            //return Term::latest()->get();
-            $terms = Term::latest()->paginate(5);
-            return new TermResourceCollection($terms);
-        }
-        return false;
+        $term->delete();
+        return new TermResourceCollection(
+            Term::with(
+                [
+                    'user'
+                ]
+            )->latest()->get()
+        );
     }
 }

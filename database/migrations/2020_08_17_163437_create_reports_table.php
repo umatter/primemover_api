@@ -23,15 +23,12 @@ class CreateReportsTable extends Migration
             $table->longText('filecontent')->nullable();
             $table->string('mimetype')->nullable();
 
-            $table->unsignedBigInteger('user_id');
-            $table->unsignedBigInteger('job_id');
-
             $table->timestamp('updated_at')->useCurrent()->default(\DB::raw('CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP'));
             $table->timestamp('created_at')->useCurrent();
 
             // Foreign keys
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('restrict');
-            $table->foreign('job_id')->references('id')->on('jobs')->onDelete('restrict');
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->foreignId('job_id')->constrained()->onDelete('cascade');
 
         });
     }

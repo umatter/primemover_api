@@ -24,20 +24,15 @@ class CreateQueuesTable extends Migration
             $table->string('status_code')->nullable();
             $table->text('status_message')->nullable();
             $table->integer('order')->default(1);
-
-            $table->unsignedBigInteger('user_id');
-            $table->unsignedBigInteger('crawler_id');
-
             $table->string('start_at')->nullable();
             $table->timestamp('updated_at')->useCurrent();
             $table->timestamp('created_at')->useCurrent();
-
             $table->string('started_at')->nullable();
             $table->string('finished_at')->nullable();
 
             // Foreign keys
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('restrict');
-            $table->foreign('crawler_id')->references('id')->on('crawlers')->onDelete('restrict');
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->foreignId('crawler_id')->constrained()->onDelete('cascade');
         });
     }
 

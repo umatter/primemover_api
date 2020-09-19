@@ -40,7 +40,15 @@ class CrawlerController extends Controller
         $keyword = $request->input('keyword');
         $crawlers = Crawler::where('testing', 0)
             ->where('active', 1)
-            ->with('queues', 'agent', 'proxy', 'configuration')->latest()->get();
+            ->with(
+                [
+                    'queues',
+                    'agent',
+                    'proxy',
+                    'configuration',
+                    'user'
+                ]
+            )->latest()->get();
         return new CrawlerResourceCollection($crawlers);
     }
 
@@ -54,7 +62,15 @@ class CrawlerController extends Controller
         $keyword = $request->input('keyword');
         $crawlers = Crawler::where('testing', 1)
             ->where('active', 1)
-            ->with('queues', 'agent', 'proxy', 'configuration')->latest()->get();
+            ->with(
+                [
+                    'queues',
+                    'agent',
+                    'proxy',
+                    'configuration',
+                    'user'
+                ]
+            )->latest()->get();
         return new CrawlerResourceCollection($crawlers);
     }
 
@@ -63,17 +79,18 @@ class CrawlerController extends Controller
      *
      * @return Response
      */
-    public function create()
+    public function create(): CrawlerResource
     {
+        return new CrawlerResource(new Crawler());
     }
 
     /**
      * Store a newly created resource in storage.
-     *
      * @param Request $request
-     * @return Response
+     * @return CrawlerResource
+     * @throws \Illuminate\Validation\ValidationException
      */
-    public function store(Request $request)
+    public function store(Request $request): CrawlerResource
     {
         $this->validate($request, [
             'name' => 'required',
@@ -83,7 +100,7 @@ class CrawlerController extends Controller
         $data['user_id'] = auth()->user() ? auth()->user()->id : 1;
 
         $crawler = Crawler::create($data);
-        return $crawler;
+        return new CrawlerResource($crawler);
     }
 
     /**
@@ -104,9 +121,9 @@ class CrawlerController extends Controller
      * @param Crawler $crawler
      * @return Response
      */
-    public function edit(Crawler $crawler)
+    public function edit(Crawler $crawler): CrawlerResource
     {
-        //
+        return new CrawlerResource($crawler);
     }
 
     /**
@@ -116,24 +133,32 @@ class CrawlerController extends Controller
      * @param Crawler $crawler
      * @return Response
      */
-    public function update(Request $request, Crawler $crawler)
+    public function update(Request $request, Crawler $crawler): CrawlerResource
     {
-        //
+        $data = $request->all();
+        $crawler->update($data);
+        return new CrawlerResource($crawler);
     }
 
     /**
      * Remove the specified resource from storage.
-     *
      * @param Crawler $crawler
-     * @return Response
+     * @return CrawlerResourceCollection
+     * @throws \Exception
      */
-    public function destroy(Crawler $crawler)
+    public function destroy(Crawler $crawler): CrawlerResourceCollection
     {
-        if ($crawler) {
-            $crawler->delete();
-            return Crawler::latest()->get();
-        }
-        return false;
+        $crawler->delete();
+        return new CrawlerResourceCollection(
+            Crawler::with(
+                [
+                    'queues',
+                    'agent',
+                    'proxy',
+                    'configuration'
+                ]
+            )->latest()->get()
+        );
     }
 
 
@@ -147,6 +172,38 @@ class CrawlerController extends Controller
         return response()->json([
             'result' => IPStackFinderFacade::get($ip)
         ], Response::HTTP_OK);
+    }
+
+    public function undo(): CrawlerResourceCollection
+    {
+        Crawler::where('updated', 1)->delete();
+
+        $crawlers = Crawler::with(
+                [
+                    'queues',
+                    'agent',
+                    'proxy',
+                    'configuration',
+                    'user'
+                ]
+            )->latest()->get();
+        return new CrawlerResourceCollection($crawlers);
+    }
+
+    public function cleanup(): CrawlerResourceCollection
+    {
+        Crawler::where('testing', 0)->delete();
+
+        $crawlers = Crawler::with(
+            [
+                'queues',
+                'agent',
+                'proxy',
+                'configuration',
+                'user'
+            ]
+        )->latest()->get();
+        return new CrawlerResourceCollection($crawlers);
     }
 
     /**
@@ -207,7 +264,15 @@ class CrawlerController extends Controller
         }
         return response()->json([
             'crawlers' => Crawler::latest()
-                ->with('proxy', 'agent', 'configuration', 'queues')
+                ->with(
+                    [
+                        'proxy',
+                        'agent',
+                        'configuration',
+                        'queues',
+                        'user'
+                    ]
+                )
                 ->where('updated', 1)
                 ->get()
         ], Response::HTTP_OK);

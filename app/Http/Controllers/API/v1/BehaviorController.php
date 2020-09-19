@@ -3,113 +3,95 @@
 namespace App\Http\Controllers\API\v1;
 
 use App\Behavior;
+use Exception;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
-
 use App\Http\Resources\v1\BehaviorResource;
 use App\Http\Resources\v1\BehaviorResourceCollection;
+use Illuminate\Validation\ValidationException;
 
 class BehaviorController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return BehaviorResourceCollection
      */
     public function index(Request $request): BehaviorResourceCollection
     {
-        /*return response()->json([
-
-            'agents' => Behavior::latest()->get()
-
-        ], Response::HTTP_OK);*/
-
         $keyword = $request->input('keyword');
-        $behaviors = Behavior::latest()->paginate(5);
+        $behaviors = Behavior::with(['job', 'user'])->latest()->get();
         return new BehaviorResourceCollection($behaviors);
     }
-
 
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return BehaviorResourceCollection
      */
     public function create()
     {
         //
+        return new BehaviorResourceCollection(new Behavior);
     }
 
     /**
-     * Store a newly created resource in storage.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @return BehaviorResourceCollection
+     * Store a new resource.
+     * @param Request $request
+     * @return BehaviorResource
+     * @throws ValidationException
      */
-    public function store(Request $request): BehaviorResourceCollection
+    public function store(Request $request): BehaviorResource
     {
-
-        $this->validate($request, [
-            'name' => 'required',
-        ]);
-
         $data = $request->all();
         $data['user_id'] = auth()->user() ? auth()->user()->id : 1;
 
         $behavior = Behavior::create($data);
-        $behaviors = Behavior::latest()->paginate(5);
-        return new BehaviorResourceCollection($behaviors, $behavior);
+        return new BehaviorResource($behavior);
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param \App\Behavior $behavior
-     * @return \Illuminate\Http\Response
+     * Show a resource.
+     * @param $id
+     * @return BehaviorResource
      */
     public function show($id): BehaviorResource
     {
-        $behavior = Behavior::with(['job'])->findOrFail($id);
+        $behavior = Behavior::with(['user', 'job'])->findOrFail($id);
         return new BehaviorResource($behavior);
     }
 
     /**
      * Show the form for editing the specified resource.
-     *
-     * @param \App\Behavior $behavior
-     * @return \Illuminate\Http\Response
+     * @param Behavior $behavior
+     * @return mixed
      */
-    public function edit(Behavior $behavior)
+    public function edit(Behavior $behavior): BehaviorResource
     {
-        //
+        return new BehaviorResource($behavior);
     }
 
     /**
      * Update the specified resource in storage.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @param \App\Behavior $behavior
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @param Behavior $behavior
+     * @return BehaviorResource
      */
-    public function update(Request $request, Behavior $behavior)
+    public function update(Request $request, Behavior $behavior): BehaviorResource
     {
-        //
+        $data = $request->all();
+        $behavior->update($data);
+        return new BehaviorResource($behavior);
     }
 
     /**
      * Remove the specified resource from storage.
-     *
-     * @param \App\Behavior $behavior
-     * @return \Illuminate\Http\Response
+     * @param Behavior $behavior
+     * @return BehaviorResourceCollection
+     * @throws Exception
      */
     public function destroy(Behavior $behavior): BehaviorResourceCollection
     {
-        if ($behavior) {
-            $behavior->delete();
-            //return Behavior::latest()->get();
-            $behaviors = Behavior::latest()->paginate(5);
-            return new BehaviorResourceCollection($behaviors);
-        }
-        return false;
+        $behavior->delete();
+        return new BehaviorResourceCollection(Behavior::all());
     }
 }
