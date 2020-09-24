@@ -167,29 +167,52 @@ class CrawlerController extends Controller
      * @param $ip
      * @return \Illuminate\Http\JsonResponse
      */
-    public function ip($ip)
+    public function ip($ip = null)
     {
-        return response()->json([
-            'result' => IPStackFinderFacade::get($ip)
-        ], Response::HTTP_OK);
+        $final = ($ip) ? $ip : request()->ip();
+        if (!$this->isLocalAddress($final)) {
+            return response()->json([
+                'result' => IPStackFinderFacade::get($final)
+            ], Response::HTTP_OK);
+        }
+        return $final;
     }
 
+
+    /**
+     * Check if IP is local.
+     * @param $ip
+     * @return bool
+     */
+    public function isLocalAddress($ip)
+    {
+        return $ip === '::1' || $ip === '127.0.0.1';
+    }
+
+    /**
+     * Remove records created in last load()
+     * @return CrawlerResourceCollection
+     */
     public function undo(): CrawlerResourceCollection
     {
         Crawler::where('updated', 1)->delete();
 
         $crawlers = Crawler::with(
-                [
-                    'queues',
-                    'agent',
-                    'proxy',
-                    'configuration',
-                    'user'
-                ]
-            )->latest()->get();
+            [
+                'queues',
+                'agent',
+                'proxy',
+                'configuration',
+                'user'
+            ]
+        )->latest()->get();
         return new CrawlerResourceCollection($crawlers);
     }
 
+    /**
+     * Remove all records matching a specific schema
+     * @return CrawlerResourceCollection
+     */
     public function cleanup(): CrawlerResourceCollection
     {
         Crawler::where('testing', 0)->delete();
