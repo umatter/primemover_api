@@ -25,7 +25,7 @@ class Job extends Model
 
     public function queue()
     {
-        return $this->belongsTo('App\Queue');
+        return $this->belongsTo('App\Queue')->with('jobs');
     }
 
     public function behaviors()

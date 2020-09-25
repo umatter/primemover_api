@@ -68,7 +68,12 @@ class JobController extends Controller
      */
     public function show($id): JobResource
     {
-        $job = Job::with(['behaviors'])->findOrFail($id);
+        $job = Job::with([
+            'behaviors',
+            'reports:id,job_id,path,created_at,updated_at',
+            'queue',
+            'crawler'
+        ])->findOrFail($id);
         return new JobResource($job);
     }
 
