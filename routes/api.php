@@ -29,6 +29,10 @@ Route::prefix('v1')->group(function () {
         Route::resource('outlets', 'API\v1\OutletController');
         Route::resource('params', 'API\v1\ParamController');
         Route::get('queues/job/{jobid}/', 'API\v1\QueueController@job');
+        Route::get('queues-processed', 'API\v1\QueueController@processed');
+        Route::get('queues-unprocessed', 'API\v1\QueueController@unprocessed');
+        Route::get('queues-reviewed', 'API\v1\QueueController@reviewed');
+        Route::get('queues-unreviewed', 'API\v1\QueueController@unreviewed');
         Route::get('ip/{ip?}', 'API\v1\CrawlerController@ip');
         Route::get('file/{report}', 'API\v1\ReportController@getFile');
         Route::get('crawlers-testing', 'API\v1\CrawlerController@testing');

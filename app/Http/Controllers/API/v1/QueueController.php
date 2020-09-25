@@ -67,12 +67,57 @@ class QueueController extends Controller
         return new QueueResource($queue);
     }
 
+    /**
+     * Find queue that belongs to a job
+     * @param $id
+     * @return QueueResource
+     */
     public function job($id): QueueResource
     {
         $job = Job::findOrFail($id);
         $queue = $job->queue()->first();
 
         return new QueueResource($queue);
+    }
+
+    /**
+     * Get all processed queues
+     * @return QueueResourceCollection
+     */
+    public function processed(): QueueResourceCollection
+    {
+        $queue = Queue::with(['user', 'jobs'])->where('processed', 1)->get();
+        return new QueueResourceCollection($queue);
+    }
+
+    /**
+     * Get all unprocessed queues
+     * @return QueueResourceCollection
+     */
+    public function unprocessed(): QueueResourceCollection
+    {
+        $queue = Queue::with(['user', 'jobs'])->where('processed', 0)->get();
+        return new QueueResourceCollection($queue);
+    }
+
+    /**
+     * Get all reviewed queues
+     * @return QueueResourceCollection
+     */
+    public function reviewed(): QueueResourceCollection
+    {
+        $queue = Queue::with(['user', 'jobs'])->where('reviewed', 1)->get();
+        return new QueueResourceCollection($queue);
+    }
+
+    /**
+     * Get all not reviewed queues
+     * @return QueueResourceCollection
+     */
+    public function unreviewed(): QueueResourceCollection
+    {
+        $queue = Queue::with(['user', 'jobs'])->where('reviewed', 0)->get();
+        return new QueueResourceCollection($queue);
     }
 
     /**
