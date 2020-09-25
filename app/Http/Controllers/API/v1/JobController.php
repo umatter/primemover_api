@@ -70,9 +70,7 @@ class JobController extends Controller
     {
         $job = Job::with([
             'behaviors',
-            'reports:id,job_id,path,created_at,updated_at',
-            'queue',
-            'crawler'
+            'reports:id,job_id,path,created_at,updated_at'
         ])->findOrFail($id);
         return new JobResource($job);
     }

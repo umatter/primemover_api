@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API\v1;
 
+use App\Job;
 use App\Queue;
 use Exception;
 use Illuminate\Http\Request;
@@ -62,7 +63,15 @@ class QueueController extends Controller
      */
     public function show($id): QueueResource
     {
-        $queue = Queue::with(['user'])->findOrFail($id);
+        $queue = Queue::with(['user', 'jobs'])->findOrFail($id);
+        return new QueueResource($queue);
+    }
+
+    public function job($id): QueueResource
+    {
+        $job = Job::findOrFail($id);
+        $queue = $job->queue()->first();
+
         return new QueueResource($queue);
     }
 
