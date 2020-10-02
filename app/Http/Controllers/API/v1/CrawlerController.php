@@ -248,37 +248,47 @@ class CrawlerController extends Controller
 
         $crawlers = [];
         foreach ($data as $crawler) {
-
-            $new = new Crawler([
-                "user_id" => 1,
-                "proxy_id" => 1,
-                "configuration_id" => 1,
-                "agent_id" => 1,
-                "name" => $crawler['name'],
-                "description" => $crawler['description'],
+            $id = isset($crawler['id']) ? intval($crawler['id']) : null;
+            $payload = [
+                "user_id" => isset($crawler['user_id']) ? $crawler['user_id'] : 1,
+                "proxy_id" => isset($crawler['proxy_id']) ? $crawler['proxy_id'] : 1,
+                "configuration_id" => isset($crawler['configuration_id']) ? $crawler['configuration_id'] : 1,
+                "agent_id" => isset($crawler['agent_id']) ? $crawler['agent_id'] : 1,
+                "name" => isset($crawler['name']) ? $crawler['name'] : 'Value was not provided at update!',
+                "description" => isset($crawler['description']) ? $crawler['description'] : 'Value was not provided at update!',
                 "testing" => $crawler['testing'],
                 "active" => $crawler['active'],
                 "updated" => 1,
-            ]);
-            $new->save();
+            ];
+
+            /**
+             * Create new or update if id provided.
+             */
+            if ($id) {
+                $new = Crawler::findOrFail($id);
+                $new->update($payload);
+            } else {
+                $new = new Crawler($payload);
+                $new->save();
+            }
 
             // Create queues
             $this->makeQueues($crawler['queues'], $new);
 
             // Add agent
-            if ($crawler['agent']) {
+            if (isset($crawler['agent'])) {
                 $agent = $this->makeAgents($crawler['agent']);
                 $new->agent_id = $agent->id;
             }
 
             // Add proxy
-            if ($crawler['proxy']) {
+            if (isset($crawler['proxy'])) {
                 $proxy = $this->makeProxies($crawler['proxy']);
                 $new->proxy_id = $proxy->id;
             }
 
             // Add configuration
-            if ($crawler['configuration']) {
+            if (isset($crawler['configuration'])) {
                 $configuration = $this->makeConfigurations($crawler['configuration']);
                 $new->configuration_id = $configuration->id;
             }
@@ -312,8 +322,8 @@ class CrawlerController extends Controller
             $new = new Queue([
                 "user_id" => 1,
                 "crawler_id" => $crawler->id,
-                "name" => $queue['name'],
-                "description" => $queue['description'],
+                "name" => isset($queue['name']) ? $queue['name'] : 'Value not provided at update!',
+                "description" => isset($queue['description']) ? $queue['description'] : 'Value not provided at update!',
                 "start_at" => $queue['start_at'],
             ]);
             $new->save();
@@ -332,9 +342,9 @@ class CrawlerController extends Controller
             $new = new Job([
                 "user_id" => 1,
                 "queue_id" => $queue->id,
-                "name" => $job['name'],
-                "type" => $job['type'],
-                "description" => $job['description'],
+                "name" => isset($job['name']) ? $job['name'] : 'Value not provided at update',
+                "type" => isset($job['type']) ? $job['type'] : 'Value not provided at update',
+                "description" => isset($job['description']) ? $job['description'] : 'Value not provided at update',
             ]);
             $new->save();
             $this->makeBehaviors($job['behaviors'], $new);
@@ -352,9 +362,9 @@ class CrawlerController extends Controller
             $new = new Behavior([
                 "user_id" => 1,
                 "job_id" => $job->id,
-                "name" => $behavior['name'],
-                "description" => $behavior['description'],
-                "value" => $behavior['value'],
+                "name" => isset($behavior['name']) ? $behavior['name'] : 'Value not provided at update!',
+                "description" => isset($behavior['description']) ? $behavior['description'] : 'Value not provided at update!',
+                "value" => isset($behavior['value']) ? $behavior['value'] : 'Value not provided at update!',
             ]);
             $new->save();
         }
@@ -370,13 +380,13 @@ class CrawlerController extends Controller
         $proxy = $data[0];
         $new = new Proxy([
             "user_id" => 1,
-            "name" => $proxy['name'],
-            "description" => $proxy['description'],
-            "hostname" => $proxy['hostname'],
-            "port" => $proxy['port'],
-            "username" => $proxy['username'],
-            "password" => $proxy['password'],
-            "type" => $proxy['type'],
+            "name" => isset($proxy['name']) ? $proxy['name'] : 'Value not provided at update',
+            "description" => isset($proxy['description']) ? $proxy['description'] : 'Value not provided at update',
+            "hostname" => isset($proxy['hostname']) ? $proxy['hostname'] : 'Value not provided at update',
+            "port" => isset($proxy['port']) ? $proxy['port'] : 'Value not provided at update',
+            "username" => isset($proxy['username']) ? $proxy['username'] : 'Value not provided at update',
+            "password" => isset($proxy['password']) ? $proxy['password'] : 'Value not provided at update',
+            "type" => isset($proxy['type']) ? $proxy['type'] : 'Value not provided at update',
         ]);
         $new->save();
         return $new;

@@ -1,28 +1,65 @@
 [
   {
-    "name": "Just a Crawler",
-    "description": "Crawler created through API",
+    "name": "Just a crawler",
+    "id": 6,
+    "description": "Crawler created through py",
     "active": 1,
-    "testing": 1,
+    "testing": 0,
     "configuration": [
       {
-        "name": "Configuration created through API",
-        "description": "A basic Configuration",
+        "name": "",
+        "description": "",
         "params": [
           {
-            "pi": -0.8441270315193785,
-            "psi": -0.15200161677194193,
-            "kappa": "",
-            "tau": "",
-            "beta": "",
-            "alpha": "",
+            "pi": -0.5316373627092421,
+            "psi": 1.0401656191114848,
+            "alpha": 0,
+            "tau": 1,
+            "kappa": 0,
+            "beta": 0.9314538712987557,
             "search_terms": [
-              "intimate partner",
-              "american energy"
+              "gun safety course",
+              "how to clean air",
+              "open the government",
+              "civil rights",
+              "chronicle of higher education",
+              "california minimum wage",
+              "public health",
+              "us military",
+              "law of one",
+              "foreign government",
+              "virginia beach va",
+              "many republican",
+              "interest groups",
+              "federal credit union",
+              "senate republican",
+              "federal workers",
+              "wall street",
+              "the wall",
+              "meth effects",
+              "clean energy",
+              "pay bill",
+              "federal government",
+              "i still rise maya angelou",
+              "health care",
+              "maternity care",
+              "national defense",
+              "what does temperature measure",
+              "senate is republican",
+              "medical device sales",
+              "higher education chronicle"
             ],
             "media_outlet_urls": [
-              "https://whoradio.iheart.com/",
-              "https://www.newschannel10.com/"
+              "https://www.msnbc.com/",
+              "https://www.wired.com/",
+              "https://www.vox.com/",
+              "https://mashable.com/",
+              "https://bleacherreport.com/",
+              "https://arstechnica.com:443/",
+              "https://www.politico.com/",
+              "https://www.breitbart.com/",
+              "https://www.rollingstone.com/",
+              "https://nypost.com/"
             ]
           }
         ]
@@ -30,18 +67,18 @@
     ],
     "agent": [
       {
-        "name": "Agent created through API",
-        "description": "A basic Agent",
-        "location": "",
-        "identification": "Multilogin",
-        "multilogin_id": "c6e70352-aa50-4ce0-bd6c-f1d538f6a1dd",
-        "multilogin_profile": "{ \"key\": \"value\" }"
+        "name": null,
+        "description": null,
+        "location": "US-MA-BOSTON",
+        "identification": null,
+        "multilogin_id": null,
+        "multilogin_profile": null
       }
     ],
     "proxy": [
       {
-        "name": "Proxy created through API",
-        "description": "A basic Proxy",
+        "name": "Sample Proxy",
+        "description": "Placeholder proxy",
         "type": "HTTP",
         "hostname": "localhost",
         "port": 8080,
@@ -53,137 +90,7 @@
       {
         "name": "GoogleSearch",
         "description": "Open Google, enter a search querry and select a result.",
-        "start_at": "2020-09-11T17:32:01.000+02:00",
-        "jobs": [
-          {
-            "name": "Visit 1",
-            "type": "visitjob",
-            "description": "Visit https://www.google.com",
-            "behaviors": [
-              {
-                "name": "url",
-                "description": "URL",
-                "value": "https://www.google.com"
-              }
-            ]
-          },
-          {
-            "name": "Enter Text 1",
-            "type": "entertextfieldjob",
-            "description": "Enter text into the defined field",
-            "behaviors": [
-              {
-                "name": "text",
-                "description": "Text to enter",
-                "value": "insert term here"
-              },
-              {
-                "name": "selectiontype",
-                "description": "Type of selection",
-                "value": "XPATH"
-              },
-              {
-                "name": "selector",
-                "description": " selector",
-                "value": "//input[@name='q']"
-              }
-            ]
-          },
-          {
-            "name": "Select 1",
-            "type": "singleselecturljob",
-            "description": "Select an item and click",
-            "behaviors": [
-              {
-                "name": "selectiontype",
-                "description": "Type of selection",
-                "value": "CLASS"
-              },
-              {
-                "name": "selector",
-                "description": " selector",
-                "value": "LC20lb.DKV0Md"
-              },
-              {
-                "name": "decisiontype",
-                "description": "Decision type for choosing an item out of the list given by the selector is RANDOM",
-                "value": "RANDOM"
-              }
-            ]
-          },
-          {
-            "name": "Scroll by length",
-            "type": "scrollbylengthjob",
-            "description": "Scroll down",
-            "behaviors": [
-              {
-                "name": "length",
-                "description": "Scroll 80.0 of window.",
-                "value": 80.0
-              },
-              {
-                "name": "scrolldirection",
-                "description": "Scroll down",
-                "value": "DOWN"
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "name": "Visit Direct",
-        "description": "Visit a media outlet and scroll for 2-3 minutes.",
-        "start_at": "2020-09-11T17:32:01.000+02:00",
-        "jobs": [
-          {
-            "name": "Visit",
-            "type": "visitjob",
-            "description": "Visit https://www.nytimes.com",
-            "behaviors": [
-              {
-                "name": "url",
-                "description": "URL",
-                "value": "https://www.nytimes.com"
-              }
-            ]
-          },
-          {
-            "name": "Scroll by duration",
-            "type": "scrollbydurationjob",
-            "description": "Scroll down",
-            "behaviors": [
-              {
-                "name": "scrollduration",
-                "description": "Scroll for 141.62779059506116 seconds.",
-                "value": 141.62779059506116
-              },
-              {
-                "name": "scrolldirection",
-                "description": "Scroll down",
-                "value": "DOWN"
-              }
-            ]
-          }
-        ]
-      }
-    ]
-  },
-  {
-    "name": "Zweiter Crawler",
-    "active": 1,
-    "testing": 1,
-    "description": "erstellt via API",
-    "configuration": [
-    ],
-    "proxy": [
-    ],
-    "agent": [
-    ],
-    "queues": [
-      {
-        "name": "GoogleSearch",
-        "description": "Open Google, enter a search querry and select a result.",
-        "start_at": "2020-09-11T17:32:01.000+02:00",
+        "start_at": "2020-09-18T18:35:40.468229+02:00",
         "jobs": [
           {
             "name": "Visit",
@@ -205,10 +112,10 @@
               {
                 "name": "text",
                 "description": "Text to enter",
-                "value": "insert term here"
+                "value": "meth effects"
               },
               {
-                "name": "selectiontype",
+                "name": "selectionType",
                 "description": "Type of selection",
                 "value": "XPATH"
               },
@@ -216,6 +123,16 @@
                 "name": "selector",
                 "description": " selector",
                 "value": "//input[@name='q']"
+              },
+              {
+                "name": "appendReturn",
+                "description": "Optional field: appends a return key after the text given if true.",
+                "value": true
+              },
+              {
+                "name": "typingMode",
+                "description": "Optional field: How the text is entered into the field",
+                "value": "SIMULATED_FIXINGTYPOS"
               }
             ]
           },
@@ -225,7 +142,7 @@
             "description": "Select an item and click",
             "behaviors": [
               {
-                "name": "selectiontype",
+                "name": "selectionType",
                 "description": "Type of selection",
                 "value": "CLASS"
               },
@@ -235,7 +152,7 @@
                 "value": "LC20lb.DKV0Md"
               },
               {
-                "name": "decisiontype",
+                "name": "decisionType",
                 "description": "Decision type for choosing an item out of the list given by the selector is RANDOM",
                 "value": "RANDOM"
               }
@@ -252,7 +169,97 @@
                 "value": 80.0
               },
               {
-                "name": "scrolldirection",
+                "name": "scrollDirection",
+                "description": "Scroll down",
+                "value": "DOWN"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "GoogleSearch",
+        "description": "Open Google, enter a search querry and select a result.",
+        "start_at": "2020-09-18T19:23:29.780228+02:00",
+        "jobs": [
+          {
+            "name": "Visit",
+            "type": "visitjob",
+            "description": "Visit https://www.google.com",
+            "behaviors": [
+              {
+                "name": "url",
+                "description": "URL",
+                "value": "https://www.google.com"
+              }
+            ]
+          },
+          {
+            "name": "Enter Text",
+            "type": "entertextfieldjob",
+            "description": "Enter text into the defined field",
+            "behaviors": [
+              {
+                "name": "text",
+                "description": "Text to enter",
+                "value": "the wall"
+              },
+              {
+                "name": "selectionType",
+                "description": "Type of selection",
+                "value": "XPATH"
+              },
+              {
+                "name": "selector",
+                "description": " selector",
+                "value": "//input[@name='q']"
+              },
+              {
+                "name": "appendReturn",
+                "description": "Optional field: appends a return key after the text given if true.",
+                "value": true
+              },
+              {
+                "name": "typingMode",
+                "description": "Optional field: How the text is entered into the field",
+                "value": "SIMULATED_FIXINGTYPOS"
+              }
+            ]
+          },
+          {
+            "name": "Select",
+            "type": "singleselecturljob",
+            "description": "Select an item and click",
+            "behaviors": [
+              {
+                "name": "selectionType",
+                "description": "Type of selection",
+                "value": "CLASS"
+              },
+              {
+                "name": "selector",
+                "description": " selector",
+                "value": "LC20lb.DKV0Md"
+              },
+              {
+                "name": "decisionType",
+                "description": "Decision type for choosing an item out of the list given by the selector is RANDOM",
+                "value": "RANDOM"
+              }
+            ]
+          },
+          {
+            "name": "Scroll by length",
+            "type": "scrollbylengthjob",
+            "description": "Scroll down",
+            "behaviors": [
+              {
+                "name": "length",
+                "description": "Scroll 80.0 of window.",
+                "value": 80.0
+              },
+              {
+                "name": "scrollDirection",
                 "description": "Scroll down",
                 "value": "DOWN"
               }
@@ -263,17 +270,17 @@
       {
         "name": "Visit Direct",
         "description": "Visit a media outlet and scroll for 2-3 minutes.",
-        "start_at": "2020-09-11T17:32:01.000+02:00",
+        "start_at": "2020-09-18T19:57:52.245481+02:00",
         "jobs": [
           {
             "name": "Visit",
             "type": "visitjob",
-            "description": "Visit https://www.nytimes.com",
+            "description": "Visit https://www.vox.com/",
             "behaviors": [
               {
                 "name": "url",
                 "description": "URL",
-                "value": "https://www.nytimes.com"
+                "value": "https://www.vox.com/"
               }
             ]
           },
@@ -283,12 +290,264 @@
             "description": "Scroll down",
             "behaviors": [
               {
-                "name": "scrollduration",
-                "description": "Scroll for 160.64071261513556 seconds.",
-                "value": 160.64071261513556
+                "name": "scrollDuration",
+                "description": "Scroll for 131.55690500238825 seconds.",
+                "value": 131.55690500238825
               },
               {
-                "name": "scrolldirection",
+                "name": "scrollDirection",
+                "description": "Scroll down",
+                "value": "DOWN"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Visit Direct",
+        "description": "Visit a media outlet and scroll for 2-3 minutes.",
+        "start_at": "2020-09-18T20:07:00.072087+02:00",
+        "jobs": [
+          {
+            "name": "Visit",
+            "type": "visitjob",
+            "description": "Visit https://mashable.com/",
+            "behaviors": [
+              {
+                "name": "url",
+                "description": "URL",
+                "value": "https://mashable.com/"
+              }
+            ]
+          },
+          {
+            "name": "Scroll by duration",
+            "type": "scrollbydurationjob",
+            "description": "Scroll down",
+            "behaviors": [
+              {
+                "name": "scrollDuration",
+                "description": "Scroll for 175.72263938106144 seconds.",
+                "value": 175.72263938106144
+              },
+              {
+                "name": "scrollDirection",
+                "description": "Scroll down",
+                "value": "DOWN"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Visit Direct",
+        "description": "Visit a media outlet and scroll for 2-3 minutes.",
+        "start_at": "2020-09-18T20:20:18.273104+02:00",
+        "jobs": [
+          {
+            "name": "Visit",
+            "type": "visitjob",
+            "description": "Visit https://www.amazon.com",
+            "behaviors": [
+              {
+                "name": "url",
+                "description": "URL",
+                "value": "https://www.amazon.com"
+              }
+            ]
+          },
+          {
+            "name": "Scroll by duration",
+            "type": "scrollbydurationjob",
+            "description": "Scroll down",
+            "behaviors": [
+              {
+                "name": "scrollDuration",
+                "description": "Scroll for 120.08846097683738 seconds.",
+                "value": 120.08846097683738
+              },
+              {
+                "name": "scrollDirection",
+                "description": "Scroll down",
+                "value": "DOWN"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "GoogleSearch",
+        "description": "Open Google, enter a search querry and select a result.",
+        "start_at": "2020-09-18T20:24:07.660336+02:00",
+        "jobs": [
+          {
+            "name": "Visit",
+            "type": "visitjob",
+            "description": "Visit https://www.google.com",
+            "behaviors": [
+              {
+                "name": "url",
+                "description": "URL",
+                "value": "https://www.google.com"
+              }
+            ]
+          },
+          {
+            "name": "Enter Text",
+            "type": "entertextfieldjob",
+            "description": "Enter text into the defined field",
+            "behaviors": [
+              {
+                "name": "text",
+                "description": "Text to enter",
+                "value": "Johns Hopkins johns hopkins university"
+              },
+              {
+                "name": "selectionType",
+                "description": "Type of selection",
+                "value": "XPATH"
+              },
+              {
+                "name": "selector",
+                "description": " selector",
+                "value": "//input[@name='q']"
+              },
+              {
+                "name": "appendReturn",
+                "description": "Optional field: appends a return key after the text given if true.",
+                "value": true
+              },
+              {
+                "name": "typingMode",
+                "description": "Optional field: How the text is entered into the field",
+                "value": "SIMULATED_FIXINGTYPOS"
+              }
+            ]
+          },
+          {
+            "name": "Select",
+            "type": "singleselecturljob",
+            "description": "Select an item and click",
+            "behaviors": [
+              {
+                "name": "selectionType",
+                "description": "Type of selection",
+                "value": "CLASS"
+              },
+              {
+                "name": "selector",
+                "description": " selector",
+                "value": "LC20lb.DKV0Md"
+              },
+              {
+                "name": "decisionType",
+                "description": "Decision type for choosing an item out of the list given by the selector is RANDOM",
+                "value": "RANDOM"
+              }
+            ]
+          },
+          {
+            "name": "Scroll by length",
+            "type": "scrollbylengthjob",
+            "description": "Scroll down",
+            "behaviors": [
+              {
+                "name": "length",
+                "description": "Scroll 80.0 of window.",
+                "value": 80.0
+              },
+              {
+                "name": "scrollDirection",
+                "description": "Scroll down",
+                "value": "DOWN"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "GoogleSearch",
+        "description": "Open Google, enter a search querry and select a result.",
+        "start_at": "2020-09-18T20:28:12.758310+02:00",
+        "jobs": [
+          {
+            "name": "Visit",
+            "type": "visitjob",
+            "description": "Visit https://www.google.com",
+            "behaviors": [
+              {
+                "name": "url",
+                "description": "URL",
+                "value": "https://www.google.com"
+              }
+            ]
+          },
+          {
+            "name": "Enter Text",
+            "type": "entertextfieldjob",
+            "description": "Enter text into the defined field",
+            "behaviors": [
+              {
+                "name": "text",
+                "description": "Text to enter",
+                "value": "Donald Trump democratic party"
+              },
+              {
+                "name": "selectionType",
+                "description": "Type of selection",
+                "value": "XPATH"
+              },
+              {
+                "name": "selector",
+                "description": " selector",
+                "value": "//input[@name='q']"
+              },
+              {
+                "name": "appendReturn",
+                "description": "Optional field: appends a return key after the text given if true.",
+                "value": true
+              },
+              {
+                "name": "typingMode",
+                "description": "Optional field: How the text is entered into the field",
+                "value": "SIMULATED_FIXINGTYPOS"
+              }
+            ]
+          },
+          {
+            "name": "Select",
+            "type": "singleselecturljob",
+            "description": "Select an item and click",
+            "behaviors": [
+              {
+                "name": "selectionType",
+                "description": "Type of selection",
+                "value": "CLASS"
+              },
+              {
+                "name": "selector",
+                "description": " selector",
+                "value": "LC20lb.DKV0Md"
+              },
+              {
+                "name": "decisionType",
+                "description": "Decision type for choosing an item out of the list given by the selector is RANDOM",
+                "value": "RANDOM"
+              }
+            ]
+          },
+          {
+            "name": "Scroll by length",
+            "type": "scrollbylengthjob",
+            "description": "Scroll down",
+            "behaviors": [
+              {
+                "name": "length",
+                "description": "Scroll 80.0 of window.",
+                "value": 80.0
+              },
+              {
+                "name": "scrollDirection",
                 "description": "Scroll down",
                 "value": "DOWN"
               }
