@@ -29,14 +29,6 @@ class CrawlerController extends Controller
      */
     public function index(Request $request): CrawlerResourceCollection
     {
-        /*
-        return response()->json([
-
-            'crawlers' => Crawler::latest()->with('proxy', 'agent', 'configuration', 'jobs')->get()
-
-        ], Response::HTTP_OK);
-        */
-
         $keyword = $request->input('keyword');
         $crawlers = Crawler::where('testing', 0)
             ->where('active', 1)
@@ -51,6 +43,85 @@ class CrawlerController extends Controller
             )->latest()->get();
         return new CrawlerResourceCollection($crawlers);
     }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return Response
+     */
+    public function withProcessedQueues(Request $request): CrawlerResourceCollection
+    {
+        $keyword = $request->input('keyword');
+        $crawlers = Crawler::where('testing', 0)
+            ->where('active', 1)
+            ->with(
+                [
+                    'queues',
+                    'agent',
+                    'proxy',
+                    'configuration',
+                    'user'
+                ]
+            )
+            ->whereHas('queues', function ($q) {
+                $q->where('processed', 1);
+            })
+            ->latest()->get();
+        return new CrawlerResourceCollection($crawlers);
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return Response
+     */
+    public function withReviewedQueues(Request $request): CrawlerResourceCollection
+    {
+        $keyword = $request->input('keyword');
+        $crawlers = Crawler::where('testing', 0)
+            ->where('active', 1)
+            ->with(
+                [
+                    'queues',
+                    'agent',
+                    'proxy',
+                    'configuration',
+                    'user'
+                ]
+            )
+            ->whereHas('queues', function ($q) {
+                $q->where('reviewed', 1);
+            })
+            ->latest()->get();
+        return new CrawlerResourceCollection($crawlers);
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return Response
+     */
+    public function withUnprocessedQueues(Request $request): CrawlerResourceCollection
+    {
+        $keyword = $request->input('keyword');
+        $crawlers = Crawler::where('testing', 0)
+            ->where('active', 1)
+            ->with(
+                [
+                    'queues',
+                    'agent',
+                    'proxy',
+                    'configuration',
+                    'user'
+                ]
+            )
+            ->whereHas('queues', function ($q) {
+                $q->where('processed', 0);
+            })
+            ->latest()->get();
+        return new CrawlerResourceCollection($crawlers);
+    }
+
 
     /**
      * Display a listing of the resource for testing.
