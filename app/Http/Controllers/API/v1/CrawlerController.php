@@ -17,8 +17,6 @@ use Arimolzer\IPStackFinder\Facade\IPStackFinderFacade;
 
 use App\Http\Resources\v1\CrawlerResource;
 use App\Http\Resources\v1\CrawlerResourceCollection;
-use Illuminate\Support\Arr;
-use phpDocumentor\Reflection\Types\Collection;
 
 class CrawlerController extends Controller
 {
@@ -32,6 +30,28 @@ class CrawlerController extends Controller
         $keyword = $request->input('keyword');
         $crawlers = Crawler::where('testing', 0)
             ->where('active', 1)
+            ->with(
+                [
+                    'queues',
+                    'agent',
+                    'proxy',
+                    'configuration',
+                    'user'
+                ]
+            )->latest()->get();
+        return new CrawlerResourceCollection($crawlers);
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return Response
+     */
+    public function inactive(Request $request): CrawlerResourceCollection
+    {
+        $keyword = $request->input('keyword');
+        $crawlers = Crawler::where('testing', 0)
+            ->where('active', 0)
             ->with(
                 [
                     'queues',
@@ -148,6 +168,7 @@ class CrawlerController extends Controller
         return new CrawlerResourceCollection($crawlers);
     }
 
+
     /**
      * Show the form for creating a new resource.
      *
@@ -225,11 +246,26 @@ class CrawlerController extends Controller
     }
 
     /**
+     * Update the specified resource in storage.
+     *
+     * @param Request $request
+     * @param Crawler $crawler
+     * @return Response
+     */
+    public function disableProdCrawlers(): CrawlerResourceCollection
+    {
+        Crawler::query()->where('testing', 0)->update(['active' => 0]);
+        $crawler = Crawler::where('active', 0)->get();
+        return new CrawlerResourceCollection($crawler);
+    }
+
+    /**
      * Remove the specified resource from storage.
      * @param Crawler $crawler
      * @return CrawlerResourceCollection
      * @throws \Exception
      */
+
     public function destroy(Crawler $crawler): CrawlerResourceCollection
     {
         $crawler->delete();
