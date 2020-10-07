@@ -172,6 +172,7 @@ class CrawlerController extends Controller
 
         $data = $request->all();
         $data['user_id'] = auth()->user() ? auth()->user()->id : 1;
+        $data['experiment_id'] = 1;
 
         $crawler = Crawler::create($data);
         return new CrawlerResource($crawler);
@@ -337,6 +338,7 @@ class CrawlerController extends Controller
             $id = isset($crawler['id']) ? intval($crawler['id']) : null;
             $payload = [
                 "user_id" => isset($crawler['user_id']) ? $crawler['user_id'] : 1,
+                "experiment_id" => isset($crawler['experiment_id']) ? $crawler['experiment_id'] : 1,
                 "proxy_id" => isset($crawler['proxy_id']) ? $crawler['proxy_id'] : 1,
                 "configuration_id" => isset($crawler['configuration_id']) ? $crawler['configuration_id'] : 1,
                 "agent_id" => isset($crawler['agent_id']) ? $crawler['agent_id'] : 1,
