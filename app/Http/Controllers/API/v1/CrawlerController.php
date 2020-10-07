@@ -82,6 +82,7 @@ class CrawlerController extends Controller
             ->where('active', 1)
             ->with(
                 [
+                    'experiment',
                     'queues',
                     'agent',
                     'proxy',
@@ -108,6 +109,7 @@ class CrawlerController extends Controller
             ->where('active', 1)
             ->with(
                 [
+                    'experiment',
                     'queues',
                     'agent',
                     'proxy',
@@ -135,6 +137,7 @@ class CrawlerController extends Controller
             ->where('active', 1)
             ->with(
                 [
+                    'experiment',
                     'queues',
                     'agent',
                     'proxy',
@@ -182,7 +185,16 @@ class CrawlerController extends Controller
      */
     public function show($id): CrawlerResource
     {
-        $crawler = Crawler::with('queues', 'agent', 'configuration', 'proxy')->findOrFail($id);
+        $crawler = Crawler::with(
+            [
+                'experiment',
+                'queues',
+                'agent',
+                'configuration',
+                'proxy',
+                'user'
+            ]
+        )->findOrFail($id);
         return new CrawlerResource($crawler);
     }
 
@@ -223,6 +235,7 @@ class CrawlerController extends Controller
         return new CrawlerResourceCollection(
             Crawler::with(
                 [
+                    'experiment',
                     'queues',
                     'agent',
                     'proxy',
@@ -270,6 +283,7 @@ class CrawlerController extends Controller
 
         $crawlers = Crawler::with(
             [
+                'experiment',
                 'queues',
                 'agent',
                 'proxy',
@@ -290,6 +304,7 @@ class CrawlerController extends Controller
 
         $crawlers = Crawler::with(
             [
+                'experiment',
                 'queues',
                 'agent',
                 'proxy',

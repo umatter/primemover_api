@@ -47,4 +47,10 @@ class Crawler extends Model
     {
         return $this->belongsTo('App\User');
     }
+
+    public function experiment()
+    {
+        return $this->belongsTo('App\Experiment');
+    }
+
 }

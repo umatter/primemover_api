@@ -22,6 +22,7 @@ Route::prefix('v1')->group(function () {
         Route::resource('jobs', 'API\v1\JobController');
         Route::resource('queues', 'API\v1\QueueController');
         Route::resource('crawlers', 'API\v1\CrawlerController');
+        Route::resource('experiments', 'API\v1\ExperimentController');
         Route::resource('posts', 'API\v1\PostController');
         Route::resource('behaviors', 'API\v1\BehaviorController');
         Route::resource('reports', 'API\v1\ReportController');
