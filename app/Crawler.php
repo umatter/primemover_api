@@ -28,14 +28,29 @@ class Crawler extends Model
         return $this->hasMany('App\Queue')->with('jobs')->where('processed', 1);
     }
 
+    public function queuesNotProcessed()
+    {
+        return $this->hasMany('App\Queue')->with('jobs')->where('processed', 0);
+    }
+
     public function queuesProcessing()
     {
         return $this->hasMany('App\Queue')->with('jobs')->where('processing', 1);
     }
 
+    public function queuesNotProcessing()
+    {
+        return $this->hasMany('App\Queue')->with('jobs')->where('processing', 0);
+    }
+
     public function queuesReviewed()
     {
         return $this->hasMany('App\Queue')->with('jobs')->where('reviewed', 1);
+    }
+
+    public function queuesNotReviewed()
+    {
+        return $this->hasMany('App\Queue')->with('jobs')->where('reviewed', 0);
     }
 
     public function agent()

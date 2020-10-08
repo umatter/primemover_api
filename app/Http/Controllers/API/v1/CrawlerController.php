@@ -74,9 +74,11 @@ class CrawlerController extends Controller
         $keyword = $request->input('keyword');
         $crawlers = Crawler::where('testing', 0)
             ->where('active', 1)
+            ->with(['queues' => function ($q) {
+                $q->where('queues.processed', 1);
+            }])
             ->with(
                 [
-                    'queues',
                     'agent',
                     'proxy',
                     'configuration',
@@ -98,12 +100,14 @@ class CrawlerController extends Controller
     public function withReviewedQueues(Request $request): CrawlerResourceCollection
     {
         $keyword = $request->input('keyword');
-        $crawlers = Crawler::where('testing', 0)
+        $crawlers = Crawler::where('testing', 1)
             ->where('active', 1)
+            ->with(['queues' => function ($q) {
+                $q->where('queues.reviewed', 1);
+            }])
             ->with(
                 [
                     'experiment',
-                    'queues',
                     'agent',
                     'proxy',
                     'configuration',
@@ -127,19 +131,21 @@ class CrawlerController extends Controller
         $keyword = $request->input('keyword');
         $crawlers = Crawler::where('testing', 0)
             ->where('active', 1)
+            ->whereHas('queues', function ($q) {
+                $q->where('processed', 0);
+            })
+            ->with(['queues' => function ($q) {
+                $q->where('queues.processed', 0);
+            }])
             ->with(
                 [
                     'experiment',
-                    'queues',
                     'agent',
                     'proxy',
                     'configuration',
                     'user'
                 ]
             )
-            ->whereHas('queues', function ($q) {
-                $q->where('processed', 0);
-            })
             ->latest()->get();
         return new CrawlerResourceCollection($crawlers);
     }
