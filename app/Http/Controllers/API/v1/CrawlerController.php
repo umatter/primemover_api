@@ -36,7 +36,6 @@ class CrawlerController extends Controller
                     'agent',
                     'proxy',
                     'configuration',
-                    'user'
                 ]
             )->latest()->get();
         return new CrawlerResourceCollection($crawlers);
@@ -58,7 +57,6 @@ class CrawlerController extends Controller
                     'agent',
                     'proxy',
                     'configuration',
-                    'user'
                 ]
             )->latest()->get();
         return new CrawlerResourceCollection($crawlers);
@@ -82,7 +80,6 @@ class CrawlerController extends Controller
                     'agent',
                     'proxy',
                     'configuration',
-                    'user'
                 ]
             )
             ->whereHas('queues', function ($q) {
@@ -107,11 +104,9 @@ class CrawlerController extends Controller
             }])
             ->with(
                 [
-                    'experiment',
                     'agent',
                     'proxy',
                     'configuration',
-                    'user'
                 ]
             )
             ->whereHas('queues', function ($q) {
@@ -139,11 +134,9 @@ class CrawlerController extends Controller
             }])
             ->with(
                 [
-                    'experiment',
                     'agent',
                     'proxy',
                     'configuration',
-                    'user'
                 ]
             )
             ->latest()->get();
@@ -163,12 +156,10 @@ class CrawlerController extends Controller
             ->where('active', 1)
             ->with(
                 [
-                    'experiment',
                     'queues',
                     'agent',
                     'proxy',
                     'configuration',
-                    'user'
                 ]
             )->latest()->get();
         return new CrawlerResourceCollection($crawlers);
