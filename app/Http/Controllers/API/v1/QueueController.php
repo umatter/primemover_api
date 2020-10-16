@@ -63,7 +63,7 @@ class QueueController extends Controller
      */
     public function show($id): QueueResource
     {
-        $queue = Queue::with(['user', 'jobs'])->findOrFail($id);
+        $queue = Queue::with(['jobs'])->findOrFail($id);
         return new QueueResource($queue);
     }
 
@@ -86,7 +86,7 @@ class QueueController extends Controller
      */
     public function processed(): QueueResourceCollection
     {
-        $queue = Queue::with(['user', 'jobs'])->where('processed', 1)->get();
+        $queue = Queue::with(['jobs'])->where('processed', 1)->get();
         return new QueueResourceCollection($queue);
     }
 
@@ -96,7 +96,7 @@ class QueueController extends Controller
      */
     public function unprocessed(): QueueResourceCollection
     {
-        $queue = Queue::with(['user', 'jobs'])->where('processed', 0)->get();
+        $queue = Queue::with(['jobs'])->where('processed', 0)->get();
         return new QueueResourceCollection($queue);
     }
 
@@ -106,7 +106,7 @@ class QueueController extends Controller
      */
     public function reviewed(): QueueResourceCollection
     {
-        $queue = Queue::with(['user', 'jobs'])->where('reviewed', 1)->get();
+        $queue = Queue::with(['jobs'])->where('reviewed', 1)->get();
         return new QueueResourceCollection($queue);
     }
 
@@ -116,7 +116,7 @@ class QueueController extends Controller
      */
     public function unreviewed(): QueueResourceCollection
     {
-        $queue = Queue::with(['user', 'jobs'])->where('reviewed', 0)->get();
+        $queue = Queue::with(['jobs'])->where('reviewed', 0)->where('processed', 1)->get();
         return new QueueResourceCollection($queue);
     }
 
@@ -155,7 +155,6 @@ class QueueController extends Controller
         return new QueueResourceCollection(
             Queue::with(
                 [
-                    'user',
                     'crawler',
                     'jobs'
                 ]
