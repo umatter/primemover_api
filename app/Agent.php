@@ -9,7 +9,7 @@ class Agent extends Model
     protected $guarded = [];
 
     protected $casts = [
-        'multilogin_profile' => 'array',
+        //'multilogin_profile' => 'array',
     ];
 
     public function crawler()
