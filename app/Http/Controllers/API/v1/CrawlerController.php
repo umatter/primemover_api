@@ -586,8 +586,8 @@ class CrawlerController extends Controller
             "name" => $agent['name'],
             "description" => $agent['description'],
             "identification" => $agent['identification'] ? $agent['identification'] : "",
-            "multilogin_id" => $agent['multilogin_id'] ? json_encode($agent['multilogin_id']) : "",
-            "multilogin_profile" => $agent['multilogin_profile'] ? $agent['multilogin_profile'] : "",
+            "multilogin_id" => $agent['multilogin_id'] ? $agent['multilogin_id'] : "",
+            "multilogin_profile" => $agent['multilogin_profile'] ? json_encode($agent['multilogin_profile']) : "",
             "location" => $agent['location'] ? $agent['location'] : "",
         ]);
         $new->save();
