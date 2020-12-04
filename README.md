@@ -33,7 +33,7 @@ API server running PHP/MySQL based Laravel Web Application.
 </tr>
 <tr>
 <td>URL:</td>
-<td>primemover.example/api/v1</td>
+<td>https://primemover.example/api/v1</td>
 <td></td>
 </tr>
 <tr>
