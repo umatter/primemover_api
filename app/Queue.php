@@ -20,6 +20,6 @@ class Queue extends Model
 
     public function jobs()
     {
-        return $this->hasMany('App\Job')->with('behaviors', 'reports:id,job_id,path,created_at,updated_at');
+        return $this->hasMany('App\Job')->with('behaviors', 'reports:id,job_id,filename,path,created_at,updated_at');
     }
 }
