@@ -8,6 +8,7 @@ use App\Configuration;
 use App\Crawler;
 use App\Job;
 use App\Param;
+use App\Preference;
 use App\Proxy;
 use App\Queue;
 use Illuminate\Http\Request;
@@ -416,17 +417,17 @@ class CrawlerController extends Controller
             $new->update();
             array_push($crawlers, $new);
         }
+
         return response()->json([
-            'crawlers' => Crawler::latest()
-                ->with(
-                    [
-                        'proxy',
-                        'agent',
-                        'configuration',
-                        'queues',
-                        'user'
-                    ]
-                )
+            'crawlers' => Crawler::with(
+                [
+                    'proxy',
+                    'agent',
+                    'configuration',
+                    'queues',
+                    'user'
+                ]
+            )
                 ->where('updated', 1)
                 ->get()
         ], Response::HTTP_OK);
@@ -521,32 +522,55 @@ class CrawlerController extends Controller
     public function makeConfigurations($data)
     {
         $configuration = $data[0];
-        $params = $configuration['params'];
+        $params = isset($configuration['params']) ? $configuration['params'] : null;
 
         $new = new Configuration([
             "user_id" => 1,
             "name" => $configuration['name'],
             "description" => $configuration['description'],
         ]);
-        $new->save();
 
-        foreach ($params as $param) {
-            $parameter = new Param([
-                "user_id" => 1,
-                "configuration_id" => $new->id,
-                "pi" => $param['pi'],
-                "psi" => $param['psi'],
-                "kappa" => $param['kappa'],
-                "tau" => $param['tau'],
-                "beta" => $param['beta'],
-                "alpha" => $param['alpha'],
-                "search_terms" => json_encode($param['search_terms']),
-                "media_outlet_urls" => json_encode($param['media_outlet_urls']),
-            ]);
-            $parameter->save();
+        $new->save();
+        $this->makePreferences($configuration['preferences'], $new);
+
+        if (isset($params)) {
+            foreach ($params as $param) {
+                $parameter = new Param([
+                    "user_id" => 1,
+                    "configuration_id" => $new->id,
+                    "pi" => $param['pi'],
+                    "psi" => $param['psi'],
+                    "kappa" => $param['kappa'],
+                    "tau" => $param['tau'],
+                    "beta" => $param['beta'],
+                    "alpha" => $param['alpha'],
+                    "search_terms" => json_encode($param['search_terms']),
+                    "media_outlet_urls" => json_encode($param['media_outlet_urls']),
+                ]);
+                $parameter->save();
+            }
         }
 
         return $new;
+    }
+
+    /**
+     * Creates Preferences for Configurations
+     * @param $data
+     * @param $model
+     */
+    public function makePreferences($data, $model)
+    {
+        foreach ($data as $preference) {
+            $new = new Preference([
+                "user_id" => 1,
+                "name" => isset($preference['name']) ? $preference['name'] : 'Value not provided at update!',
+                "description" => isset($preference['description']) ? $preference['description'] : 'Value not provided at update!',
+                "value" => isset($preference['value']) ? $preference['value'] : 'Value not provided at update!',
+            ]);
+            $new->preferencable()->associate($model);
+            $new->save();
+        }
     }
 
     /**
@@ -561,12 +585,13 @@ class CrawlerController extends Controller
             "user_id" => 1,
             "name" => $agent['name'],
             "description" => $agent['description'],
-            "identification" => $agent['identification'],
-            "multilogin_id" => $agent['multilogin_id'],
-            "multilogin_profile" => $agent['multilogin_profile'],
-            "location" => $agent['location']
+            "identification" => $agent['identification'] ? $agent['identification'] : "",
+            "multilogin_id" => $agent['multilogin_id'] ? $agent['multilogin_id'] : "",
+            "multilogin_profile" => $agent['multilogin_profile'] ? $agent['multilogin_profile'] : "",
+            "location" => $agent['location'] ? $agent['location'] : "",
         ]);
         $new->save();
+        $this->makePreferences($agent['preferences'], $new);
         return $new;
     }
 

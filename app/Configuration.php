@@ -23,4 +23,8 @@ class Configuration extends Model
         return $this->hasMany('App\Param');
     }
 
+    public function preferences()
+    {
+        return $this->morphMany('App\Preference', 'preferencable');
+    }
 }

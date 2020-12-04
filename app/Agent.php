@@ -17,4 +17,9 @@ class Agent extends Model
     {
         return $this->belongsTo('App\User');
     }
+
+    public function preferences()
+    {
+        return $this->morphMany('App\Preference', 'preferencable');
+    }
 }
