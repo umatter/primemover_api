@@ -250,5 +250,11 @@ Current API runs on a shared hosting environment which is not configured to be a
 </tbody>
 </table>
 
-	
-
+### API User
+<table>
+<tr>
+<td>Username:</td>
+<td>primemover@primemover.example</td>
+<td>CHANGEME-backend-password</td>
+</tr>
+</table>
