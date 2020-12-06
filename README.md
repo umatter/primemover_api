@@ -250,11 +250,13 @@ Current API runs on a shared hosting environment which is not configured to be a
 </tbody>
 </table>
 
-### API User
-<table>
-<tr>
-<td>Username:</td>
-<td>primemover@primemover.example</td>
-<td>CHANGEME-backend-password</td>
-</tr>
-</table>
+### API User Authorization
+1. Send a POST request with 2 parameters to https://primemover.example/api/v1/login
+   ```
+   {
+        email: user@primemover.example,
+        password: CHANGEME-backend-password
+   }
+   ```
+2. Take `access_token` from response 
+3. Use `headers` to send `Authorization` key with the value from `access_token` in each request in this format: `Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9......`
