@@ -60,7 +60,7 @@ Route::prefix('v1')->group(function () {
 
     Route::group(['middleware' => 'guest:api'], function () {
 
-        //Route::post('register', 'Api\AuthController@register');
+        Route::post('register', 'Api\AuthController@register');
         Route::post('login', 'Api\AuthController@login');
 
         //Route::post('login', 'Auth\LoginController@login');
