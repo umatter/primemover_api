@@ -13,38 +13,48 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+/**
+ * Prefix: /api/v1
+ */
 Route::prefix('v1')->group(function () {
 
+    /**
+     * Not protected routes (for now?)
+     */
+    Route::resource('configurations', 'API\v1\ConfigurationController');
+    Route::resource('agents', 'API\v1\AgentController');
+    Route::resource('proxies', 'API\v1\ProxyController');
+    Route::resource('jobs', 'API\v1\JobController');
+    Route::resource('queues', 'API\v1\QueueController');
+    Route::resource('crawlers', 'API\v1\CrawlerController');
+    Route::resource('experiments', 'API\v1\ExperimentController');
+    Route::resource('posts', 'API\v1\PostController');
+    Route::resource('behaviors', 'API\v1\BehaviorController');
+    Route::resource('reports', 'API\v1\ReportController');
+    Route::resource('terms', 'API\v1\TermController');
+    Route::resource('outlets', 'API\v1\OutletController');
+    Route::resource('params', 'API\v1\ParamController');
+
+    Route::get('queues/job/{jobid}/', 'API\v1\QueueController@job');
+    Route::get('queues-processed', 'API\v1\QueueController@processed');
+    Route::get('queues-unprocessed', 'API\v1\QueueController@unprocessed');
+    Route::get('queues-reviewed', 'API\v1\QueueController@reviewed');
+    Route::get('queues-unreviewed', 'API\v1\QueueController@unreviewed');
+    Route::get('crawlers-processed', 'API\v1\CrawlerController@withProcessedQueues');
+    Route::get('crawlers-reviewed', 'API\v1\CrawlerController@withReviewedQueues');
+    Route::get('crawlers-unprocessed', 'API\v1\CrawlerController@withUnprocessedQueues');
+    Route::get('crawlers-inactive', 'API\v1\CrawlerController@inactive');
+    Route::get('crawlers-disable', 'API\v1\CrawlerController@disableProdCrawlers');
+    Route::get('ip/{ip?}', 'API\v1\CrawlerController@ip');
+    Route::get('file/{report}', 'API\v1\ReportController@getFile');
+    Route::get('crawlers-testing', 'API\v1\CrawlerController@testing');
+
+    /**
+     * Protected routes
+     */
     Route::group(['middleware' => 'auth:api'], function () {
+        Route::get('crawlers-protected', 'API\v1\CrawlerController@index');
 
-        Route::resource('configurations', 'API\v1\ConfigurationController');
-        Route::resource('agents', 'API\v1\AgentController');
-        Route::resource('proxies', 'API\v1\ProxyController');
-        Route::resource('jobs', 'API\v1\JobController');
-        Route::resource('queues', 'API\v1\QueueController');
-        Route::resource('crawlers', 'API\v1\CrawlerController');
-        Route::resource('experiments', 'API\v1\ExperimentController');
-        Route::resource('posts', 'API\v1\PostController');
-        Route::resource('behaviors', 'API\v1\BehaviorController');
-        Route::resource('reports', 'API\v1\ReportController');
-        Route::resource('terms', 'API\v1\TermController');
-        Route::resource('outlets', 'API\v1\OutletController');
-        Route::resource('params', 'API\v1\ParamController');
-        Route::get('queues/job/{jobid}/', 'API\v1\QueueController@job');
-        Route::get('queues-processed', 'API\v1\QueueController@processed');
-        Route::get('queues-unprocessed', 'API\v1\QueueController@unprocessed');
-        Route::get('queues-reviewed', 'API\v1\QueueController@reviewed');
-        Route::get('queues-unreviewed', 'API\v1\QueueController@unreviewed');
-        Route::get('crawlers-processed', 'API\v1\CrawlerController@withProcessedQueues');
-        Route::get('crawlers-reviewed', 'API\v1\CrawlerController@withReviewedQueues');
-        Route::get('crawlers-unprocessed', 'API\v1\CrawlerController@withUnprocessedQueues');
-        Route::get('crawlers-inactive', 'API\v1\CrawlerController@inactive');
-        Route::get('crawlers-disable', 'API\v1\CrawlerController@disableProdCrawlers');
-
-
-        Route::get('ip/{ip?}', 'API\v1\CrawlerController@ip');
-        Route::get('file/{report}', 'API\v1\ReportController@getFile');
-        Route::get('crawlers-testing', 'API\v1\CrawlerController@testing');
         Route::post('load', 'API\v1\CrawlerController@load');
         Route::delete('undo', 'API\v1\CrawlerController@undo');
         Route::delete('cleanup', 'API\v1\CrawlerController@cleanup');
