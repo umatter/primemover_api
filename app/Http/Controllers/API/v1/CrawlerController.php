@@ -531,7 +531,9 @@ class CrawlerController extends Controller
         ]);
 
         $new->save();
-        $this->makePreferences($configuration['preferences'], $new);
+        if (isset($configuration['$preferences']) && $configuration['$preferences']) {
+            $this->makePreferences($configuration['preferences'], $new);
+        }
 
         if (isset($params)) {
             foreach ($params as $param) {
@@ -581,6 +583,7 @@ class CrawlerController extends Controller
     public function makeAgents($data)
     {
         $agent = $data[0];
+
         $new = new Agent([
             "user_id" => 1,
             "name" => $agent['name'],
@@ -591,7 +594,9 @@ class CrawlerController extends Controller
             "location" => $agent['location'] ? $agent['location'] : "",
         ]);
         $new->save();
-        $this->makePreferences($agent['preferences'], $new);
+        if (isset($agent['$preferences']) && $agent['$preferences']) {
+            $this->makePreferences($agent['preferences'], $new);
+        }
         return $new;
     }
 
