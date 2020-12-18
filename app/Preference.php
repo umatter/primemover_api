@@ -18,6 +18,11 @@ class Preference extends Model
         return $this->belongsTo('App\Configuration');
     }
 
+    public function experiment()
+    {
+        return $this->belongsTo('App\Experiment');
+    }
+
     public function preferencable()
     {
         return $this->morphTo();

@@ -531,7 +531,7 @@ class CrawlerController extends Controller
         ]);
 
         $new->save();
-        if (isset($configuration['$preferences']) && $configuration['$preferences']) {
+        if (isset($configuration['preferences']) && $configuration['preferences']) {
             $this->makePreferences($configuration['preferences'], $new);
         }
 
@@ -594,7 +594,7 @@ class CrawlerController extends Controller
             "location" => $agent['location'] ? $agent['location'] : "",
         ]);
         $new->save();
-        if (isset($agent['$preferences']) && $agent['$preferences']) {
+        if (isset($agent['preferences']) && $agent['preferences']) {
             $this->makePreferences($agent['preferences'], $new);
         }
         return $new;

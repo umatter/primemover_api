@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API\v1;
 
 use App\Experiment;
+use App\Preference;
 use Illuminate\Http\Request;
 
 use App\Http\Resources\v1\ExperimentResource;
@@ -18,7 +19,7 @@ class ExperimentController extends Controller
     public function index(Request $request): ExperimentResourceCollection
     {
         $keyword = $request->input('keyword');
-        $experiments = Experiment::with('crawlers')->latest()->get();
+        $experiments = Experiment::with('crawlers', 'preferences')->latest()->get();
         return new ExperimentResourceCollection($experiments);
     }
 
@@ -45,8 +46,39 @@ class ExperimentController extends Controller
         $data = $request->all();
         $data['user_id'] = auth()->user() ? auth()->user()->id : 1;
 
-        $experiment = Experiment::create($data);
+        $experiment = Experiment::create([
+            "name" => isset($data['name']) ? $data['name'] : 'Value not provided at update!',
+            "description" => isset($data['description']) ? $data['description'] : 'Value not provided at update!',
+            "user_id" => 1,
+            "contact" => isset($data['contact']) ? $data['contact'] : 'Value not provided at update!',
+        ]);
+
+        $experiment->save();
+
+        if (isset($request['preferences']) && $request['preferences']) {
+            $this->makePreferences($request['preferences'], $experiment);
+        }
+
         return new ExperimentResource($experiment);
+    }
+
+    /**
+     * Creates Preferences for Configurations
+     * @param $data
+     * @param $model
+     */
+    public function makePreferences($data, $model)
+    {
+        foreach ($data as $preference) {
+            $new = new Preference([
+                "user_id" => 1,
+                "name" => isset($preference['name']) ? $preference['name'] : 'Value not provided at update!',
+                "description" => isset($preference['description']) ? $preference['description'] : 'Value not provided at update!',
+                "value" => isset($preference['value']) ? $preference['value'] : 'Value not provided at update!',
+            ]);
+            $new->preferencable()->associate($model);
+            $new->save();
+        }
     }
 
     /**
@@ -56,7 +88,7 @@ class ExperimentController extends Controller
      */
     public function show($id): ExperimentResource
     {
-        $experiment = Experiment::with(['user', 'crawlers'])->findOrFail($id);
+        $experiment = Experiment::with(['user', 'crawlers', 'preferences'])->findOrFail($id);
         return new ExperimentResource($experiment);
     }
 
