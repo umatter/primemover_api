@@ -378,47 +378,63 @@ class CrawlerController extends Controller
         $crawlers = [];
         foreach ($data as $crawler) {
             $id = isset($crawler['id']) ? intval($crawler['id']) : null;
-            $payload = [
-                "user_id" => isset($crawler['user_id']) ? $crawler['user_id'] : 1,
-                "experiment_id" => isset($crawler['experiment_id']) ? $crawler['experiment_id'] : 1,
-                "proxy_id" => isset($crawler['proxy_id']) ? $crawler['proxy_id'] : 1,
-                "configuration_id" => isset($crawler['configuration_id']) ? $crawler['configuration_id'] : 1,
-                "agent_id" => isset($crawler['agent_id']) ? $crawler['agent_id'] : 1,
-                "name" => isset($crawler['name']) ? $crawler['name'] : 'Value was not provided at update!',
-                "description" => isset($crawler['description']) ? $crawler['description'] : 'Value was not provided at update!',
-                "testing" => $crawler['testing'],
-                "active" => $crawler['active'],
-                "updated" => 1,
-            ];
 
             /**
              * Create new or update if id provided.
              */
-            if ($id) {
-                $new = Crawler::findOrFail($id);
-                $new->update($payload);
+            if ($id > 6) {
+                $new = Crawler::find($id);
             } else {
-                $new = new Crawler($payload);
-                $new->save();
+                $new = new Crawler;
             }
 
-            // Create queues
-            $this->makeQueues($crawler['queues'], $new);
+            $new->user_id = isset($crawler['user_id']) ? $crawler['user_id'] : 1;
+            $new->experiment_id = 1;
+            $new->name = isset($crawler['name']) ? $crawler['name'] : null;
+            $new->description = isset($crawler['description']) ? $crawler['description'] : null;
+            $new->testing = isset($crawler['testing']) ? $crawler['testing'] : 0;
+            $new->active = isset($crawler['active']) ? $crawler['active'] : 1;
+            $new->updated = 1;
+
+            if (isset($crawler['experiment_id'])) {
+                $new->experiment_id = $crawler['experiment_id'];
+            }
+
+            if (isset($crawler['configuration_id'])) {
+                $new->configuration_id = $crawler['configuration_id'];
+            }
+
+            if (isset($crawler['proxy_id'])) {
+                $new->proxy_id = $crawler['proxy_id'];
+            }
+
+            if (isset($crawler['agent_id'])) {
+                $new->agent_id = $crawler['agent_id'];
+            }
 
             // Add agent
             if (isset($crawler['agent'])) {
-                $this->makeAgents($crawler['agent'], $new);
+                $resp = $this->makeAgents($crawler['agent'], $new);
+                $new->agent_id = $resp->id;
             }
 
             // Add proxy
             if (isset($crawler['proxy'])) {
-                $this->makeProxies($crawler['proxy'], $new);
+                $resp = $this->makeProxies($crawler['proxy'], $new);
+                $new->proxy_id = $resp->id;
             }
 
             // Add configuration
             if (isset($crawler['configuration'])) {
-                $this->makeConfigurations($crawler['configuration'], $new);
+                $resp = $this->makeConfigurations($crawler['configuration'], $new);
+                $new->configuration_id = $resp->id;
             }
+
+            //$new->update($payload);
+            $new->save();
+
+            // Create queues
+            $this->makeQueues($crawler['queues'], $new);
 
             $new->update();
             array_push($crawlers, $new);
@@ -519,15 +535,13 @@ class CrawlerController extends Controller
             "type" => isset($proxy['type']) ? $proxy['type'] : null,
         ];
 
-        $new = Proxy::findOrFail($crawler->proxy_id);
+        $new = Proxy::find($crawler->proxy_id);
 
         if ($crawler->proxy_id > 1 && $new) {
             $new->update($payload);
         } else {
             $new = new Proxy($payload);
             $new->save();
-            $crawler->proxy_id = $new->id;
-            $crawler->save();
         }
 
         return $new;
@@ -557,7 +571,7 @@ class CrawlerController extends Controller
             "description" => isset($configuration['description']) ? $configuration['description'] : null,
         ];
 
-        $new = Configuration::findOrFail($crawler->configuration_id);
+        $new = Configuration::find($crawler->configuration_id);
 
         if ($crawler->configuration_id > 1 && $new) {
             $new->update($payload);
@@ -565,8 +579,6 @@ class CrawlerController extends Controller
 
             $new = new Configuration($payload);
             $new->save();
-            $crawler->configuration_id = $new->id;
-            $crawler->save();
         }
 
         if ($new && isset($configuration['preferences']) && $configuration['preferences']) {
@@ -636,15 +648,13 @@ class CrawlerController extends Controller
             "location" => $agent['location'] ? $agent['location'] : "",
         ];
 
-        $new = Agent::findOrFail($crawler->agent_id);
+        $new = Agent::find($crawler->agent_id);
 
         if ($crawler->agent_id > 1 && $new) {
             $new->update($payload);
         } else {
             $new = new Agent($payload);
             $new->save();
-            $crawler->agent_id = $new->id;
-            $crawler->save();
         }
 
         if (isset($agent['preferences']) && $agent['preferences']) {
