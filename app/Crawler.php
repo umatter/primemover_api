@@ -3,7 +3,12 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * @method static where(string $string, int $int)
+ * @method static findOrFail(int $id)
+ */
 class Crawler extends Model
 {
     protected $guarded = [];
@@ -13,7 +18,10 @@ class Crawler extends Model
         return $this->belongsTo('App\Proxy')->where('active', 1);
     }
 
-    public function configuration()
+    /**
+     * @return BelongsTo
+     */
+    public function configuration(): BelongsTo
     {
         return $this->belongsTo('App\Configuration')->where('active', 1)->with('params');
     }

@@ -4,6 +4,9 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @method static findOrFail($proxy_id)
+ */
 class Proxy extends Model
 {
     protected $guarded = [];

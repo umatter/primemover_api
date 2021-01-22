@@ -4,6 +4,9 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @method static findOrFail($configuration_id)
+ */
 class Configuration extends Model
 {
     protected $guarded = [];

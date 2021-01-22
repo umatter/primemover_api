@@ -25,11 +25,11 @@ class CreateCrawlersTable extends Migration
             $table->timestamp('created_at')->useCurrent();
 
             // Foreign keys
-            $table->foreignId('experiment_id')->constrained()->onDelete('cascade');
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->foreignId('proxy_id')->constrained()->onDelete('cascade');
-            $table->foreignId('agent_id')->constrained()->onDelete('cascade');
-            $table->foreignId('configuration_id')->constrained()->onDelete('cascade');
+            $table->foreignId('experiment_id')->constrained()->onDelete('restrict');
+            $table->foreignId('user_id')->constrained()->onDelete('restrict');
+            $table->foreignId('proxy_id')->constrained()->onDelete('restrict');
+            $table->foreignId('agent_id')->constrained()->onDelete('restrict');
+            $table->foreignId('configuration_id')->constrained()->onDelete('restrict');
         });
     }
 

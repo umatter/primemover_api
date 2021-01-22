@@ -4,6 +4,10 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @method static findOrFail($agent_id)
+ */
+
 class Agent extends Model
 {
     protected $guarded = [];

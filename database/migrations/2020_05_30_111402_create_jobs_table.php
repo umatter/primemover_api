@@ -31,8 +31,8 @@ class CreateJobsTable extends Migration
             $table->string('finished_at')->nullable();
 
             // Foreign keys
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->foreignId('queue_id')->constrained()->onDelete('cascade');
+            $table->foreignId('user_id')->constrained()->onDelete('restrict');
+            $table->foreignId('queue_id')->constrained()->onDelete('restrict');
 
         });
     }

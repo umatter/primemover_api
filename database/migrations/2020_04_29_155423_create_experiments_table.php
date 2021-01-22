@@ -24,7 +24,7 @@ class CreateExperimentsTable extends Migration
             $table->timestamp('created_at')->useCurrent();
 
             // Foreign keys
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->foreignId('user_id')->constrained()->onDelete('restrict');
         });
     }
 

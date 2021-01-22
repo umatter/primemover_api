@@ -32,8 +32,8 @@ class CreateQueuesTable extends Migration
             $table->string('finished_at')->nullable();
 
             // Foreign keys
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->foreignId('crawler_id')->constrained()->onDelete('cascade');
+            $table->foreignId('user_id')->constrained()->onDelete('restrict');
+            $table->foreignId('crawler_id')->constrained()->onDelete('restrict');
         });
     }
 

@@ -18,6 +18,9 @@ use Illuminate\Support\Facades\Route;
  */
 Route::prefix('v1')->group(function () {
 
+    Route::post('load-test', 'API\v1\CrawlerController@load');
+
+
     /**
      * Not protected routes (for now?)
      */

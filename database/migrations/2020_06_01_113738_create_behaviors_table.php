@@ -23,8 +23,8 @@ class CreateBehaviorsTable extends Migration
             $table->timestamp('created_at')->useCurrent();
 
             // Foreign keys
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->foreignId('job_id')->constrained()->onDelete('cascade');
+            $table->foreignId('user_id')->constrained()->onDelete('restrict');
+            $table->foreignId('job_id')->constrained()->onDelete('restrict');
         });
     }
 

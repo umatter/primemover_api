@@ -11,6 +11,8 @@ use App\Param;
 use App\Preference;
 use App\Proxy;
 use App\Queue;
+use Exception;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
@@ -18,13 +20,15 @@ use Arimolzer\IPStackFinder\Facade\IPStackFinderFacade;
 
 use App\Http\Resources\v1\CrawlerResource;
 use App\Http\Resources\v1\CrawlerResourceCollection;
+use Illuminate\Validation\ValidationException;
 
 class CrawlerController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
-     * @return Response
+     * @param Request $request
+     * @return CrawlerResourceCollection
      */
     public function index(Request $request): CrawlerResourceCollection
     {
@@ -45,7 +49,8 @@ class CrawlerController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return Response
+     * @param Request $request
+     * @return CrawlerResourceCollection
      */
     public function inactive(Request $request): CrawlerResourceCollection
     {
@@ -66,7 +71,8 @@ class CrawlerController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return Response
+     * @param Request $request
+     * @return CrawlerResourceCollection
      */
     public function withProcessedQueues(Request $request): CrawlerResourceCollection
     {
@@ -93,7 +99,8 @@ class CrawlerController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return Response
+     * @param Request $request
+     * @return CrawlerResourceCollection
      */
     public function withReviewedQueues(Request $request): CrawlerResourceCollection
     {
@@ -120,7 +127,8 @@ class CrawlerController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return Response
+     * @param Request $request
+     * @return CrawlerResourceCollection
      */
     public function withUnprocessedQueues(Request $request): CrawlerResourceCollection
     {
@@ -148,7 +156,8 @@ class CrawlerController extends Controller
     /**
      * Display a listing of the resource for testing.
      *
-     * @return Response
+     * @param Request $request
+     * @return CrawlerResourceCollection
      */
     public function testing(Request $request): CrawlerResourceCollection
     {
@@ -170,7 +179,7 @@ class CrawlerController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return Response
+     * @return CrawlerResource
      */
     public function create(): CrawlerResource
     {
@@ -181,7 +190,7 @@ class CrawlerController extends Controller
      * Store a newly created resource in storage.
      * @param Request $request
      * @return CrawlerResource
-     * @throws \Illuminate\Validation\ValidationException
+     * @throws ValidationException
      */
     public function store(Request $request): CrawlerResource
     {
@@ -200,8 +209,8 @@ class CrawlerController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param Crawler $crawler
-     * @return Response
+     * @param $id
+     * @return CrawlerResource
      */
     public function show($id): CrawlerResource
     {
@@ -222,7 +231,7 @@ class CrawlerController extends Controller
      * Show the form for editing the specified resource.
      *
      * @param Crawler $crawler
-     * @return Response
+     * @return CrawlerResource
      */
     public function edit(Crawler $crawler): CrawlerResource
     {
@@ -234,7 +243,7 @@ class CrawlerController extends Controller
      *
      * @param Request $request
      * @param Crawler $crawler
-     * @return Response
+     * @return CrawlerResource
      */
     public function update(Request $request, Crawler $crawler): CrawlerResource
     {
@@ -246,9 +255,7 @@ class CrawlerController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param Request $request
-     * @param Crawler $crawler
-     * @return Response
+     * @return CrawlerResourceCollection
      */
     public function disableProdCrawlers(): CrawlerResourceCollection
     {
@@ -261,7 +268,7 @@ class CrawlerController extends Controller
      * Remove the specified resource from storage.
      * @param Crawler $crawler
      * @return CrawlerResourceCollection
-     * @throws \Exception
+     * @throws Exception
      */
 
     public function destroy(Crawler $crawler): CrawlerResourceCollection
@@ -284,9 +291,9 @@ class CrawlerController extends Controller
     /**
      * Resolve IP
      * @param $ip
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
-    public function ip($ip = null)
+    public function ip($ip = null): JsonResponse
     {
         $final = ($ip) ? $ip : request()->ip();
         if (!$this->isLocalAddress($final)) {
@@ -303,7 +310,7 @@ class CrawlerController extends Controller
      * @param $ip
      * @return bool
      */
-    public function isLocalAddress($ip)
+    public function isLocalAddress($ip): bool
     {
         return $ip === '::1' || $ip === '127.0.0.1';
     }
@@ -353,7 +360,7 @@ class CrawlerController extends Controller
     /**
      * Create new crawler from script, POST data sent
      */
-    public function load()
+    public function load(): JsonResponse
     {
         $incoming = json_decode(request()->getContent(), true);
         return $this->makeCrawlers($incoming);
@@ -362,8 +369,9 @@ class CrawlerController extends Controller
     /**
      * Make a new crawler and other appended objects
      * @param $data
+     * @return JsonResponse
      */
-    public function makeCrawlers($data)
+    public function makeCrawlers($data): JsonResponse
     {
         Crawler::query()->update(['updated' => 0]);
 
@@ -399,21 +407,19 @@ class CrawlerController extends Controller
 
             // Add agent
             if (isset($crawler['agent'])) {
-                $agent = $this->makeAgents($crawler['agent']);
-                $new->agent_id = $agent->id;
+                $this->makeAgents($crawler['agent'], $new);
             }
 
             // Add proxy
             if (isset($crawler['proxy'])) {
-                $proxy = $this->makeProxies($crawler['proxy']);
-                $new->proxy_id = $proxy->id;
+                $this->makeProxies($crawler['proxy'], $new);
             }
 
             // Add configuration
             if (isset($crawler['configuration'])) {
-                $configuration = $this->makeConfigurations($crawler['configuration']);
-                $new->configuration_id = $configuration->id;
+                $this->makeConfigurations($crawler['configuration'], $new);
             }
+
             $new->update();
             array_push($crawlers, $new);
         }
@@ -495,49 +501,84 @@ class CrawlerController extends Controller
     /**
      * Creates Proxy for Crawler
      * @param $data
+     * @param $crawler
      * @return Proxy
      */
-    public function makeProxies($data)
+    public function makeProxies($data, $crawler): Proxy
     {
         $proxy = $data[0];
-        $new = new Proxy([
+
+        $payload = [
             "user_id" => 1,
-            "name" => isset($proxy['name']) ? $proxy['name'] : 'Value not provided at update',
-            "description" => isset($proxy['description']) ? $proxy['description'] : 'Value not provided at update',
-            "hostname" => isset($proxy['hostname']) ? $proxy['hostname'] : 'Value not provided at update',
-            "port" => isset($proxy['port']) ? $proxy['port'] : 'Value not provided at update',
-            "username" => isset($proxy['username']) ? $proxy['username'] : 'Value not provided at update',
-            "password" => isset($proxy['password']) ? $proxy['password'] : 'Value not provided at update',
-            "type" => isset($proxy['type']) ? $proxy['type'] : 'Value not provided at update',
-        ]);
-        $new->save();
+            "name" => isset($proxy['name']) ? $proxy['name'] : null,
+            "description" => isset($proxy['description']) ? $proxy['description'] : null,
+            "hostname" => isset($proxy['hostname']) ? $proxy['hostname'] : null,
+            "port" => isset($proxy['port']) ? $proxy['port'] : null,
+            "username" => isset($proxy['username']) ? $proxy['username'] : null,
+            "password" => isset($proxy['password']) ? $proxy['password'] : null,
+            "type" => isset($proxy['type']) ? $proxy['type'] : null,
+        ];
+
+        $new = Proxy::findOrFail($crawler->proxy_id);
+
+        if ($new) {
+            $new->update($payload);
+        } else {
+            $new = new Proxy($payload);
+            $new->save();
+            $crawler->proxy_id = $new->id;
+            $crawler->save();
+        }
+
         return $new;
+    }
+
+    public function log($content)
+    {
+        echo "<pre>";
+        print_r($content);
+        echo "</pre>";
     }
 
     /**
      * Creates Configuration with Params for Crawler
      * @param $data
+     * @param $crawler
      * @return Configuration
      */
-    public function makeConfigurations($data)
+    public function makeConfigurations($data, $crawler): Configuration
     {
         $configuration = $data[0];
         $params = isset($configuration['params']) ? $configuration['params'] : null;
-
-        $new = new Configuration([
+        $payload = [
             "user_id" => 1,
-            "name" => $configuration['name'],
-            "description" => $configuration['description'],
-        ]);
+            "name" => isset($configuration['name']) ? $configuration['name'] : null,
+            "active" => 1,
+            "description" => isset($configuration['description']) ? $configuration['description'] : null,
+        ];
 
-        $new->save();
-        if (isset($configuration['preferences']) && $configuration['preferences']) {
+        //$this->log($crawler->configuration);
+
+        if ($crawler->configuration_id) {
+            $new = Configuration::findOrFail($crawler->configuration_id);
+            $new->update($payload);
+        } else {
+
+            $new = new Configuration($payload);
+            $new->save();
+            $crawler->configuration_id = $new->id;
+            $crawler->save();
+        }
+
+        if ($new && isset($configuration['preferences']) && $configuration['preferences']) {
+            $new->preferences()->delete();
             $this->makePreferences($configuration['preferences'], $new);
         }
 
         if (isset($params)) {
+            $new->params()->delete();
             foreach ($params as $param) {
-                $parameter = new Param([
+                $payload = [
                     "user_id" => 1,
                     "configuration_id" => $new->id,
                     "pi" => $param['pi'],
@@ -548,7 +589,9 @@ class CrawlerController extends Controller
                     "alpha" => $param['alpha'],
                     "search_terms" => json_encode($param['search_terms']),
                     "media_outlet_urls" => json_encode($param['media_outlet_urls']),
-                ]);
+                ];
+
+                $parameter = new Param($payload);
                 $parameter->save();
             }
         }
@@ -578,13 +621,13 @@ class CrawlerController extends Controller
     /**
      * Creates Agents for Crawler
      * @param $data
+     * @param $crawler
      * @return Agent
      */
-    public function makeAgents($data)
+    public function makeAgents($data, $crawler): Agent
     {
         $agent = $data[0];
-
-        $new = new Agent([
+        $payload = [
             "user_id" => 1,
             "name" => $agent['name'],
             "description" => $agent['description'],
@@ -592,8 +635,18 @@ class CrawlerController extends Controller
             "multilogin_id" => $agent['multilogin_id'] ? $agent['multilogin_id'] : "",
             "multilogin_profile" => $agent['multilogin_profile'] ? json_encode($agent['multilogin_profile']) : "",
             "location" => $agent['location'] ? $agent['location'] : "",
-        ]);
-        $new->save();
+        ];
+
+        if ($crawler->agent_id) {
+            $new = Agent::findOrFail($crawler->agent_id);
+            $new->update($payload);
+        } else {
+            $new = new Agent($payload);
+            $new->save();
+            $crawler->agent_id = $new->id;
+            $crawler->save();
+        }
+
         if (isset($agent['preferences']) && $agent['preferences']) {
             $this->makePreferences($agent['preferences'], $new);
         }
