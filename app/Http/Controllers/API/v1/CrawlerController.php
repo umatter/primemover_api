@@ -521,7 +521,7 @@ class CrawlerController extends Controller
 
         $new = Proxy::findOrFail($crawler->proxy_id);
 
-        if ($new) {
+        if ($crawler->proxy_id > 1 && $new) {
             $new->update($payload);
         } else {
             $new = new Proxy($payload);
@@ -557,10 +557,9 @@ class CrawlerController extends Controller
             "description" => isset($configuration['description']) ? $configuration['description'] : null,
         ];
 
-        //$this->log($crawler->configuration);
+        $new = Configuration::findOrFail($crawler->configuration_id);
 
-        if ($crawler->configuration_id) {
-            $new = Configuration::findOrFail($crawler->configuration_id);
+        if ($crawler->configuration_id > 1 && $new) {
             $new->update($payload);
         } else {
 
@@ -637,8 +636,9 @@ class CrawlerController extends Controller
             "location" => $agent['location'] ? $agent['location'] : "",
         ];
 
-        if ($crawler->agent_id) {
-            $new = Agent::findOrFail($crawler->agent_id);
+        $new = Agent::findOrFail($crawler->agent_id);
+
+        if ($crawler->agent_id > 1 && $new) {
             $new->update($payload);
         } else {
             $new = new Agent($payload);

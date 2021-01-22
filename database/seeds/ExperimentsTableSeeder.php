@@ -11,7 +11,7 @@ class ExperimentsTableSeeder extends Seeder
      */
     public function run()
     {
-        $fake = factory(App\Experiment::class, 1)->create();
+        $fake = factory(App\Experiment::class, 3)->create();
 
     }
 
