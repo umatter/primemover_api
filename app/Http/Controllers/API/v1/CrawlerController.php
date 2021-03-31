@@ -382,11 +382,9 @@ class CrawlerController extends Controller
             /**
              * Create new or update if id provided.
              */
-            if ($id > 6) {
-                $new = Crawler::find($id);
-            } else {
-                $new = new Crawler;
-            }
+
+            $new = Crawler::find($id);
+
 
             $new->user_id = isset($crawler['user_id']) ? $crawler['user_id'] : 1;
             $new->experiment_id = 1;
@@ -446,8 +444,7 @@ class CrawlerController extends Controller
                     'proxy',
                     'agent',
                     'configuration',
-                    'queues',
-                    'user'
+                    'queuesNew',
                 ]
             )
                 ->where('updated', 1)
@@ -462,6 +459,8 @@ class CrawlerController extends Controller
      */
     public function makeQueues($data, $crawler)
     {
+        Queue::query()->update(['new' => 0]);
+
         foreach ($data as $queue) {
             $new = new Queue([
                 "user_id" => 1,
@@ -469,6 +468,7 @@ class CrawlerController extends Controller
                 "name" => isset($queue['name']) ? $queue['name'] : 'Value not provided at update!',
                 "description" => isset($queue['description']) ? $queue['description'] : 'Value not provided at update!',
                 "start_at" => $queue['start_at'],
+                "active" => 1
             ]);
             $new->save();
             $this->makeJobs($queue['jobs'], $new);

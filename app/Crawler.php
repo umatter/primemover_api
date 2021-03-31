@@ -31,6 +31,11 @@ class Crawler extends Model
         return $this->hasMany('App\Queue')->with('jobs')->where('active', 1);
     }
 
+    public function queuesNew()
+    {
+        return $this->hasMany('App\Queue')->with('jobs')->where('new', 1);
+    }
+
     public function queuesProcessed()
     {
         return $this->hasMany('App\Queue')->with('jobs')->where('processed', 1);
