@@ -49,7 +49,6 @@ class ReportController extends Controller
     {
         $this->validate($request, [
             'job_id' => 'required',
-            'filecontent' => 'required',
             'mimetype' => 'required',
         ]);
 
@@ -64,7 +63,7 @@ class ReportController extends Controller
         $data['job_id'] = $request->job_id;
         $data['description'] = ($request->description) ? $request->description : $desc;
         $data['user_id'] = auth()->user() ? auth()->user()->id : 1;
-        $data['filecontent'] = $request->filecontent;
+        //$data['filecontent'] = $request->filecontent
         $data['filename'] = $request->filename;
         $data['mimetype'] = $request->mimetype;
 
