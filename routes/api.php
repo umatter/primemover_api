@@ -52,13 +52,12 @@ Route::prefix('v1')->group(function () {
     Route::get('file/{report}', 'API\v1\ReportController@getFile');
     Route::get('crawlers-testing', 'API\v1\CrawlerController@testing');
 
-    Route::post('load', 'API\v1\CrawlerController@load');
     /**
      * Protected routes
      */
     Route::group(['middleware' => 'auth:api'], function () {
         Route::get('crawlers-protected', 'API\v1\CrawlerController@index');
-
+        Route::post('load', 'API\v1\CrawlerController@load');
 
         Route::delete('undo', 'API\v1\CrawlerController@undo');
         Route::delete('cleanup', 'API\v1\CrawlerController@cleanup');
