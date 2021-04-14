@@ -373,7 +373,7 @@ class CrawlerController extends Controller
      */
     public function makeCrawlers($data): JsonResponse
     {
-        Crawler::query()->update(['updated' => 0]);
+        Crawler::query()->update(['new' => 0]);
 
         $crawlers = [];
         foreach ($data as $crawler) {
