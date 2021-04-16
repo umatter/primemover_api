@@ -38,9 +38,9 @@ class CrawlerController extends Controller
             ->with(
                 [
                     'queues',
-                    'agent',
+                    'agent.preferences',
                     'proxy',
-                    'configuration',
+                    'configuration.preferences',
                 ]
             )->latest()->get();
         return new CrawlerResourceCollection($crawlers);
@@ -60,9 +60,9 @@ class CrawlerController extends Controller
             ->with(
                 [
                     'queues',
-                    'agent',
+                    'agent.preferences',
                     'proxy',
-                    'configuration',
+                    'configuration.preferences',
                 ]
             )->latest()->get();
         return new CrawlerResourceCollection($crawlers);
@@ -84,9 +84,9 @@ class CrawlerController extends Controller
             }])
             ->with(
                 [
-                    'agent',
+                    'agent.preferences',
                     'proxy',
-                    'configuration',
+                    'configuration.preferences',
                 ]
             )
             ->whereHas('queues', function ($q) {
@@ -112,9 +112,9 @@ class CrawlerController extends Controller
             }])
             ->with(
                 [
-                    'agent',
+                    'agent.preferences',
                     'proxy',
-                    'configuration',
+                    'configuration.preferences',
                 ]
             )
             ->whereHas('queues', function ($q) {
@@ -143,9 +143,9 @@ class CrawlerController extends Controller
             }])
             ->with(
                 [
-                    'agent',
+                    'agent.preferences',
                     'proxy',
-                    'configuration',
+                    'configuration.preferences',
                 ]
             )
             ->latest()->get();
@@ -167,9 +167,9 @@ class CrawlerController extends Controller
             ->with(
                 [
                     'queues',
-                    'agent',
+                    'agent.preferences',
                     'proxy',
-                    'configuration',
+                    'configuration.preferences',
                 ]
             )->latest()->get();
         return new CrawlerResourceCollection($crawlers);
@@ -218,8 +218,8 @@ class CrawlerController extends Controller
             [
                 'experiment',
                 'queues',
-                'agent',
-                'configuration',
+                'agent.preferences',
+                'configuration.preferences',
                 'proxy',
                 'user'
             ]
@@ -279,9 +279,9 @@ class CrawlerController extends Controller
                 [
                     'experiment',
                     'queues',
-                    'agent',
+                    'agent.preferences',
                     'proxy',
-                    'configuration'
+                    'configuration.preferences'
                 ]
             )->latest()->get()
         );
@@ -327,9 +327,9 @@ class CrawlerController extends Controller
             [
                 'experiment',
                 'queues',
-                'agent',
+                'agent.preferences',
                 'proxy',
-                'configuration',
+                'configuration.preferences',
                 'user'
             ]
         )->latest()->get();
@@ -348,9 +348,9 @@ class CrawlerController extends Controller
             [
                 'experiment',
                 'queues',
-                'agent',
+                'agent.preferences',
                 'proxy',
-                'configuration',
+                'configuration.preferences',
                 'user'
             ]
         )->latest()->get();
@@ -386,12 +386,12 @@ class CrawlerController extends Controller
             $new = Crawler::find($id);
 
 
-            $new->user_id = isset($crawler['user_id']) ? $crawler['user_id'] : 1;
+            $new->user_id = $crawler['user_id'] ?? 1;
             $new->experiment_id = 1;
-            $new->name = isset($crawler['name']) ? $crawler['name'] : null;
-            $new->description = isset($crawler['description']) ? $crawler['description'] : null;
-            $new->testing = isset($crawler['testing']) ? $crawler['testing'] : 0;
-            $new->active = isset($crawler['active']) ? $crawler['active'] : 1;
+            $new->name = $crawler['name'] ?? null;
+            $new->description = $crawler['description'] ?? null;
+            $new->testing = $crawler['testing'] ?? 0;
+            $new->active = $crawler['active'] ?? 1;
             $new->updated = 1;
 
             if (isset($crawler['experiment_id'])) {
@@ -442,8 +442,8 @@ class CrawlerController extends Controller
             'crawlers' => Crawler::with(
                 [
                     'proxy',
-                    'agent',
-                    'configuration',
+                    'agent.preferences',
+                    'configuration.preferences',
                     'queuesNew',
                 ]
             )
@@ -465,8 +465,8 @@ class CrawlerController extends Controller
             $new = new Queue([
                 "user_id" => 1,
                 "crawler_id" => $crawler->id,
-                "name" => isset($queue['name']) ? $queue['name'] : 'Value not provided at update!',
-                "description" => isset($queue['description']) ? $queue['description'] : 'Value not provided at update!',
+                "name" => $queue['name'] ?? 'Value not provided at update!',
+                "description" => $queue['description'] ?? 'Value not provided at update!',
                 "start_at" => $queue['start_at'],
                 "active" => 1
             ]);
@@ -486,9 +486,9 @@ class CrawlerController extends Controller
             $new = new Job([
                 "user_id" => 1,
                 "queue_id" => $queue->id,
-                "name" => isset($job['name']) ? $job['name'] : 'Value not provided at update',
-                "type" => isset($job['type']) ? $job['type'] : 'Value not provided at update',
-                "description" => isset($job['description']) ? $job['description'] : 'Value not provided at update',
+                "name" => $job['name'] ?? 'Value not provided at update',
+                "type" => $job['type'] ?? 'Value not provided at update',
+                "description" => $job['description'] ?? 'Value not provided at update',
             ]);
             $new->save();
             $this->makeBehaviors($job['behaviors'], $new);
@@ -506,9 +506,9 @@ class CrawlerController extends Controller
             $new = new Behavior([
                 "user_id" => 1,
                 "job_id" => $job->id,
-                "name" => isset($behavior['name']) ? $behavior['name'] : 'Value not provided at update!',
-                "description" => isset($behavior['description']) ? $behavior['description'] : 'Value not provided at update!',
-                "value" => isset($behavior['value']) ? $behavior['value'] : 'Value not provided at update!',
+                "name" => $behavior['name'] ?? 'Value not provided at update!',
+                "description" => $behavior['description'] ?? 'Value not provided at update!',
+                "value" => $behavior['value'] ?? 'Value not provided at update!',
             ]);
             $new->save();
         }
@@ -526,13 +526,13 @@ class CrawlerController extends Controller
 
         $payload = [
             "user_id" => 1,
-            "name" => isset($proxy['name']) ? $proxy['name'] : null,
-            "description" => isset($proxy['description']) ? $proxy['description'] : null,
-            "hostname" => isset($proxy['hostname']) ? $proxy['hostname'] : null,
-            "port" => isset($proxy['port']) ? $proxy['port'] : null,
-            "username" => isset($proxy['username']) ? $proxy['username'] : null,
-            "password" => isset($proxy['password']) ? $proxy['password'] : null,
-            "type" => isset($proxy['type']) ? $proxy['type'] : null,
+            "name" => $proxy['name'] ?? null,
+            "description" => $proxy['description'] ?? null,
+            "hostname" => $proxy['hostname'] ?? null,
+            "port" => $proxy['port'] ?? null,
+            "username" => $proxy['username'] ?? null,
+            "password" => $proxy['password'] ?? null,
+            "type" => $proxy['type'] ?? null,
         ];
 
         $new = Proxy::find($crawler->proxy_id);
@@ -563,12 +563,12 @@ class CrawlerController extends Controller
     public function makeConfigurations($data, $crawler): Configuration
     {
         $configuration = $data[0];
-        $params = isset($configuration['params']) ? $configuration['params'] : null;
+        $params = $configuration['params'] ?? null;
         $payload = [
             "user_id" => 1,
-            "name" => isset($configuration['name']) ? $configuration['name'] : null,
+            "name" => $configuration['name'] ?? null,
             "active" => 1,
-            "description" => isset($configuration['description']) ? $configuration['description'] : null,
+            "description" => $configuration['description'] ?? null,
         ];
 
         $new = Configuration::find($crawler->configuration_id);
@@ -620,9 +620,9 @@ class CrawlerController extends Controller
         foreach ($data as $preference) {
             $new = new Preference([
                 "user_id" => 1,
-                "name" => isset($preference['name']) ? $preference['name'] : 'Value not provided at update!',
-                "description" => isset($preference['description']) ? $preference['description'] : 'Value not provided at update!',
-                "value" => isset($preference['value']) ? $preference['value'] : 'Value not provided at update!',
+                "name" => $preference['name'] ?? 'Value not provided at update!',
+                "description" => $preference['description'] ?? 'Value not provided at update!',
+                "value" => $preference['value'] ?? 'Value not provided at update!',
             ]);
             $new->preferencable()->associate($model);
             $new->save();

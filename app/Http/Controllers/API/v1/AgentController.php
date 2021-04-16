@@ -21,7 +21,7 @@ class AgentController extends Controller
     public function index(Request $request): AgentResourceCollection
     {
         $keyword = $request->input('keyword');
-        $agents = Agent::with('crawler')->latest()->get();
+        $agents = Agent::with('crawler', 'preferences')->latest()->get();
         return new AgentResourceCollection($agents);
     }
 
@@ -59,7 +59,7 @@ class AgentController extends Controller
      */
     public function show($id): AgentResource
     {
-        $agent = Agent::with(['user', 'crawler'])->findOrFail($id);
+        $agent = Agent::with(['user', 'crawler', 'preferences'])->findOrFail($id);
         return new AgentResource($agent);
     }
 
