@@ -72,9 +72,9 @@ class ExperimentController extends Controller
         foreach ($data as $preference) {
             $new = new Preference([
                 "user_id" => 1,
-                "name" => isset($preference['name']) ? $preference['name'] : 'Value not provided at update!',
-                "description" => isset($preference['description']) ? $preference['description'] : 'Value not provided at update!',
-                "value" => isset($preference['value']) ? $preference['value'] : 'Value not provided at update!',
+                "name" => $preference['name'] ?? 'Value not provided at update!',
+                "description" => $preference['description'] ?? 'Value not provided at update!',
+                "value" => $preference['value'] ?? 'Value not provided at update!',
             ]);
             $new->preferencable()->associate($model);
             $new->save();
@@ -112,6 +112,10 @@ class ExperimentController extends Controller
     {
         $data = $request->all();
         $experiment->update($data);
+
+        if (isset($request['preferences']) && $request['preferences']) {
+            $this->makePreferences($request['preferences'], $experiment);
+        }
         return new ExperimentResource($experiment);
     }
 
