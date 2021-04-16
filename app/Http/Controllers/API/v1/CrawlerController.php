@@ -383,8 +383,8 @@ class CrawlerController extends Controller
              * Create new or update if id provided.
              */
 
-            $new = Crawler::find($id);
 
+            $new = $id ? Crawler::findOrFail($id) : new Crawler();
 
             $new->user_id = $crawler['user_id'] ?? 1;
             $new->experiment_id = 1;
