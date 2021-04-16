@@ -18,6 +18,7 @@ class CreateCrawlersTable extends Migration
             $table->string('name')->default('Crawly');
             $table->string('description')->nullable();
             $table->boolean('active')->default(1);
+            $table->boolean('new')->default(1);
             $table->boolean('testing')->default(0);
             $table->boolean('updated')->default(0);
 
