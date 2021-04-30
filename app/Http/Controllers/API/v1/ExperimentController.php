@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 
 use App\Http\Resources\v1\ExperimentResource;
 use App\Http\Resources\v1\ExperimentResourceCollection;
+use Illuminate\Validation\ValidationException;
 
 class ExperimentController extends Controller
 {
@@ -31,7 +32,6 @@ class ExperimentController extends Controller
      */
     public function create()
     {
-        //
         return new ExperimentResourceCollection(new Experiment);
     }
 
@@ -39,7 +39,6 @@ class ExperimentController extends Controller
      * Store a new resource.
      * @param Request $request
      * @return ExperimentResource
-     * @throws \Illuminate\Validation\ValidationException
      */
     public function store(Request $request): ExperimentResource
     {
@@ -47,10 +46,10 @@ class ExperimentController extends Controller
         $data['user_id'] = auth()->user() ? auth()->user()->id : 1;
 
         $experiment = Experiment::create([
-            "name" => isset($data['name']) ? $data['name'] : 'Value not provided at update!',
-            "description" => isset($data['description']) ? $data['description'] : 'Value not provided at update!',
+            "name" => $data['name'] ?? 'Value not provided at update!',
+            "description" => $data['description'] ?? 'Value not provided at update!',
             "user_id" => 1,
-            "contact" => isset($data['contact']) ? $data['contact'] : 'Value not provided at update!',
+            "contact" => $data['contact'] ?? 'Value not provided at update!',
         ]);
 
         $experiment->save();

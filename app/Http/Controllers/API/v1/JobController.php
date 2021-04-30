@@ -25,7 +25,7 @@ class JobController extends Controller
         $jobs = Job::with(
             [
                 'behaviors',
-                'reports:id,job_id,path'
+                'reports:id,job_id,path,filename'
             ]
         )->latest()->get();
 
@@ -70,7 +70,7 @@ class JobController extends Controller
     {
         $job = Job::with([
             'behaviors',
-            'reports:id,job_id,path,created_at,updated_at'
+            'reports:id,job_id,path,filename,created_at,updated_at'
         ])->findOrFail($id);
         return new JobResource($job);
     }
@@ -108,7 +108,7 @@ class JobController extends Controller
     {
         $job->delete();
         return new JobResourceCollection(
-            Job::with(['behaviors', 'reports:id,job_id,path'])->latest()->get()
+            Job::with(['behaviors', 'reports:id,job_id,path,filename'])->latest()->get()
         );
     }
 }
