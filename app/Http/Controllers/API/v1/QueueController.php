@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API\v1;
 
+use App\Experiment;
 use App\Job;
 use App\Queue;
 use Exception;
@@ -117,6 +118,51 @@ class QueueController extends Controller
     public function unreviewed(): QueueResourceCollection
     {
         $queue = Queue::with(['jobs'])->where('reviewed', 0)->where('processed', 1)->get();
+        return new QueueResourceCollection($queue);
+    }
+
+    public function experimentUnreviewed(Experiment $experiment): QueueResourceCollection
+    {
+        $queue = Queue::with(['jobs'])
+            ->whereHas('crawler', function ($crawler) use ($experiment) {
+                $crawler->where('experiment_id', $experiment->id);
+            })
+            ->where('reviewed', 0)
+            ->where('processed', 1)
+            ->get();
+        return new QueueResourceCollection($queue);
+    }
+
+    public function experimentReviewed(Experiment $experiment): QueueResourceCollection
+    {
+        $queue = Queue::with(['jobs'])
+            ->whereHas('crawler', function ($crawler) use ($experiment) {
+                $crawler->where('experiment_id', $experiment->id);
+            })
+            ->where('reviewed', 1)
+            ->get();
+        return new QueueResourceCollection($queue);
+    }
+
+    public function experimentUnprocessed(Experiment $experiment): QueueResourceCollection
+    {
+        $queue = Queue::with(['jobs'])
+            ->whereHas('crawler', function ($crawler) use ($experiment) {
+                $crawler->where('experiment_id', $experiment->id);
+            })
+            ->where('processed', 0)
+            ->get();
+        return new QueueResourceCollection($queue);
+    }
+
+    public function experimentProcessed(Experiment $experiment): QueueResourceCollection
+    {
+        $queue = Queue::with(['jobs'])
+            ->whereHas('crawler', function ($crawler) use ($experiment) {
+                $crawler->where('experiment_id', $experiment->id);
+            })
+            ->where('processed', 1)
+            ->get();
         return new QueueResourceCollection($queue);
     }
 

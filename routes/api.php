@@ -43,10 +43,15 @@ Route::prefix('v1')->group(function () {
     Route::get('queues-unprocessed', 'API\v1\QueueController@unprocessed');
     Route::get('queues-reviewed', 'API\v1\QueueController@reviewed');
     Route::get('queues-unreviewed', 'API\v1\QueueController@unreviewed');
+    Route::get('experiments/{experiment}/queues-unreviewed', 'API\v1\QueueController@experimentUnreviewed');
+    Route::get('experiments/{experiment}/queues-reviewed', 'API\v1\QueueController@experimentReviewed');
+    Route::get('experiments/{experiment}/queues-processed', 'API\v1\QueueController@experimentProcessed');
+    Route::get('experiments/{experiment}/queues-unprocessed', 'API\v1\QueueController@experimentUnprocessed');
     Route::get('crawlers-processed', 'API\v1\CrawlerController@withProcessedQueues');
     Route::get('crawlers-reviewed', 'API\v1\CrawlerController@withReviewedQueues');
     Route::get('crawlers-unprocessed', 'API\v1\CrawlerController@withUnprocessedQueues');
     Route::get('crawlers-inactive', 'API\v1\CrawlerController@inactive');
+    Route::delete('crawlers/{crawler}/destroy', 'API\v1\CrawlerController@forceDelete');
     Route::get('crawlers-disable', 'API\v1\CrawlerController@disableProdCrawlers');
     Route::get('ip/{ip?}', 'API\v1\CrawlerController@ip');
     Route::get('file/{report}', 'API\v1\ReportController@getFile');

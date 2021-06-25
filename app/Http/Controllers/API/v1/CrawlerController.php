@@ -15,21 +15,12 @@ use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-
 use Arimolzer\IPStackFinder\Facade\IPStackFinderFacade;
-
 use App\Http\Resources\v1\CrawlerResource;
 use App\Http\Resources\v1\CrawlerResourceCollection;
-use Illuminate\Validation\ValidationException;
 
 class CrawlerController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @param Request $request
-     * @return CrawlerResourceCollection
-     */
     public function index(Request $request): CrawlerResourceCollection
     {
         $keyword = $request->input('keyword');
@@ -46,12 +37,6 @@ class CrawlerController extends Controller
         return new CrawlerResourceCollection($crawlers);
     }
 
-    /**
-     * Display a listing of the resource.
-     *
-     * @param Request $request
-     * @return CrawlerResourceCollection
-     */
     public function inactive(Request $request): CrawlerResourceCollection
     {
         $keyword = $request->input('keyword');
@@ -68,12 +53,7 @@ class CrawlerController extends Controller
         return new CrawlerResourceCollection($crawlers);
     }
 
-    /**
-     * Display a listing of the resource.
-     *
-     * @param Request $request
-     * @return CrawlerResourceCollection
-     */
+
     public function withProcessedQueues(Request $request): CrawlerResourceCollection
     {
         $keyword = $request->input('keyword');
@@ -96,12 +76,7 @@ class CrawlerController extends Controller
         return new CrawlerResourceCollection($crawlers);
     }
 
-    /**
-     * Display a listing of the resource.
-     *
-     * @param Request $request
-     * @return CrawlerResourceCollection
-     */
+
     public function withReviewedQueues(Request $request): CrawlerResourceCollection
     {
         $keyword = $request->input('keyword');
@@ -124,12 +99,6 @@ class CrawlerController extends Controller
         return new CrawlerResourceCollection($crawlers);
     }
 
-    /**
-     * Display a listing of the resource.
-     *
-     * @param Request $request
-     * @return CrawlerResourceCollection
-     */
     public function withUnprocessedQueues(Request $request): CrawlerResourceCollection
     {
         $keyword = $request->input('keyword');
@@ -153,12 +122,6 @@ class CrawlerController extends Controller
     }
 
 
-    /**
-     * Display a listing of the resource for testing.
-     *
-     * @param Request $request
-     * @return CrawlerResourceCollection
-     */
     public function testing(Request $request): CrawlerResourceCollection
     {
         $keyword = $request->input('keyword');
@@ -175,23 +138,11 @@ class CrawlerController extends Controller
         return new CrawlerResourceCollection($crawlers);
     }
 
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return CrawlerResource
-     */
     public function create(): CrawlerResource
     {
         return new CrawlerResource(new Crawler());
     }
 
-    /**
-     * Store a newly created resource in storage.
-     * @param Request $request
-     * @return CrawlerResource
-     * @throws ValidationException
-     */
     public function store(Request $request): CrawlerResource
     {
         $this->validate($request, [
@@ -206,12 +157,6 @@ class CrawlerController extends Controller
         return new CrawlerResource($crawler);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param $id
-     * @return CrawlerResource
-     */
     public function show($id): CrawlerResource
     {
         $crawler = Crawler::with(
@@ -227,24 +172,11 @@ class CrawlerController extends Controller
         return new CrawlerResource($crawler);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param Crawler $crawler
-     * @return CrawlerResource
-     */
     public function edit(Crawler $crawler): CrawlerResource
     {
         return new CrawlerResource($crawler);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param Request $request
-     * @param Crawler $crawler
-     * @return CrawlerResource
-     */
     public function update(Request $request, Crawler $crawler): CrawlerResource
     {
         $data = $request->all();
@@ -252,11 +184,6 @@ class CrawlerController extends Controller
         return new CrawlerResource($crawler);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @return CrawlerResourceCollection
-     */
     public function disableProdCrawlers(): CrawlerResourceCollection
     {
         Crawler::query()->where('testing', 0)->update(['active' => 0]);
@@ -264,16 +191,34 @@ class CrawlerController extends Controller
         return new CrawlerResourceCollection($crawler);
     }
 
+
     /**
-     * Remove the specified resource from storage.
-     * @param Crawler $crawler
-     * @return CrawlerResourceCollection
      * @throws Exception
      */
+    public function forceDelete(Crawler $crawler): CrawlerResourceCollection
+    {
+        $crawler->proxy()->delete();
+        $crawler->agent()->delete();
+        $crawler->configuration()->delete();
+        $crawler->queues()->delete();
+        $crawler->delete();
+
+        return new CrawlerResourceCollection(
+            Crawler::with(
+                [
+                    'experiment',
+                    'queues',
+                    'agent.preferences',
+                    'proxy',
+                    'configuration.preferences'
+                ]
+            )->latest()->get()
+        );
+    }
 
     public function destroy(Crawler $crawler): CrawlerResourceCollection
     {
-        $crawler->delete();
+        //$crawler->delete();
         return new CrawlerResourceCollection(
             Crawler::with(
                 [
@@ -288,11 +233,6 @@ class CrawlerController extends Controller
     }
 
 
-    /**
-     * Resolve IP
-     * @param $ip
-     * @return JsonResponse
-     */
     public function ip($ip = null): JsonResponse
     {
         $final = ($ip) ? $ip : request()->ip();
@@ -305,20 +245,11 @@ class CrawlerController extends Controller
     }
 
 
-    /**
-     * Check if IP is local.
-     * @param $ip
-     * @return bool
-     */
     public function isLocalAddress($ip): bool
     {
         return $ip === '::1' || $ip === '127.0.0.1';
     }
 
-    /**
-     * Remove records created in last load()
-     * @return CrawlerResourceCollection
-     */
     public function undo(): CrawlerResourceCollection
     {
         Crawler::where('updated', 1)->delete();
@@ -336,10 +267,6 @@ class CrawlerController extends Controller
         return new CrawlerResourceCollection($crawlers);
     }
 
-    /**
-     * Remove all records matching a specific schema
-     * @return CrawlerResourceCollection
-     */
     public function cleanup(): CrawlerResourceCollection
     {
         Crawler::where('testing', 0)->delete();
@@ -357,9 +284,6 @@ class CrawlerController extends Controller
         return new CrawlerResourceCollection($crawlers);
     }
 
-    /**
-     * Create new crawler from script, POST data sent
-     */
     public function load(): JsonResponse
     {
         $incoming = json_decode(request()->getContent(), true);

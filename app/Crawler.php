@@ -4,34 +4,28 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
-/**
- * @method static where(string $string, int $int)
- * @method static findOrFail(int $id)
- */
 class Crawler extends Model
 {
     protected $guarded = [];
 
-    public function proxy()
+    public function proxy(): BelongsTo
     {
         return $this->belongsTo('App\Proxy')->where('active', 1);
     }
 
-    /**
-     * @return BelongsTo
-     */
     public function configuration(): BelongsTo
     {
         return $this->belongsTo('App\Configuration')->where('active', 1)->with('params');
     }
 
-    public function queues()
+    public function queues(): HasMany
     {
         return $this->hasMany('App\Queue')->with('jobs')->where('active', 1);
     }
 
-    public function queuesNew()
+    public function queuesNew(): HasMany
     {
         return $this->hasMany('App\Queue')->with('jobs')->where('new', 1);
     }

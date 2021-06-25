@@ -20,7 +20,7 @@ class ExperimentController extends Controller
     public function index(Request $request): ExperimentResourceCollection
     {
         $keyword = $request->input('keyword');
-        $experiments = Experiment::with('crawlers', 'preferences')->latest()->get();
+        $experiments = Experiment::with('crawlers.agent','crawlers.proxy', 'crawlers.configuration', 'preferences')->latest()->get();
         return new ExperimentResourceCollection($experiments);
     }
 
