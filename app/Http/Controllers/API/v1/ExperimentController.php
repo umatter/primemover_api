@@ -2,12 +2,16 @@
 
 namespace App\Http\Controllers\API\v1;
 
+use App\Crawler;
 use App\Experiment;
+use App\Http\Resources\v1\CrawlerResourceCollection;
 use App\Preference;
+use Exception;
 use Illuminate\Http\Request;
 
 use App\Http\Resources\v1\ExperimentResource;
 use App\Http\Resources\v1\ExperimentResourceCollection;
+use Illuminate\Http\Resources\Json\ResourceCollection;
 use Illuminate\Validation\ValidationException;
 
 class ExperimentController extends Controller
@@ -20,7 +24,7 @@ class ExperimentController extends Controller
     public function index(Request $request): ExperimentResourceCollection
     {
         $keyword = $request->input('keyword');
-        $experiments = Experiment::with('crawlers.agent','crawlers.proxy', 'crawlers.configuration', 'preferences')->latest()->get();
+        $experiments = Experiment::with('crawlers.agent', 'crawlers.proxy', 'crawlers.configuration', 'preferences')->latest()->get();
         return new ExperimentResourceCollection($experiments);
     }
 
@@ -101,12 +105,6 @@ class ExperimentController extends Controller
         return new ExperimentResource($experiment);
     }
 
-    /**
-     * Update the specified resource in storage.
-     * @param Request $request
-     * @param Experiment $experiment
-     * @return ExperimentResource
-     */
     public function update(Request $request, Experiment $experiment): ExperimentResource
     {
         $data = $request->all();
@@ -118,15 +116,34 @@ class ExperimentController extends Controller
         return new ExperimentResource($experiment);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     * @param Experiment $experiment
-     * @return ExperimentResourceCollection
-     * @throws \Exception
-     */
     public function destroy(Experiment $experiment): ExperimentResourceCollection
     {
         $experiment->delete();
         return new ExperimentResourceCollection(Experiment::all());
+    }
+
+
+    /**
+     * @throws Exception
+     */
+    public function forceDelete(Experiment $experiment): ExperimentResourceCollection
+    {
+        $experiment->crawlers()->each(function ($crawler) {
+            $crawler->proxy()->delete();
+            $crawler->agent()->delete();
+            $crawler->configuration()->delete();
+            $crawler->queues()->delete();
+        });
+        $experiment->crawlers()->delete();
+        $experiment->delete();
+
+        return new ExperimentResourceCollection(
+            Experiment::with(
+                'crawlers.agent',
+                'crawlers.proxy',
+                'crawlers.configuration',
+                'preferences'
+            )->latest()->get()
+        );
     }
 }

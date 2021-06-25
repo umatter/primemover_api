@@ -23,7 +23,6 @@ class CrawlerController extends Controller
 {
     public function index(Request $request): CrawlerResourceCollection
     {
-        $keyword = $request->input('keyword');
         $crawlers = Crawler::where('testing', 0)
             ->where('active', 1)
             ->with(
