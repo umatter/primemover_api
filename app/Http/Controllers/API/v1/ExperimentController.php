@@ -65,7 +65,14 @@ class ExperimentController extends Controller
 
     public function show($id): ExperimentResource
     {
-        $experiment = Experiment::with(['user', 'crawlers', 'preferences'])->findOrFail($id);
+        $experiment = Experiment::with(
+            [
+                'crawlers.agent',
+                'crawlers.proxy',
+                'crawlers.configuration',
+                'preferences'
+            ]
+        )->findOrFail($id);
         return new ExperimentResource($experiment);
     }
 
