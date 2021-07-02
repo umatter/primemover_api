@@ -6,18 +6,18 @@ use App\Agent;
 use App\Behavior;
 use App\Configuration;
 use App\Crawler;
+use App\Http\Resources\v1\CrawlerResource;
+use App\Http\Resources\v1\CrawlerResourceCollection;
 use App\Job;
 use App\Param;
 use App\Preference;
 use App\Proxy;
 use App\Queue;
+use Arimolzer\IPStackFinder\Facade\IPStackFinderFacade;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Arimolzer\IPStackFinder\Facade\IPStackFinderFacade;
-use App\Http\Resources\v1\CrawlerResource;
-use App\Http\Resources\v1\CrawlerResourceCollection;
 
 class CrawlerController extends Controller
 {
@@ -289,11 +289,6 @@ class CrawlerController extends Controller
         return $this->makeCrawlers($incoming);
     }
 
-    /**
-     * Make a new crawler and other appended objects
-     * @param $data
-     * @return JsonResponse
-     */
     public function makeCrawlers($data): JsonResponse
     {
         Crawler::query()->update(['new' => 0]);
@@ -375,11 +370,6 @@ class CrawlerController extends Controller
         ], Response::HTTP_OK);
     }
 
-    /**
-     * Creates Queues for Crawler
-     * @param $data
-     * @param $crawler
-     */
     public function makeQueues($data, $crawler)
     {
         Queue::query()->update(['new' => 0]);
@@ -398,11 +388,6 @@ class CrawlerController extends Controller
         }
     }
 
-    /**
-     * Creates Jobs in Queues
-     * @param $data
-     * @param $queue
-     */
     public function makeJobs($data, $queue)
     {
         foreach ($data as $job) {
@@ -418,13 +403,13 @@ class CrawlerController extends Controller
         }
     }
 
-    /**
-     * Creates Behaviors for Jobs
-     * @param $data
-     * @param $job
-     */
     public function makeBehaviors($data, $job)
     {
+        /**
+         * selectionType=['XPATH', 'CSS', 'CLASS']
+         * appendReturn=[true,false]
+         * typeingMode=[]
+         */
         foreach ($data as $behavior) {
             $new = new Behavior([
                 "user_id" => 1,
@@ -437,12 +422,11 @@ class CrawlerController extends Controller
         }
     }
 
-    /**
-     * Creates Proxy for Crawler
-     * @param $data
-     * @param $crawler
-     * @return Proxy
-     */
+    public function checkBehaviorValues(string $name, string $value)
+    {
+        // todo
+    }
+
     public function makeProxies($data, $crawler): Proxy
     {
         $proxy = $data[0];
@@ -477,12 +461,6 @@ class CrawlerController extends Controller
         echo "</pre>";
     }
 
-    /**
-     * Creates Configuration with Params for Crawler
-     * @param $data
-     * @param $crawler
-     * @return Configuration
-     */
     public function makeConfigurations($data, $crawler): Configuration
     {
         $configuration = $data[0];
@@ -533,11 +511,6 @@ class CrawlerController extends Controller
         return $new;
     }
 
-    /**
-     * Creates Preferences for Configurations
-     * @param $data
-     * @param $model
-     */
     public function makePreferences($data, $model)
     {
         foreach ($data as $preference) {
@@ -552,12 +525,6 @@ class CrawlerController extends Controller
         }
     }
 
-    /**
-     * Creates Agents for Crawler
-     * @param $data
-     * @param $crawler
-     * @return Agent
-     */
     public function makeAgents($data, $crawler): Agent
     {
         $agent = $data[0];

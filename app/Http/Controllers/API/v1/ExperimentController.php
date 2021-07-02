@@ -2,48 +2,32 @@
 
 namespace App\Http\Controllers\API\v1;
 
-use App\Crawler;
 use App\Experiment;
-use App\Http\Resources\v1\CrawlerResourceCollection;
+use App\Http\Resources\v1\ExperimentResource;
+use App\Http\Resources\v1\ExperimentResourceCollection;
 use App\Preference;
 use Exception;
 use Illuminate\Http\Request;
 
-use App\Http\Resources\v1\ExperimentResource;
-use App\Http\Resources\v1\ExperimentResourceCollection;
-use Illuminate\Http\Resources\Json\ResourceCollection;
-use Illuminate\Validation\ValidationException;
-
 class ExperimentController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return ExperimentResourceCollection
-     */
     public function index(Request $request): ExperimentResourceCollection
     {
         $keyword = $request->input('keyword');
-        $experiments = Experiment::with('crawlers.agent', 'crawlers.proxy', 'crawlers.configuration', 'preferences')->latest()->get();
+        $experiments = Experiment::with([
+            'crawlers.agent',
+            'crawlers.proxy',
+            'crawlers.configuration',
+            'preferences'
+        ])->latest()->get();
         return new ExperimentResourceCollection($experiments);
     }
 
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return ExperimentResourceCollection
-     */
-    public function create()
+    public function create(): ExperimentResourceCollection
     {
         return new ExperimentResourceCollection(new Experiment);
     }
 
-    /**
-     * Store a new resource.
-     * @param Request $request
-     * @return ExperimentResource
-     */
     public function store(Request $request): ExperimentResource
     {
         $data = $request->all();
@@ -65,11 +49,6 @@ class ExperimentController extends Controller
         return new ExperimentResource($experiment);
     }
 
-    /**
-     * Creates Preferences for Configurations
-     * @param $data
-     * @param $model
-     */
     public function makePreferences($data, $model)
     {
         foreach ($data as $preference) {
@@ -84,22 +63,12 @@ class ExperimentController extends Controller
         }
     }
 
-    /**
-     * Show a resource.
-     * @param $id
-     * @return ExperimentResource
-     */
     public function show($id): ExperimentResource
     {
         $experiment = Experiment::with(['user', 'crawlers', 'preferences'])->findOrFail($id);
         return new ExperimentResource($experiment);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     * @param Experiment $experiment
-     * @return mixed
-     */
     public function edit(Experiment $experiment): ExperimentResource
     {
         return new ExperimentResource($experiment);
@@ -116,12 +85,14 @@ class ExperimentController extends Controller
         return new ExperimentResource($experiment);
     }
 
+    /**
+     * @throws Exception
+     */
     public function destroy(Experiment $experiment): ExperimentResourceCollection
     {
         $experiment->delete();
         return new ExperimentResourceCollection(Experiment::all());
     }
-
 
     /**
      * @throws Exception

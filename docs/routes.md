@@ -31,6 +31,10 @@
     Route::get('ip/{ip?}', 'API\v1\CrawlerController@ip');
     Route::get('file/{report}', 'API\v1\ReportController@getFile');
     Route::get('crawlers-testing', 'API\v1\CrawlerController@testing');
+    Route::get('experiments/{experiment}/queues-unreviewed', 'API\v1\QueueController@experimentUnreviewed');
+    Route::get('experiments/{experiment}/queues-reviewed', 'API\v1\QueueController@experimentReviewed');
+    Route::get('experiments/{experiment}/queues-processed', 'API\v1\QueueController@experimentProcessed');
+    Route::get('experiments/{experiment}/queues-unprocessed', 'API\v1\QueueController@experimentUnprocessed');
 
 ## Route methods based on Proxy example
 
