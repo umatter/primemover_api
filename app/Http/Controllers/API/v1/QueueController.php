@@ -135,6 +135,9 @@ class QueueController extends Controller
         return new QueueResource($queue);
     }
 
+    /**
+     * @throws Exception
+     */
     public function destroy(Queue $queue): QueueResourceCollection
     {
         $queue->delete();

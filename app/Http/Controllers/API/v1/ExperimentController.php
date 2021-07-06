@@ -18,6 +18,7 @@ class ExperimentController extends Controller
             'crawlers.agent',
             'crawlers.proxy',
             'crawlers.configuration',
+            'crawlers.configuration.preferences',
             'preferences'
         ])->latest()->get();
         return new ExperimentResourceCollection($experiments);
@@ -70,6 +71,7 @@ class ExperimentController extends Controller
                 'crawlers.agent',
                 'crawlers.proxy',
                 'crawlers.configuration',
+                'crawlers.configuration.preferences',
                 'preferences'
             ]
         )->findOrFail($id);
@@ -120,6 +122,7 @@ class ExperimentController extends Controller
                 'crawlers.agent',
                 'crawlers.proxy',
                 'crawlers.configuration',
+                'crawlers.configuration.preferences',
                 'preferences'
             )->latest()->get()
         );
