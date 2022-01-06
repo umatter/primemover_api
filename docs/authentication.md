@@ -3,7 +3,7 @@
 1. Send a POST request with 2 parameters to https://url.to.api/api/v1/login
    ```
    {
-        email: user@primemover.example,
+        email: researcher@primemover.example,
         password: CHANGEME-backend-password
    }
    ```
