@@ -1,0 +1,127 @@
+version: "3"
+networks:
+  laravel:
+    driver: bridge
+services:
+  apache:
+    build:
+      context: "./docker/httpd"
+    container_name: '${COMPOSE_PROJECT_NAME}-apache'
+    ports:
+      - "${HOST_MACHINE_UNSECURE_HOST_PORT}:80"
+      - "${HOST_MACHINE_SECURE_HOST_PORT}:443"
+    links:
+      - mysql
+      - mysql-test
+      - php
+      - php_xdebug
+      - redis
+    volumes:
+      - ${DOCUMENT_ROOT}:/var/www:cached
+    environment:
+      PMA_PORT: ${HOST_MACHINE_PMA_PORT}
+      XDEBUG_COOKIE_VALUE: ${XDEBUG_COOKIE_VALUE}
+    restart: unless-stopped
+    depends_on:
+      - mysql
+    networks:
+      - laravel
+  php:
+    build:
+      context: ./docker/${PHPVERSION}-fpm
+    container_name: '${COMPOSE_PROJECT_NAME}-${PHPVERSION}'
+    volumes:
+      - ${DOCUMENT_ROOT}:/var/www:cached
+      - ${PHP_INI}:/usr/local/etc/php/php.ini
+      - ./docker/${PHPVERSION}-fpm/etc/php/conf.d:/usr/local/etc/php/conf.d
+    restart: on-failure
+    #command: bash /var/www/docker/laravel/supervisor.sh
+    tty: true
+    networks:
+      - laravel
+  php_xdebug:
+    build:
+      context: ./docker/${PHPVERSION}-xdebug
+    container_name: '${COMPOSE_PROJECT_NAME}-xdebug-${PHPVERSION}'
+    volumes:
+      - ${DOCUMENT_ROOT}:/var/www:cached
+      - ${PHP_INI}:/usr/local/etc/php/php.ini
+      - ./docker/${PHPVERSION}-xdebug/etc/php/conf.d:/usr/local/etc/php/conf.d
+    environment:
+      XDEBUG_COOKIE_VALUE: ${XDEBUG_COOKIE_VALUE}
+    restart: on-failure
+    #command: bash /var/www/docker/laravel/supervisor.sh
+    networks:
+      - laravel
+    tty: true
+  mysql:
+    image: mysql:8.0.25
+    container_name: '${COMPOSE_PROJECT_NAME}-mysql'
+    restart: on-failure
+    ports:
+      - "${HOST_MACHINE_MYSQL_PORT}:3306"
+    volumes:
+      - ${MYSQL_DATA_DIR-./data/mysql}:/var/lib/mysql:cached
+      - ${MYSQL_LOG_DIR-./logs/mysql}:/var/log/mysql:cached
+      - ${DOCUMENT_ROOT}:/var/www:cached
+    environment:
+      MYSQL_ROOT_PASSWORD: '${DB_PASSWORD}'
+      MYSQL_DATABASE: '${DB_DATABASE}'
+      MYSQL_USER: '${DB_USERNAME}'
+      MYSQL_PASSWORD: '${DB_PASSWORD}'
+      MYSQL_ALLOW_EMPTY_PASSWORD: 1
+    networks:
+      - laravel
+  mysql-test:
+    image: mysql:8.0.25
+    container_name: '${COMPOSE_PROJECT_NAME}-mysql-test'
+    tmpfs: /var/lib/mysql
+    restart: on-failure
+    ports:
+      - "${HOST_MACHINE_MYSQL_PORT_TEST}:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: '${DB_PASSWORD}'
+      MYSQL_DATABASE: '${DB_DATABASE}_test'
+      MYSQL_USER: '${DB_USERNAME}'
+      MYSQL_PASSWORD: '${DB_PASSWORD}'
+      MYSQL_ALLOW_EMPTY_PASSWORD: 1
+    networks:
+      - laravel
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: '${COMPOSE_PROJECT_NAME}-phpmyadmin'
+    links:
+      - mysql
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+      PMA_USER: root
+      PMA_PASSWORD: '${DB_PASSWORD}'
+      MYSQL_ROOT_PASSWORD: '${DB_PASSWORD}'
+      MYSQL_USER: '${DB_USERNAME}'
+      MYSQL_PASSWORD: '${DB_PASSWORD}'
+    ports:
+      - '${HOST_MACHINE_PMA_PORT}:80'
+    volumes:
+      - /sessions
+      - ${PHP_INI-./config/php/php.ini}:/usr/local/etc/php/conf.d/php-phpmyadmin.ini
+    restart: on-failure
+    networks:
+      - laravel
+  memcached:
+    container_name: '${COMPOSE_PROJECT_NAME}-memcached'
+    image: memcached:latest
+    restart: on-failure
+    networks:
+      - laravel
+
+  redis:
+    container_name: '${COMPOSE_PROJECT_NAME}-redis'
+    image: redis:alpine
+    command: redis-server --appendonly yes --requirepass "${REDIS_PASSWORD}"
+    volumes:
+      - ./storage/app/data/redis:/data
+    ports:
+      - "8889:6379"
+    networks:
+      - laravel
