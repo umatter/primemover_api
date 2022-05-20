@@ -1,16 +1,14 @@
 <?php
 
+namespace Database\Seeders;
+
+use App\Models\Post;
 use Illuminate\Database\Seeder;
 
 class PostsTableSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     *
-     * @return void
-     */
-    public function run()
+    public function run(): void
     {
-        $fake = factory(App\Post::class, 5)->create();
+        Post::factory(5)->create();
     }
 }

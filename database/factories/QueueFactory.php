@@ -1,17 +1,26 @@
 <?php
 
-/** @var \Illuminate\Database\Eloquent\Factory $factory */
+namespace Database\Factories;
 
-use App\Queue;
-use Faker\Generator as Faker;
+use App\Models\Queue;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
-$factory->define(Queue::class, function (Faker $faker) {
-    return [
-        'user_id' => 1,
-        //'crawler_id' => $faker->randomElement([1, 2, 3, 4, 5]),
-        'crawler_id' => 1,
-        'name' => $faker->lastName,
-        'description' => $faker->text,
-        'active' => $faker->randomElement([1, 0]),
-    ];
-});
+class QueueFactory extends Factory
+{
+    /**
+     * @var string
+     */
+    protected $model = Queue::class;
+
+    public function definition(): array
+    {
+        return [
+            'user_id' => 1,
+            // 'crawler_id' => $faker->randomElement([1, 2, 3, 4, 5]),
+            'crawler_id' => 1,
+            'name' => $this->faker->lastName,
+            'description' => $this->faker->text,
+            'active' => $this->faker->randomElement([1, 0]),
+        ];
+    }
+}

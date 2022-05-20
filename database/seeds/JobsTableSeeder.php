@@ -1,18 +1,15 @@
 <?php
 
+namespace Database\Seeders;
+
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class JobsTableSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     *
-     * @return void
-     */
-    public function run()
+    public function run(): void
     {
-        //$fake = factory(App\Job::class, 12)->create();
-
+        // $fake = factory(App\Models\Job::class, 12)->create();
 
         DB::table('jobs')->insert([
             // Visit job
@@ -21,7 +18,7 @@ class JobsTableSeeder extends Seeder
                 'name' => 'Visit',
                 'type' => 'visitjob',
                 'user_id' => 1,
-                'queue_id' => 1
+                'queue_id' => 1,
             ],
 
             // Wait job
@@ -30,7 +27,7 @@ class JobsTableSeeder extends Seeder
                 'name' => 'Wait',
                 'type' => 'waitjob',
                 'user_id' => 1,
-                'queue_id' => 1
+                'queue_id' => 1,
             ],
 
             // Visit job
@@ -39,7 +36,7 @@ class JobsTableSeeder extends Seeder
                 'name' => 'Visit',
                 'type' => 'visitjob',
                 'user_id' => 1,
-                'queue_id' => 1
+                'queue_id' => 1,
             ],
 
             // Wait job
@@ -48,9 +45,8 @@ class JobsTableSeeder extends Seeder
                 'name' => 'Wait',
                 'type' => 'waitjob',
                 'user_id' => 1,
-                'queue_id' => 1
+                'queue_id' => 1,
             ],
-
 
             // Visit job
             [
@@ -58,7 +54,7 @@ class JobsTableSeeder extends Seeder
                 'name' => 'Visit',
                 'type' => 'visitjob',
                 'user_id' => 1,
-                'queue_id' => 1
+                'queue_id' => 1,
             ],
 
             // Wait job
@@ -67,7 +63,7 @@ class JobsTableSeeder extends Seeder
                 'name' => 'Wait',
                 'type' => 'waitjob',
                 'user_id' => 1,
-                'queue_id' => 1
+                'queue_id' => 1,
             ],
 
             // Visit job
@@ -76,7 +72,7 @@ class JobsTableSeeder extends Seeder
                 'name' => 'Visit',
                 'type' => 'visitjob',
                 'user_id' => 1,
-                'queue_id' => 1
+                'queue_id' => 1,
             ],
 
             // Enter text
@@ -85,7 +81,7 @@ class JobsTableSeeder extends Seeder
                 'name' => 'Enter',
                 'type' => 'entertextfieldjob',
                 'user_id' => 1,
-                'queue_id' => 1
+                'queue_id' => 1,
             ],
 
             // Select result from search
@@ -94,7 +90,7 @@ class JobsTableSeeder extends Seeder
                 'name' => 'Select',
                 'type' => 'singleselecturljob',
                 'user_id' => 1,
-                'queue_id' => 1
+                'queue_id' => 1,
             ],
 
             // Wait job
@@ -103,7 +99,7 @@ class JobsTableSeeder extends Seeder
                 'name' => 'Wait',
                 'type' => 'waitjob',
                 'user_id' => 1,
-                'queue_id' => 1
+                'queue_id' => 1,
             ],
 
             // Visit job
@@ -112,7 +108,7 @@ class JobsTableSeeder extends Seeder
                 'name' => 'Visit',
                 'type' => 'visitjob',
                 'user_id' => 1,
-                'queue_id' => 1
+                'queue_id' => 1,
             ],
 
             // Enter field
@@ -121,7 +117,7 @@ class JobsTableSeeder extends Seeder
                 'name' => 'Enter',
                 'type' => 'entertextfieldjob',
                 'user_id' => 1,
-                'queue_id' => 1
+                'queue_id' => 1,
             ],
 
             // Select result from search
@@ -130,7 +126,7 @@ class JobsTableSeeder extends Seeder
                 'name' => 'Select',
                 'type' => 'singleselecturljob',
                 'user_id' => 1,
-                'queue_id' => 1
+                'queue_id' => 1,
             ],
 
             // Wait job
@@ -139,7 +135,7 @@ class JobsTableSeeder extends Seeder
                 'name' => 'Wait',
                 'type' => 'waitjob',
                 'user_id' => 1,
-                'queue_id' => 1
+                'queue_id' => 1,
             ],
 
             // Visit job
@@ -148,7 +144,7 @@ class JobsTableSeeder extends Seeder
                 'name' => 'Visit',
                 'type' => 'visitjob',
                 'user_id' => 1,
-                'queue_id' => 1
+                'queue_id' => 1,
             ],
 
             // Enter field
@@ -157,7 +153,7 @@ class JobsTableSeeder extends Seeder
                 'name' => 'Enter',
                 'type' => 'entertextfieldjob',
                 'user_id' => 1,
-                'queue_id' => 1
+                'queue_id' => 1,
             ],
 
             // Select result from search
@@ -166,7 +162,7 @@ class JobsTableSeeder extends Seeder
                 'name' => 'Select',
                 'type' => 'singleselecturljob',
                 'user_id' => 1,
-                'queue_id' => 1
+                'queue_id' => 1,
             ],
         ]);
 
@@ -177,7 +173,7 @@ class JobsTableSeeder extends Seeder
                 'name' => 'Visit',
                 'type' => 'visitjob',
                 'user_id' => 1,
-                'queue_id' => 2
+                'queue_id' => 2,
             ],
 
             // Wait job
@@ -186,7 +182,7 @@ class JobsTableSeeder extends Seeder
                 'name' => 'Wait',
                 'type' => 'waitjob',
                 'user_id' => 1,
-                'queue_id' => 2
+                'queue_id' => 2,
             ],
 
             // Visit job
@@ -195,7 +191,7 @@ class JobsTableSeeder extends Seeder
                 'name' => 'Visit',
                 'type' => 'visitjob',
                 'user_id' => 1,
-                'queue_id' => 2
+                'queue_id' => 2,
             ],
 
             // Wait job
@@ -204,9 +200,8 @@ class JobsTableSeeder extends Seeder
                 'name' => 'Wait',
                 'type' => 'waitjob',
                 'user_id' => 1,
-                'queue_id' => 2
+                'queue_id' => 2,
             ],
-
 
             // Visit job
             [
@@ -214,7 +209,7 @@ class JobsTableSeeder extends Seeder
                 'name' => 'Visit',
                 'type' => 'visitjob',
                 'user_id' => 1,
-                'queue_id' => 2
+                'queue_id' => 2,
             ],
 
             // Wait job
@@ -223,7 +218,7 @@ class JobsTableSeeder extends Seeder
                 'name' => 'Wait',
                 'type' => 'waitjob',
                 'user_id' => 1,
-                'queue_id' => 2
+                'queue_id' => 2,
             ],
 
             // Visit job
@@ -232,7 +227,7 @@ class JobsTableSeeder extends Seeder
                 'name' => 'Visit',
                 'type' => 'visitjob',
                 'user_id' => 1,
-                'queue_id' => 2
+                'queue_id' => 2,
             ],
 
             // Enter text
@@ -241,7 +236,7 @@ class JobsTableSeeder extends Seeder
                 'name' => 'Enter',
                 'type' => 'entertextfieldjob',
                 'user_id' => 1,
-                'queue_id' => 2
+                'queue_id' => 2,
             ],
 
             // Select result from search
@@ -250,7 +245,7 @@ class JobsTableSeeder extends Seeder
                 'name' => 'Select',
                 'type' => 'singleselecturljob',
                 'user_id' => 1,
-                'queue_id' => 2
+                'queue_id' => 2,
             ],
 
             // Wait job
@@ -259,7 +254,7 @@ class JobsTableSeeder extends Seeder
                 'name' => 'Wait',
                 'type' => 'waitjob',
                 'user_id' => 1,
-                'queue_id' => 2
+                'queue_id' => 2,
             ],
 
             // Visit job
@@ -268,7 +263,7 @@ class JobsTableSeeder extends Seeder
                 'name' => 'Visit',
                 'type' => 'visitjob',
                 'user_id' => 1,
-                'queue_id' => 2
+                'queue_id' => 2,
             ],
 
             // Enter field
@@ -277,7 +272,7 @@ class JobsTableSeeder extends Seeder
                 'name' => 'Enter',
                 'type' => 'entertextfieldjob',
                 'user_id' => 1,
-                'queue_id' => 2
+                'queue_id' => 2,
             ],
 
             // Select result from search
@@ -286,7 +281,7 @@ class JobsTableSeeder extends Seeder
                 'name' => 'Select',
                 'type' => 'singleselecturljob',
                 'user_id' => 1,
-                'queue_id' => 2
+                'queue_id' => 2,
             ],
 
             // Wait job
@@ -295,7 +290,7 @@ class JobsTableSeeder extends Seeder
                 'name' => 'Wait',
                 'type' => 'waitjob',
                 'user_id' => 1,
-                'queue_id' => 2
+                'queue_id' => 2,
             ],
 
             // Visit job
@@ -304,7 +299,7 @@ class JobsTableSeeder extends Seeder
                 'name' => 'Visit',
                 'type' => 'visitjob',
                 'user_id' => 1,
-                'queue_id' => 2
+                'queue_id' => 2,
             ],
 
             // Enter field
@@ -313,7 +308,7 @@ class JobsTableSeeder extends Seeder
                 'name' => 'Enter',
                 'type' => 'entertextfieldjob',
                 'user_id' => 1,
-                'queue_id' => 2
+                'queue_id' => 2,
             ],
 
             // Select result from search
@@ -322,7 +317,7 @@ class JobsTableSeeder extends Seeder
                 'name' => 'Select',
                 'type' => 'singleselecturljob',
                 'user_id' => 1,
-                'queue_id' => 2
+                'queue_id' => 2,
             ],
         ]);
 
@@ -333,7 +328,7 @@ class JobsTableSeeder extends Seeder
                 'name' => 'Visit',
                 'type' => 'visitjob',
                 'user_id' => 1,
-                'queue_id' => 3
+                'queue_id' => 3,
             ],
 
             // Wait job
@@ -342,7 +337,7 @@ class JobsTableSeeder extends Seeder
                 'name' => 'Wait',
                 'type' => 'waitjob',
                 'user_id' => 1,
-                'queue_id' => 3
+                'queue_id' => 3,
             ],
 
             // Visit job
@@ -351,7 +346,7 @@ class JobsTableSeeder extends Seeder
                 'name' => 'Visit',
                 'type' => 'visitjob',
                 'user_id' => 1,
-                'queue_id' => 3
+                'queue_id' => 3,
             ],
 
             // Wait job
@@ -360,9 +355,8 @@ class JobsTableSeeder extends Seeder
                 'name' => 'Wait',
                 'type' => 'waitjob',
                 'user_id' => 1,
-                'queue_id' => 3
+                'queue_id' => 3,
             ],
-
 
             // Visit job
             [
@@ -370,7 +364,7 @@ class JobsTableSeeder extends Seeder
                 'name' => 'Visit',
                 'type' => 'visitjob',
                 'user_id' => 1,
-                'queue_id' => 3
+                'queue_id' => 3,
             ],
 
             // Wait job
@@ -379,7 +373,7 @@ class JobsTableSeeder extends Seeder
                 'name' => 'Wait',
                 'type' => 'waitjob',
                 'user_id' => 1,
-                'queue_id' => 3
+                'queue_id' => 3,
             ],
 
             // Visit job
@@ -388,7 +382,7 @@ class JobsTableSeeder extends Seeder
                 'name' => 'Visit',
                 'type' => 'visitjob',
                 'user_id' => 1,
-                'queue_id' => 3
+                'queue_id' => 3,
             ],
 
             // Enter text
@@ -397,7 +391,7 @@ class JobsTableSeeder extends Seeder
                 'name' => 'Enter',
                 'type' => 'entertextfieldjob',
                 'user_id' => 1,
-                'queue_id' => 3
+                'queue_id' => 3,
             ],
 
             // Select result from search
@@ -406,7 +400,7 @@ class JobsTableSeeder extends Seeder
                 'name' => 'Select',
                 'type' => 'singleselecturljob',
                 'user_id' => 1,
-                'queue_id' => 3
+                'queue_id' => 3,
             ],
 
             // Wait job
@@ -415,7 +409,7 @@ class JobsTableSeeder extends Seeder
                 'name' => 'Wait',
                 'type' => 'waitjob',
                 'user_id' => 1,
-                'queue_id' => 3
+                'queue_id' => 3,
             ],
 
             // Visit job
@@ -424,7 +418,7 @@ class JobsTableSeeder extends Seeder
                 'name' => 'Visit',
                 'type' => 'visitjob',
                 'user_id' => 1,
-                'queue_id' => 3
+                'queue_id' => 3,
             ],
 
             // Enter field
@@ -433,7 +427,7 @@ class JobsTableSeeder extends Seeder
                 'name' => 'Enter',
                 'type' => 'entertextfieldjob',
                 'user_id' => 1,
-                'queue_id' => 3
+                'queue_id' => 3,
             ],
 
             // Select result from search
@@ -442,7 +436,7 @@ class JobsTableSeeder extends Seeder
                 'name' => 'Select',
                 'type' => 'singleselecturljob',
                 'user_id' => 1,
-                'queue_id' => 3
+                'queue_id' => 3,
             ],
 
             // Wait job
@@ -451,7 +445,7 @@ class JobsTableSeeder extends Seeder
                 'name' => 'Wait',
                 'type' => 'waitjob',
                 'user_id' => 1,
-                'queue_id' => 3
+                'queue_id' => 3,
             ],
 
             // Visit job
@@ -460,7 +454,7 @@ class JobsTableSeeder extends Seeder
                 'name' => 'Visit',
                 'type' => 'visitjob',
                 'user_id' => 1,
-                'queue_id' => 3
+                'queue_id' => 3,
             ],
 
             // Enter field
@@ -469,7 +463,7 @@ class JobsTableSeeder extends Seeder
                 'name' => 'Enter',
                 'type' => 'entertextfieldjob',
                 'user_id' => 1,
-                'queue_id' => 3
+                'queue_id' => 3,
             ],
 
             // Select result from search
@@ -478,7 +472,7 @@ class JobsTableSeeder extends Seeder
                 'name' => 'Select',
                 'type' => 'singleselecturljob',
                 'user_id' => 1,
-                'queue_id' => 3
+                'queue_id' => 3,
             ],
         ]);
 
@@ -489,7 +483,7 @@ class JobsTableSeeder extends Seeder
                 'name' => 'Visit',
                 'type' => 'visitjob',
                 'user_id' => 1,
-                'queue_id' => 4
+                'queue_id' => 4,
             ],
 
             // Wait job
@@ -498,7 +492,7 @@ class JobsTableSeeder extends Seeder
                 'name' => 'Wait',
                 'type' => 'waitjob',
                 'user_id' => 1,
-                'queue_id' => 4
+                'queue_id' => 4,
             ],
 
             // Visit job
@@ -507,7 +501,7 @@ class JobsTableSeeder extends Seeder
                 'name' => 'Visit',
                 'type' => 'visitjob',
                 'user_id' => 1,
-                'queue_id' => 4
+                'queue_id' => 4,
             ],
 
             // Wait job
@@ -516,9 +510,8 @@ class JobsTableSeeder extends Seeder
                 'name' => 'Wait',
                 'type' => 'waitjob',
                 'user_id' => 1,
-                'queue_id' => 4
+                'queue_id' => 4,
             ],
-
 
             // Visit job
             [
@@ -526,7 +519,7 @@ class JobsTableSeeder extends Seeder
                 'name' => 'Visit',
                 'type' => 'visitjob',
                 'user_id' => 1,
-                'queue_id' => 4
+                'queue_id' => 4,
             ],
 
             // Wait job
@@ -535,7 +528,7 @@ class JobsTableSeeder extends Seeder
                 'name' => 'Wait',
                 'type' => 'waitjob',
                 'user_id' => 1,
-                'queue_id' => 4
+                'queue_id' => 4,
             ],
 
             // Visit job
@@ -544,7 +537,7 @@ class JobsTableSeeder extends Seeder
                 'name' => 'Visit',
                 'type' => 'visitjob',
                 'user_id' => 1,
-                'queue_id' => 4
+                'queue_id' => 4,
             ],
 
             // Enter text
@@ -553,7 +546,7 @@ class JobsTableSeeder extends Seeder
                 'name' => 'Enter',
                 'type' => 'entertextfieldjob',
                 'user_id' => 1,
-                'queue_id' => 4
+                'queue_id' => 4,
             ],
 
             // Select result from search
@@ -562,7 +555,7 @@ class JobsTableSeeder extends Seeder
                 'name' => 'Select',
                 'type' => 'singleselecturljob',
                 'user_id' => 1,
-                'queue_id' => 4
+                'queue_id' => 4,
             ],
 
             // Wait job
@@ -571,7 +564,7 @@ class JobsTableSeeder extends Seeder
                 'name' => 'Wait',
                 'type' => 'waitjob',
                 'user_id' => 1,
-                'queue_id' => 4
+                'queue_id' => 4,
             ],
 
             // Visit job
@@ -580,7 +573,7 @@ class JobsTableSeeder extends Seeder
                 'name' => 'Visit',
                 'type' => 'visitjob',
                 'user_id' => 1,
-                'queue_id' => 4
+                'queue_id' => 4,
             ],
 
             // Enter field
@@ -589,7 +582,7 @@ class JobsTableSeeder extends Seeder
                 'name' => 'Enter',
                 'type' => 'entertextfieldjob',
                 'user_id' => 1,
-                'queue_id' => 4
+                'queue_id' => 4,
             ],
 
             // Select result from search
@@ -598,7 +591,7 @@ class JobsTableSeeder extends Seeder
                 'name' => 'Select',
                 'type' => 'singleselecturljob',
                 'user_id' => 1,
-                'queue_id' => 4
+                'queue_id' => 4,
             ],
 
             // Wait job
@@ -607,7 +600,7 @@ class JobsTableSeeder extends Seeder
                 'name' => 'Wait',
                 'type' => 'waitjob',
                 'user_id' => 1,
-                'queue_id' => 4
+                'queue_id' => 4,
             ],
 
             // Visit job
@@ -616,7 +609,7 @@ class JobsTableSeeder extends Seeder
                 'name' => 'Visit',
                 'type' => 'visitjob',
                 'user_id' => 1,
-                'queue_id' => 4
+                'queue_id' => 4,
             ],
 
             // Enter field
@@ -625,7 +618,7 @@ class JobsTableSeeder extends Seeder
                 'name' => 'Enter',
                 'type' => 'entertextfieldjob',
                 'user_id' => 1,
-                'queue_id' => 4
+                'queue_id' => 4,
             ],
 
             // Select result from search
@@ -634,7 +627,7 @@ class JobsTableSeeder extends Seeder
                 'name' => 'Select',
                 'type' => 'singleselecturljob',
                 'user_id' => 1,
-                'queue_id' => 4
+                'queue_id' => 4,
             ],
         ]);
 
@@ -645,7 +638,7 @@ class JobsTableSeeder extends Seeder
                 'name' => 'Visit',
                 'type' => 'visitjob',
                 'user_id' => 1,
-                'queue_id' => 5
+                'queue_id' => 5,
             ],
 
             // Wait job
@@ -654,7 +647,7 @@ class JobsTableSeeder extends Seeder
                 'name' => 'Wait',
                 'type' => 'waitjob',
                 'user_id' => 1,
-                'queue_id' => 5
+                'queue_id' => 5,
             ],
 
             // Visit job
@@ -663,7 +656,7 @@ class JobsTableSeeder extends Seeder
                 'name' => 'Visit',
                 'type' => 'visitjob',
                 'user_id' => 1,
-                'queue_id' => 5
+                'queue_id' => 5,
             ],
 
             // Wait job
@@ -672,9 +665,8 @@ class JobsTableSeeder extends Seeder
                 'name' => 'Wait',
                 'type' => 'waitjob',
                 'user_id' => 1,
-                'queue_id' => 5
+                'queue_id' => 5,
             ],
-
 
             // Visit job
             [
@@ -682,7 +674,7 @@ class JobsTableSeeder extends Seeder
                 'name' => 'Visit',
                 'type' => 'visitjob',
                 'user_id' => 1,
-                'queue_id' => 5
+                'queue_id' => 5,
             ],
 
             // Wait job
@@ -691,7 +683,7 @@ class JobsTableSeeder extends Seeder
                 'name' => 'Wait',
                 'type' => 'waitjob',
                 'user_id' => 1,
-                'queue_id' => 5
+                'queue_id' => 5,
             ],
 
             // Visit job
@@ -700,7 +692,7 @@ class JobsTableSeeder extends Seeder
                 'name' => 'Visit',
                 'type' => 'visitjob',
                 'user_id' => 1,
-                'queue_id' => 5
+                'queue_id' => 5,
             ],
 
             // Enter text
@@ -709,7 +701,7 @@ class JobsTableSeeder extends Seeder
                 'name' => 'Enter',
                 'type' => 'entertextfieldjob',
                 'user_id' => 1,
-                'queue_id' => 5
+                'queue_id' => 5,
             ],
 
             // Select result from search
@@ -718,7 +710,7 @@ class JobsTableSeeder extends Seeder
                 'name' => 'Select',
                 'type' => 'singleselecturljob',
                 'user_id' => 1,
-                'queue_id' => 5
+                'queue_id' => 5,
             ],
 
             // Wait job
@@ -727,7 +719,7 @@ class JobsTableSeeder extends Seeder
                 'name' => 'Wait',
                 'type' => 'waitjob',
                 'user_id' => 1,
-                'queue_id' => 5
+                'queue_id' => 5,
             ],
 
             // Visit job
@@ -736,7 +728,7 @@ class JobsTableSeeder extends Seeder
                 'name' => 'Visit',
                 'type' => 'visitjob',
                 'user_id' => 1,
-                'queue_id' => 5
+                'queue_id' => 5,
             ],
 
             // Enter field
@@ -745,7 +737,7 @@ class JobsTableSeeder extends Seeder
                 'name' => 'Enter',
                 'type' => 'entertextfieldjob',
                 'user_id' => 1,
-                'queue_id' => 5
+                'queue_id' => 5,
             ],
 
             // Select result from search
@@ -754,7 +746,7 @@ class JobsTableSeeder extends Seeder
                 'name' => 'Select',
                 'type' => 'singleselecturljob',
                 'user_id' => 1,
-                'queue_id' => 5
+                'queue_id' => 5,
             ],
 
             // Wait job
@@ -763,7 +755,7 @@ class JobsTableSeeder extends Seeder
                 'name' => 'Wait',
                 'type' => 'waitjob',
                 'user_id' => 1,
-                'queue_id' => 5
+                'queue_id' => 5,
             ],
 
             // Visit job
@@ -772,7 +764,7 @@ class JobsTableSeeder extends Seeder
                 'name' => 'Visit',
                 'type' => 'visitjob',
                 'user_id' => 1,
-                'queue_id' => 5
+                'queue_id' => 5,
             ],
 
             // Enter field
@@ -781,7 +773,7 @@ class JobsTableSeeder extends Seeder
                 'name' => 'Enter',
                 'type' => 'entertextfieldjob',
                 'user_id' => 1,
-                'queue_id' => 5
+                'queue_id' => 5,
             ],
 
             // Select result from search
@@ -790,7 +782,7 @@ class JobsTableSeeder extends Seeder
                 'name' => 'Select',
                 'type' => 'singleselecturljob',
                 'user_id' => 1,
-                'queue_id' => 5
+                'queue_id' => 5,
             ],
         ]);
 
@@ -801,7 +793,7 @@ class JobsTableSeeder extends Seeder
                 'name' => 'Visit',
                 'type' => 'visitjob',
                 'user_id' => 1,
-                'queue_id' => 6
+                'queue_id' => 6,
             ],
 
             // Wait job
@@ -810,7 +802,7 @@ class JobsTableSeeder extends Seeder
                 'name' => 'Wait',
                 'type' => 'waitjob',
                 'user_id' => 1,
-                'queue_id' => 6
+                'queue_id' => 6,
             ],
 
             // Visit job
@@ -819,7 +811,7 @@ class JobsTableSeeder extends Seeder
                 'name' => 'Visit',
                 'type' => 'visitjob',
                 'user_id' => 1,
-                'queue_id' => 6
+                'queue_id' => 6,
             ],
 
             // Wait job
@@ -828,9 +820,8 @@ class JobsTableSeeder extends Seeder
                 'name' => 'Wait',
                 'type' => 'waitjob',
                 'user_id' => 1,
-                'queue_id' => 6
+                'queue_id' => 6,
             ],
-
 
             // Visit job
             [
@@ -838,7 +829,7 @@ class JobsTableSeeder extends Seeder
                 'name' => 'Visit',
                 'type' => 'visitjob',
                 'user_id' => 1,
-                'queue_id' => 6
+                'queue_id' => 6,
             ],
 
             // Wait job
@@ -847,7 +838,7 @@ class JobsTableSeeder extends Seeder
                 'name' => 'Wait',
                 'type' => 'waitjob',
                 'user_id' => 1,
-                'queue_id' => 6
+                'queue_id' => 6,
             ],
 
             // Visit job
@@ -856,7 +847,7 @@ class JobsTableSeeder extends Seeder
                 'name' => 'Visit',
                 'type' => 'visitjob',
                 'user_id' => 1,
-                'queue_id' => 6
+                'queue_id' => 6,
             ],
 
             // Enter text
@@ -865,7 +856,7 @@ class JobsTableSeeder extends Seeder
                 'name' => 'Enter',
                 'type' => 'entertextfieldjob',
                 'user_id' => 1,
-                'queue_id' => 6
+                'queue_id' => 6,
             ],
 
             // Select result from search
@@ -874,7 +865,7 @@ class JobsTableSeeder extends Seeder
                 'name' => 'Select',
                 'type' => 'singleselecturljob',
                 'user_id' => 1,
-                'queue_id' => 6
+                'queue_id' => 6,
             ],
 
             // Wait job
@@ -883,7 +874,7 @@ class JobsTableSeeder extends Seeder
                 'name' => 'Wait',
                 'type' => 'waitjob',
                 'user_id' => 1,
-                'queue_id' => 6
+                'queue_id' => 6,
             ],
 
             // Visit job
@@ -892,7 +883,7 @@ class JobsTableSeeder extends Seeder
                 'name' => 'Visit',
                 'type' => 'visitjob',
                 'user_id' => 1,
-                'queue_id' => 6
+                'queue_id' => 6,
             ],
 
             // Enter field
@@ -901,7 +892,7 @@ class JobsTableSeeder extends Seeder
                 'name' => 'Enter',
                 'type' => 'entertextfieldjob',
                 'user_id' => 1,
-                'queue_id' => 6
+                'queue_id' => 6,
             ],
 
             // Select result from search
@@ -910,7 +901,7 @@ class JobsTableSeeder extends Seeder
                 'name' => 'Select',
                 'type' => 'singleselecturljob',
                 'user_id' => 1,
-                'queue_id' => 6
+                'queue_id' => 6,
             ],
 
             // Wait job
@@ -919,7 +910,7 @@ class JobsTableSeeder extends Seeder
                 'name' => 'Wait',
                 'type' => 'waitjob',
                 'user_id' => 1,
-                'queue_id' => 6
+                'queue_id' => 6,
             ],
 
             // Visit job
@@ -928,7 +919,7 @@ class JobsTableSeeder extends Seeder
                 'name' => 'Visit',
                 'type' => 'visitjob',
                 'user_id' => 1,
-                'queue_id' => 6
+                'queue_id' => 6,
             ],
 
             // Enter field
@@ -937,7 +928,7 @@ class JobsTableSeeder extends Seeder
                 'name' => 'Enter',
                 'type' => 'entertextfieldjob',
                 'user_id' => 1,
-                'queue_id' => 6
+                'queue_id' => 6,
             ],
 
             // Select result from search
@@ -946,9 +937,8 @@ class JobsTableSeeder extends Seeder
                 'name' => 'Select',
                 'type' => 'singleselecturljob',
                 'user_id' => 1,
-                'queue_id' => 6
+                'queue_id' => 6,
             ],
         ]);
-
     }
 }

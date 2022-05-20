@@ -1,19 +1,18 @@
 <?php
 
+namespace Database\Seeders;
+
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class CrawlersTableSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     *
-     * @return void
-     */
-    public function run()
+    public function run(): void
     {
-        //$fake = factory(App\Crawler::class, 6)->create();
+        // $fake = factory(App\Models\Crawler::class, 6)->create();
 
-        DB::table('crawlers')->insert([
+        DB::table('crawlers')->insert(
+            [
                 [
                     'name' => 'Otto',
                     'description' => 'Ich bin ein Crawler Otto',
@@ -22,7 +21,7 @@ class CrawlersTableSeeder extends Seeder
                     'proxy_id' => 1,
                     'agent_id' => 1,
                     'testing' => 1,
-                    'configuration_id' => 1
+                    'configuration_id' => 1,
                 ],
                 [
                     'name' => 'Saban',
@@ -32,7 +31,7 @@ class CrawlersTableSeeder extends Seeder
                     'proxy_id' => 2,
                     'agent_id' => 2,
                     'testing' => 1,
-                    'configuration_id' => 1
+                    'configuration_id' => 1,
                 ],
                 [
                     'name' => 'Maria',
@@ -42,7 +41,7 @@ class CrawlersTableSeeder extends Seeder
                     'proxy_id' => 3,
                     'agent_id' => 3,
                     'testing' => 1,
-                    'configuration_id' => 1
+                    'configuration_id' => 1,
                 ],
                 [
                     'name' => 'Gerard',
@@ -52,7 +51,7 @@ class CrawlersTableSeeder extends Seeder
                     'proxy_id' => 4,
                     'agent_id' => 4,
                     'testing' => 1,
-                    'configuration_id' => 1
+                    'configuration_id' => 1,
                 ],
                 [
                     'name' => 'Stabilo',
@@ -62,7 +61,7 @@ class CrawlersTableSeeder extends Seeder
                     'proxy_id' => 5,
                     'agent_id' => 5,
                     'testing' => 1,
-                    'configuration_id' => 1
+                    'configuration_id' => 1,
                 ],
                 [
                     'name' => 'Flyer',
@@ -72,9 +71,8 @@ class CrawlersTableSeeder extends Seeder
                     'proxy_id' => 6,
                     'agent_id' => 6,
                     'testing' => 1,
-                    'configuration_id' => 1
+                    'configuration_id' => 1,
                 ],
-
             ]
         );
     }

@@ -1,15 +1,14 @@
 <?php
 
+namespace Database\Seeders;
+
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class UsersTableSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     *
-     * @return void
-     */
-    public function run()
+    public function run(): void
     {
         DB::table('users')->insert([
             [
@@ -24,17 +23,17 @@ class UsersTableSeeder extends Seeder
                 'email' => 'researcher@primemover.example',
                 'email_verified_at' => now(),
                 'password' => '$2y$10$/cqGZzUBMYVe0J.RSdmCteArq8I0TQSXIwDPQEUBwmPXqSrUo0g/S',
-                'remember_token' => 'CiBOkzrFVS'
+                'remember_token' => 'CiBOkzrFVS',
             ],
             [
                 'name' => 'Primemover Runner',
                 'email' => 'runner@primemover.example',
                 'email_verified_at' => now(),
                 'password' => '$2y$10$/cqGZzUBMYVe0J.RSdmCteArq8I0TQSXIwDPQEUBwmPXqSrUo0g/S',
-                'remember_token' => 'CiBOkzrFVS'
+                'remember_token' => 'CiBOkzrFVS',
             ],
         ]);
 
-        //$fake = factory(App\User::class, 5)->create();
+        // $fake = factory(App\Models\User::class, 5)->create();
     }
 }

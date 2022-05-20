@@ -1,18 +1,15 @@
 <?php
 
+namespace Database\Seeders;
+
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class BehaviorsTableSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     *
-     * @return void
-     */
-    public function run()
+    public function run(): void
     {
-
-        //$fake = factory(App\Behavior::class, 100)->create();
+        // $fake = factory(App\Models\Behavior::class, 100)->create();
 
         DB::table('behaviors')->insert([
             [
@@ -111,7 +108,7 @@ class BehaviorsTableSeeder extends Seeder
             [
                 'name' => 'decisionType',
                 'description' => 'Decission type',
-                'value' => "FIRST",
+                'value' => 'FIRST',
                 'user_id' => 1,
                 'job_id' => 9,
             ],
@@ -171,7 +168,7 @@ class BehaviorsTableSeeder extends Seeder
             [
                 'name' => 'decisionType',
                 'description' => 'Decission type',
-                'value' => "FIRST",
+                'value' => 'FIRST',
                 'user_id' => 1,
                 'job_id' => 13,
             ],
@@ -231,11 +228,10 @@ class BehaviorsTableSeeder extends Seeder
             [
                 'name' => 'decisionType',
                 'description' => 'Decission type',
-                'value' => "FIRST",
+                'value' => 'FIRST',
                 'user_id' => 1,
                 'job_id' => 17,
             ],
-
         ]);
 
         DB::table('behaviors')->insert([
@@ -335,7 +331,7 @@ class BehaviorsTableSeeder extends Seeder
             [
                 'name' => 'decisionType',
                 'description' => 'Decission type',
-                'value' => "FIRST",
+                'value' => 'FIRST',
                 'user_id' => 1,
                 'job_id' => 26,
             ],
@@ -395,7 +391,7 @@ class BehaviorsTableSeeder extends Seeder
             [
                 'name' => 'decisionType',
                 'description' => 'Decission type',
-                'value' => "FIRST",
+                'value' => 'FIRST',
                 'user_id' => 1,
                 'job_id' => 30,
             ],
@@ -455,11 +451,10 @@ class BehaviorsTableSeeder extends Seeder
             [
                 'name' => 'decisionType',
                 'description' => 'Decission type',
-                'value' => "FIRST",
+                'value' => 'FIRST',
                 'user_id' => 1,
                 'job_id' => 34,
             ],
-
         ]);
 
         DB::table('behaviors')->insert([
@@ -559,7 +554,7 @@ class BehaviorsTableSeeder extends Seeder
             [
                 'name' => 'decisionType',
                 'description' => 'Decission type',
-                'value' => "FIRST",
+                'value' => 'FIRST',
                 'user_id' => 1,
                 'job_id' => 43,
             ],
@@ -619,7 +614,7 @@ class BehaviorsTableSeeder extends Seeder
             [
                 'name' => 'decisionType',
                 'description' => 'Decission type',
-                'value' => "FIRST",
+                'value' => 'FIRST',
                 'user_id' => 1,
                 'job_id' => 47,
             ],
@@ -679,11 +674,10 @@ class BehaviorsTableSeeder extends Seeder
             [
                 'name' => 'decisionType',
                 'description' => 'Decission type',
-                'value' => "FIRST",
+                'value' => 'FIRST',
                 'user_id' => 1,
                 'job_id' => 51,
             ],
-
         ]);
 
         DB::table('behaviors')->insert([
@@ -783,7 +777,7 @@ class BehaviorsTableSeeder extends Seeder
             [
                 'name' => 'decisionType',
                 'description' => 'Decission type',
-                'value' => "FIRST",
+                'value' => 'FIRST',
                 'user_id' => 1,
                 'job_id' => 60,
             ],
@@ -843,7 +837,7 @@ class BehaviorsTableSeeder extends Seeder
             [
                 'name' => 'decisionType',
                 'description' => 'Decission type',
-                'value' => "FIRST",
+                'value' => 'FIRST',
                 'user_id' => 1,
                 'job_id' => 64,
             ],
@@ -903,11 +897,10 @@ class BehaviorsTableSeeder extends Seeder
             [
                 'name' => 'decisionType',
                 'description' => 'Decission type',
-                'value' => "FIRST",
+                'value' => 'FIRST',
                 'user_id' => 1,
                 'job_id' => 68,
             ],
-
         ]);
 
         DB::table('behaviors')->insert([
@@ -1007,7 +1000,7 @@ class BehaviorsTableSeeder extends Seeder
             [
                 'name' => 'decisionType',
                 'description' => 'Decission type',
-                'value' => "FIRST",
+                'value' => 'FIRST',
                 'user_id' => 1,
                 'job_id' => 77,
             ],
@@ -1067,7 +1060,7 @@ class BehaviorsTableSeeder extends Seeder
             [
                 'name' => 'decisionType',
                 'description' => 'Decission type',
-                'value' => "FIRST",
+                'value' => 'FIRST',
                 'user_id' => 1,
                 'job_id' => 81,
             ],
@@ -1127,11 +1120,10 @@ class BehaviorsTableSeeder extends Seeder
             [
                 'name' => 'decisionType',
                 'description' => 'Decission type',
-                'value' => "FIRST",
+                'value' => 'FIRST',
                 'user_id' => 1,
                 'job_id' => 85,
             ],
-
         ]);
 
         DB::table('behaviors')->insert([
@@ -1231,7 +1223,7 @@ class BehaviorsTableSeeder extends Seeder
             [
                 'name' => 'decisionType',
                 'description' => 'Decission type',
-                'value' => "FIRST",
+                'value' => 'FIRST',
                 'user_id' => 1,
                 'job_id' => 94,
             ],
@@ -1291,7 +1283,7 @@ class BehaviorsTableSeeder extends Seeder
             [
                 'name' => 'decisionType',
                 'description' => 'Decission type',
-                'value' => "FIRST",
+                'value' => 'FIRST',
                 'user_id' => 1,
                 'job_id' => 98,
             ],
@@ -1351,14 +1343,12 @@ class BehaviorsTableSeeder extends Seeder
             [
                 'name' => 'decisionType',
                 'description' => 'Decission type',
-                'value' => "FIRST",
+                'value' => 'FIRST',
                 'user_id' => 1,
                 'job_id' => 102,
             ],
-
         ]);
 
-
-        //$fake = factory(App\Behavior::class, 15)->create();
+        // $fake = factory(App\Models\Behavior::class, 15)->create();
     }
 }

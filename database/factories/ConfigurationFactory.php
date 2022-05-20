@@ -1,17 +1,23 @@
 <?php
 
-/** @var Factory $factory */
+namespace Database\Factories;
 
-use App\Configuration;
-use Faker\Generator as Faker;
-use Illuminate\Database\Eloquent\Factory;
-use Illuminate\Support\Str;
+use App\Models\Configuration;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
-$factory->define(Configuration::class, function (Faker $faker) {
-    return [
-        'user_id' => 1,
-        'name' => $faker->lastName,
-        'description' => $faker->text,
-        'active' => $faker->randomElement([1, 0]),
-    ];
-});
+class ConfigurationFactory extends Factory
+{
+    /**
+     * @var string
+     */
+    protected $model = Configuration::class;
+
+    public function definition(): array
+    {
+        return [
+            'user_id' => 1,
+            'name' => $this->faker->lastName,
+            'active' => $this->faker->randomElement([1, 0]),
+        ];
+    }
+}
