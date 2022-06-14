@@ -2,14 +2,13 @@
 
 namespace App\Http\Controllers\API\v1;
 
-use App\Experiment;
-use App\Job;
-use App\Queue;
-use Exception;
-use Illuminate\Http\Request;
 use App\Http\Resources\v1\QueueResource;
 use App\Http\Resources\v1\QueueResourceCollection;
-use Illuminate\Validation\ValidationException;
+use App\Models\Experiment;
+use App\Models\Job;
+use App\Models\Queue;
+use Exception;
+use Illuminate\Http\Request;
 
 class QueueController extends Controller
 {

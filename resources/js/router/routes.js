@@ -16,6 +16,7 @@ export default [
   {path: '/list', name: 'list', component: page('list.vue')},
   {path: '/configurations', name: 'configurations', component: page('configurations.vue')},
   {path: '/agents', name: 'agents', component: page('agents.vue')},
+  {path: '/experiments', name: 'experiments', component: page('experiments.vue')},
   {path: '/crawlers', name: 'crawlers', component: page('crawlers.vue')},
   {path: '/jobs', name: 'jobs', component: page('jobs.vue')},
   {path: '/proxies', name: 'proxies', component: page('proxies.vue')},

@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\API\v1;
 
-use App\Term;
-use Exception;
-use Illuminate\Http\Request;
 use App\Http\Resources\v1\TermResource;
 use App\Http\Resources\v1\TermResourceCollection;
+use App\Models\Term;
+use Exception;
+use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 
 class TermController extends Controller
@@ -66,7 +66,8 @@ class TermController extends Controller
 
     /**
      * Show the form for editing the specified resource.
-     * @param Term $term
+     *
+     * @param \App\Models\Term $term
      * @return mixed
      */
     public function edit(Term $term): TermResource
@@ -76,8 +77,9 @@ class TermController extends Controller
 
     /**
      * Update the specified resource in storage.
+     *
      * @param Request $request
-     * @param Term $term
+     * @param \App\Models\Term $term
      * @return TermResource
      */
     public function update(Request $request, Term $term): TermResource

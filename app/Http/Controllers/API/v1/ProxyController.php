@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\API\v1;
 
-use App\Proxy;
-use Exception;
-use Illuminate\Http\Request;
 use App\Http\Resources\v1\ProxyResource;
 use App\Http\Resources\v1\ProxyResourceCollection;
+use App\Models\Proxy;
+use Exception;
+use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 
 class ProxyController extends Controller
@@ -90,7 +90,8 @@ class ProxyController extends Controller
 
     /**
      * Remove the specified resource from storage.
-     * @param Proxy $proxy
+     *
+     * @param \App\Models\Proxy $proxy
      * @return ProxyResourceCollection
      * @throws Exception
      */

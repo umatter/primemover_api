@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers\API\v1;
 
-use App\Configuration;
-use App\Param;
-use Exception;
-use Illuminate\Http\Request;
 use App\Http\Resources\v1\ConfigurationResource;
 use App\Http\Resources\v1\ConfigurationResourceCollection;
+use App\Models\Configuration;
+use App\Models\Param;
+use Exception;
+use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 
 class ConfigurationController extends Controller
@@ -73,7 +73,8 @@ class ConfigurationController extends Controller
 
     /**
      * Show the form for editing the specified resource.
-     * @param Configuration $configuration
+     *
+     * @param \App\Models\Configuration $configuration
      * @return mixed
      */
     public function edit(Configuration $configuration): ConfigurationResource
@@ -83,8 +84,9 @@ class ConfigurationController extends Controller
 
     /**
      * Update the specified resource in storage.
+     *
      * @param Request $request
-     * @param Configuration $configuration
+     * @param \App\Models\Configuration $configuration
      * @return ConfigurationResource
      */
     public function update(Request $request, Configuration $configuration): ConfigurationResource

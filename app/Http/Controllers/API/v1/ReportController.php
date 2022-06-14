@@ -4,15 +4,13 @@ namespace App\Http\Controllers\API\v1;
 
 
 use App;
-use App\Job;
-use App\Report;
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
-
-
 use App\Http\Resources\v1\ReportResource;
 use App\Http\Resources\v1\ReportResourceCollection;
+use App\Models\Job;
+use App\Models\Report;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
+
 
 class ReportController extends Controller
 {
@@ -156,7 +154,7 @@ class ReportController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param \App\Report $report
+     * @param \App\Models\Report $report
      * @return \Illuminate\Http\Response
      */
     public function show($id): ReportResource
@@ -168,7 +166,7 @@ class ReportController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param \App\Report $report
+     * @param \App\Models\Report $report
      * @return \Illuminate\Http\Response
      */
     public function edit(Report $report)
@@ -180,7 +178,7 @@ class ReportController extends Controller
      * Update the specified resource in storage.
      *
      * @param \Illuminate\Http\Request $request
-     * @param \App\Report $report
+     * @param \App\Models\Report $report
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Report $report)
@@ -191,7 +189,7 @@ class ReportController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param \App\Report $report
+     * @param \App\Models\Report $report
      * @return \Illuminate\Http\Response
      */
     public function destroy(Report $report)

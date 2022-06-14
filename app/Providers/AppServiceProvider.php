@@ -8,7 +8,6 @@ use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
-
     public function boot(): void
     {
         Paginator::useBootstrap();
@@ -16,9 +15,5 @@ class AppServiceProvider extends ServiceProvider
         if ($this->app->runningUnitTests()) {
             Schema::defaultStringLength(191);
         }
-    }
-
-    public function register(): void
-    {
     }
 }

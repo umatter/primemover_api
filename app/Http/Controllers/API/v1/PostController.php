@@ -4,10 +4,10 @@ namespace App\Http\Controllers\API\v1;
 
 use App\Http\Resources\v1\PostResource;
 use App\Http\Resources\v1\PostResourceCollection;
-use App\Post;
+use App\Models\Post;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Response;
-
 
 class PostController extends Controller
 {
@@ -20,73 +20,37 @@ class PostController extends Controller
     {
         $keyword = $request->input('keyword');
         $posts = Post::with('user')->latest()->get();
+
         return new PostResourceCollection($posts);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return Response
-     */
-    public function create()
+    public function create(): JsonResource
     {
-        //
+        return JsonResource::make([]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param Request $request
-     * @return Response
-     */
-    public function store(Request $request)
+    public function store(): JsonResource
     {
-        //
+        return JsonResource::make([]);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param Post $post
-     * @return Response
-     */
-    public function show($id): PostResource
+    public function show(Post $post): PostResource
     {
-        $post = Post::with(['user'])->findOrFail($id);
-        return new PostResource($post);
+        return new PostResource($post->with('user'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param Post $post
-     * @return Response
-     */
-    public function edit(Post $post)
+    public function edit(Post $post): JsonResource
     {
-        //
+        return JsonResource::make([]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param Request $request
-     * @param Post $post
-     * @return Response
-     */
-    public function update(Request $request, Post $post)
+    public function update(Request $request, Post $post): JsonResource
     {
-        //
+        return JsonResource::make([]);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param Post $post
-     * @return Response
-     */
-    public function destroy(Post $post)
+    public function destroy(Post $post): JsonResource
     {
-        //
+        return JsonResource::make([]);
     }
 }

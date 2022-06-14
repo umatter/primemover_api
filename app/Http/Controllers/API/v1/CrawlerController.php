@@ -2,28 +2,29 @@
 
 namespace App\Http\Controllers\API\v1;
 
-use App\Agent;
-use App\Behavior;
-use App\Configuration;
-use App\Crawler;
 use App\Http\Resources\v1\CrawlerResource;
 use App\Http\Resources\v1\CrawlerResourceCollection;
-use App\Job;
-use App\Param;
-use App\Preference;
-use App\Proxy;
-use App\Queue;
-use Arimolzer\IPStackFinder\Facade\IPStackFinderFacade;
+use App\Models\Agent;
+use App\Models\Behavior;
+use App\Models\Configuration;
+use App\Models\Crawler;
+use App\Models\Job;
+use App\Models\Param;
+use App\Models\Preference;
+use App\Models\Proxy;
+use App\Models\Queue;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Validation\ValidationException;
+use Symfony\Component\HttpFoundation\Response as ResponseAlias;
 
 class CrawlerController extends Controller
 {
-    public function index(Request $request): CrawlerResourceCollection
+    public function index(): CrawlerResourceCollection
     {
-        $crawlers = Crawler::where('testing', 0)
+        $crawlers = Crawler::query()->where('testing', 0)
             ->where('active', 1)
             ->with(
                 [
@@ -32,14 +33,16 @@ class CrawlerController extends Controller
                     'proxy',
                     'configuration.preferences',
                 ]
-            )->latest()->get();
+            )->latest()->paginate(10);
+
         return new CrawlerResourceCollection($crawlers);
     }
 
     public function inactive(Request $request): CrawlerResourceCollection
     {
         $keyword = $request->input('keyword');
-        $crawlers = Crawler::where('testing', 0)
+        $crawlers = Crawler::query()
+            ->where('testing', 0)
             ->where('active', 0)
             ->with(
                 [
@@ -49,9 +52,9 @@ class CrawlerController extends Controller
                     'configuration.preferences',
                 ]
             )->latest()->get();
+
         return new CrawlerResourceCollection($crawlers);
     }
-
 
     public function withProcessedQueues(Request $request): CrawlerResourceCollection
     {
@@ -72,9 +75,9 @@ class CrawlerController extends Controller
                 $q->where('processed', 1);
             })
             ->latest()->get();
+
         return new CrawlerResourceCollection($crawlers);
     }
-
 
     public function withReviewedQueues(Request $request): CrawlerResourceCollection
     {
@@ -95,6 +98,7 @@ class CrawlerController extends Controller
                 $q->where('reviewed', 1);
             })
             ->latest()->get();
+
         return new CrawlerResourceCollection($crawlers);
     }
 
@@ -117,9 +121,9 @@ class CrawlerController extends Controller
                 ]
             )
             ->latest()->get();
+
         return new CrawlerResourceCollection($crawlers);
     }
-
 
     public function testing(Request $request): CrawlerResourceCollection
     {
@@ -134,6 +138,7 @@ class CrawlerController extends Controller
                     'configuration.preferences',
                 ]
             )->latest()->get();
+
         return new CrawlerResourceCollection($crawlers);
     }
 
@@ -142,6 +147,9 @@ class CrawlerController extends Controller
         return new CrawlerResource(new Crawler());
     }
 
+    /**
+     * @throws ValidationException
+     */
     public function store(Request $request): CrawlerResource
     {
         $this->validate($request, [
@@ -153,6 +161,7 @@ class CrawlerController extends Controller
         $data['experiment_id'] = 1;
 
         $crawler = Crawler::create($data);
+
         return new CrawlerResource($crawler);
     }
 
@@ -165,9 +174,10 @@ class CrawlerController extends Controller
                 'agent.preferences',
                 'configuration.preferences',
                 'proxy',
-                'user'
+                'user',
             ]
         )->findOrFail($id);
+
         return new CrawlerResource($crawler);
     }
 
@@ -180,6 +190,7 @@ class CrawlerController extends Controller
     {
         $data = $request->all();
         $crawler->update($data);
+
         return new CrawlerResource($crawler);
     }
 
@@ -187,9 +198,9 @@ class CrawlerController extends Controller
     {
         Crawler::query()->where('testing', 0)->update(['active' => 0]);
         $crawler = Crawler::where('active', 0)->get();
+
         return new CrawlerResourceCollection($crawler);
     }
-
 
     /**
      * @throws Exception
@@ -209,7 +220,7 @@ class CrawlerController extends Controller
                     'queues',
                     'agent.preferences',
                     'proxy',
-                    'configuration.preferences'
+                    'configuration.preferences',
                 ]
             )->latest()->get()
         );
@@ -217,7 +228,7 @@ class CrawlerController extends Controller
 
     public function destroy(Crawler $crawler): CrawlerResourceCollection
     {
-        //$crawler->delete();
+        // $crawler->delete();
         return new CrawlerResourceCollection(
             Crawler::with(
                 [
@@ -225,28 +236,27 @@ class CrawlerController extends Controller
                     'queues',
                     'agent.preferences',
                     'proxy',
-                    'configuration.preferences'
+                    'configuration.preferences',
                 ]
             )->latest()->get()
         );
     }
-
 
     public function ip($ip = null): JsonResponse
     {
         $final = ($ip) ? $ip : request()->ip();
         if (!$this->isLocalAddress($final)) {
             return response()->json([
-                'result' => IPStackFinderFacade::get($final)
-            ], Response::HTTP_OK);
+                // 'result' => IPStackFinderFacade::get($final),
+            ], ResponseAlias::HTTP_OK);
         }
+
         return $final;
     }
 
-
     public function isLocalAddress($ip): bool
     {
-        return $ip === '::1' || $ip === '127.0.0.1';
+        return '::1' === $ip || '127.0.0.1' === $ip;
     }
 
     public function undo(): CrawlerResourceCollection
@@ -260,9 +270,10 @@ class CrawlerController extends Controller
                 'agent.preferences',
                 'proxy',
                 'configuration.preferences',
-                'user'
+                'user',
             ]
         )->latest()->get();
+
         return new CrawlerResourceCollection($crawlers);
     }
 
@@ -277,15 +288,17 @@ class CrawlerController extends Controller
                 'agent.preferences',
                 'proxy',
                 'configuration.preferences',
-                'user'
+                'user',
             ]
         )->latest()->get();
+
         return new CrawlerResourceCollection($crawlers);
     }
 
     public function load(): JsonResponse
     {
         $incoming = json_decode(request()->getContent(), true);
+
         return $this->makeCrawlers($incoming);
     }
 
@@ -300,8 +313,6 @@ class CrawlerController extends Controller
             /**
              * Create new or update if id provided.
              */
-
-
             $new = $id ? Crawler::findOrFail($id) : new Crawler();
 
             $new->user_id = $crawler['user_id'] ?? 1;
@@ -346,7 +357,7 @@ class CrawlerController extends Controller
                 $new->configuration_id = $resp->id;
             }
 
-            //$new->update($payload);
+            // $new->update($payload);
             $new->save();
 
             // Create queues
@@ -366,7 +377,7 @@ class CrawlerController extends Controller
                 ]
             )
                 ->where('updated', 1)
-                ->get()
+                ->get(),
         ], Response::HTTP_OK);
     }
 
@@ -376,12 +387,12 @@ class CrawlerController extends Controller
 
         foreach ($data as $queue) {
             $new = new Queue([
-                "user_id" => 1,
-                "crawler_id" => $crawler->id,
-                "name" => $queue['name'] ?? 'Value not provided at update!',
-                "description" => $queue['description'] ?? 'Value not provided at update!',
-                "start_at" => $queue['start_at'],
-                "active" => 1
+                'user_id' => 1,
+                'crawler_id' => $crawler->id,
+                'name' => $queue['name'] ?? 'Value not provided at update!',
+                'description' => $queue['description'] ?? 'Value not provided at update!',
+                'start_at' => $queue['start_at'],
+                'active' => 1,
             ]);
             $new->save();
             $this->makeJobs($queue['jobs'], $new);
@@ -392,11 +403,11 @@ class CrawlerController extends Controller
     {
         foreach ($data as $job) {
             $new = new Job([
-                "user_id" => 1,
-                "queue_id" => $queue->id,
-                "name" => $job['name'] ?? 'Value not provided at update',
-                "type" => $job['type'] ?? 'Value not provided at update',
-                "description" => $job['description'] ?? 'Value not provided at update',
+                'user_id' => 1,
+                'queue_id' => $queue->id,
+                'name' => $job['name'] ?? 'Value not provided at update',
+                'type' => $job['type'] ?? 'Value not provided at update',
+                'description' => $job['description'] ?? 'Value not provided at update',
             ]);
             $new->save();
             $this->makeBehaviors($job['behaviors'], $new);
@@ -405,18 +416,18 @@ class CrawlerController extends Controller
 
     public function makeBehaviors($data, $job)
     {
-        /**
+        /*
          * selectionType=['XPATH', 'CSS', 'CLASS']
          * appendReturn=[true,false]
          * typeingMode=[]
          */
         foreach ($data as $behavior) {
             $new = new Behavior([
-                "user_id" => 1,
-                "job_id" => $job->id,
-                "name" => $behavior['name'] ?? 'Value not provided at update!',
-                "description" => $behavior['description'] ?? 'Value not provided at update!',
-                "value" => $behavior['value'] ?? 'Value not provided at update!',
+                'user_id' => 1,
+                'job_id' => $job->id,
+                'name' => $behavior['name'] ?? 'Value not provided at update!',
+                'description' => $behavior['description'] ?? 'Value not provided at update!',
+                'value' => $behavior['value'] ?? 'Value not provided at update!',
             ]);
             $new->save();
         }
@@ -432,14 +443,14 @@ class CrawlerController extends Controller
         $proxy = $data[0];
 
         $payload = [
-            "user_id" => 1,
-            "name" => $proxy['name'] ?? null,
-            "description" => $proxy['description'] ?? null,
-            "hostname" => $proxy['hostname'] ?? null,
-            "port" => $proxy['port'] ?? null,
-            "username" => $proxy['username'] ?? null,
-            "password" => $proxy['password'] ?? null,
-            "type" => $proxy['type'] ?? null,
+            'user_id' => 1,
+            'name' => $proxy['name'] ?? null,
+            'description' => $proxy['description'] ?? null,
+            'hostname' => $proxy['hostname'] ?? null,
+            'port' => $proxy['port'] ?? null,
+            'username' => $proxy['username'] ?? null,
+            'password' => $proxy['password'] ?? null,
+            'type' => $proxy['type'] ?? null,
         ];
 
         $new = Proxy::find($crawler->proxy_id);
@@ -456,9 +467,9 @@ class CrawlerController extends Controller
 
     public function log($content)
     {
-        echo "<pre>";
+        echo '<pre>';
         print_r($content);
-        echo "</pre>";
+        echo '</pre>';
     }
 
     public function makeConfigurations($data, $crawler): Configuration
@@ -466,10 +477,10 @@ class CrawlerController extends Controller
         $configuration = $data[0];
         $params = $configuration['params'] ?? null;
         $payload = [
-            "user_id" => 1,
-            "name" => $configuration['name'] ?? null,
-            "active" => 1,
-            "description" => $configuration['description'] ?? null,
+            'user_id' => 1,
+            'name' => $configuration['name'] ?? null,
+            'active' => 1,
+            'description' => $configuration['description'] ?? null,
         ];
 
         $new = Configuration::find($crawler->configuration_id);
@@ -477,7 +488,6 @@ class CrawlerController extends Controller
         if ($crawler->configuration_id > 1 && $new) {
             $new->update($payload);
         } else {
-
             $new = new Configuration($payload);
             $new->save();
         }
@@ -491,16 +501,16 @@ class CrawlerController extends Controller
             $new->params()->delete();
             foreach ($params as $param) {
                 $payload = [
-                    "user_id" => 1,
-                    "configuration_id" => $new->id,
-                    "pi" => $param['pi'],
-                    "psi" => $param['psi'],
-                    "kappa" => $param['kappa'],
-                    "tau" => $param['tau'],
-                    "beta" => $param['beta'],
-                    "alpha" => $param['alpha'],
-                    "search_terms" => json_encode($param['search_terms']),
-                    "media_outlet_urls" => json_encode($param['media_outlet_urls']),
+                    'user_id' => 1,
+                    'configuration_id' => $new->id,
+                    'pi' => $param['pi'],
+                    'psi' => $param['psi'],
+                    'kappa' => $param['kappa'],
+                    'tau' => $param['tau'],
+                    'beta' => $param['beta'],
+                    'alpha' => $param['alpha'],
+                    'search_terms' => json_encode($param['search_terms']),
+                    'media_outlet_urls' => json_encode($param['media_outlet_urls']),
                 ];
 
                 $parameter = new Param($payload);
@@ -515,10 +525,10 @@ class CrawlerController extends Controller
     {
         foreach ($data as $preference) {
             $new = new Preference([
-                "user_id" => 1,
-                "name" => $preference['name'] ?? 'Value not provided at update!',
-                "description" => $preference['description'] ?? 'Value not provided at update!',
-                "value" => $preference['value'] ?? 'Value not provided at update!',
+                'user_id' => 1,
+                'name' => $preference['name'] ?? 'Value not provided at update!',
+                'description' => $preference['description'] ?? 'Value not provided at update!',
+                'value' => $preference['value'] ?? 'Value not provided at update!',
             ]);
             $new->preferencable()->associate($model);
             $new->save();
@@ -529,13 +539,13 @@ class CrawlerController extends Controller
     {
         $agent = $data[0];
         $payload = [
-            "user_id" => 1,
-            "name" => $agent['name'],
-            "description" => $agent['description'],
-            "identification" => $agent['identification'] ? $agent['identification'] : "",
-            "multilogin_id" => $agent['multilogin_id'] ? $agent['multilogin_id'] : "",
-            "multilogin_profile" => $agent['multilogin_profile'] ? json_encode($agent['multilogin_profile']) : "",
-            "location" => $agent['location'] ? $agent['location'] : "",
+            'user_id' => 1,
+            'name' => $agent['name'],
+            'description' => $agent['description'],
+            'identification' => $agent['identification'] ? $agent['identification'] : '',
+            'multilogin_id' => $agent['multilogin_id'] ? $agent['multilogin_id'] : '',
+            'multilogin_profile' => $agent['multilogin_profile'] ? json_encode($agent['multilogin_profile']) : '',
+            'location' => $agent['location'] ? $agent['location'] : '',
         ];
 
         $new = Agent::find($crawler->agent_id);
@@ -550,7 +560,7 @@ class CrawlerController extends Controller
         if (isset($agent['preferences']) && $agent['preferences']) {
             $this->makePreferences($agent['preferences'], $new);
         }
+
         return $new;
     }
-
 }

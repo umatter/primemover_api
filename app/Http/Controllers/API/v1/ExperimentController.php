@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\API\v1;
 
-use App\Experiment;
 use App\Http\Resources\v1\ExperimentResource;
 use App\Http\Resources\v1\ExperimentResourceCollection;
-use App\Preference;
+use App\Models\Experiment;
+use App\Models\Preference;
 use Exception;
 use Illuminate\Http\Request;
 
@@ -19,14 +19,17 @@ class ExperimentController extends Controller
             'crawlers.proxy',
             'crawlers.configuration',
             'crawlers.configuration.preferences',
-            'preferences'
-        ])->latest()->get();
+            'preferences',
+        ])
+            ->latest()
+            ->get();
+
         return new ExperimentResourceCollection($experiments);
     }
 
     public function create(): ExperimentResourceCollection
     {
-        return new ExperimentResourceCollection(new Experiment);
+        return new ExperimentResourceCollection(new Experiment());
     }
 
     public function store(Request $request): ExperimentResource
@@ -35,10 +38,10 @@ class ExperimentController extends Controller
         $data['user_id'] = auth()->user() ? auth()->user()->id : 1;
 
         $experiment = Experiment::create([
-            "name" => $data['name'] ?? 'Value not provided at update!',
-            "description" => $data['description'] ?? 'Value not provided at update!',
-            "user_id" => 1,
-            "contact" => $data['contact'] ?? 'Value not provided at update!',
+            'name' => $data['name'] ?? 'Value not provided at update!',
+            'description' => $data['description'] ?? 'Value not provided at update!',
+            'user_id' => 1,
+            'contact' => $data['contact'] ?? 'Value not provided at update!',
         ]);
 
         $experiment->save();
@@ -54,10 +57,10 @@ class ExperimentController extends Controller
     {
         foreach ($data as $preference) {
             $new = new Preference([
-                "user_id" => 1,
-                "name" => $preference['name'] ?? 'Value not provided at update!',
-                "description" => $preference['description'] ?? 'Value not provided at update!',
-                "value" => $preference['value'] ?? 'Value not provided at update!',
+                'user_id' => 1,
+                'name' => $preference['name'] ?? 'Value not provided at update!',
+                'description' => $preference['description'] ?? 'Value not provided at update!',
+                'value' => $preference['value'] ?? 'Value not provided at update!',
             ]);
             $new->preferencable()->associate($model);
             $new->save();
@@ -72,9 +75,10 @@ class ExperimentController extends Controller
                 'crawlers.proxy',
                 'crawlers.configuration',
                 'crawlers.configuration.preferences',
-                'preferences'
+                'preferences',
             ]
         )->findOrFail($id);
+
         return new ExperimentResource($experiment);
     }
 
@@ -91,6 +95,7 @@ class ExperimentController extends Controller
         if (isset($request['preferences']) && $request['preferences']) {
             $this->makePreferences($request['preferences'], $experiment);
         }
+
         return new ExperimentResource($experiment);
     }
 
@@ -100,6 +105,7 @@ class ExperimentController extends Controller
     public function destroy(Experiment $experiment): ExperimentResourceCollection
     {
         $experiment->delete();
+
         return new ExperimentResourceCollection(Experiment::all());
     }
 

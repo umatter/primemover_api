@@ -2,99 +2,66 @@
 
 namespace App\Http\Controllers\API\v1;
 
-use App\Agent;
-use App\Crawler;
-use Illuminate\Http\Client\RequestException;
-use Illuminate\Http\Request;
-
 use App\Http\Resources\v1\AgentResource;
 use App\Http\Resources\v1\AgentResourceCollection;
-use mysql_xdevapi\Exception;
+use App\Models\Agent;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Auth;
 
 class AgentController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return AgentResourceCollection
-     */
-    public function index(Request $request): AgentResourceCollection
+    public function index(): AgentResourceCollection
     {
-        $keyword = $request->input('keyword');
-        $agents = Agent::with('crawler', 'preferences')->latest()->get();
-        return new AgentResourceCollection($agents);
+        $agents = Agent::query()
+            ->with('crawler', 'preferences')
+            ->latest()
+            ->get();
+
+        return AgentResourceCollection::make($agents);
     }
 
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return AgentResourceCollection
-     */
-    public function create()
+    public function create(): AgentResourceCollection
     {
-        //
-        return new AgentResourceCollection(new Agent);
+        return AgentResourceCollection::make(App::make(Agent::class));
     }
 
-    /**
-     * Store a new resource.
-     * @param Request $request
-     * @return AgentResource
-     * @throws \Illuminate\Validation\ValidationException
-     */
     public function store(Request $request): AgentResource
     {
         $data = $request->all();
-        $data['user_id'] = auth()->user() ? auth()->user()->id : 1;
+        $data['user_id'] = Auth::id() ?? 1;
 
-        $agent = Agent::create($data);
-        return new AgentResource($agent);
+        $agent = Agent::query()->create($data);
+
+        return AgentResource::make($agent);
     }
 
-    /**
-     * Show a resource.
-     * @param $id
-     * @return AgentResource
-     */
     public function show($id): AgentResource
     {
-        $agent = Agent::with(['user', 'crawler', 'preferences'])->findOrFail($id);
-        return new AgentResource($agent);
+        $agent = Agent::query()
+            ->with(['user', 'crawler', 'preferences'])
+            ->findOr($id, fn () => ['status' => false]);
+
+        return AgentResource::make($agent);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     * @param Agent $agent
-     * @return mixed
-     */
     public function edit(Agent $agent): AgentResource
     {
-        return new AgentResource($agent);
+        return AgentResource::make($agent);
     }
 
-    /**
-     * Update the specified resource in storage.
-     * @param Request $request
-     * @param Agent $agent
-     * @return AgentResource
-     */
     public function update(Request $request, Agent $agent): AgentResource
     {
         $data = $request->all();
         $agent->update($data);
-        return new AgentResource($agent);
+
+        return AgentResource::make($agent);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     * @param Agent $agent
-     * @return AgentResourceCollection
-     * @throws \Exception
-     */
     public function destroy(Agent $agent): AgentResourceCollection
     {
         $agent->delete();
-        return new AgentResourceCollection(Agent::all());
+
+        return AgentResourceCollection::make(Agent::query()->get());
     }
 }

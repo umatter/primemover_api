@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\API\v1;
 
-use App\Outlet;
-use Exception;
-use Illuminate\Http\Request;
 use App\Http\Resources\v1\OutletResource;
 use App\Http\Resources\v1\OutletResourceCollection;
+use App\Models\Outlet;
+use Exception;
+use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 
 class OutletController extends Controller
@@ -62,7 +62,8 @@ class OutletController extends Controller
 
     /**
      * Show the form for editing the specified resource.
-     * @param Outlet $outlet
+     *
+     * @param \App\Models\Outlet $outlet
      * @return mixed
      */
     public function edit(Outlet $outlet): OutletResource
@@ -72,8 +73,9 @@ class OutletController extends Controller
 
     /**
      * Update the specified resource in storage.
+     *
      * @param Request $request
-     * @param Outlet $outlet
+     * @param \App\Models\Outlet $outlet
      * @return OutletResource
      */
     public function update(Request $request, Outlet $outlet): OutletResource
@@ -85,7 +87,8 @@ class OutletController extends Controller
 
     /**
      * Remove the specified resource from storage.
-     * @param Outlet $outlet
+     *
+     * @param \App\Models\Outlet $outlet
      * @return OutletResourceCollection
      * @throws Exception
      */

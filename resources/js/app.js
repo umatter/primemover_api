@@ -3,7 +3,7 @@ import store from '~/store'
 import router from '~/router'
 import i18n from '~/plugins/i18n'
 import App from '~/components/App'
-import {apiDomain} from "./config";
+import { apiDomain } from './config'
 
 import '~/plugins'
 import '~/components'

@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\API\v1;
 
-use App\Param;
-use Exception;
-use Illuminate\Http\Request;
 use App\Http\Resources\v1\ParamResource;
 use App\Http\Resources\v1\ParamResourceCollection;
+use App\Models\Param;
+use Exception;
+use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 
 class ParamController extends Controller
@@ -67,7 +67,8 @@ class ParamController extends Controller
 
     /**
      * Show the form for editing the specified resource.
-     * @param Param $param
+     *
+     * @param \App\Models\Param $param
      * @return mixed
      */
     public function edit(Param $param): ParamResource
@@ -90,7 +91,8 @@ class ParamController extends Controller
 
     /**
      * Remove the specified resource from storage.
-     * @param Param $param
+     *
+     * @param \App\Models\Param $param
      * @return ParamResourceCollection
      * @throws Exception
      */
