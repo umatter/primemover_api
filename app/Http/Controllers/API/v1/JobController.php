@@ -20,7 +20,7 @@ class JobController extends Controller
             ->when($queueId, fn (Builder $query) => $query->where('queue_id', $queueId))
             ->with(['queue'])
             ->latest()
-            ->paginate(10);
+            ->simplePaginate(10);
 
         return ResourceCollection::make($jobs);
     }

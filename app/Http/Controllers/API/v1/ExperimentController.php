@@ -17,7 +17,7 @@ class ExperimentController extends Controller
         $experiments = Experiment::query()
             ->whereHas('crawlers')
             ->latest()
-            ->paginate(10);
+            ->simplePaginate(10);
 
         return ResourceCollection::make($experiments);
     }
