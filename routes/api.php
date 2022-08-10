@@ -36,7 +36,6 @@ Route::prefix('v1')->group(function () {
         Route::delete('crawlers/{crawler}/destroy', 'API\v1\CrawlerController@forceDelete');
         Route::delete('experiments/{experiment}/destroy', 'API\v1\ExperimentController@forceDelete');
         Route::get('crawlers-disable', 'API\v1\CrawlerController@disableProdCrawlers');
-        Route::get('ip/{ip?}', 'API\v1\CrawlerController@ip');
         Route::get('file/{report}', 'API\v1\ReportController@getFile');
         Route::get('crawlers-testing', 'API\v1\CrawlerController@testing');
 
@@ -49,6 +48,7 @@ Route::prefix('v1')->group(function () {
 
     Route::group(['middleware' => 'guest:api'], function () {
         Route::post('login', 'API\AuthController@login');
+        Route::get('ip/{ip?}', 'API\v1\CrawlerController@ip');
     });
 
     Route::post('auth/token', [AuthController::class, 'token']);

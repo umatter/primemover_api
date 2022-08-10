@@ -11,6 +11,7 @@ use App\Models\Param;
 use App\Models\Preference;
 use App\Models\Proxy;
 use App\Models\Queue;
+use Arimolzer\IPStackFinder\Facade\IPStackFinderFacade;
 use Exception;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
@@ -234,7 +235,7 @@ class CrawlerController extends Controller
         $final = ($ip) ?: request()->ip();
         if (!$this->isLocalAddress($final)) {
             return response()->json([
-                // 'result' => IPStackFinderFacade::get($final),
+                'result' => IPStackFinderFacade::get($final),
             ], ResponseAlias::HTTP_OK);
         }
 

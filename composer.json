@@ -20,6 +20,7 @@
     "laravel/telescope": "^4.9",
     "laravel/tinker": "^2.0",
     "laravel/ui": "^3.0",
+    "nelkasovic/ipstack-finder": "^1.0",
     "predis/predis": "^2.0",
     "spatie/laravel-ignition": "^1.2",
     "symfony/http-client": "^6.0",
