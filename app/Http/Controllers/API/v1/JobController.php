@@ -18,7 +18,7 @@ class JobController extends Controller
         $queueId = $request->input('queue');
         $jobs = Job::query()
             ->when($queueId, fn (Builder $query) => $query->where('queue_id', $queueId))
-            ->with(['behaviors', 'reports:id,job_id,path,filename'])
+            ->with(['queue'])
             ->latest()
             ->paginate(10);
 
