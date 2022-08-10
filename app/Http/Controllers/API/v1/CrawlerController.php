@@ -28,6 +28,7 @@ class CrawlerController extends Controller
         $experimentId = $request->input('experiment');
         $crawlers = Crawler::query()->where('testing', 0)
             ->where('active', 1)
+            ->with(['experiment'])
             ->when($experimentId, fn (Builder $query) => $query->where('experiment_id', $experimentId))
             ->latest()
             ->paginate(10);
