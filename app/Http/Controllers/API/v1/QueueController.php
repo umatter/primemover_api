@@ -21,7 +21,7 @@ class QueueController extends Controller
         $queues = Queue::query()
             ->when($crawlerId, fn (Builder $query) => $query->where('crawler_id', $crawlerId))
             ->when($sortBy, fn (Builder $query) => $query->orderBy($sortBy))
-            ->with(['user', 'crawler', 'jobs'])
+            ->with(['crawler'])
             ->latest()
             ->paginate(10);
 

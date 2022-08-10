@@ -16,13 +16,6 @@ class ExperimentController extends Controller
     {
         $experiments = Experiment::query()
             ->whereHas('crawlers')
-            ->with([
-                'crawlers.agent',
-                'crawlers.proxy',
-                'crawlers.configuration',
-                'crawlers.configuration.preferences',
-                'preferences',
-            ])
             ->latest()
             ->paginate(10);
 

@@ -29,7 +29,6 @@ class CrawlerController extends Controller
         $crawlers = Crawler::query()->where('testing', 0)
             ->where('active', 1)
             ->when($experimentId, fn (Builder $query) => $query->where('experiment_id', $experimentId))
-            ->with(['queues', 'agent.preferences', 'proxy', 'configuration.preferences', 'experiment'])
             ->latest()
             ->paginate(10);
 
