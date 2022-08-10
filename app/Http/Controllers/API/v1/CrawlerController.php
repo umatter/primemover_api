@@ -31,7 +31,7 @@ class CrawlerController extends Controller
             ->with(['experiment'])
             ->when($experimentId, fn (Builder $query) => $query->where('experiment_id', $experimentId))
             ->latest()
-            ->simplePaginate(10);
+            ->paginate(10);
 
         return ResourceCollection::make($crawlers);
     }

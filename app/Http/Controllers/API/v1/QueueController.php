@@ -23,7 +23,7 @@ class QueueController extends Controller
             ->when($sortBy, fn (Builder $query) => $query->orderBy($sortBy))
             ->with(['crawler'])
             ->latest()
-            ->simplePaginate(10);
+            ->paginate(10);
 
         return ResourceCollection::make($queues);
     }
