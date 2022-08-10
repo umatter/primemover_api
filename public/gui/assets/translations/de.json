@@ -1,0 +1,54 @@
+{
+  "foo": "bar",
+  "common": {
+    "home": "Home",
+    "edit": "Bearbeiten",
+    "show": "Anzeigen",
+    "select": "Wählen",
+    "label": "Allgemein",
+    "name": "Name",
+    "contact": "Kontakt",
+    "reset": "Zurücksetzen",
+    "description": "Beschreibung"
+  },
+  "filter": {
+    "reset": "Filter zurücksetzen"
+  },
+  "auth": {
+    "username": "Benutzername",
+    "password": "Kennwort",
+    "signIn": "Anmelden",
+    "signOut": "Abmelden"
+  },
+  "crawler": {
+    "label": "Crawler"
+  },
+  "experiment": {
+    "label": "Experiment",
+    "selected": "Experiment ausgewählt",
+    "notSelected": "Kein Experiment ausgewählt"
+  },
+  "queue": {
+    "label": "Queue"
+  },
+  "job": {
+    "label": "Job"
+  },
+  "status": {
+    "label": "Status",
+    "failed": "Fehler",
+    "succeeded": "Erfolg",
+    "processed": "Erledigt",
+    "processing": "Läuft",
+    "review": "Review",
+    "code": "Code",
+    "message": "Meldung"
+  },
+  "pagination": {
+    "previousLabel": "Zurück",
+    "nextLabel": "Vor",
+    "label": "Pagination",
+    "page": "Seite",
+    "onPage": "Auf der Seite"
+  }
+}
