@@ -2,105 +2,62 @@
 
 namespace App\Http\Controllers\API\v1;
 
-use App\Http\Resources\v1\ProxyResource;
-use App\Http\Resources\v1\ProxyResourceCollection;
 use App\Models\Proxy;
-use Exception;
 use Illuminate\Http\Request;
-use Illuminate\Validation\ValidationException;
+use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Http\Resources\Json\ResourceCollection;
+use Illuminate\Support\Facades\Auth;
 
 class ProxyController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return ProxyResourceCollection
-     */
-    public function index(Request $request): ProxyResourceCollection
+    public function index(): ResourceCollection
     {
-        $keyword = $request->input('keyword');
         $proxies = Proxy::with(
             [
                 'user',
-                'crawler'
+                'crawler',
             ]
         )->latest()->get();
-        return new ProxyResourceCollection($proxies);
+
+        return ResourceCollection::make($proxies);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return ProxyResourceCollection
-     */
-    public function create()
-    {
-        //
-        return new ProxyResourceCollection(new Proxy);
-    }
-
-    /**
-     * Store a new resource.
-     * @param Request $request
-     * @return ProxyResource
-     * @throws ValidationException
-     */
-    public function store(Request $request): ProxyResource
+    public function store(Request $request): JsonResource
     {
         $data = $request->all();
-        $data['user_id'] = auth()->user() ? auth()->user()->id : 1;
+        $data['user_id'] = Auth::id() ?? 1;
 
-        $proxy = Proxy::create($data);
-        return new ProxyResource($proxy);
+        $proxy = Proxy::query()->create($data);
+
+        return JsonResource::make($proxy);
     }
 
-    /**
-     * Show a resource.
-     * @param $id
-     * @return ProxyResource
-     */
-    public function show($id): ProxyResource
+    public function show(Proxy $proxy): JsonResource
     {
-        $proxy = Proxy::with(['user'])->findOrFail($id);
-        return new ProxyResource($proxy);
+        return JsonResource::make($proxy);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     * @param Proxy $proxy
-     * @return mixed
-     */
-    public function edit(Proxy $proxy): ProxyResource
+    public function edit(Proxy $proxy): JsonResource
     {
-        return new ProxyResource($proxy);
+        return JsonResource::make($proxy);
     }
 
-    /**
-     * Update the specified resource in storage.
-     * @param Request $request
-     * @param Proxy $proxy
-     * @return ProxyResource
-     */
-    public function update(Request $request, Proxy $proxy): ProxyResource
+    public function update(Request $request, Proxy $proxy): JsonResource
     {
         $data = $request->all();
         $proxy->update($data);
-        return new ProxyResource($proxy);
+
+        return JsonResource::make($proxy);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param \App\Models\Proxy $proxy
-     * @return ProxyResourceCollection
-     * @throws Exception
-     */
-    public function destroy(Proxy $proxy): ProxyResourceCollection
+    public function destroy(Proxy $proxy): ResourceCollection
     {
         $proxy->delete();
-        return new ProxyResourceCollection(
+
+        return ResourceCollection::make(
             Proxy::with(
                 ['user', 'crawler']
-            )->latest()->get());
+            )->latest()->get()
+        );
     }
 }

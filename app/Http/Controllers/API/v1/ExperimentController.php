@@ -2,45 +2,46 @@
 
 namespace App\Http\Controllers\API\v1;
 
-use App\Http\Resources\v1\ExperimentResource;
-use App\Http\Resources\v1\ExperimentResourceCollection;
 use App\Models\Experiment;
 use App\Models\Preference;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Http\Resources\Json\ResourceCollection;
+use Illuminate\Support\Facades\Auth;
 
 class ExperimentController extends Controller
 {
-    public function index(Request $request): ExperimentResourceCollection
+    public function index(): ResourceCollection
     {
-        $keyword = $request->input('keyword');
-        $experiments = Experiment::with([
-            'crawlers.agent',
-            'crawlers.proxy',
-            'crawlers.configuration',
-            'crawlers.configuration.preferences',
-            'preferences',
-        ])
+        $experiments = Experiment::query()
+            ->whereHas('crawlers')
+            ->with([
+                'crawlers.agent',
+                'crawlers.proxy',
+                'crawlers.configuration',
+                'crawlers.configuration.preferences',
+                'preferences',
+            ])
             ->latest()
-            ->get();
+            ->paginate(10);
 
-        return new ExperimentResourceCollection($experiments);
+        return ResourceCollection::make($experiments);
     }
 
-    public function create(): ExperimentResourceCollection
+    public function create(): ResourceCollection
     {
-        return new ExperimentResourceCollection(new Experiment());
+        return ResourceCollection::make(new Experiment());
     }
 
-    public function store(Request $request): ExperimentResource
+    public function store(Request $request): JsonResource
     {
         $data = $request->all();
-        $data['user_id'] = auth()->user() ? auth()->user()->id : 1;
 
         $experiment = Experiment::create([
             'name' => $data['name'] ?? 'Value not provided at update!',
             'description' => $data['description'] ?? 'Value not provided at update!',
-            'user_id' => 1,
+            'user_id' => Auth::id() ?? 1,
             'contact' => $data['contact'] ?? 'Value not provided at update!',
         ]);
 
@@ -50,14 +51,14 @@ class ExperimentController extends Controller
             $this->makePreferences($request['preferences'], $experiment);
         }
 
-        return new ExperimentResource($experiment);
+        return JsonResource::make($experiment);
     }
 
     public function makePreferences($data, $model)
     {
         foreach ($data as $preference) {
             $new = new Preference([
-                'user_id' => 1,
+                'user_id' => Auth::id() ?? 1,
                 'name' => $preference['name'] ?? 'Value not provided at update!',
                 'description' => $preference['description'] ?? 'Value not provided at update!',
                 'value' => $preference['value'] ?? 'Value not provided at update!',
@@ -67,27 +68,23 @@ class ExperimentController extends Controller
         }
     }
 
-    public function show($id): ExperimentResource
+    public function show(Experiment $experiment): JsonResource
     {
-        $experiment = Experiment::with(
-            [
-                'crawlers.agent',
-                'crawlers.proxy',
-                'crawlers.configuration',
-                'crawlers.configuration.preferences',
-                'preferences',
-            ]
-        )->findOrFail($id);
-
-        return new ExperimentResource($experiment);
+        return JsonResource::make($experiment->with([
+            'crawlers.agent',
+            'crawlers.proxy',
+            'crawlers.configuration',
+            'crawlers.configuration.preferences',
+            'preferences',
+        ]));
     }
 
-    public function edit(Experiment $experiment): ExperimentResource
+    public function edit(Experiment $experiment): JsonResource
     {
-        return new ExperimentResource($experiment);
+        return JsonResource::make($experiment);
     }
 
-    public function update(Request $request, Experiment $experiment): ExperimentResource
+    public function update(Request $request, Experiment $experiment): JsonResource
     {
         $data = $request->all();
         $experiment->update($data);
@@ -96,23 +93,23 @@ class ExperimentController extends Controller
             $this->makePreferences($request['preferences'], $experiment);
         }
 
-        return new ExperimentResource($experiment);
+        return JsonResource::make($experiment);
     }
 
     /**
      * @throws Exception
      */
-    public function destroy(Experiment $experiment): ExperimentResourceCollection
+    public function destroy(Experiment $experiment): ResourceCollection
     {
         $experiment->delete();
 
-        return new ExperimentResourceCollection(Experiment::all());
+        return ResourceCollection::make(Experiment::all());
     }
 
     /**
      * @throws Exception
      */
-    public function forceDelete(Experiment $experiment): ExperimentResourceCollection
+    public function forceDelete(Experiment $experiment): ResourceCollection
     {
         $experiment->crawlers()->each(function ($crawler) {
             $crawler->proxy()->delete();
@@ -123,7 +120,7 @@ class ExperimentController extends Controller
         $experiment->crawlers()->delete();
         $experiment->delete();
 
-        return new ExperimentResourceCollection(
+        return ResourceCollection::make(
             Experiment::with(
                 'crawlers.agent',
                 'crawlers.proxy',

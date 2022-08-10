@@ -2,65 +2,59 @@
 
 namespace App\Http\Controllers\API\v1;
 
-use App\Http\Resources\v1\BehaviorResource;
-use App\Http\Resources\v1\BehaviorResourceCollection;
 use App\Models\Behavior;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Http\Resources\Json\ResourceCollection;
 use Illuminate\Support\Facades\Auth;
 
 class BehaviorController extends Controller
 {
-    public function index(Request $request): BehaviorResourceCollection
+    public function index(): ResourceCollection
     {
-        $keyword = $request->input('keyword');
-        $behaviors = Behavior::with(['job', 'user'])->latest()->get();
+        $behaviors = Behavior::with(['job', 'user'])->latest()->paginate(10);
 
-        return new BehaviorResourceCollection($behaviors);
+        return ResourceCollection::make($behaviors);
     }
 
-    public function create()
-    {
-        return new BehaviorResourceCollection(new Behavior());
-    }
-
-    public function store(Request $request): BehaviorResource
+    public function store(Request $request): JsonResource
     {
         $data = $request->all();
         $data['user_id'] = Auth::id() ?? 1;
 
         $behavior = Behavior::query()->create($data);
 
-        return new BehaviorResource($behavior);
+        return JsonResource::make($behavior);
     }
 
-    public function show($id): BehaviorResource
+    public function show($id): JsonResource
     {
         $behavior = Behavior::with(['user', 'job'])->findOrFail($id);
 
-        return new BehaviorResource($behavior);
+        return JsonResource::make($behavior);
     }
 
-    public function edit(Behavior $behavior): BehaviorResource
+    public function edit(Behavior $behavior): JsonResource
     {
-        return new BehaviorResource($behavior);
+        return JsonResource::make($behavior);
     }
 
-    public function update(Request $request, Behavior $behavior): BehaviorResource
+    public function update(Request $request, Behavior $behavior): JsonResource
     {
         $data = $request->all();
         $behavior->update($data);
 
-        return new BehaviorResource($behavior);
+        return JsonResource::make($behavior);
     }
 
     /**
      * @throws Exception
      */
-    public function destroy(Behavior $behavior): BehaviorResourceCollection
+    public function destroy(Behavior $behavior): ResourceCollection
     {
         $behavior->delete();
 
-        return new BehaviorResourceCollection(Behavior::all());
+        return ResourceCollection::make(Behavior::all());
     }
 }

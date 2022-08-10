@@ -8,6 +8,12 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 
+/**
+ * @property int user_id
+ * @property string name
+ * @property string description
+ * @property bool active
+ */
 class Configuration extends BaseModel
 {
     use HasFactory;

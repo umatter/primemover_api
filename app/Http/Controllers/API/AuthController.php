@@ -5,15 +5,34 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 
 class AuthController extends Controller
 {
+    public function token(Request $request)
+    {
+        $request->request->add([
+            'grant_type' => 'password',
+            'client_id' => config('auth.passport.client_id'),
+            'client_secret' => config('auth.passport.client_secret'),
+        ]);
+
+        $proxy = Request::create('oauth/token', 'post');
+
+        return Route::dispatch($proxy);
+    }
+
+    public function user()
+    {
+        return auth()->user();
+    }
+
     public function register(Request $request)
     {
         $validatedData = $request->validate([
             'name' => 'required|max:55',
             'email' => 'email|required|unique:users',
-            'password' => 'required|confirmed'
+            'password' => 'required|confirmed',
         ]);
 
         $validatedData['password'] = bcrypt($request->password);
@@ -29,7 +48,7 @@ class AuthController extends Controller
     {
         $loginData = $request->validate([
             'email' => 'email|required',
-            'password' => 'required'
+            'password' => 'required',
         ]);
 
         $auth = auth()->guard('web')->attempt($loginData);
@@ -42,10 +61,9 @@ class AuthController extends Controller
         $tokenResult = $user->createToken('Personal Access Token');
         $token = $tokenResult->accessToken;
 
-        //$accessToken = auth()->user()->createToken('authToken')->accessToken;
+        // $accessToken = auth()->user()->createToken('authToken')->accessToken;
 
-        //return response(['user' => auth()->user(), 'access_token' => $accessToken]);
+        // return response(['user' => auth()->user(), 'access_token' => $accessToken]);
         return response(['user' => $user, 'access_token' => $token]);
-
     }
 }

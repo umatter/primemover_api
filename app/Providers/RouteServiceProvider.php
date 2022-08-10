@@ -12,15 +12,6 @@ class RouteServiceProvider extends ServiceProvider
     public function map(): void
     {
         $this->mapApiRoutes();
-        $this->mapWebRoutes();
-        $this->mapSpaRoutes();
-    }
-
-    protected function mapWebRoutes(): void
-    {
-        Route::middleware('web')
-            ->namespace($this->namespace)
-            ->group(base_path('routes/web.php'));
     }
 
     protected function mapApiRoutes(): void
@@ -29,12 +20,5 @@ class RouteServiceProvider extends ServiceProvider
             ->middleware('api')
             ->namespace($this->namespace)
             ->group(base_path('routes/api.php'));
-    }
-
-    protected function mapSpaRoutes(): void
-    {
-        Route::middleware('spa')
-            ->namespace($this->namespace)
-            ->group(base_path('routes/spa.php'));
     }
 }

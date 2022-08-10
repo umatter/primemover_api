@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Job;
+use App\Models\Queue;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class JobFactory extends Factory
@@ -14,14 +15,22 @@ class JobFactory extends Factory
 
     public function definition(): array
     {
+        $jobTypes = [
+            'visitjob',
+            'entertextfieldjob',
+            'waitjob',
+            'singleselecturljob',
+            'testjob',
+        ];
+
         return [
             'user_id' => 1,
-            // 'queue_id' => $this->faker->randomElement([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]),
-            'queue_id' => 1,
+            'queue_id' => Queue::query()->inRandomOrder()->first()->id,
             'name' => $this->faker->lastName,
-            'description' => $this->faker->text,
-            'type' => $this->faker->word,
-            'active' => $this->faker->randomElement([1, 0]),
+            'status_code' => $this->faker->randomElement(['failed', 'success']),
+            'status_message' => $this->faker->randomElement(['Random', 'Message']),
+            'type' => $this->faker->randomElement($jobTypes),
+            'active' => 1,
         ];
     }
 }

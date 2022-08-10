@@ -2,102 +2,59 @@
 
 namespace App\Http\Controllers\API\v1;
 
-use App\Http\Resources\v1\OutletResource;
-use App\Http\Resources\v1\OutletResourceCollection;
 use App\Models\Outlet;
-use Exception;
 use Illuminate\Http\Request;
-use Illuminate\Validation\ValidationException;
+use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Http\Resources\Json\ResourceCollection;
+use Illuminate\Support\Facades\Auth;
 
 class OutletController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return OutletResourceCollection
-     */
-    public function index(Request $request): OutletResourceCollection
+    public function index(): ResourceCollection
     {
-        $keyword = $request->input('keyword');
         $outlets = Outlet::with(['user'])->latest()->get();
-        return new OutletResourceCollection($outlets);
+
+        return ResourceCollection::make($outlets);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return OutletResourceCollection
-     */
-    public function create()
-    {
-        //
-        return new OutletResourceCollection(new Outlet);
-    }
-
-    /**
-     * Store a new resource.
-     * @param Request $request
-     * @return OutletResource
-     * @throws ValidationException
-     */
-    public function store(Request $request): OutletResource
+    public function store(Request $request): JsonResource
     {
         $data = $request->all();
-        $data['user_id'] = auth()->user() ? auth()->user()->id : 1;
+        $data['user_id'] = Auth::id() ?? 1;
 
-        $outlet = Outlet::create($data);
-        return new OutletResource($outlet);
+        $outlet = Outlet::query()->create($data);
+
+        return JsonResource::make($outlet);
     }
 
-    /**
-     * Show a resource.
-     * @param $id
-     * @return OutletResource
-     */
-    public function show($id): OutletResource
+    public function show($id): JsonResource
     {
         $outlet = Outlet::with(['user'])->findOrFail($id);
-        return new OutletResource($outlet);
+
+        return JsonResource::make($outlet);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param \App\Models\Outlet $outlet
-     * @return mixed
-     */
-    public function edit(Outlet $outlet): OutletResource
+    public function edit(Outlet $outlet): JsonResource
     {
-        return new OutletResource($outlet);
+        return JsonResource::make($outlet);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param Request $request
-     * @param \App\Models\Outlet $outlet
-     * @return OutletResource
-     */
-    public function update(Request $request, Outlet $outlet): OutletResource
+    public function update(Request $request, Outlet $outlet): JsonResource
     {
         $data = $request->all();
         $outlet->update($data);
-        return new OutletResource($outlet);
+
+        return JsonResource::make($outlet);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param \App\Models\Outlet $outlet
-     * @return OutletResourceCollection
-     * @throws Exception
-     */
-    public function destroy(Outlet $outlet): OutletResourceCollection
+    public function destroy(Outlet $outlet): ResourceCollection
     {
         $outlet->delete();
-        return new OutletResourceCollection(
+
+        return ResourceCollection::make(
             Outlet::with(
                 ['user']
-            )->latest()->get());
+            )->latest()->get()
+        );
     }
 }

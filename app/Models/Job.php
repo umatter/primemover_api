@@ -2,11 +2,30 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
+/**
+ * @property int user_id
+ * @property int queue_id
+ * @property string name
+ * @property string description
+ * @property string type
+ * @property string status_code
+ * @property string status_message
+ * @property string captcha_found
+ * @property string captcha_solved
+ * @property int order
+ * @property bool active
+ * @property Carbon started_at
+ * @property Carbon start_at
+ * @property Carbon finished_at
+ */
 class Job extends BaseModel
 {
+    use HasFactory;
     protected $guarded = [];
 
     public function crawler(): BelongsTo

@@ -7,6 +7,13 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 
+/**
+ * @property int user_id
+ * @property string name
+ * @property string description
+ * @property string contact
+ * @property bool active
+ */
 class Experiment extends BaseModel
 {
     use HasFactory;

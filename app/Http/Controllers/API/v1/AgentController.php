@@ -2,66 +2,66 @@
 
 namespace App\Http\Controllers\API\v1;
 
-use App\Http\Resources\v1\AgentResource;
-use App\Http\Resources\v1\AgentResourceCollection;
 use App\Models\Agent;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Http\Resources\Json\ResourceCollection;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 
 class AgentController extends Controller
 {
-    public function index(): AgentResourceCollection
+    public function index(): ResourceCollection
     {
         $agents = Agent::query()
             ->with('crawler', 'preferences')
             ->latest()
-            ->get();
+            ->paginate(10);
 
-        return AgentResourceCollection::make($agents);
+        return ResourceCollection::make($agents);
     }
 
-    public function create(): AgentResourceCollection
+    public function create(): ResourceCollection
     {
-        return AgentResourceCollection::make(App::make(Agent::class));
+        return ResourceCollection::make(App::make(Agent::class));
     }
 
-    public function store(Request $request): AgentResource
+    public function store(Request $request): JsonResource
     {
         $data = $request->all();
         $data['user_id'] = Auth::id() ?? 1;
 
         $agent = Agent::query()->create($data);
 
-        return AgentResource::make($agent);
+        return JsonResource::make($agent);
     }
 
-    public function show($id): AgentResource
+    public function show($id): JsonResource
     {
         $agent = Agent::query()
             ->with(['user', 'crawler', 'preferences'])
             ->findOr($id, fn () => ['status' => false]);
 
-        return AgentResource::make($agent);
+        return JsonResource::make($agent);
     }
 
-    public function edit(Agent $agent): AgentResource
+    public function edit(Agent $agent): JsonResource
     {
-        return AgentResource::make($agent);
+        return JsonResource::make($agent);
     }
 
-    public function update(Request $request, Agent $agent): AgentResource
+    public function update(Request $request, Agent $agent): JsonResource
     {
         $data = $request->all();
         $agent->update($data);
 
-        return AgentResource::make($agent);
+        return JsonResource::make($agent);
     }
 
-    public function destroy(Agent $agent): AgentResourceCollection
+    public function destroy(Agent $agent): ResourceCollection
     {
         $agent->delete();
 
-        return AgentResourceCollection::make(Agent::query()->get());
+        return ResourceCollection::make(Agent::query()->get());
     }
 }

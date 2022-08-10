@@ -6,6 +6,16 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 
+/**
+ * @property int user_id
+ * @property string name
+ * @property string description
+ * @property string identification
+ * @property string multilogin_id
+ * @property string multilogin_profile
+ * @property string location
+ * @property bool active
+ */
 class Agent extends BaseModel
 {
     protected $guarded = [];

@@ -2,49 +2,25 @@
 
 namespace App\Http\Controllers\API\v1;
 
-use App\Http\Resources\v1\ConfigurationResource;
-use App\Http\Resources\v1\ConfigurationResourceCollection;
 use App\Models\Configuration;
 use App\Models\Param;
-use Exception;
 use Illuminate\Http\Request;
-use Illuminate\Validation\ValidationException;
+use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Http\Resources\Json\ResourceCollection;
+use Illuminate\Support\Facades\Auth;
 
 class ConfigurationController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return ConfigurationResourceCollection
-     */
-    public function index(Request $request): ConfigurationResourceCollection
+    public function index(): ResourceCollection
     {
-        $keyword = $request->input('keyword');
         $configurations = Configuration::with(['crawler', 'params', 'preferences'])->latest()->get();
-        return new ConfigurationResourceCollection($configurations);
+
+        return ResourceCollection::make($configurations);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return ConfigurationResourceCollection
-     */
-    public function create()
+    public function store(Request $request): JsonResource
     {
-        //
-        return new ConfigurationResourceCollection(new Configuration);
-    }
-
-    /**
-     * Store a new resource.
-     * @param Request $request
-     * @return ConfigurationResource
-     * @throws ValidationException
-     */
-    public function store(Request $request): ConfigurationResource
-    {
-        //$data = $request->all();
-        $data['user_id'] = auth()->user() ? auth()->user()->id : 1;
+        $data['user_id'] = Auth::id() ?? 1;
         $data['name'] = $request->name;
         $data['description'] = $request->description;
         $data['active'] = $request->active;
@@ -52,65 +28,39 @@ class ConfigurationController extends Controller
 
         $params = collect($request->params)->first();
         $params['configuration_id'] = $configuration->id;
-        $params['user_id'] = auth()->user() ? auth()->user()->id : 1;
+        $params['user_id'] = Auth::id() ?? 1;
 
         $newparam = new Param($params);
         $newparam->save();
 
-        return new ConfigurationResource($configuration);
+        return JsonResource::make($configuration);
     }
 
-    /**
-     * Show a resource.
-     * @param $id
-     * @return ConfigurationResource
-     */
-    public function show($id): ConfigurationResource
+    public function show(Configuration $configuration): JsonResource
     {
-        $configuration = Configuration::with(['crawler', 'params', 'preferences'])->findOrFail($id);
-        return new ConfigurationResource($configuration);
+        return JsonResource::make($configuration->with(['crawler', 'params', 'preferences']));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param \App\Models\Configuration $configuration
-     * @return mixed
-     */
-    public function edit(Configuration $configuration): ConfigurationResource
+    public function edit(Configuration $configuration): JsonResource
     {
-        return new ConfigurationResource($configuration);
+        return JsonResource::make($configuration);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param Request $request
-     * @param \App\Models\Configuration $configuration
-     * @return ConfigurationResource
-     */
-    public function update(Request $request, Configuration $configuration): ConfigurationResource
+    public function update(Request $request, Configuration $configuration): JsonResource
     {
-        //$data = $request->all();
-        //$configuration->update($data);
-        $data['user_id'] = auth()->user() ? auth()->user()->id : 1;
+        $data['user_id'] = Auth::id() ?? 1;
         $data['name'] = $request->name;
         $data['description'] = $request->description;
         $data['active'] = $request->active;
         $configuration->update($data);
 
-        return new ConfigurationResource($configuration);
+        return JsonResource::make($configuration);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     * @param Configuration $configuration
-     * @return ConfigurationResourceCollection
-     * @throws Exception
-     */
-    public function destroy(Configuration $configuration): ConfigurationResourceCollection
+    public function destroy(Configuration $configuration): ResourceCollection
     {
         $configuration->delete();
-        return new ConfigurationResourceCollection(Configuration::all());
+
+        return ResourceCollection::make(Configuration::all());
     }
 }

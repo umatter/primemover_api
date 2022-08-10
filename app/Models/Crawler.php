@@ -2,12 +2,33 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
+/**
+ * @property int user_id
+ * @property int experiment_id
+ * @property int proxy_id
+ * @property int agent_id
+ * @property int configuration_id
+ * @property string name
+ * @property string description
+ * @property bool active
+ * @property bool testing
+ * @property bool new
+ * @property bool updated
+ */
 class Crawler extends BaseModel
 {
     protected $guarded = [];
+
+    protected $appends = [
+        'latest_queues_succeeded',
+        'latest_queues_failed',
+        'latest_queues_count',
+    ];
 
     public function proxy(): BelongsTo
     {
@@ -92,5 +113,29 @@ class Crawler extends BaseModel
     public function experiment(): BelongsTo
     {
         return $this->belongsTo(Experiment::class);
+    }
+
+    public function getQueuesByStatus(int $hoursBack = 12, string $status = ''): HasMany
+    {
+        return $this->hasMany(Queue::class)
+            ->whereDate('started_at', '>', Carbon::now()->subHours($hoursBack))
+            ->when($status, function (Builder $builder) use ($status) {
+                $builder->where('status_code', '=', $status);
+            });
+    }
+
+    public function getLatestQueuesSucceededAttribute(): int
+    {
+        return $this->getQueuesByStatus(24, 'success')->count();
+    }
+
+    public function getLatestQueuesFailedAttribute(): int
+    {
+        return $this->getQueuesByStatus(24, 'failed')->count();
+    }
+
+    public function getLatestQueuesCountAttribute(): int
+    {
+        return $this->getQueuesByStatus(24)->count();
     }
 }

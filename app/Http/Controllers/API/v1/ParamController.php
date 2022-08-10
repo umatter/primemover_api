@@ -2,106 +2,63 @@
 
 namespace App\Http\Controllers\API\v1;
 
-use App\Http\Resources\v1\ParamResource;
-use App\Http\Resources\v1\ParamResourceCollection;
 use App\Models\Param;
-use Exception;
 use Illuminate\Http\Request;
-use Illuminate\Validation\ValidationException;
+use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Http\Resources\Json\ResourceCollection;
 
 class ParamController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return ParamResourceCollection
-     */
-    public function index(Request $request): ParamResourceCollection
+    public function index(): ResourceCollection
     {
-        $keyword = $request->input('keyword');
         $params = Param::with(
             [
                 'user',
-                'configuration'
+                'configuration',
             ]
         )->latest()->get();
-        return new ParamResourceCollection($params);
+
+        return ResourceCollection::make($params);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return ParamResourceCollection
-     */
-    public function create()
-    {
-        //
-        return new ParamResourceCollection(new Param);
-    }
-
-    /**
-     * Store a new resource.
-     * @param Request $request
-     * @return ParamResource
-     * @throws ValidationException
-     */
-    public function store(Request $request): ParamResource
+    public function store(Request $request): JsonResource
     {
         $data = $request->all();
         $data['user_id'] = auth()->user() ? auth()->user()->id : 1;
 
-        $param = Param::create($data);
-        return new ParamResource($param);
+        $param = Param::query()->create($data);
+
+        return JsonResource::make($param);
     }
 
-    /**
-     * Show a resource.
-     * @param $id
-     * @return ParamResource
-     */
-    public function show($id): ParamResource
+    public function show($id): JsonResource
     {
         $param = Param::with(['user'])->findOrFail($id);
-        return new ParamResource($param);
+
+        return JsonResource::make($param);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param \App\Models\Param $param
-     * @return mixed
-     */
-    public function edit(Param $param): ParamResource
+    public function edit(Param $param): JsonResource
     {
-        return new ParamResource($param);
+        return JsonResource::make($param);
     }
 
-    /**
-     * Update the specified resource in storage.
-     * @param Request $request
-     * @param Param $param
-     * @return ParamResource
-     */
-    public function update(Request $request, Param $param): ParamResource
+    public function update(Request $request, Param $param): JsonResource
     {
         $data = $request->all();
         $param->update($data);
-        return new ParamResource($param);
+
+        return JsonResource::make($param);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param \App\Models\Param $param
-     * @return ParamResourceCollection
-     * @throws Exception
-     */
-    public function destroy(Param $param): ParamResourceCollection
+    public function destroy(Param $param): ResourceCollection
     {
         $param->delete();
-        return new ParamResourceCollection(
+
+        return ResourceCollection::make(
             Param::with(
                 ['user', 'configuration']
-            )->latest()->get());
+            )->latest()->get()
+        );
     }
 }

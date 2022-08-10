@@ -2,82 +2,86 @@
 
 namespace App\Http\Controllers\API\v1;
 
-use App\Http\Resources\v1\QueueResource;
-use App\Http\Resources\v1\QueueResourceCollection;
 use App\Models\Experiment;
 use App\Models\Job;
 use App\Models\Queue;
 use Exception;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Http\Resources\Json\ResourceCollection;
+use Illuminate\Support\Facades\Auth;
 
 class QueueController extends Controller
 {
-
-    public function index(Request $request): QueueResourceCollection
+    public function index(Request $request): ResourceCollection
     {
-        $queues = Queue::with(
-            [
-                'user',
-                'crawler',
-                'jobs'
-            ]
-        )->latest()->get();
-        return new QueueResourceCollection($queues);
+        $crawlerId = $request->input('crawler');
+        $sortBy = $request->input('sortBy');
+        $queues = Queue::query()
+            ->when($crawlerId, fn (Builder $query) => $query->where('crawler_id', $crawlerId))
+            ->when($sortBy, fn (Builder $query) => $query->orderBy($sortBy))
+            ->with(['user', 'crawler', 'jobs'])
+            ->latest()
+            ->paginate(10);
+
+        return ResourceCollection::make($queues);
     }
 
-    public function create()
-    {
-        return new QueueResourceCollection(new Queue);
-    }
-
-    public function store(Request $request): QueueResource
+    public function store(Request $request): JsonResource
     {
         $data = $request->all();
-        $data['user_id'] = auth()->user() ? auth()->user()->id : 1;
+        $data['user_id'] = Auth::id() ?? 1;
 
-        $queue = Queue::create($data);
-        return new QueueResource($queue);
+        $queue = Queue::query()->create($data);
+
+        return JsonResource::make($queue);
     }
 
-    public function show($id): QueueResource
+    public function show($id): JsonResource
     {
         $queue = Queue::with(['jobs'])->findOrFail($id);
-        return new QueueResource($queue);
+
+        return JsonResource::make($queue);
     }
 
-    public function job($id): QueueResource
+    public function job($id): JsonResource
     {
-        $job = Job::findOrFail($id);
+        $job = Job::query()->findOrFail($id);
         $queue = $job->queue()->first();
 
-        return new QueueResource($queue);
+        return JsonResource::make($queue);
     }
 
-    public function processed(): QueueResourceCollection
+    public function processed(): ResourceCollection
     {
         $queue = Queue::with(['jobs'])->where('processed', 1)->get();
-        return new QueueResourceCollection($queue);
+
+        return ResourceCollection::make($queue);
     }
 
-    public function unprocessed(): QueueResourceCollection
+    public function unprocessed(): ResourceCollection
     {
         $queue = Queue::with(['jobs'])->where('processed', 0)->get();
-        return new QueueResourceCollection($queue);
+
+        return ResourceCollection::make($queue);
     }
 
-    public function reviewed(): QueueResourceCollection
+    public function reviewed(): ResourceCollection
     {
         $queue = Queue::with(['jobs'])->where('reviewed', 1)->get();
-        return new QueueResourceCollection($queue);
+
+        return ResourceCollection::make($queue);
     }
 
-    public function unreviewed(): QueueResourceCollection
+    public function unreviewed(): ResourceCollection
     {
         $queue = Queue::with(['jobs'])->where('reviewed', 0)->where('processed', 1)->get();
-        return new QueueResourceCollection($queue);
+
+        return ResourceCollection::make($queue);
     }
 
-    public function experimentUnreviewed(Experiment $experiment): QueueResourceCollection
+    public function experimentUnreviewed(Experiment $experiment): ResourceCollection
     {
         $queue = Queue::with(['jobs'])
             ->whereHas('crawler', function ($crawler) use ($experiment) {
@@ -86,10 +90,11 @@ class QueueController extends Controller
             ->where('reviewed', 0)
             ->where('processed', 1)
             ->get();
-        return new QueueResourceCollection($queue);
+
+        return ResourceCollection::make($queue);
     }
 
-    public function experimentReviewed(Experiment $experiment): QueueResourceCollection
+    public function experimentReviewed(Experiment $experiment): ResourceCollection
     {
         $queue = Queue::with(['jobs'])
             ->whereHas('crawler', function ($crawler) use ($experiment) {
@@ -97,10 +102,11 @@ class QueueController extends Controller
             })
             ->where('reviewed', 1)
             ->get();
-        return new QueueResourceCollection($queue);
+
+        return ResourceCollection::make($queue);
     }
 
-    public function experimentUnprocessed(Experiment $experiment): QueueResourceCollection
+    public function experimentUnprocessed(Experiment $experiment): ResourceCollection
     {
         $queue = Queue::with(['jobs'])
             ->whereHas('crawler', function ($crawler) use ($experiment) {
@@ -108,10 +114,11 @@ class QueueController extends Controller
             })
             ->where('processed', 0)
             ->get();
-        return new QueueResourceCollection($queue);
+
+        return ResourceCollection::make($queue);
     }
 
-    public function experimentProcessed(Experiment $experiment): QueueResourceCollection
+    public function experimentProcessed(Experiment $experiment): ResourceCollection
     {
         $queue = Queue::with(['jobs'])
             ->whereHas('crawler', function ($crawler) use ($experiment) {
@@ -119,33 +126,32 @@ class QueueController extends Controller
             })
             ->where('processed', 1)
             ->get();
-        return new QueueResourceCollection($queue);
+
+        return ResourceCollection::make($queue);
     }
 
-    public function edit(Queue $queue): QueueResource
+    public function edit(Queue $queue): JsonResource
     {
-        return new QueueResource($queue);
+        return JsonResource::make($queue);
     }
 
-    public function update(Request $request, Queue $queue): QueueResource
+    public function update(Request $request, Queue $queue): JsonResource
     {
         $data = $request->all();
         $queue->update($data);
-        return new QueueResource($queue);
+
+        return JsonResource::make($queue);
     }
 
     /**
      * @throws Exception
      */
-    public function destroy(Queue $queue): QueueResourceCollection
+    public function destroy(Queue $queue): ResourceCollection
     {
         $queue->delete();
-        return new QueueResourceCollection(
-            Queue::with(
-                [
-                    'crawler',
-                    'jobs'
-                ]
-            )->latest()->get());
+
+        return ResourceCollection::make(
+            Queue::with(['crawler', 'jobs'])->latest()->get()
+        );
     }
 }
