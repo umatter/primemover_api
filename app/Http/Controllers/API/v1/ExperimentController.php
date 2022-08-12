@@ -9,15 +9,22 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 use Illuminate\Support\Facades\Auth;
+use Spatie\QueryBuilder\AllowedFilter;
+use Spatie\QueryBuilder\QueryBuilder;
 
 class ExperimentController extends Controller
 {
     public function index(): ResourceCollection
     {
-        $experiments = Experiment::query()
+        $experiments = QueryBuilder::for(Experiment::class)
             ->whereHas('crawlers')
+            ->allowedFilters([
+                AllowedFilter::partial('name'),
+                AllowedFilter::scope('after'),
+                AllowedFilter::scope('recent'),
+            ])
             ->latest()
-            ->paginate(10);
+            ->fastPaginate();
 
         return ResourceCollection::make($experiments);
     }

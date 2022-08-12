@@ -20,6 +20,8 @@ use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
+use Spatie\QueryBuilder\AllowedFilter;
+use Spatie\QueryBuilder\QueryBuilder;
 use Symfony\Component\HttpFoundation\Response as ResponseAlias;
 
 class CrawlerController extends Controller
@@ -27,12 +29,18 @@ class CrawlerController extends Controller
     public function index(Request $request): ResourceCollection
     {
         $experimentId = $request->input('experiment');
-        $crawlers = Crawler::query()->where('testing', 0)
+        $crawlers = QueryBuilder::for(Crawler::class)
+            ->allowedFilters([
+                AllowedFilter::partial('name'),
+                AllowedFilter::scope('after'),
+                AllowedFilter::scope('recent'),
+            ])
+            ->where('testing', 0)
             ->where('active', 1)
             ->with(['experiment'])
             ->when($experimentId, fn (Builder $query) => $query->where('experiment_id', $experimentId))
             ->latest()
-            ->paginate(10);
+            ->fastPaginate();
 
         return ResourceCollection::make($crawlers);
     }

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -12,4 +13,13 @@ use Illuminate\Database\Eloquent\Model;
  */
 class BaseModel extends Model
 {
+    public function scopeAfter(Builder $query, $date): Builder
+    {
+        return $query->where('created_at', '>=', Carbon::parse($date));
+    }
+
+    public function scopeRecent(Builder $query, $daysInPast = 30): Builder
+    {
+        return $query->where('created_at', '>=', Carbon::now()->subDays($daysInPast));
+    }
 }

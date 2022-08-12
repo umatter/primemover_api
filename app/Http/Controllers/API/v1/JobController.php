@@ -10,17 +10,25 @@ use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
+use Spatie\QueryBuilder\AllowedFilter;
+use Spatie\QueryBuilder\QueryBuilder;
 
 class JobController extends Controller
 {
     public function index(Request $request): ResourceCollection
     {
         $queueId = $request->input('queue');
-        $jobs = Job::query()
+        $jobs = QueryBuilder::for(Job::class)
+            ->allowedFilters([
+                AllowedFilter::partial('name'),
+                AllowedFilter::scope('after'),
+                AllowedFilter::scope('recent'),
+            ])
+            ->latest()
             ->when($queueId, fn (Builder $query) => $query->where('queue_id', $queueId))
             ->with(['queue'])
             ->latest()
-            ->paginate(10);
+            ->fastPaginate();
 
         return ResourceCollection::make($jobs);
     }

@@ -11,6 +11,8 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 use Illuminate\Support\Facades\Auth;
+use Spatie\QueryBuilder\AllowedFilter;
+use Spatie\QueryBuilder\QueryBuilder;
 
 class QueueController extends Controller
 {
@@ -18,12 +20,17 @@ class QueueController extends Controller
     {
         $crawlerId = $request->input('crawler');
         $sortBy = $request->input('sortBy');
-        $queues = Queue::query()
+        $queues = QueryBuilder::for(Queue::class)
+            ->allowedFilters([
+                AllowedFilter::partial('name'),
+                AllowedFilter::scope('after'),
+                AllowedFilter::scope('recent'),
+            ])
             ->when($crawlerId, fn (Builder $query) => $query->where('crawler_id', $crawlerId))
             ->when($sortBy, fn (Builder $query) => $query->orderBy($sortBy))
             ->with(['crawler'])
             ->latest()
-            ->paginate(10);
+            ->fastPaginate();
 
         return ResourceCollection::make($queues);
     }
