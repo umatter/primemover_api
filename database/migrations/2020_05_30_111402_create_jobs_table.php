@@ -3,7 +3,6 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use Carbon\Carbon;
 
 class CreateJobsTable extends Migration
 {
@@ -33,7 +32,6 @@ class CreateJobsTable extends Migration
             // Foreign keys
             $table->foreignId('user_id')->constrained()->onDelete('restrict');
             $table->foreignId('queue_id')->constrained()->onDelete('restrict');
-
         });
     }
 

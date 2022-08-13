@@ -35,7 +35,7 @@ class ReportController extends Controller
         $path = 'local' === $env ? $dev : $prod;
 
         $job = Job::findOrFail($request->job_id);
-        $desc = 'Bot: ' . $job->queue->crawler->name . ' | Job-Name: ' . $job->name . ', Job-ID: ' . $job->id . ', Job-Type: ' . $job->type . ')';
+        $desc = 'Bot: '.$job->queue->crawler->name.' | Job-Name: '.$job->name.', Job-ID: '.$job->id.', Job-Type: '.$job->type.')';
 
         $data['job_id'] = $request->job_id;
         $data['description'] = ($request->description) ? $request->description : $desc;
@@ -49,7 +49,7 @@ class ReportController extends Controller
 
         $report = Report::create($data);
         if ($report && $request->filecontent) {
-            $report->path = $path . '/file/' . $report->id;
+            $report->path = $path.'/file/'.$report->id;
         }
         $report->save();
 

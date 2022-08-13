@@ -241,7 +241,7 @@ class CrawlerController extends Controller
     public function ip($ip = null): JsonResponse
     {
         $final = ($ip) ?: request()->ip();
-        if (!$this->isLocalAddress($final)) {
+        if (! $this->isLocalAddress($final)) {
             return response()->json([
                 'result' => IPStackFinderFacade::get($final),
             ], ResponseAlias::HTTP_OK);

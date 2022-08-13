@@ -26,6 +26,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Job extends BaseModel
 {
     use HasFactory;
+
     protected $guarded = [];
 
     public function crawler(): BelongsTo

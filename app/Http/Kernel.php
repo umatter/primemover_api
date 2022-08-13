@@ -44,7 +44,7 @@ class Kernel extends HttpKernel
         ValidatePostSize::class,
         TrimStrings::class,
         ConvertEmptyStringsToNull::class,
-        SetLocale::class
+        SetLocale::class,
     ];
 
     /**
@@ -70,9 +70,8 @@ class Kernel extends HttpKernel
         'api' => [
             'throttle:1000,1',
             SubstituteBindings::class,
-            HeaderMiddleware::class
+            HeaderMiddleware::class,
         ],
-
 
     ];
 

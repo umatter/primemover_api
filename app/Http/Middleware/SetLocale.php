@@ -23,7 +23,7 @@ class SetLocale
     }
 
     /**
-     * @param  \Illuminate\Http\Request $request
+     * @param  \Illuminate\Http\Request  $request
      * @return string|null
      */
     protected function parseLocale($request)

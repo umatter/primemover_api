@@ -27,6 +27,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Queue extends BaseModel
 {
     use HasFactory;
+
     protected $guarded = [];
 
     public function user(): BelongsTo

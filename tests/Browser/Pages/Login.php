@@ -17,9 +17,9 @@ class Login extends Page
     /**
      * Submit the form with the given credentials.
      *
-     * @param  \Laravel\Dusk\Browser $browser
-     * @param  string $email
-     * @param  string $password
+     * @param  \Laravel\Dusk\Browser  $browser
+     * @param  string  $email
+     * @param  string  $password
      * @return void
      */
     public function submit($browser, $email, $password)
