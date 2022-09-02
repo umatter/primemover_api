@@ -38,7 +38,7 @@ class ConfigurationController extends Controller
 
     public function show(Configuration $configuration): JsonResource
     {
-        return JsonResource::make($configuration->with(['crawler', 'params', 'preferences']));
+        return JsonResource::make($configuration->load(['crawler', 'params', 'preferences']));
     }
 
     public function edit(Configuration $configuration): JsonResource
