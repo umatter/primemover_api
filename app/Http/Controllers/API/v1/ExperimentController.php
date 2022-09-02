@@ -16,7 +16,6 @@ class ExperimentController extends Controller
     public function index(): ResourceCollection
     {
         $experiments = QueryBuilder::for(Experiment::class)
-            ->whereHas('crawlers')
             ->allowedFilters([
                 AllowedFilter::partial('name'),
                 AllowedFilter::scope('after'),
@@ -24,6 +23,16 @@ class ExperimentController extends Controller
             ])
             ->latest()
             ->fastPaginate();
+
+        return ResourceCollection::make($experiments);
+    }
+
+    public function all(): ResourceCollection
+    {
+        $experiments = Experiment::query()
+            ->latest()
+            ->select(['id', 'name'])
+            ->get();
 
         return ResourceCollection::make($experiments);
     }

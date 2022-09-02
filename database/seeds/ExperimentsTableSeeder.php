@@ -9,6 +9,6 @@ class ExperimentsTableSeeder extends Seeder
 {
     public function run(): void
     {
-        Experiment::factory()->count(3)->create();
+        Experiment::factory()->count(15)->create();
     }
 }

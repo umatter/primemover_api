@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\API\AuthController;
+use App\Http\Controllers\API\v1\ExperimentController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1')->group(function () {
@@ -20,6 +21,7 @@ Route::prefix('v1')->group(function () {
         Route::resource('outlets', 'API\v1\OutletController');
         Route::resource('params', 'API\v1\ParamController');
 
+        Route::get('experiments-list', [ExperimentController::class, 'all']);
         Route::get('queues/job/{jobid}/', 'API\v1\QueueController@job');
         Route::get('queues-processed', 'API\v1\QueueController@processed');
         Route::get('queues-unprocessed', 'API\v1\QueueController@unprocessed');

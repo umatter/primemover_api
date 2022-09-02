@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Experiment;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class ExperimentFactory extends Factory
@@ -15,9 +16,9 @@ class ExperimentFactory extends Factory
     public function definition(): array
     {
         return [
-            'user_id' => 1,
-            'name' => 'Experiment',
-            'description' => 'Description',
+            'user_id' => User::query()->inRandomOrder()->first()->id,
+            'name' => $this->faker->name,
+            'description' => $this->faker->sentence(),
         ];
     }
 }
