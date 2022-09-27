@@ -25,7 +25,7 @@ class Agent extends BaseModel
 {
     protected $guarded = [];
 
-    protected $visible = ['id', 'name', 'description', 'identification', 'multilogin_id', 'multilogin_profile', 'location', 'preferences'];
+    protected $visible = ['id', 'name', 'description', 'identification', 'multilogin_id', 'multilogin_profile', 'location', 'preferences', 'active'];
 
     public function crawler(): HasOne
     {

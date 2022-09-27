@@ -3,12 +3,12 @@
 namespace App\Modules\Agent\Http\Controller\Api\v1;
 
 use App\Http\Controllers\API\v1\Controller;
+use App\Modules\Agent\Http\Request\AgentStoreRequest;
 use App\Modules\Agent\Model\Agent;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\Auth;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 
@@ -43,23 +43,20 @@ class AgentController extends Controller
         return ResourceCollection::make(App::make(Agent::class));
     }
 
-    public function store(Request $request): JsonResource
+    public function store(AgentStoreRequest $request): JsonResource
     {
-        $data = $request->all();
-        $data['user_id'] = Auth::id() ?? 1;
-
-        $agent = Agent::query()->create($data);
-
-        return JsonResource::make($agent);
+        return JsonResource::make(
+            Agent::query()->create($request->validated())
+        );
     }
 
     public function show($id): JsonResource
     {
-        $agent = Agent::query()
-            ->with(['user', 'crawler', 'preferences'])
-            ->findOr($id, fn () => ['status' => false]);
-
-        return JsonResource::make($agent);
+        return JsonResource::make(
+            Agent::query()
+                ->with(['preferences'])
+                ->findOr($id, fn () => ['status' => false])
+        );
     }
 
     public function edit(Agent $agent): JsonResource
@@ -75,10 +72,8 @@ class AgentController extends Controller
         return JsonResource::make($agent);
     }
 
-    public function destroy(Agent $agent): ResourceCollection
+    public function destroy(Agent $agent): JsonResource
     {
-        $agent->delete();
-
-        return ResourceCollection::make(Agent::query()->get());
+        return JsonResource::make(['status' => $agent->delete()]);
     }
 }
