@@ -8,17 +8,33 @@ use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
+use Spatie\QueryBuilder\AllowedFilter;
+use Spatie\QueryBuilder\QueryBuilder;
 
 class AgentController extends Controller
 {
     public function index(): ResourceCollection
     {
-        $agents = Agent::query()
-            ->with('crawler', 'preferences')
-            ->latest()
-            ->paginate(10);
+        $agents = QueryBuilder::for(Agent::class)
+            ->allowedFilters([
+                AllowedFilter::scope('search'),
+                AllowedFilter::scope('after'),
+                AllowedFilter::scope('recent'),
+            ])
+            ->with('preferences')
+            ->latest();
 
-        return ResourceCollection::make($agents);
+        return ResourceCollection::make($agents->get())
+            ->additional([
+                'values' => [
+                    'name' => $agents->pluck('name')->unique(),
+                    'identification' => $agents->pluck('identification')->unique(),
+                    'multilogin_id' => $agents->pluck('multilogin_id')->unique(),
+                    'multilogin_profile' => $agents->pluck('multilogin_profile')->unique(),
+                    'location' => $agents->pluck('location')->unique(),
+                ],
+                'count' => $agents->count(),
+            ]);
     }
 
     public function create(): ResourceCollection

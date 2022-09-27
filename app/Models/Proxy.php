@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
@@ -20,6 +21,8 @@ class Proxy extends BaseModel
 {
     protected $guarded = [];
 
+    protected $visible = ['id', 'name', 'description', 'hostname', 'port', 'username', 'type', 'password'];
+
     public function crawler(): HasOne
     {
         return $this->hasOne(Crawler::class);
@@ -28,5 +31,15 @@ class Proxy extends BaseModel
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function scopeSearch(Builder $query, string $keyword): Builder
+    {
+        return $query->where('id', 'LIKE', "%{$keyword}%")
+            ->orWhere('name', 'LIKE', "%{$keyword}%")
+            ->orWhere('hostname', 'LIKE', "%{$keyword}%")
+            ->orWhere('type', 'LIKE', "%{$keyword}%")
+            ->orWhere('username', 'LIKE', "%{$keyword}%")
+            ->orWhere('description', 'LIKE', "%{$keyword}%");
     }
 }

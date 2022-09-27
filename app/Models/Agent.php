@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
@@ -20,6 +21,8 @@ class Agent extends BaseModel
 {
     protected $guarded = [];
 
+    protected $visible = ['id', 'name', 'description', 'identification', 'multilogin_id', 'multilogin_profile', 'location', 'preferences'];
+
     public function crawler(): HasOne
     {
         return $this->hasOne(Crawler::class);
@@ -33,5 +36,16 @@ class Agent extends BaseModel
     public function preferences(): MorphMany
     {
         return $this->morphMany(Preference::class, 'preferencable');
+    }
+
+    public function scopeSearch(Builder $query, string $keyword): Builder
+    {
+        return $query->where('id', 'LIKE', "%{$keyword}%")
+            ->orWhere('name', 'LIKE', "%{$keyword}%")
+            ->orWhere('identification', 'LIKE', "%{$keyword}%")
+            ->orWhere('multilogin_id', 'LIKE', "%{$keyword}%")
+            ->orWhere('multilogin_profile', 'LIKE', "%{$keyword}%")
+            ->orWhere('location', 'LIKE', "%{$keyword}%")
+            ->orWhere('description', 'LIKE', "%{$keyword}%");
     }
 }

@@ -8,14 +8,29 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 use Illuminate\Support\Facades\Auth;
+use Spatie\QueryBuilder\AllowedFilter;
+use Spatie\QueryBuilder\QueryBuilder;
 
 class ConfigurationController extends Controller
 {
     public function index(): ResourceCollection
     {
-        $configurations = Configuration::with(['crawler', 'params', 'preferences'])->latest()->get();
+        $configurations = QueryBuilder::for(Configuration::class)
+            ->allowedFilters([
+                AllowedFilter::scope('search'),
+                AllowedFilter::scope('after'),
+                AllowedFilter::scope('recent'),
+            ])
+            ->with(['params', 'preferences'])
+            ->latest();
 
-        return ResourceCollection::make($configurations);
+        return ResourceCollection::make($configurations->get())
+            ->additional([
+                'values' => [
+                    'name' => $configurations->pluck('name')->unique(),
+                ],
+                'count' => $configurations->count(),
+            ]);
     }
 
     public function store(Request $request): JsonResource

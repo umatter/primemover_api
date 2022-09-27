@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -19,6 +20,8 @@ class Configuration extends BaseModel
     use HasFactory;
 
     protected $guarded = [];
+
+    protected $visible = ['id', 'name', 'description', 'params', 'preferences'];
 
     public function crawler(): HasOne
     {
@@ -38,5 +41,12 @@ class Configuration extends BaseModel
     public function preferences(): MorphMany
     {
         return $this->morphMany(Preference::class, 'preferencable');
+    }
+
+    public function scopeSearch(Builder $query, string $keyword): Builder
+    {
+        return $query->where('id', 'LIKE', "%{$keyword}%")
+            ->orWhere('name', 'LIKE', "%{$keyword}%")
+            ->orWhere('description', 'LIKE', "%{$keyword}%");
     }
 }

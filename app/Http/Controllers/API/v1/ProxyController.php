@@ -7,19 +7,31 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 use Illuminate\Support\Facades\Auth;
+use Spatie\QueryBuilder\AllowedFilter;
+use Spatie\QueryBuilder\QueryBuilder;
 
 class ProxyController extends Controller
 {
     public function index(): ResourceCollection
     {
-        $proxies = Proxy::with(
-            [
-                'user',
-                'crawler',
-            ]
-        )->latest()->get();
+        $proxies = QueryBuilder::for(Proxy::class)
+            ->allowedFilters([
+                AllowedFilter::scope('search'),
+                AllowedFilter::scope('after'),
+                AllowedFilter::scope('recent'),
+            ])
+            ->latest();
 
-        return ResourceCollection::make($proxies);
+        return ResourceCollection::make($proxies->get())
+            ->additional([
+                'values' => [
+                    'name' => $proxies->pluck('name')->unique(),
+                    'hostname' => $proxies->pluck('hostname')->unique(),
+                    'username' => $proxies->pluck('username')->unique(),
+                    'port' => $proxies->pluck('port')->unique(),
+                ],
+                'count' => $proxies->count(),
+            ]);
     }
 
     public function store(Request $request): JsonResource
