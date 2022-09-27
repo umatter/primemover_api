@@ -3,12 +3,12 @@
 namespace App\Modules\Configuration\Http\Controller\Api\v1;
 
 use App\Http\Controllers\API\v1\Controller;
+use App\Modules\Configuration\Facade\Factory\ConfigurationFactory;
+use App\Modules\Configuration\Http\Request\ConfigurationStoreRequest;
+use App\Modules\Configuration\Http\Request\ConfigurationUpdateRequest;
 use App\Modules\Configuration\Model\Configuration;
-use App\Modules\Param\Model\Param;
-use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Resources\Json\ResourceCollection;
-use Illuminate\Support\Facades\Auth;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 
@@ -34,20 +34,11 @@ class ConfigurationController extends Controller
             ]);
     }
 
-    public function store(Request $request): JsonResource
+    public function store(ConfigurationStoreRequest $request): JsonResource
     {
-        $data['user_id'] = Auth::id() ?? 1;
-        $data['name'] = $request->name;
-        $data['description'] = $request->description;
-        $data['active'] = $request->active;
-        $configuration = Configuration::create($data);
-
-        $params = collect($request->params)->first();
-        $params['configuration_id'] = $configuration->id;
-        $params['user_id'] = Auth::id() ?? 1;
-
-        $newparam = new Param($params);
-        $newparam->save();
+        $configuration = ConfigurationFactory::create($request->validated());
+        $configuration->save();
+        // TODO $configuration->fresh()->params()->create($request->getParamsList());
 
         return JsonResource::make($configuration);
     }
@@ -62,21 +53,16 @@ class ConfigurationController extends Controller
         return JsonResource::make($configuration);
     }
 
-    public function update(Request $request, Configuration $configuration): JsonResource
+    public function update(ConfigurationUpdateRequest $request, Configuration $configuration): JsonResource
     {
-        $data['user_id'] = Auth::id() ?? 1;
-        $data['name'] = $request->name;
-        $data['description'] = $request->description;
-        $data['active'] = $request->active;
-        $configuration->update($data);
-
-        return JsonResource::make($configuration);
+        return JsonResource::make([
+            'status' => $configuration->update($request->validated()),
+            'data' => $configuration->fresh(),
+        ]);
     }
 
-    public function destroy(Configuration $configuration): ResourceCollection
+    public function destroy(Configuration $configuration): JsonResource
     {
-        $configuration->delete();
-
-        return ResourceCollection::make(Configuration::all());
+        return JsonResource::make(['status' => $configuration->delete()]);
     }
 }

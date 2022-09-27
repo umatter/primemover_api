@@ -24,6 +24,7 @@ class AgentStoreRequest extends FormRequest
             'multilogin_profile' => ['nullable'],
             'location' => ['nullable'],
             'user_id' => ['required'],
+            'active' => ['required'],
         ];
     }
 
