@@ -2,7 +2,7 @@
 
 namespace Database\Factories;
 
-use App\Models\Configuration;
+use App\Modules\Configuration\Model\Configuration;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class ConfigurationFactory extends Factory

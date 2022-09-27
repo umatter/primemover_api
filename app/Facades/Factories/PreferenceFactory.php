@@ -2,7 +2,7 @@
 
 namespace App\Facades\Factories;
 
-use App\Models\Preference;
+use App\Modules\Preference\Model\Preference;
 use Illuminate\Support\Facades\Facade;
 
 /**

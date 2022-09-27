@@ -4,7 +4,7 @@ namespace App\Services;
 
 use App\Facades\Factories\PreferenceFactory;
 use App\Models\DTO\Preference as PreferenceDto;
-use App\Models\Preference;
+use App\Modules\Preference\Model\Preference;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;

@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\Queue;
+use App\Modules\Queue\Model\Queue;
 use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 

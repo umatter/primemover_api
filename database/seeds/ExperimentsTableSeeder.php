@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\Experiment;
+use App\Modules\Experiment\Model\Experiment;
 use Illuminate\Database\Seeder;
 
 class ExperimentsTableSeeder extends Seeder

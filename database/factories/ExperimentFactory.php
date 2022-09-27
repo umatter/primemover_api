@@ -2,8 +2,8 @@
 
 namespace Database\Factories;
 
-use App\Models\Experiment;
 use App\Models\User;
+use App\Modules\Experiment\Model\Experiment;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class ExperimentFactory extends Factory

@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\Job;
+use App\Modules\Job\Model\Job;
 use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 

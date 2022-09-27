@@ -2,7 +2,7 @@
 
 namespace Database\Factories;
 
-use App\Models\Proxy;
+use App\Modules\Proxy\Model\Proxy;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class ProxyFactory extends Factory

@@ -2,8 +2,8 @@
 
 namespace Database\Factories;
 
-use App\Models\Behavior;
-use App\Models\Job;
+use App\Modules\Behavior\Model\Behavior;
+use App\Modules\Job\Model\Job;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class BehaviorFactory extends Factory

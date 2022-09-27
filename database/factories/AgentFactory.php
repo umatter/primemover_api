@@ -2,7 +2,7 @@
 
 namespace Database\Factories;
 
-use App\Models\Agent;
+use App\Modules\Agent\Model\Agent;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class AgentFactory extends Factory

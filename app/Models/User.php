@@ -2,6 +2,10 @@
 
 namespace App\Models;
 
+use App\Modules\Agent\Model\Agent;
+use App\Modules\Configuration\Model\Configuration;
+use App\Modules\Job\Model\Job;
+use App\Modules\Proxy\Model\Proxy;
 use App\Notifications\ResetPassword;
 use App\Notifications\VerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -35,7 +39,7 @@ class User extends Authenticatable implements JWTSubject
 
     public function getPhotoUrlAttribute(): string
     {
-        return 'https://www.gravatar.com/avatar/'.md5(strtolower($this->email)).'.jpg?s=200&d=mm';
+        return 'https://www.gravatar.com/avatar/' . md5(strtolower($this->email)) . '.jpg?s=200&d=mm';
     }
 
     public function oauthProviders(): HasMany
@@ -46,7 +50,7 @@ class User extends Authenticatable implements JWTSubject
     /**
      * Send the password reset notification.
      *
-     * @param  string  $token
+     * @param string $token
      */
     public function sendPasswordResetNotification($token): void
     {

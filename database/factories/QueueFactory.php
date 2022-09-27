@@ -2,8 +2,8 @@
 
 namespace Database\Factories;
 
-use App\Models\Crawler;
-use App\Models\Queue;
+use App\Modules\Crawler\Model\Crawler;
+use App\Modules\Queue\Model\Queue;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class QueueFactory extends Factory

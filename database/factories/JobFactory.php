@@ -2,8 +2,8 @@
 
 namespace Database\Factories;
 
-use App\Models\Job;
-use App\Models\Queue;
+use App\Modules\Job\Model\Job;
+use App\Modules\Queue\Model\Queue;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class JobFactory extends Factory

@@ -2,7 +2,7 @@
 
 namespace App\Factories;
 
-use App\Models\Preference;
+use App\Modules\Preference\Model\Preference;
 use Illuminate\Support\Facades\App;
 
 class PreferenceFactory
@@ -10,7 +10,7 @@ class PreferenceFactory
     public function create(array $attributes = []): Preference
     {
         return App::make(Preference::class, [
-            'attributes' => $attributes
+            'attributes' => $attributes,
         ]);
     }
 }

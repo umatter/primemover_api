@@ -2,7 +2,7 @@
 
 namespace Database\Factories;
 
-use App\Models\Crawler;
+use App\Modules\Crawler\Model\Crawler;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class CrawlerFactory extends Factory

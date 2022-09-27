@@ -1,56 +1,84 @@
 <?php
 
 use App\Http\Controllers\API\AuthController;
-use App\Http\Controllers\API\v1\ExperimentController;
+use App\Modules\Agent\Http\Controller\Api\v1\AgentController;
+use App\Modules\Behavior\Http\Controller\Api\v1\BehaviorController;
+use App\Modules\Configuration\Http\Controller\Api\v1\ConfigurationController;
+use App\Modules\Crawler\Http\Controller\Api\v1\CrawlerController;
+use App\Modules\Experiment\Http\Controller\Api\v1\ExperimentController;
+use App\Modules\Job\Http\Controller\Api\v1\JobController;
+use App\Modules\Outlet\Http\Controller\Api\v1\OutletController;
+use App\Modules\Param\Http\Controller\Api\v1\ParamController;
+use App\Modules\Proxy\Http\Controller\Api\v1\ProxyController;
+use App\Modules\Queue\Http\Controller\Api\v1\QueueController;
+use App\Modules\Report\Http\Controller\Api\v1\ReportController;
+use App\Modules\Term\Http\Controller\Api\v1\TermController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1')->group(function () {
-    Route::post('load-test', 'API\v1\CrawlerController@load');
+    Route::post('load-test', [CrawlerController::class, 'load']);
 
     Route::group(['middleware' => 'auth:api'], function () {
-        Route::resource('configurations', 'API\v1\ConfigurationController');
-        Route::resource('agents', 'API\v1\AgentController');
-        Route::resource('proxies', 'API\v1\ProxyController');
-        Route::resource('jobs', 'API\v1\JobController');
-        Route::resource('queues', 'API\v1\QueueController');
-        Route::resource('crawlers', 'API\v1\CrawlerController');
-        Route::resource('experiments', 'API\v1\ExperimentController');
-        Route::resource('behaviors', 'API\v1\BehaviorController');
-        Route::resource('reports', 'API\v1\ReportController');
-        Route::resource('terms', 'API\v1\TermController');
-        Route::resource('outlets', 'API\v1\OutletController');
-        Route::resource('params', 'API\v1\ParamController');
+        Route::resource('configurations', ConfigurationController::class);
+        Route::resource('agents', AgentController::class);
+        Route::resource('proxies', ProxyController::class);
+        Route::resource('jobs', JobController::class);
+        Route::resource('queues', QueueController::class);
+        Route::resource('crawlers', CrawlerController::class);
+        Route::resource('experiments', ExperimentController::class);
+        Route::resource('behaviors', BehaviorController::class);
+        Route::resource('reports', ReportController::class);
+        Route::resource('terms', TermController::class);
+        Route::resource('outlets', OutletController::class);
+        Route::resource('params', ParamController::class);
 
-        Route::get('experiments-list', [ExperimentController::class, 'all']);
-        Route::get('queues/job/{jobid}/', 'API\v1\QueueController@job');
-        Route::get('queues-processed', 'API\v1\QueueController@processed');
-        Route::get('queues-unprocessed', 'API\v1\QueueController@unprocessed');
-        Route::get('queues-reviewed', 'API\v1\QueueController@reviewed');
-        Route::get('queues-unreviewed', 'API\v1\QueueController@unreviewed');
-        Route::get('experiments/{experiment}/queues-unreviewed', 'API\v1\QueueController@experimentUnreviewed');
-        Route::get('experiments/{experiment}/queues-reviewed', 'API\v1\QueueController@experimentReviewed');
-        Route::get('experiments/{experiment}/queues-processed', 'API\v1\QueueController@experimentProcessed');
-        Route::get('experiments/{experiment}/queues-unprocessed', 'API\v1\QueueController@experimentUnprocessed');
-        Route::get('crawlers-processed', 'API\v1\CrawlerController@withProcessedQueues');
-        Route::get('crawlers-reviewed', 'API\v1\CrawlerController@withReviewedQueues');
-        Route::get('crawlers-unprocessed', 'API\v1\CrawlerController@withUnprocessedQueues');
-        Route::get('crawlers-inactive', 'API\v1\CrawlerController@inactive');
-        Route::delete('crawlers/{crawler}/destroy', 'API\v1\CrawlerController@forceDelete');
-        Route::delete('experiments/{experiment}/destroy', 'API\v1\ExperimentController@forceDelete');
-        Route::get('crawlers-disable', 'API\v1\CrawlerController@disableProdCrawlers');
-        Route::get('file/{report}', 'API\v1\ReportController@getFile');
-        Route::get('crawlers-testing', 'API\v1\CrawlerController@testing');
+        // Experiment
+        Route::prefix('experiments')
+            ->controller(QueueController::class)
+            ->group(function () {
+                Route::get('{experiment}/queues-unreviewed', 'experimentUnreviewed');
+                Route::get('{experiment}/queues-reviewed', 'experimentReviewed');
+                Route::get('{experiment}/queues-processed', 'experimentProcessed');
+                Route::get('{experiment}/queues-unprocessed', 'experimentUnprocessed');
+            });
 
-        Route::get('crawlers-protected', 'API\v1\CrawlerController@index');
-        Route::post('load', 'API\v1\CrawlerController@load');
+        Route::prefix('experiments')
+            ->controller(ExperimentController::class)
+            ->group(function () {
+                Route::get('experiments-list', 'all');
+                Route::delete('{experiment}/destroy', 'forceDelete');
+            });
 
-        Route::delete('undo', 'API\v1\CrawlerController@undo');
-        Route::delete('cleanup', 'API\v1\CrawlerController@cleanup');
+        Route::controller(QueueController::class)
+            ->group(function () {
+                Route::get('queues/job/{jobid}', 'job');
+                Route::get('queues-processed', 'processed');
+                Route::get('queues-unprocessed', 'unprocessed');
+                Route::get('queues-reviewed', 'reviewed');
+                Route::get('queues-unreviewed', 'unreviewed');
+            });
+
+        Route::controller(CrawlerController::class)
+            ->group(function () {
+                Route::get('crawlers-processed', 'withProcessedQueues');
+                Route::get('crawlers-reviewed', 'withReviewedQueues');
+                Route::get('crawlers-unprocessed', 'withUnprocessedQueues');
+                Route::get('crawlers-inactive', 'inactive');
+                Route::delete('crawlers/{crawler}/destroy', 'forceDelete');
+                Route::get('crawlers-disable', 'disableProdCrawlers');
+                Route::get('crawlers-testing', 'testing');
+                Route::get('crawlers-protected', 'index');
+                Route::post('load', 'load');
+                Route::delete('undo', 'undo');
+                Route::delete('cleanup', 'cleanup');
+            });
+
+        Route::get('file/{report}', [ReportController::class, 'getFile']);
     });
 
     Route::group(['middleware' => 'guest:api'], function () {
         Route::post('login', 'API\AuthController@login');
-        Route::get('ip/{ip?}', 'API\v1\CrawlerController@ip');
+        Route::get('ip/{ip?}', [CrawlerController::class, 'ip']);
     });
 
     Route::post('auth/token', [AuthController::class, 'token']);
