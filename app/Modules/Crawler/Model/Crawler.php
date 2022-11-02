@@ -37,6 +37,12 @@ class Crawler extends BaseModel
         'latest_queues_count',
     ];
 
+    protected $with = [
+        'configuration',
+        'agent',
+        'proxy',
+    ];
+
     public function proxy(): BelongsTo
     {
         return $this->belongsTo(Proxy::class)
