@@ -3,7 +3,9 @@
 namespace App\Modules\Proxy\Http\Controller\Api\v1;
 
 use App\Http\Controllers\API\v1\Controller;
+use App\Modules\Proxy\Http\Request\ProxyIndexRequest;
 use App\Modules\Proxy\Model\Proxy;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Resources\Json\ResourceCollection;
@@ -13,7 +15,7 @@ use Spatie\QueryBuilder\QueryBuilder;
 
 class ProxyController extends Controller
 {
-    public function index(): ResourceCollection
+    public function index(ProxyIndexRequest $request): ResourceCollection
     {
         $proxies = QueryBuilder::for(Proxy::class)
             ->allowedFilters([
@@ -23,7 +25,11 @@ class ProxyController extends Controller
             ])
             ->latest();
 
-        return ResourceCollection::make($proxies->get())
+        $response = $proxies
+            ->when($request->getPaged(), fn (Builder $builder) => $builder->paginate($request->getPaged()))
+            ->when(!$request->getPaged(), fn (Builder $builder) => $builder->get());
+
+        return ResourceCollection::make($response)
             ->additional([
                 'values' => [
                     'name' => $proxies->pluck('name')->unique(),

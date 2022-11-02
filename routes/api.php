@@ -76,13 +76,9 @@ Route::prefix('v1')->group(function () {
         Route::get('file/{report}', [ReportController::class, 'getFile']);
     });
 
-    Route::group(['middleware' => 'guest:api'], function () {
-        Route::post('login', 'API\AuthController@login');
-        Route::get('ip/{ip?}', [CrawlerController::class, 'ip']);
-    });
-
+    Route::post('login', [AuthController::class, 'login']);
+    Route::get('ip/{ip?}', [CrawlerController::class, 'ip']);
     Route::post('auth/token', [AuthController::class, 'token']);
-
     Route::group(['middleware' => ['auth:api']], function () {
         Route::get('auth/user', [AuthController::class, 'user']);
     });
