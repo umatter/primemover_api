@@ -1,0 +1,107 @@
+{
+  "foo": "bar",
+  "common": {
+    "home": "Home",
+    "id": "Id",
+    "edit": "Bearbeiten",
+    "show": "Anzeigen",
+    "select": "Wählen",
+    "label": "Allgemein",
+    "name": "Name",
+    "namePlaceholder": "z.B. Maria Berlusconi",
+    "nameRequiredError": "Name ist erforderlich",
+    "contact": "Kontakt",
+    "contactPlaceholder": "z.B. Max Mustermann, 066 555 22 44",
+    "contactRequiredError": "Mindestens ein Kontakt ist erforderlich",
+    "reset": "Zurücksetzen",
+    "cancel": "Abbrechen",
+    "save": "Speichern",
+    "delete": "Löschen",
+    "description": "Beschreibung",
+    "descriptionPlaceholder": "z.B. Es handelt sich um ein neuartiges Experiment, ...",
+    "hostName": "Host Name",
+    "port": "Port",
+    "username": "User Name",
+    "password": "Password",
+    "identification": "Identification",
+    "multilogin_id": "Multi Login Id",
+    "multilogin_profile": "Multi Profile",
+    "location": "Location"
+  },
+  "filter": {
+    "reset": "Filter zurücksetzen"
+  },
+  "auth": {
+    "username": "Benutzername",
+    "password": "Kennwort",
+    "signIn": "Anmelden",
+    "signOut": "Abmelden"
+  },
+  "crawler": {
+    "label": "Crawler",
+    "list": "Liste aller Crawler einschliesslich der Angabe, welchem Experiment diese zugeordnet sind.",
+    "add": "Crawler hinzufügen"
+  },
+  "experiment": {
+    "label": "Experiment",
+    "add": "Experiment hinzufügen",
+    "list": "Liste aller Experimente.",
+    "generalInfo": "Bitte einen Namen und eine Kontaktinformation angeben, um ein Experiment anzulegen.",
+    "selected": "Experiment ausgewählt",
+    "notSelected": "Kein Experiment ausgewählt"
+  },
+  "agent": {
+    "label": "Agent",
+    "add": "Agent hinzufügen",
+    "list": "Liste aller Agent.",
+    "generalInfo": "Bitte einen Namen und eine Kontaktinformation angeben, um ein Agent anzulegen.",
+    "selected": "Agent ausgewählt",
+    "notSelected": "Kein Agent ausgewählt"
+  },
+  "config": {
+    "label": "Config",
+    "add": "Configuration hinzufügen",
+    "list": "Liste aller Configuration.",
+    "generalInfo": "Bitte einen Namen und eine Kontaktinformation angeben, um ein Configuration anzulegen.",
+    "selected": "Configuration ausgewählt",
+    "notSelected": "Kein Configuration ausgewählt"
+  },
+  "proxy": {
+    "label": "Proxy",
+    "add": "Proxy hinzufügen",
+    "list": "Liste aller Proxy.",
+    "generalInfo": "Bitte einen Namen und eine Kontaktinformation angeben, um ein Proxy anzulegen.",
+    "selected": "Proxy ausgewählt",
+    "notSelected": "Kein Proxy ausgewählt"
+  },
+  "queue": {
+    "cralwer_id": "Crawler Id",
+    "label": "Queue",
+    "add": "Queue hinzufügen",
+    "list": "Liste aller Queues."
+  },
+  "job": {
+    "label": "Job",
+    "add": "Job hinzufügen",
+    "list": "Liste aller Jobs.",
+    "cralwer_id": "Crawler Id"
+  },
+  "status": {
+    "label": "Status",
+    "failed": "Fehler",
+    "succeeded": "Erfolg",
+    "processed": "Erledigt",
+    "processing": "Läuft",
+    "review": "Review",
+    "code": "Code",
+    "message": "Meldung",
+    "type": "Type"
+  },
+  "pagination": {
+    "previousLabel": "Zurück",
+    "nextLabel": "Vor",
+    "label": "Pagination",
+    "page": "Seite",
+    "onPage": "Auf der Seite"
+  }
+}
