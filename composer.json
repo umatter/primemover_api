@@ -24,6 +24,7 @@
     "nelkasovic/ipstack-finder": "^1.0",
     "netresearch/jsonmapper": "^4.0",
     "predis/predis": "^2.0",
+    "psr/http-factory-implementation": "*",
     "spatie/laravel-ignition": "^1.2",
     "spatie/laravel-query-builder": "^5.0",
     "symfony/http-client": "^6.0",
@@ -46,7 +47,10 @@
   "config": {
     "optimize-autoloader": true,
     "preferred-install": "dist",
-    "sort-packages": true
+    "sort-packages": true,
+    "allow-plugins": {
+      "php-http/discovery": true
+    }
   },
   "extra": {
     "laravel": {
