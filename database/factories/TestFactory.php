@@ -17,7 +17,6 @@ class TestFactory extends Factory
     public function definition()
     {
         return [
-            //
         ];
     }
 }

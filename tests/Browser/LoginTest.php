@@ -7,6 +7,9 @@ use Tests\Browser\Pages\Home;
 use Tests\Browser\Pages\Login;
 use Tests\DuskTestCase;
 
+/**
+ * @internal
+ */
 class LoginTest extends DuskTestCase
 {
     public function setUp(): void
@@ -17,36 +20,36 @@ class LoginTest extends DuskTestCase
     }
 
     /** @test */
-    public function login_with_valid_credentials()
+    public function loginWithValidCredentials()
     {
         $user = factory(User::class)->create();
 
         $this->browse(function ($browser) use ($user) {
-            $browser->visit(new Login)
+            $browser->visit(new Login())
                 ->submit($user->email, 'password')
                 ->assertPageIs(Home::class);
         });
     }
 
     /** @test */
-    public function login_with_invalid_credentials()
+    public function loginWithInvalidCredentials()
     {
         $this->browse(function ($browser) {
-            $browser->visit(new Login)
+            $browser->visit(new Login())
                 ->submit('test@test.app', 'password')
                 ->assertSee('These credentials do not match our records.');
         });
     }
 
     /** @test */
-    public function log_out_the_user()
+    public function logOutTheUser()
     {
         $user = factory(User::class)->create();
 
         $this->browse(function ($browser) use ($user) {
-            $browser->visit(new Login)
+            $browser->visit(new Login())
                 ->submit($user->email, 'password')
-                ->on(new Home)
+                ->on(new Home())
                 ->clickLogout()
                 ->assertPageIs(Login::class);
         });

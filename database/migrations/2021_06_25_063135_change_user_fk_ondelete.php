@@ -138,6 +138,5 @@ class ChangeUserFkOndelete extends Migration
      */
     public function down()
     {
-        //
     }
 }

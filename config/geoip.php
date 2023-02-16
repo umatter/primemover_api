@@ -1,7 +1,6 @@
 <?php
 
 return [
-
     /*
     |--------------------------------------------------------------------------
     | Logging Configuration
@@ -50,7 +49,6 @@ return [
     */
 
     'services' => [
-
         'maxmind_database' => [
             'class' => \Torann\GeoIP\Services\MaxMindDatabase::class,
             'database_path' => storage_path('app/geoip.mmdb'),
@@ -93,7 +91,6 @@ return [
             'secure' => true,
             'locales' => ['en'],
         ],
-
     ],
 
     /*
@@ -161,5 +158,4 @@ return [
         'default' => true,
         'currency' => 'USD',
     ],
-
 ];

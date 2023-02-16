@@ -4,6 +4,9 @@ namespace Tests\Unit;
 
 use Tests\TestCase;
 
+/**
+ * @internal
+ */
 class ExampleTest extends TestCase
 {
     /**

@@ -7,7 +7,6 @@ use Http\Client\Curl\Client;
 
 return [
     'cache' => [
-
         /*
         |-----------------------------------------------------------------------
         | Cache Store
@@ -106,5 +105,4 @@ return [
     |
     */
     'reader' => null,
-
 ];

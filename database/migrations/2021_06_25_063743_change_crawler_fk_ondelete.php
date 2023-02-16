@@ -109,6 +109,5 @@ class ChangeCrawlerFkOndelete extends Migration
      */
     public function down()
     {
-        //
     }
 }
