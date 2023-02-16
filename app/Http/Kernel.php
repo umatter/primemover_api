@@ -72,7 +72,6 @@ class Kernel extends HttpKernel
             SubstituteBindings::class,
             HeaderMiddleware::class,
         ],
-
     ];
 
     /**

@@ -7,7 +7,6 @@ use Illuminate\Support\Facades\Log;
 
 class JsonHelper
 {
-
     public function jsonToArray(?string $jsonString = '', bool $associative = true): object|array|null
     {
         try {

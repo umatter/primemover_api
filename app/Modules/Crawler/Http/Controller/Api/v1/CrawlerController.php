@@ -6,6 +6,8 @@ use App\Http\Controllers\API\v1\Controller;
 use App\Modules\Agent\Model\Agent;
 use App\Modules\Behavior\Model\Behavior;
 use App\Modules\Configuration\Model\Configuration;
+use App\Modules\Crawler\Http\Request\StoreCrawlerRequest;
+use App\Modules\Crawler\Http\Request\UpdateCrawlerRequest;
 use App\Modules\Crawler\Model\Crawler;
 use App\Modules\Job\Model\Job;
 use App\Modules\Param\Model\Param;
@@ -19,8 +21,6 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Resources\Json\ResourceCollection;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Validation\ValidationException;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 use Symfony\Component\HttpFoundation\Response as ResponseAlias;
@@ -144,27 +144,16 @@ class CrawlerController extends Controller
         return JsonResource::make(new Crawler());
     }
 
-    /**
-     * @throws ValidationException
-     */
-    public function store(Request $request): JsonResource
+    public function store(StoreCrawlerRequest $request): JsonResource
     {
-        $this->validate($request, [
-            'name' => 'required',
-        ]);
-
-        $data = $request->all();
-        $data['user_id'] = Auth::id() ?? 1;
-        $data['experiment_id'] = 1;
-
-        $crawler = Crawler::query()->create($data);
+        $crawler = Crawler::query()->create($request->validated());
 
         return JsonResource::make($crawler);
     }
 
-    public function show($id): JsonResource
+    public function show(Crawler $crawler): JsonResource
     {
-        $crawler = Crawler::with(
+        $crawler->with(
             [
                 'experiment',
                 'queues',
@@ -173,7 +162,7 @@ class CrawlerController extends Controller
                 'proxy',
                 'user',
             ]
-        )->findOrFail($id);
+        );
 
         return JsonResource::make($crawler);
     }
@@ -183,10 +172,9 @@ class CrawlerController extends Controller
         return JsonResource::make($crawler);
     }
 
-    public function update(Request $request, Crawler $crawler): JsonResource
+    public function update(UpdateCrawlerRequest $request, Crawler $crawler): JsonResource
     {
-        $data = $request->all();
-        $crawler->update($data);
+        $crawler->update($request->validated());
 
         return JsonResource::make($crawler);
     }

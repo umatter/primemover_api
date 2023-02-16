@@ -3,14 +3,14 @@
 namespace App\Modules\Job\Http\Controller\Api\v1;
 
 use App\Http\Controllers\API\v1\Controller;
+use App\Modules\Job\Http\Request\StoreJobRequest;
+use App\Modules\Job\Http\Request\UpdateJobRequest;
 use App\Modules\Job\Model\Job;
 use Exception;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Resources\Json\ResourceCollection;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Validation\ValidationException;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 
@@ -34,20 +34,9 @@ class JobController extends Controller
         return ResourceCollection::make($jobs);
     }
 
-    /**
-     * @throws ValidationException
-     */
-    public function store(Request $request): JsonResource
+    public function store(StoreJobRequest $request): JsonResource
     {
-        $data = $request->all();
-
-        $this->validate($request, [
-            'name' => 'required',
-        ]);
-
-        $data['user_id'] = Auth::id() ?? 1;
-
-        $job = Job::query()->create($data);
+        $job = Job::query()->create($request->validated());
 
         return JsonResource::make($job);
     }
@@ -67,10 +56,9 @@ class JobController extends Controller
         return JsonResource::make($job);
     }
 
-    public function update(Request $request, Job $job): JsonResource
+    public function update(UpdateJobRequest $request, Job $job): JsonResource
     {
-        $data = $request->all();
-        $job->update($data);
+        $job->update($request->validated());
 
         return JsonResource::make($job);
     }

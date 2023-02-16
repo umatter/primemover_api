@@ -53,7 +53,7 @@ class AuthController extends Controller
 
         $auth = auth()->guard('web')->attempt($loginData);
 
-        if (! $auth) {
+        if (!$auth) {
             return response(['message' => 'Invalid Credentials']);
         }
 

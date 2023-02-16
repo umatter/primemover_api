@@ -5,13 +5,14 @@ namespace App\Modules\Queue\Http\Controller\Api\v1;
 use App\Http\Controllers\API\v1\Controller;
 use App\Modules\Experiment\Model\Experiment;
 use App\Modules\Job\Model\Job;
+use App\Modules\Queue\Http\Request\StoreQueueRequest;
+use App\Modules\Queue\Http\Request\UpdateQueueRequest;
 use App\Modules\Queue\Model\Queue;
 use Exception;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Resources\Json\ResourceCollection;
-use Illuminate\Support\Facades\Auth;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 
@@ -36,21 +37,16 @@ class QueueController extends Controller
         return ResourceCollection::make($queues);
     }
 
-    public function store(Request $request): JsonResource
+    public function store(StoreQueueRequest $request): JsonResource
     {
-        $data = $request->all();
-        $data['user_id'] = Auth::id() ?? 1;
-
-        $queue = Queue::query()->create($data);
+        $queue = Queue::query()->create($request->validated());
 
         return JsonResource::make($queue);
     }
 
-    public function show($id): JsonResource
+    public function show(Queue $queue): JsonResource
     {
-        $queue = Queue::with(['jobs'])->findOrFail($id);
-
-        return JsonResource::make($queue);
+        return JsonResource::make($queue->load(['jobs']));
     }
 
     public function job($id): JsonResource
@@ -143,10 +139,9 @@ class QueueController extends Controller
         return JsonResource::make($queue);
     }
 
-    public function update(Request $request, Queue $queue): JsonResource
+    public function update(UpdateQueueRequest $request, Queue $queue): JsonResource
     {
-        $data = $request->all();
-        $queue->update($data);
+        $queue->update($request->validated());
 
         return JsonResource::make($queue);
     }

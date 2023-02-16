@@ -1,0 +1,6 @@
+version: '3.9'
+services:
+  redis:
+    platform: linux/amd64
+  mysql:
+    platform: linux/amd64

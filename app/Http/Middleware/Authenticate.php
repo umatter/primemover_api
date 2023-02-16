@@ -10,11 +10,11 @@ use Illuminate\Support\Facades\Redirect;
 class Authenticate extends Middleware
 {
     /**
-     * @param  Request  $request
+     * @param Request $request
      */
     protected function redirectTo($request): RedirectResponse
     {
-        if (! $request->expectsJson()) {
+        if (!$request->expectsJson()) {
             abort(404);
         }
 

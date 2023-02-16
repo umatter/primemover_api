@@ -9,7 +9,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Facade;
 
 /**
- * @method static void createManyForModel(Collection $data, Model $model)
+ * @method static void       createManyForModel(Collection $data, Model $model)
  * @method static Preference create(PreferenceDto $preferenceData)
  */
 class PreferenceService extends Facade

@@ -760,6 +760,7 @@
                     "type": "github"
                 }
             ],
+            "abandoned": true,
             "time": "2022-02-23T14:25:13+00:00"
         },
         {
@@ -1555,26 +1556,26 @@
         },
         {
             "name": "hammerstone/fast-paginate",
-            "version": "v0.1.11",
+            "version": "v0.1.12",
             "source": {
                 "type": "git",
                 "url": "https://github.com/hammerstonedev/fast-paginate.git",
-                "reference": "4ca45f2ae5cf36d529ea64de9f2f4b72ef873dc4"
+                "reference": "9bfd726113317cf60d0a1d3b7a13ed8636fb1f84"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/hammerstonedev/fast-paginate/zipball/4ca45f2ae5cf36d529ea64de9f2f4b72ef873dc4",
-                "reference": "4ca45f2ae5cf36d529ea64de9f2f4b72ef873dc4",
+                "url": "https://api.github.com/repos/hammerstonedev/fast-paginate/zipball/9bfd726113317cf60d0a1d3b7a13ed8636fb1f84",
+                "reference": "9bfd726113317cf60d0a1d3b7a13ed8636fb1f84",
                 "shasum": ""
             },
             "require": {
-                "illuminate/database": "^8.37|^9.0",
+                "illuminate/database": "^8.37|^9.0|^10.0",
                 "php": "^7.4|^8.0"
             },
             "require-dev": {
                 "laravel/scout": "^9.4",
                 "mockery/mockery": "^1.3.3",
-                "orchestra/testbench": "^6|^7",
+                "orchestra/testbench": "^6|^7|^8.0",
                 "phpunit/phpunit": ">=8.5.23|^9"
             },
             "type": "library",
@@ -1603,9 +1604,9 @@
             "description": "Fast paginate for Laravel",
             "support": {
                 "issues": "https://github.com/hammerstonedev/fast-paginate/issues",
-                "source": "https://github.com/hammerstonedev/fast-paginate/tree/v0.1.11"
+                "source": "https://github.com/hammerstonedev/fast-paginate/tree/v0.1.12"
             },
-            "time": "2022-12-04T21:11:53+00:00"
+            "time": "2023-02-14T03:28:31+00:00"
         },
         {
             "name": "http-interop/http-factory-guzzle",
@@ -1716,16 +1717,16 @@
         },
         {
             "name": "laravel/framework",
-            "version": "v9.51.0",
+            "version": "v9.52.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/framework.git",
-                "reference": "b81123134349a013a738a9f7f715c6ce99d5a414"
+                "reference": "eb85cd9d72e5bfa54b4d0d9040786f26d6184a9e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/framework/zipball/b81123134349a013a738a9f7f715c6ce99d5a414",
-                "reference": "b81123134349a013a738a9f7f715c6ce99d5a414",
+                "url": "https://api.github.com/repos/laravel/framework/zipball/eb85cd9d72e5bfa54b4d0d9040786f26d6184a9e",
+                "reference": "eb85cd9d72e5bfa54b4d0d9040786f26d6184a9e",
                 "shasum": ""
             },
             "require": {
@@ -1910,7 +1911,7 @@
                 "issues": "https://github.com/laravel/framework/issues",
                 "source": "https://github.com/laravel/framework"
             },
-            "time": "2023-02-07T15:37:18+00:00"
+            "time": "2023-02-14T14:51:14+00:00"
         },
         {
             "name": "laravel/helpers",
@@ -2176,16 +2177,16 @@
         },
         {
             "name": "laravel/telescope",
-            "version": "v4.13.1",
+            "version": "v4.13.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/telescope.git",
-                "reference": "f8afaccfb5b636aa20735e0a390ab312a6f57c65"
+                "reference": "34a259cf19a73cc3b9b31f49c3c85595afcfbb70"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/telescope/zipball/f8afaccfb5b636aa20735e0a390ab312a6f57c65",
-                "reference": "f8afaccfb5b636aa20735e0a390ab312a6f57c65",
+                "url": "https://api.github.com/repos/laravel/telescope/zipball/34a259cf19a73cc3b9b31f49c3c85595afcfbb70",
+                "reference": "34a259cf19a73cc3b9b31f49c3c85595afcfbb70",
                 "shasum": ""
             },
             "require": {
@@ -2239,9 +2240,9 @@
             ],
             "support": {
                 "issues": "https://github.com/laravel/telescope/issues",
-                "source": "https://github.com/laravel/telescope/tree/v4.13.1"
+                "source": "https://github.com/laravel/telescope/tree/v4.13.2"
             },
-            "time": "2023-02-06T14:37:41+00:00"
+            "time": "2023-02-16T15:32:51+00:00"
         },
         {
             "name": "laravel/tinker",
@@ -2514,16 +2515,16 @@
         },
         {
             "name": "league/commonmark",
-            "version": "2.3.8",
+            "version": "2.3.9",
             "source": {
                 "type": "git",
                 "url": "https://github.com/thephpleague/commonmark.git",
-                "reference": "c493585c130544c4e91d2e0e131e6d35cb0cbc47"
+                "reference": "c1e114f74e518daca2729ea8c4bf1167038fa4b5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/commonmark/zipball/c493585c130544c4e91d2e0e131e6d35cb0cbc47",
-                "reference": "c493585c130544c4e91d2e0e131e6d35cb0cbc47",
+                "url": "https://api.github.com/repos/thephpleague/commonmark/zipball/c1e114f74e518daca2729ea8c4bf1167038fa4b5",
+                "reference": "c1e114f74e518daca2729ea8c4bf1167038fa4b5",
                 "shasum": ""
             },
             "require": {
@@ -2616,7 +2617,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2022-12-10T16:02:17+00:00"
+            "time": "2023-02-15T14:07:24+00:00"
         },
         {
             "name": "league/config",
@@ -2979,16 +2980,16 @@
         },
         {
             "name": "league/oauth2-server",
-            "version": "8.3.6",
+            "version": "8.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/thephpleague/oauth2-server.git",
-                "reference": "28c5441716c10d0c936bd731860dc385d0f6d1a8"
+                "reference": "539f4340c14eca8d44578fd118f6bdc0ad16d1ce"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/oauth2-server/zipball/28c5441716c10d0c936bd731860dc385d0f6d1a8",
-                "reference": "28c5441716c10d0c936bd731860dc385d0f6d1a8",
+                "url": "https://api.github.com/repos/thephpleague/oauth2-server/zipball/539f4340c14eca8d44578fd118f6bdc0ad16d1ce",
+                "reference": "539f4340c14eca8d44578fd118f6bdc0ad16d1ce",
                 "shasum": ""
             },
             "require": {
@@ -3055,7 +3056,7 @@
             ],
             "support": {
                 "issues": "https://github.com/thephpleague/oauth2-server/issues",
-                "source": "https://github.com/thephpleague/oauth2-server/tree/8.3.6"
+                "source": "https://github.com/thephpleague/oauth2-server/tree/8.4.0"
             },
             "funding": [
                 {
@@ -3063,7 +3064,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2022-11-14T19:42:00+00:00"
+            "time": "2023-02-15T16:08:35+00:00"
         },
         {
             "name": "league/uri",
@@ -4176,16 +4177,16 @@
         },
         {
             "name": "php-http/discovery",
-            "version": "1.15.0",
+            "version": "1.15.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-http/discovery.git",
-                "reference": "ebf69e00f8c58c47bc1114e38d2cfd40b7fe9b1e"
+                "reference": "5cc428320191ac1d0b6520034c2dc0698628ced5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-http/discovery/zipball/ebf69e00f8c58c47bc1114e38d2cfd40b7fe9b1e",
-                "reference": "ebf69e00f8c58c47bc1114e38d2cfd40b7fe9b1e",
+                "url": "https://api.github.com/repos/php-http/discovery/zipball/5cc428320191ac1d0b6520034c2dc0698628ced5",
+                "reference": "5cc428320191ac1d0b6520034c2dc0698628ced5",
                 "shasum": ""
             },
             "require": {
@@ -4212,7 +4213,8 @@
             },
             "type": "composer-plugin",
             "extra": {
-                "class": "Http\\Discovery\\Composer\\Plugin"
+                "class": "Http\\Discovery\\Composer\\Plugin",
+                "plugin-optional": true
             },
             "autoload": {
                 "psr-4": {
@@ -4243,9 +4245,9 @@
             ],
             "support": {
                 "issues": "https://github.com/php-http/discovery/issues",
-                "source": "https://github.com/php-http/discovery/tree/1.15.0"
+                "source": "https://github.com/php-http/discovery/tree/1.15.2"
             },
-            "time": "2023-02-09T12:05:45+00:00"
+            "time": "2023-02-11T08:28:41+00:00"
         },
         {
             "name": "php-http/httplug",
@@ -8706,16 +8708,16 @@
         },
         {
             "name": "toin0u/geocoder-laravel",
-            "version": "4.5.1",
+            "version": "4.6.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/geocoder-php/GeocoderLaravel.git",
-                "reference": "f79c7afad593ba1e74276419d3079ea680685dec"
+                "reference": "bdbb274ecd9fb32f0937237607456cb0d64a2ebb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/geocoder-php/GeocoderLaravel/zipball/f79c7afad593ba1e74276419d3079ea680685dec",
-                "reference": "f79c7afad593ba1e74276419d3079ea680685dec",
+                "url": "https://api.github.com/repos/geocoder-php/GeocoderLaravel/zipball/bdbb274ecd9fb32f0937237607456cb0d64a2ebb",
+                "reference": "bdbb274ecd9fb32f0937237607456cb0d64a2ebb",
                 "shasum": ""
             },
             "require": {
@@ -8724,8 +8726,8 @@
                 "geocoder-php/google-maps-provider": "^4.0",
                 "guzzlehttp/psr7": "*",
                 "http-interop/http-factory-guzzle": "^1.0",
-                "illuminate/cache": "^5.0|^6.0|^7.0|^8.0|^9.0",
-                "illuminate/support": "^5.0|^6.0|^7.0|^8.0|^9.0",
+                "illuminate/cache": "^5.0|^6.0|^7.0|^8.0|^9.0|^10.0",
+                "illuminate/support": "^5.0|^6.0|^7.0|^8.0|^9.0|^10.0",
                 "php": "^8.0",
                 "php-http/curl-client": "*",
                 "willdurand/geocoder": "^4.0"
@@ -8736,7 +8738,7 @@
                 "geocoder-php/geoip2-provider": "^4.0",
                 "geocoder-php/maxmind-binary-provider": "^4.0",
                 "laravel/legacy-factories": "^1.0",
-                "orchestra/testbench": "^7.0",
+                "orchestra/testbench": "^7.0|^8.0",
                 "orchestra/testbench-browser-kit": "^7.0",
                 "orchestra/testbench-dusk": "^7.0",
                 "php-coveralls/php-coveralls": "*",
@@ -8783,9 +8785,9 @@
             ],
             "support": {
                 "issues": "https://github.com/geocoder-php/GeocoderLaravel/issues",
-                "source": "https://github.com/geocoder-php/GeocoderLaravel/tree/4.5.1"
+                "source": "https://github.com/geocoder-php/GeocoderLaravel/tree/4.6.0"
             },
-            "time": "2022-02-10T12:48:16+00:00"
+            "time": "2023-02-16T17:34:31+00:00"
         },
         {
             "name": "torann/geoip",
@@ -9235,22 +9237,22 @@
     "packages-dev": [
         {
             "name": "beyondcode/laravel-dump-server",
-            "version": "1.8.0",
+            "version": "1.9.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/beyondcode/laravel-dump-server.git",
-                "reference": "33a19c632655c1d4f16c0bc67ce6ba0504116b8a"
+                "reference": "1f2452617afc64e47b3cf49978beb7beeef084df"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/beyondcode/laravel-dump-server/zipball/33a19c632655c1d4f16c0bc67ce6ba0504116b8a",
-                "reference": "33a19c632655c1d4f16c0bc67ce6ba0504116b8a",
+                "url": "https://api.github.com/repos/beyondcode/laravel-dump-server/zipball/1f2452617afc64e47b3cf49978beb7beeef084df",
+                "reference": "1f2452617afc64e47b3cf49978beb7beeef084df",
                 "shasum": ""
             },
             "require": {
-                "illuminate/console": "5.6.*|5.7.*|5.8.*|^6.0|^7.0|^8.0|^9.0",
-                "illuminate/http": "5.6.*|5.7.*|5.8.*|^6.0|^7.0|^8.0|^9.0",
-                "illuminate/support": "5.6.*|5.7.*|5.8.*|^6.0|^7.0|^8.0|^9.0",
+                "illuminate/console": "5.6.*|5.7.*|5.8.*|^6.0|^7.0|^8.0|^9.0|^10.0",
+                "illuminate/http": "5.6.*|5.7.*|5.8.*|^6.0|^7.0|^8.0|^9.0|^10.0",
+                "illuminate/support": "5.6.*|5.7.*|5.8.*|^6.0|^7.0|^8.0|^9.0|^10.0",
                 "php": ">=7.2.5",
                 "symfony/var-dumper": "^5.0|^6.0"
             },
@@ -9294,9 +9296,9 @@
             ],
             "support": {
                 "issues": "https://github.com/beyondcode/laravel-dump-server/issues",
-                "source": "https://github.com/beyondcode/laravel-dump-server/tree/1.8.0"
+                "source": "https://github.com/beyondcode/laravel-dump-server/tree/1.9.0"
             },
-            "time": "2022-02-12T12:37:34+00:00"
+            "time": "2023-02-15T10:29:26+00:00"
         },
         {
             "name": "composer/pcre",
@@ -10272,16 +10274,16 @@
         },
         {
             "name": "laravel/pint",
-            "version": "v1.4.1",
+            "version": "v1.5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/pint.git",
-                "reference": "80ddf23a5d97825e79bb1018eebb6f3f985d4fa8"
+                "reference": "e0a8cef58b74662f27355be9cdea0e726bbac362"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/pint/zipball/80ddf23a5d97825e79bb1018eebb6f3f985d4fa8",
-                "reference": "80ddf23a5d97825e79bb1018eebb6f3f985d4fa8",
+                "url": "https://api.github.com/repos/laravel/pint/zipball/e0a8cef58b74662f27355be9cdea0e726bbac362",
+                "reference": "e0a8cef58b74662f27355be9cdea0e726bbac362",
                 "shasum": ""
             },
             "require": {
@@ -10292,13 +10294,13 @@
                 "php": "^8.0"
             },
             "require-dev": {
-                "friendsofphp/php-cs-fixer": "^3.14",
-                "illuminate/view": "^9.32.0",
+                "friendsofphp/php-cs-fixer": "^3.14.4",
+                "illuminate/view": "^9.51.0",
                 "laravel-zero/framework": "^9.2.0",
                 "mockery/mockery": "^1.5.1",
-                "nunomaduro/larastan": "^2.2.0",
-                "nunomaduro/termwind": "^1.14.0",
-                "pestphp/pest": "^1.22.1"
+                "nunomaduro/larastan": "^2.4.0",
+                "nunomaduro/termwind": "^1.15.1",
+                "pestphp/pest": "^1.22.4"
             },
             "bin": [
                 "builds/pint"
@@ -10334,7 +10336,7 @@
                 "issues": "https://github.com/laravel/pint/issues",
                 "source": "https://github.com/laravel/pint"
             },
-            "time": "2023-01-31T15:50:45+00:00"
+            "time": "2023-02-14T16:31:02+00:00"
         },
         {
             "name": "mockery/mockery",
