@@ -23,6 +23,7 @@
     "laravel/ui": "^3.0",
     "nelkasovic/ipstack-finder": "^1.0",
     "netresearch/jsonmapper": "^4.0",
+    "nunomaduro/phpinsights": "^2.7",
     "predis/predis": "^2.0",
     "psr/http-factory-implementation": "*",
     "spatie/laravel-ignition": "^1.2",
@@ -49,7 +50,8 @@
     "preferred-install": "dist",
     "sort-packages": true,
     "allow-plugins": {
-      "php-http/discovery": true
+      "php-http/discovery": true,
+      "dealerdirect/phpcodesniffer-composer-installer": true
     }
   },
   "extra": {
