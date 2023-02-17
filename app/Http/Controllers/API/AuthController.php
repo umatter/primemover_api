@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -22,7 +23,7 @@ class AuthController extends Controller
         return Route::dispatch($proxy);
     }
 
-    public function user()
+    public function user(): ?Authenticatable
     {
         return auth()->user();
     }

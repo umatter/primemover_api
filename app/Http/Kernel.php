@@ -75,7 +75,7 @@ class Kernel extends HttpKernel
     ];
 
     /**
-     * @var string[]
+     * @var array<string>
      */
     protected $routeMiddleware = [
         'auth' => Authenticate::class,

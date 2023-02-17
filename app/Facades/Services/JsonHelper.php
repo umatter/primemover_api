@@ -5,8 +5,8 @@ namespace App\Facades\Services;
 use Illuminate\Support\Facades\Facade;
 
 /**
- * @method static null|array|object jsonToArray(?string $jsonString = '', bool $associative = true)
- * @method static null|string       encodeJson($data)
+ * @method static array|object|null jsonToArray(?string $jsonString = '', bool $associative = true)
+ * @method static string|null       encodeJson($data)
  *
  * @see \App\Services\JsonHelper
  */

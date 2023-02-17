@@ -6,7 +6,6 @@ use App\Models\BaseModel;
 use App\Models\User;
 use App\Modules\Crawler\Model\Crawler;
 use App\Modules\Job\Model\Job;
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;

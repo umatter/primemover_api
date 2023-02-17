@@ -34,7 +34,7 @@ class ExperimentStoreRequest extends FormRequest
     public function getPreferences(): ?Collection
     {
         $preferences = $this->input('preferences');
-        if (!$preferences) {
+        if (! $preferences) {
             return null;
         }
 

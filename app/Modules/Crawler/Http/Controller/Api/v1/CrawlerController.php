@@ -69,7 +69,8 @@ class CrawlerController extends Controller
             ->where('active', 1)
             ->with(['queues' => function ($q) {
                 $q->where('queues.processed', 1);
-            }])
+            },
+            ])
             ->with(
                 [
                     'agent.preferences',
@@ -91,7 +92,8 @@ class CrawlerController extends Controller
             ->where('active', 1)
             ->with(['queues' => function ($q) {
                 $q->where('queues.reviewed', 1);
-            }])
+            },
+            ])
             ->with(
                 [
                     'agent.preferences',
@@ -116,7 +118,8 @@ class CrawlerController extends Controller
             })
             ->with(['queues' => function ($q) {
                 $q->where('queues.processed', 0);
-            }])
+            },
+            ])
             ->with(
                 [
                     'agent.preferences',
@@ -213,7 +216,8 @@ class CrawlerController extends Controller
 
     public function destroy(Crawler $crawler): ResourceCollection
     {
-        // $crawler->delete();
+        $crawler->delete();
+
         return ResourceCollection::make(
             Crawler::with(
                 [
@@ -229,7 +233,7 @@ class CrawlerController extends Controller
 
     public function ip($ip = null): JsonResponse
     {
-        $final = ($ip) ?: request()->ip();
+        $final = $ip ?: request()->ip();
         if (!$this->isLocalAddress($final)) {
             return response()->json([
                 'result' => IPStackFinderFacade::get($final),

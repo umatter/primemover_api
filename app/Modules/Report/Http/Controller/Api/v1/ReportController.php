@@ -33,13 +33,13 @@ class ReportController extends Controller
         $env = env('APP_ENV');
         $dev = env('APP_DEV_API_URL');
         $prod = env('APP_PROD_API_URL');
-        $path = 'local' === $env ? $dev : $prod;
+        $path = $env === 'local' ? $dev : $prod;
 
         $job = Job::findOrFail($request->job_id);
         $desc = 'Bot: ' . $job->queue->crawler->name . ' | Job-Name: ' . $job->name . ', Job-ID: ' . $job->id . ', Job-Type: ' . $job->type . ')';
 
         $data['job_id'] = $request->job_id;
-        $data['description'] = ($request->description) ? $request->description : $desc;
+        $data['description'] = $request->description ? $request->description : $desc;
         $data['user_id'] = auth()->user() ? auth()->user()->id : 1;
         $data['filecontent'] = $request->filecontent;
         $data['filename'] = $request->filename;

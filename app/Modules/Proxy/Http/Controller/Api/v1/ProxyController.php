@@ -27,7 +27,7 @@ class ProxyController extends Controller
 
         $response = $proxies
             ->when($request->getPaged(), fn (Builder $builder) => $builder->paginate($request->getPaged()))
-            ->when(!$request->getPaged(), fn (Builder $builder) => $builder->get());
+            ->when(! $request->getPaged(), fn (Builder $builder) => $builder->get());
 
         return ResourceCollection::make($response)
             ->additional([

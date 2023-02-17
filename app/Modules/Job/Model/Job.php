@@ -8,7 +8,6 @@ use App\Modules\Behavior\Model\Behavior;
 use App\Modules\Crawler\Model\Crawler;
 use App\Modules\Queue\Model\Queue;
 use App\Modules\Report\Model\Report;
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
