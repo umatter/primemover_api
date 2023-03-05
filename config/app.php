@@ -179,6 +179,7 @@ return [
         App\Providers\RouteServiceProvider::class,
         App\Providers\TelescopeServiceProvider::class,
         \Torann\GeoIP\GeoIPServiceProvider::class,
+        Laravel\Passport\PassportServiceProvider::class,
     ],
 
     /*
