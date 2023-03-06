@@ -40,7 +40,6 @@ class ChangeCrawlerFkOndelete extends Migration
                 ->nullOnDelete();
         });
 
-
         Schema::table('crawlers', function (Blueprint $table) {
             $table->dropForeign(['agent_id']);
             $table->unsignedBigInteger('agent_id')->nullable()->change();
@@ -110,6 +109,5 @@ class ChangeCrawlerFkOndelete extends Migration
      */
     public function down()
     {
-        //
     }
 }

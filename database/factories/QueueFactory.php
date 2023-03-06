@@ -1,17 +1,30 @@
 <?php
 
-/** @var \Illuminate\Database\Eloquent\Factory $factory */
+namespace Database\Factories;
 
-use App\Queue;
-use Faker\Generator as Faker;
+use App\Modules\Crawler\Model\Crawler;
+use App\Modules\Queue\Model\Queue;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
-$factory->define(Queue::class, function (Faker $faker) {
-    return [
-        'user_id' => 1,
-        //'crawler_id' => $faker->randomElement([1, 2, 3, 4, 5]),
-        'crawler_id' => 1,
-        'name' => $faker->lastName,
-        'description' => $faker->text,
-        'active' => $faker->randomElement([1, 0]),
-    ];
-});
+class QueueFactory extends Factory
+{
+    /**
+     * @var string
+     */
+    protected $model = Queue::class;
+
+    public function definition(): array
+    {
+        return [
+            'user_id' => 1,
+            'crawler_id' => Crawler::query()->inRandomOrder()->first()->id,
+            'name' => $this->faker->name,
+            'status_code' => $this->faker->randomElement(['success', 'failed']),
+            'description' => 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor.',
+            'processing' => $this->faker->randomElement([1, 0]),
+            'processed' => $this->faker->randomElement([1, 0]),
+            'reviewed' => $this->faker->randomElement([1, 0]),
+            'new' => $this->faker->randomElement([1, 0]),
+        ];
+    }
+}

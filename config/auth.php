@@ -1,7 +1,6 @@
 <?php
 
 return [
-
     /*
     |--------------------------------------------------------------------------
     | Authentication Defaults
@@ -68,7 +67,7 @@ return [
     'providers' => [
         'users' => [
             'driver' => 'eloquent',
-            'model' => App\User::class,
+            'model' => \App\Models\User::class,
         ],
 
         // 'users' => [
@@ -100,4 +99,8 @@ return [
         ],
     ],
 
+    'passport' => [
+        'client_id' => env('PASSPORT_CLIENT_ID'),
+        'client_secret' => env('PASSPORT_CLIENT_SECRET'),
+    ],
 ];

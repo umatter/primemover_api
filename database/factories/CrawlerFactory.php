@@ -1,18 +1,27 @@
 <?php
 
-/** @var \Illuminate\Database\Eloquent\Factory $factory */
+namespace Database\Factories;
 
-use App\Crawler;
-use Faker\Generator as Faker;
+use App\Modules\Crawler\Model\Crawler;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
-$factory->define(Crawler::class, function (Faker $faker) {
-    return [
-        'user_id' => 1,
-        'name' => $faker->lastName,
-        'description' => $faker->text,
-        'active' => 1,
-        'proxy_id' => 1,
-        'agent_id' => 1,
-        'configuration_id' => 1,
-    ];
-});
+class CrawlerFactory extends Factory
+{
+    /**
+     * @var string
+     */
+    protected $model = Crawler::class;
+
+    public function definition(): array
+    {
+        return [
+            'user_id' => 1,
+            'name' => $this->faker->lastName,
+            'description' => $this->faker->text,
+            'active' => 1,
+            'proxy_id' => 1,
+            'agent_id' => 1,
+            'configuration_id' => 1,
+        ];
+    }
+}

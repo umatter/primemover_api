@@ -1,18 +1,26 @@
 <?php
 
-/** @var \Illuminate\Database\Eloquent\Factory $factory */
+namespace Database\Factories;
 
-use App\Agent;
-use Faker\Generator as Faker;
+use App\Modules\Agent\Model\Agent;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
-$factory->define(Agent::class, function (Faker $faker) {
-    return [
-        'user_id' => 1,
-        'name' => $faker->lastName,
-        'description' => $faker->text,
-        'identification' => $faker->randomElement(['User-Agent: Multilogin', 'User-Agent: Mozilla/5.0', 'User-Agent: Mozilla/4.0', 'User-Agent: Mozilla/6.0']),
-        'multilogin_id' => $faker->uuid,
-        'active' => $faker->randomElement([1, 0]),
-    ];
-});
+class AgentFactory extends Factory
+{
+    /**
+     * @var string
+     */
+    protected $model = Agent::class;
 
+    public function definition(): array
+    {
+        return [
+            'user_id' => 1,
+            'name' => $this->faker->lastName,
+            'description' => $this->faker->text,
+            'identification' => $this->faker->randomElement(['User-Agent: Multilogin', 'User-Agent: Mozilla/5.0', 'User-Agent: Mozilla/4.0', 'User-Agent: Mozilla/6.0']),
+            'multilogin_id' => $this->faker->uuid,
+            'active' => $this->faker->randomElement([1, 0]),
+        ];
+    }
+}

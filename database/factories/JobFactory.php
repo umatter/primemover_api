@@ -1,18 +1,36 @@
 <?php
 
-/** @var \Illuminate\Database\Eloquent\Factory $factory */
+namespace Database\Factories;
 
-use App\Job;
-use Faker\Generator as Faker;
+use App\Modules\Job\Model\Job;
+use App\Modules\Queue\Model\Queue;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
-$factory->define(Job::class, function (Faker $faker) {
-    return [
-        'user_id' => 1,
-        //'queue_id' => $faker->randomElement([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]),
-        'queue_id' => 1,
-        'name' => $faker->lastName,
-        'description' => $faker->text,
-        'type' => $faker->word,
-        'active' => $faker->randomElement([1, 0]),
-    ];
-});
+class JobFactory extends Factory
+{
+    /**
+     * @var string
+     */
+    protected $model = Job::class;
+
+    public function definition(): array
+    {
+        $jobTypes = [
+            'visitjob',
+            'entertextfieldjob',
+            'waitjob',
+            'singleselecturljob',
+            'testjob',
+        ];
+
+        return [
+            'user_id' => 1,
+            'queue_id' => Queue::query()->inRandomOrder()->first()->id,
+            'name' => $this->faker->lastName,
+            'status_code' => $this->faker->randomElement(['failed', 'success']),
+            'status_message' => $this->faker->randomElement(['Random', 'Message']),
+            'type' => $this->faker->randomElement($jobTypes),
+            'active' => 1,
+        ];
+    }
+}

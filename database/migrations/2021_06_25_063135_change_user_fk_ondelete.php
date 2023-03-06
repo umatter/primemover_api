@@ -76,7 +76,6 @@ class ChangeUserFkOndelete extends Migration
                 ->onDelete('cascade');
         });
 
-
         Schema::table('behaviors', function (Blueprint $table) {
             $table->dropForeign(['user_id']);
 
@@ -85,7 +84,6 @@ class ChangeUserFkOndelete extends Migration
                 ->on('users')
                 ->onDelete('cascade');
         });
-
 
         Schema::table('reports', function (Blueprint $table) {
             $table->dropForeign(['user_id']);
@@ -96,7 +94,6 @@ class ChangeUserFkOndelete extends Migration
                 ->onDelete('cascade');
         });
 
-
         Schema::table('params', function (Blueprint $table) {
             $table->dropForeign(['user_id']);
 
@@ -105,7 +102,6 @@ class ChangeUserFkOndelete extends Migration
                 ->on('users')
                 ->onDelete('cascade');
         });
-
 
         Schema::table('preferences', function (Blueprint $table) {
             $table->dropForeign(['user_id']);
@@ -116,7 +112,6 @@ class ChangeUserFkOndelete extends Migration
                 ->onDelete('cascade');
         });
 
-
         Schema::table('outlets', function (Blueprint $table) {
             $table->dropForeign(['user_id']);
 
@@ -125,7 +120,6 @@ class ChangeUserFkOndelete extends Migration
                 ->on('users')
                 ->onDelete('cascade');
         });
-
 
         Schema::table('terms', function (Blueprint $table) {
             $table->dropForeign(['user_id']);
@@ -144,6 +138,5 @@ class ChangeUserFkOndelete extends Migration
      */
     public function down()
     {
-        //
     }
 }

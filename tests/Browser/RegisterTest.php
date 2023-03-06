@@ -2,11 +2,14 @@
 
 namespace Tests\Browser;
 
-use App\User;
+use App\Models\User;
 use Tests\Browser\Pages\Home;
 use Tests\Browser\Pages\Register;
 use Tests\DuskTestCase;
 
+/**
+ * @internal
+ */
 class RegisterTest extends DuskTestCase
 {
     public function setUp(): void
@@ -17,10 +20,10 @@ class RegisterTest extends DuskTestCase
     }
 
     /** @test */
-    public function register_with_valid_data()
+    public function registerWithValidData()
     {
         $this->browse(function ($browser) {
-            $browser->visit(new Register)
+            $browser->visit(new Register())
                 ->submit([
                     'name' => 'Test User',
                     'email' => 'test@test.app',
@@ -32,12 +35,12 @@ class RegisterTest extends DuskTestCase
     }
 
     /** @test */
-    public function can_not_register_with_the_same_twice()
+    public function canNotRegisterWithTheSameTwice()
     {
         $user = factory(User::class)->create();
 
         $this->browse(function ($browser) use ($user) {
-            $browser->visit(new Register)
+            $browser->visit(new Register())
                 ->submit([
                     'name' => 'Test User',
                     'email' => $user->email,

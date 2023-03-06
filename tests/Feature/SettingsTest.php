@@ -2,13 +2,16 @@
 
 namespace Tests\Feature;
 
-use App\User;
+use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;
 
+/**
+ * @internal
+ */
 class SettingsTest extends TestCase
 {
-    /** @var \App\User */
+    /** @var \App\Models\User */
     protected $user;
 
     public function setUp(): void
@@ -19,7 +22,7 @@ class SettingsTest extends TestCase
     }
 
     /** @test */
-    public function update_profile_info()
+    public function updateProfileInfo()
     {
         $this->actingAs($this->user)
             ->patchJson('/api/settings/profile', [
@@ -37,7 +40,7 @@ class SettingsTest extends TestCase
     }
 
     /** @test */
-    public function update_password()
+    public function updatePassword()
     {
         $this->actingAs($this->user)
             ->patchJson('/api/settings/password', [

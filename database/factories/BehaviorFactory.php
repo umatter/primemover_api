@@ -1,18 +1,27 @@
 <?php
 
-/** @var Factory $factory */
+namespace Database\Factories;
 
-use App\Behavior;
-use Faker\Generator as Faker;
-use Illuminate\Database\Eloquent\Factory;
+use App\Modules\Behavior\Model\Behavior;
+use App\Modules\Job\Model\Job;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
-$factory->define(Behavior::class, function (Faker $faker) {
-    return [
-        'user_id' => $faker->randomElement([1, 2]),
-        'job_id' => App\Job::where('active', 1)->get(['id'])->random(),
-        'name' => $faker->randomElement(['type', 'url', 'other']),
-        'description' => $faker->text,
-        'value' => $faker->randomElement(['lorem', 'dolor', 'ipsum']),
-        'active' => $faker->randomElement([1, 0]),
-    ];
-});
+class BehaviorFactory extends Factory
+{
+    /**
+     * @var string
+     */
+    protected $model = Behavior::class;
+
+    public function definition(): array
+    {
+        return [
+            'user_id' => $this->faker->randomElement([1, 2]),
+            'job_id' => Job::query()->where('active', 1)->get(['id'])->random(),
+            'name' => $this->faker->randomElement(['type', 'url', 'other']),
+            'description' => $this->faker->text,
+            'value' => $this->faker->randomElement(['lorem', 'dolor', 'ipsum']),
+            'active' => $this->faker->randomElement([1, 0]),
+        ];
+    }
+}

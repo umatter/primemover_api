@@ -1,19 +1,14 @@
 <?php
 
+namespace Database\Seeders;
+
+use App\Modules\Report\Model\Report;
 use Illuminate\Database\Seeder;
-use Carbon\Carbon;
 
 class ReportsTableSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     *
-     * @return void
-     */
-    public function run()
+    public function run(): void
     {
-        $fake = factory(App\Report::class, 1)->create();
-
+        Report::factory(1)->create();
     }
-
 }

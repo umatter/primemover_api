@@ -1,14 +1,24 @@
 <?php
 
-/** @var \Illuminate\Database\Eloquent\Factory $factory */
+namespace Database\Factories;
 
-use App\Experiment;
-use Faker\Generator as Faker;
+use App\Models\User;
+use App\Modules\Experiment\Model\Experiment;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
-$factory->define(Experiment::class, function (Faker $faker) {
-    return [
-        'user_id' => 1,
-        'name' => $faker->lastName,
-        'description' => $faker->text,
-    ];
-});
+class ExperimentFactory extends Factory
+{
+    /**
+     * @var string
+     */
+    protected $model = Experiment::class;
+
+    public function definition(): array
+    {
+        return [
+            'user_id' => User::query()->inRandomOrder()->first()->id,
+            'name' => $this->faker->name,
+            'description' => $this->faker->sentence(),
+        ];
+    }
+}

@@ -29,7 +29,6 @@ class CreateReportsTable extends Migration
             // Foreign keys
             $table->foreignId('user_id')->constrained()->onDelete('restrict');
             $table->foreignId('job_id')->constrained()->onDelete('restrict');
-
         });
     }
 

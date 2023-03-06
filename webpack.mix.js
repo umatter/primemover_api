@@ -3,7 +3,7 @@ const fs = require('fs-extra')
 const mix = require('laravel-mix')
 require('laravel-mix-versionhash')
 const publicDir = path.resolve(__dirname, './public')
-//const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')
+// const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')
 
 /*
  |--------------------------------------------------------------------------
@@ -17,7 +17,6 @@ const publicDir = path.resolve(__dirname, './public')
  */
 
 mix
-  /* CSS */
   .sass('resources/sass/main.scss', 'public/dist/css/dashmix.css')
   .sass('resources/sass/dashmix/themes/xeco.scss', 'public/dist/css/themes/')
   .sass('resources/sass/dashmix/themes/xinspire.scss', 'public/dist/css/themes/')
@@ -27,16 +26,14 @@ mix
   .sass('resources/sass/dashmix/themes/xdream.scss', 'public/dist/css/themes/')
   .sass('resources/sass/dashmix/themes/xpro.scss', 'public/dist/css/themes/')
   .sass('resources/sass/dashmix/themes/xplay.scss', 'public/dist/css/themes/')
-  //.sass('resources/sass/app.scss', 'public/dist/css')
+  // .sass('resources/sass/app.scss', 'public/dist/css')
 
   /* JS */
   .js('resources/js/dashmix/app.js', 'public/dist/js/dashmix.app.js')
   .js('resources/js/app.js', 'public/dist/js')
 
-
   /* Tools */
   .disableNotifications()
-
 
 if (mix.inProduction()) {
   mix
@@ -47,7 +44,7 @@ if (mix.inProduction()) {
   mix.sourceMaps()
   mix.copyDirectory(path.join(publicDir, 'build', 'dist'), path.join(publicDir, 'dist'))
 }
-
+mix.options([])
 
 mix.webpackConfig({
   plugins: [
@@ -73,7 +70,7 @@ mix.webpackConfig({
           filename: 'dist/js/[name].js'
         }
       }
-    },
+    }
   }
 })
 
@@ -83,8 +80,8 @@ mix.then(() => {
   }
 })
 
-function publishAseets() {
-  //const publicDir = path.resolve(__dirname, './public')
+function publishAseets () {
+  // const publicDir = path.resolve(__dirname, './public')
 
   if (mix.inProduction()) {
     fs.removeSync(path.join(publicDir, 'dist'))

@@ -2,12 +2,15 @@
 
 namespace Tests\Feature;
 
-use App\User;
+use App\Models\User;
 use Tests\TestCase;
 
+/**
+ * @internal
+ */
 class LoginTest extends TestCase
 {
-    /** @var \App\User */
+    /** @var \App\Models\User */
     protected $user;
 
     public function setUp(): void
@@ -24,13 +27,13 @@ class LoginTest extends TestCase
             'email' => $this->user->email,
             'password' => 'password',
         ])
-        ->assertSuccessful()
-        ->assertJsonStructure(['token', 'expires_in'])
-        ->assertJson(['token_type' => 'bearer']);
+            ->assertSuccessful()
+            ->assertJsonStructure(['token', 'expires_in'])
+            ->assertJson(['token_type' => 'bearer']);
     }
 
     /** @test */
-    public function fetch_the_current_user()
+    public function fetchTheCurrentUser()
     {
         $this->actingAs($this->user)
             ->getJson('/api/user')
@@ -39,17 +42,17 @@ class LoginTest extends TestCase
     }
 
     /** @test */
-    public function log_out()
+    public function logOut()
     {
         $token = $this->postJson('/api/login', [
             'email' => $this->user->email,
             'password' => 'password',
         ])->json()['token'];
 
-        $this->postJson("/api/logout?token=$token")
+        $this->postJson("/api/logout?token={$token}")
             ->assertSuccessful();
 
-        $this->getJson("/api/user?token=$token")
+        $this->getJson("/api/user?token={$token}")
             ->assertStatus(401);
     }
 }

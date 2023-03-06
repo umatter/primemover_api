@@ -1,17 +1,15 @@
 <?php
 
+namespace Database\Seeders;
+
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class AgentsTableSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     *
-     * @return void
-     */
-    public function run()
+    public function run(): void
     {
-        //$fake = factory(App\Agent::class, 10)->create();
+        // $fake = factory(App\Models\Agent::class, 10)->create();
         // fec6f490-7c12-4551-afe3-163ea11a5b3b
 
         DB::table('agents')->insert([
@@ -56,7 +54,7 @@ class AgentsTableSeeder extends Seeder
                 'user_id' => 1,
                 'identification' => 'User-Agent: Multilogin',
                 'multilogin_id' => '9c7dc0a1-5070-4d4a-b2f6-58a1c1b5993a',
-            ]
+            ],
         ]);
     }
 }
