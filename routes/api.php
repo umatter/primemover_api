@@ -47,6 +47,7 @@ Route::prefix('v1')->group(function () {
             ->group(function () {
                 Route::get('experiments-list', 'all');
                 Route::delete('{experiment}/destroy', 'forceDelete');
+                Route::post('upload', 'upload');
             });
 
         Route::controller(QueueController::class)
