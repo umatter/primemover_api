@@ -12,6 +12,7 @@ use App\Modules\Experiment\Http\Request\ExperimentStoreRequest;
 use App\Modules\Experiment\Model\Experiment;
 use App\Modules\Job\Http\Request\StoreJobRequest;
 use App\Modules\Job\Model\Job;
+use App\Modules\Param\Model\Param;
 use App\Modules\Proxy\Http\Request\ProxyIndexRequest;
 use App\Modules\Proxy\Model\Proxy;
 use App\Modules\Queue\Http\Request\StoreQueueRequest;
@@ -141,6 +142,22 @@ class ExperimentController extends Controller
                 $requestConfiguration = new ConfigurationStoreRequest($item['configuration'][0]);
                 $validationConfiguration = Validator::validate([...$item['configuration'][0], 'user_id' => Auth::id(), 'active' => $item['active']], $requestConfiguration->rules());
                 $configuration = Configuration::create($validationConfiguration);
+
+                if($configuration) {
+                    $params = $requestConfiguration->params[0];
+                    Param::create([
+                        'pi' => $params["pi"],
+                        'psi' => $params["psi"],
+                        'alpha' => $params["alpha"],
+                        'tau' => $params["tau"],
+                        'kappa' => $params["kappa"],
+                        'beta' => $params["beta"],
+                        'search_terms' => $params['search_terms'],
+                        'user_id' => Auth::id(),
+                        'configuration_id' => $configuration->id
+                    ]);
+                }
+                
     
                 $requestProxy = new ProxyIndexRequest($item['proxy'][0]);
                 $proxy = Proxy::create([...$requestProxy->all(), 'user_id' => Auth::id()]);
