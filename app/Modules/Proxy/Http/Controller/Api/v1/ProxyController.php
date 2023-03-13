@@ -4,49 +4,29 @@ namespace App\Modules\Proxy\Http\Controller\Api\v1;
 
 use App\Http\Controllers\API\v1\Controller;
 use App\Modules\Proxy\Http\Request\ProxyIndexRequest;
+use App\Modules\Proxy\Http\Service\ProxyService;
 use App\Modules\Proxy\Model\Proxy;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Resources\Json\ResourceCollection;
-use Illuminate\Support\Facades\Auth;
-use Spatie\QueryBuilder\AllowedFilter;
-use Spatie\QueryBuilder\QueryBuilder;
 
 class ProxyController extends Controller
 {
+    protected $proxyService;
+
+    public function __construct(ProxyService $proxyService)
+    {
+        $this->proxyService = $proxyService;
+    }
+    
     public function index(ProxyIndexRequest $request): ResourceCollection
     {
-        $proxies = QueryBuilder::for(Proxy::class)
-            ->allowedFilters([
-                AllowedFilter::scope('search'),
-                AllowedFilter::scope('after'),
-                AllowedFilter::scope('recent'),
-            ])
-            ->latest();
-
-        $response = $proxies
-            ->when($request->getPaged(), fn (Builder $builder) => $builder->paginate($request->getPaged()))
-            ->when(! $request->getPaged(), fn (Builder $builder) => $builder->get());
-
-        return ResourceCollection::make($response)
-            ->additional([
-                'values' => [
-                    'name' => $proxies->pluck('name')->unique(),
-                    'hostname' => $proxies->pluck('hostname')->unique(),
-                    'username' => $proxies->pluck('username')->unique(),
-                    'port' => $proxies->pluck('port')->unique(),
-                ],
-                'count' => $proxies->count(),
-            ]);
+        return $this->proxyService->getData($request);
     }
 
     public function store(Request $request): JsonResource
     {
-        $data = $request->all();
-        $data['user_id'] = Auth::id() ?? 1;
-
-        $proxy = Proxy::query()->create($data);
+        $proxy = $this->proxyService->save($request->all());
 
         return JsonResource::make($proxy);
     }
@@ -63,20 +43,11 @@ class ProxyController extends Controller
 
     public function update(Request $request, Proxy $proxy): JsonResource
     {
-        $data = $request->all();
-        $proxy->update($data);
-
-        return JsonResource::make($proxy);
+        return JsonResource::make($this->proxyService->update($request->all(), $proxy));
     }
 
     public function destroy(Proxy $proxy): ResourceCollection
     {
-        $proxy->delete();
-
-        return ResourceCollection::make(
-            Proxy::with(
-                ['user', 'crawler']
-            )->latest()->get()
-        );
+        return ResourceCollection::make($this->proxyService->delete($proxy));
     }
 }

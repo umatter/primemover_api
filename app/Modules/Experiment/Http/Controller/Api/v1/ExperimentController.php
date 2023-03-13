@@ -2,38 +2,33 @@
 
 namespace App\Modules\Experiment\Http\Controller\Api\v1;
 
-use App\Facades\Services\PreferenceService;
 use App\Http\Controllers\API\v1\Controller;
 use App\Modules\Experiment\Http\Request\ExperimentStoreRequest;
+use App\Modules\Experiment\Http\Service\ExperimentService;
 use App\Modules\Experiment\Model\Experiment;
 use Exception;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Resources\Json\ResourceCollection;
-use Spatie\QueryBuilder\AllowedFilter;
-use Spatie\QueryBuilder\QueryBuilder;
 
 class ExperimentController extends Controller
 {
+    protected $experimentService;
+
+    public function __construct(ExperimentService $experimentService)
+    {
+        $this->experimentService = $experimentService;
+    }
+
     public function index(): ResourceCollection
     {
-        $experiments = QueryBuilder::for(Experiment::class)
-            ->allowedFilters([
-                AllowedFilter::partial('name'),
-                AllowedFilter::scope('after'),
-                AllowedFilter::scope('recent'),
-            ])
-            ->latest()
-            ->fastPaginate();
+        $experiments = $this->experimentService->getData();
 
         return ResourceCollection::make($experiments);
     }
 
     public function all(): ResourceCollection
     {
-        $experiments = Experiment::query()
-            ->latest()
-            ->select(['id', 'name'])
-            ->get();
+        $experiments = $this->experimentService->all();
 
         return ResourceCollection::make($experiments);
     }
@@ -43,26 +38,14 @@ class ExperimentController extends Controller
      */
     public function store(ExperimentStoreRequest $request): JsonResource
     {
-        $experiment = Experiment::query()->create($request->validated());
-
-        if ($request->getPreferences()) {
-            PreferenceService::createManyForModel($request->getPreferences(), $experiment);
-        }
+        $experiment = $this->experimentService->save($request);
 
         return JsonResource::make($experiment);
     }
 
     public function show(Experiment $experiment): JsonResource
     {
-        return JsonResource::make(
-            $experiment->load([
-                'crawlers.agent',
-                'crawlers.proxy',
-                'crawlers.configuration',
-                'crawlers.configuration.preferences',
-                'preferences',
-            ])
-        );
+        return JsonResource::make($this->experimentService->getById($experiment));
     }
 
     public function edit(Experiment $experiment): JsonResource
@@ -75,13 +58,7 @@ class ExperimentController extends Controller
      */
     public function update(ExperimentStoreRequest $request, Experiment $experiment): JsonResource
     {
-        $experiment->update($request->validated());
-
-        if ($request->getPreferences()) {
-            PreferenceService::createManyForModel($request->getPreferences(), $experiment);
-        }
-
-        return JsonResource::make($experiment);
+        return JsonResource::make($this->experimentService->update($request, $experiment));
     }
 
     /**
@@ -89,12 +66,7 @@ class ExperimentController extends Controller
      */
     public function destroy(Experiment $experiment): JsonResource
     {
-        $deleted = $experiment->delete();
-
-        return JsonResource::make([
-            'experiment' => $experiment,
-            'deleted' => $deleted,
-        ]);
+        return JsonResource::make($this->experimentService->delete($experiment));
     }
 
     /**
@@ -102,19 +74,6 @@ class ExperimentController extends Controller
      */
     public function forceDelete(Experiment $experiment): JsonResource
     {
-        $experiment->crawlers()->each(function ($crawler) {
-            $crawler->proxy()->delete();
-            $crawler->agent()->delete();
-            $crawler->configuration()->delete();
-            $crawler->queues()->delete();
-        });
-        $experiment->crawlers()->delete();
-
-        $deleted = $experiment->delete();
-
-        return JsonResource::make([
-            'experiment' => $experiment,
-            'deleted' => $deleted,
-        ]);
+        return JsonResource::make($this->experimentService->forceDelete($experiment));
     }
 }
