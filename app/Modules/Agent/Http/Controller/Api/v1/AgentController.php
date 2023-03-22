@@ -4,38 +4,28 @@ namespace App\Modules\Agent\Http\Controller\Api\v1;
 
 use App\Http\Controllers\API\v1\Controller;
 use App\Modules\Agent\Http\Request\AgentStoreRequest;
+use App\Modules\Agent\Http\Service\AgentService;
 use App\Modules\Agent\Model\Agent;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 use Illuminate\Support\Facades\App;
-use Spatie\QueryBuilder\AllowedFilter;
-use Spatie\QueryBuilder\QueryBuilder;
 
 class AgentController extends Controller
 {
+    protected $agentService;
+
+    public function __construct(AgentService $agentService)
+    {
+        $this->agentService = $agentService;
+    }
+
     public function index(): ResourceCollection
     {
-        $agents = QueryBuilder::for(Agent::class)
-            ->allowedFilters([
-                AllowedFilter::scope('search'),
-                AllowedFilter::scope('after'),
-                AllowedFilter::scope('recent'),
-            ])
-            ->with('preferences')
-            ->latest();
-
+        $agents = $this->agentService->getData();
+        
         return ResourceCollection::make($agents->get())
-            ->additional([
-                'values' => [
-                    'name' => $agents->pluck('name')->unique(),
-                    'identification' => $agents->pluck('identification')->unique(),
-                    'multilogin_id' => $agents->pluck('multilogin_id')->unique(),
-                    'multilogin_profile' => $agents->pluck('multilogin_profile')->unique(),
-                    'location' => $agents->pluck('location')->unique(),
-                ],
-                'count' => $agents->count(),
-            ]);
+                ->additional($this->agentService->additional($agents));
     }
 
     public function create(): ResourceCollection
@@ -45,18 +35,14 @@ class AgentController extends Controller
 
     public function store(AgentStoreRequest $request): JsonResource
     {
-        return JsonResource::make(
-            Agent::query()->create($request->validated())
-        );
+        $newAgent = $this->agentService->save($request->validated());
+
+        return JsonResource::make($newAgent);
     }
 
     public function show($id): JsonResource
     {
-        return JsonResource::make(
-            Agent::query()
-                ->with(['preferences'])
-                ->findOr($id, fn () => ['status' => false])
-        );
+        return JsonResource::make($this->agentService->getById($id));
     }
 
     public function edit(Agent $agent): JsonResource
@@ -66,14 +52,13 @@ class AgentController extends Controller
 
     public function update(Request $request, Agent $agent): JsonResource
     {
-        $data = $request->all();
-        $agent->update($data);
+        $agent = $this->agentService->update($request->all(), $agent);
 
         return JsonResource::make($agent);
     }
 
     public function destroy(Agent $agent): JsonResource
     {
-        return JsonResource::make(['status' => $agent->delete()]);
+        return JsonResource::make($this->agentService->delete($agent));
     }
 }

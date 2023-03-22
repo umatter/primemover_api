@@ -3,18 +3,26 @@
 namespace App\Modules\Behavior\Http\Controller\Api\v1;
 
 use App\Http\Controllers\API\v1\Controller;
+use App\Modules\Behavior\Http\Service\BehaviorService;
 use App\Modules\Behavior\Model\Behavior;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Resources\Json\ResourceCollection;
-use Illuminate\Support\Facades\Auth;
 
 class BehaviorController extends Controller
 {
+    protected $behaviorService;
+
+    public function __construct(BehaviorService $behaviorService)
+    {
+        $this->behaviorService = $behaviorService;
+    }
+
+
     public function index(): ResourceCollection
     {
-        $behaviors = Behavior::with(['job', 'user'])->latest()->paginate(10);
+        $behaviors = $this->behaviorService->getData();
 
         return ResourceCollection::make($behaviors);
     }
@@ -22,16 +30,15 @@ class BehaviorController extends Controller
     public function store(Request $request): JsonResource
     {
         $data = $request->all();
-        $data['user_id'] = Auth::id() ?? 1;
 
-        $behavior = Behavior::query()->create($data);
+        $behavior = $this->behaviorService->save($data);
 
         return JsonResource::make($behavior);
     }
 
     public function show($id): JsonResource
     {
-        $behavior = Behavior::with(['user', 'job'])->findOrFail($id);
+        $behavior = $this->behaviorService->getById($id);
 
         return JsonResource::make($behavior);
     }
@@ -43,8 +50,7 @@ class BehaviorController extends Controller
 
     public function update(Request $request, Behavior $behavior): JsonResource
     {
-        $data = $request->all();
-        $behavior->update($data);
+        $behavior = $this->behaviorService->update($request->all(), $behavior);
 
         return JsonResource::make($behavior);
     }
@@ -54,7 +60,7 @@ class BehaviorController extends Controller
      */
     public function destroy(Behavior $behavior): ResourceCollection
     {
-        $behavior->delete();
+        $this->behaviorService->delete($behavior);
 
         return ResourceCollection::make(Behavior::all());
     }

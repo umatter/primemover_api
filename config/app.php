@@ -181,6 +181,18 @@ return [
         App\Providers\TelescopeServiceProvider::class,
         \Torann\GeoIP\GeoIPServiceProvider::class,
         Laravel\Passport\PassportServiceProvider::class,
+        App\Modules\Agent\Provider\AgentServiceProvider::class,
+        App\Modules\Behavior\Provider\BehaviorServiceProvider::class,
+        App\Modules\Configuration\Provider\ConfigurationServiceProvider::class,
+        App\Modules\Crawler\Provider\CrawlerServiceProvider::class,
+        App\Modules\Experiment\Provider\ExperimentServiceProvider::class,
+        App\Modules\Job\Provider\JobServiceProvider::class,
+        App\Modules\Outlet\Provider\OutletServiceProvider::class,
+        App\Modules\Param\Provider\ParamServiceProvider::class,
+        App\Modules\Proxy\Provider\ProxyServiceProvider::class,
+        App\Modules\Queue\Provider\QueueServiceProvider::class,
+        App\Modules\Report\Provider\ReportServiceProvider::class,
+        App\Modules\Term\Provider\TermServiceProvider::class,
     ],
 
     /*
