@@ -7,3 +7,5 @@ Description of some core components. Just follow the links.
 * [Use cases (Experiment, Bot, Configurations)](/docs/usecases.md)
 * [Routes (Methods, URL's)](/docs/routes.md)
 * [JSON Examples (Load, ...)](/docs/examples.md)
+
+# Jira Integration Test

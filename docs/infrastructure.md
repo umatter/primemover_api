@@ -250,3 +250,7 @@ Currently maintained by Ulrich Matter (multilogin-user@example.com)
 </tr>
 </tbody>
 </table>
+
+## GUI Login (for tests)
+user: admin@primemover.example
+pw: password
