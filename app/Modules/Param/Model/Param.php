@@ -23,6 +23,10 @@ class Param extends BaseModel
 {
     protected $guarded = [];
 
+    protected $casts = [
+        'search_terms' => 'array'
+    ];
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
