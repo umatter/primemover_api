@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 /**
  * @property int user_id
@@ -23,6 +24,8 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
  */
 class Agent extends BaseModel
 {
+    use HasFactory;
+
     protected $guarded = [];
 
     protected $visible = ['id', 'name', 'description', 'identification', 'multilogin_id', 'multilogin_profile', 'location', 'preferences', 'active'];

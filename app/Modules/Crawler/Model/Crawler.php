@@ -11,6 +11,7 @@ use App\Modules\Proxy\Model\Proxy;
 use App\Modules\Queue\Model\Queue;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
@@ -29,6 +30,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  */
 class Crawler extends BaseModel
 {
+    use HasFactory;
+    
     protected $guarded = [];
 
     protected $appends = [

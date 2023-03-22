@@ -17,26 +17,26 @@ class LoginTest extends TestCase
     {
         parent::setUp();
 
-        $this->user = factory(User::class)->create();
+        $this->user = User::factory()->create();
+        $this->artisan("passport:install");
     }
 
     /** @test */
     public function authenticate()
     {
-        $this->postJson('/api/login', [
+        $this->postJson('/api/v1/login', [
             'email' => $this->user->email,
             'password' => 'password',
         ])
             ->assertSuccessful()
-            ->assertJsonStructure(['token', 'expires_in'])
-            ->assertJson(['token_type' => 'bearer']);
+            ->assertJsonStructure(['access_token']);
     }
 
     /** @test */
     public function fetchTheCurrentUser()
     {
         $this->actingAs($this->user)
-            ->getJson('/api/user')
+            ->getJson('/api/v1/auth/user')
             ->assertSuccessful()
             ->assertJsonStructure(['id', 'name', 'email']);
     }
@@ -44,15 +44,15 @@ class LoginTest extends TestCase
     /** @test */
     public function logOut()
     {
-        $token = $this->postJson('/api/login', [
+        $token = $this->postJson('/api/v1/login', [
             'email' => $this->user->email,
             'password' => 'password',
-        ])->json()['token'];
+        ])->json()['access_token'];
 
-        $this->postJson("/api/logout?token={$token}")
+        $this->postJson("/api/v1/logout?access_token={$token}")
             ->assertSuccessful();
 
-        $this->getJson("/api/user?token={$token}")
+        $this->getJson("/api/v1/user?access_token={$token}")
             ->assertStatus(401);
     }
 }
