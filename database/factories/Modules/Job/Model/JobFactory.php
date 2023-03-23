@@ -1,6 +1,6 @@
 <?php
 
-namespace Database\Factories;
+namespace Database\Factories\Modules\Job\Model;
 
 use App\Modules\Job\Model\Job;
 use App\Modules\Queue\Model\Queue;

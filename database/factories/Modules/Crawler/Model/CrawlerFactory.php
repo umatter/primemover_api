@@ -1,6 +1,6 @@
 <?php
 
-namespace Database\Factories;
+namespace Database\Factories\Modules\Crawler\Model;
 
 use App\Modules\Crawler\Model\Crawler;
 use Illuminate\Database\Eloquent\Factories\Factory;

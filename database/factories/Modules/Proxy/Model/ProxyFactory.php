@@ -1,6 +1,6 @@
 <?php
 
-namespace Database\Factories;
+namespace Database\Factories\Modules\Proxy\Model;
 
 use App\Modules\Proxy\Model\Proxy;
 use Illuminate\Database\Eloquent\Factories\Factory;

@@ -1,6 +1,6 @@
 <?php
 
-namespace Database\Factories;
+namespace Database\Factories\Modules\Queue\Model;
 
 use App\Modules\Crawler\Model\Crawler;
 use App\Modules\Queue\Model\Queue;

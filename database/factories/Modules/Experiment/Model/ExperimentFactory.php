@@ -1,6 +1,6 @@
 <?php
 
-namespace Database\Factories;
+namespace Database\Factories\Modules\Experiment\Model;
 
 use App\Models\User;
 use App\Modules\Experiment\Model\Experiment;

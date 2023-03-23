@@ -1,6 +1,6 @@
 <?php
 
-namespace Database\Factories;
+namespace Database\Factories\Modules\Agent\Model;
 
 use App\Modules\Agent\Model\Agent;
 use Illuminate\Database\Eloquent\Factories\Factory;

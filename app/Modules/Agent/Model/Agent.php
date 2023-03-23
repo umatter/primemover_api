@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Modules\Crawler\Model\Crawler;
 use App\Modules\Preference\Model\Preference;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
@@ -23,6 +24,8 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
  */
 class Agent extends BaseModel
 {
+    use HasFactory;
+
     protected $guarded = [];
 
     protected $visible = ['id', 'name', 'description', 'identification', 'multilogin_id', 'multilogin_profile', 'location', 'preferences', 'active'];
