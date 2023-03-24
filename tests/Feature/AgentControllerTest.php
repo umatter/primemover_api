@@ -6,16 +6,15 @@ use App\Models\User;
 use App\Modules\Agent\Http\Controller\Api\v1\AgentController;
 use App\Modules\Agent\Http\Request\AgentStoreRequest;
 use App\Modules\Agent\Model\Agent;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 use Mockery as m;
 use Tests\TestCase;
 
-use function PHPUnit\Framework\assertInstanceOf;
-
+/**
+ * @internal
+ */
 class AgentControllerTest extends TestCase
 {
     protected $user;
@@ -36,14 +35,14 @@ class AgentControllerTest extends TestCase
         $this->actingAs($this->user)
             ->getJson('/api/v1/agents')
             ->assertStatus(200)
-            ->assertJsonStructure(["data", "values", "count"]);
+            ->assertJsonStructure(['data', 'values', 'count']);
 
         $this->assertInstanceOf(ResourceCollection::class, $result);
-        
-        foreach($result->resource as $agent)
-            $this->assertInstanceOf(Agent::class, $agent);
 
-    }   
+        foreach ($result->resource as $agent) {
+            $this->assertInstanceOf(Agent::class, $agent);
+        }
+    }
 
     /** @test */
     public function testCreate()
@@ -71,23 +70,23 @@ class AgentControllerTest extends TestCase
     public function testStore()
     {
         $data = [
-            "name" => "name",
-            "description" => "description",
-            "identification" => "identification",
-            "multilogin_id" => "multilogin_id",
-            "multilogin_profile" => "multilogin_profile",
-            "location" => "location",
-            "active" => 0,
-            "user_id" => $this->user->id
+            'name' => 'name',
+            'description' => 'description',
+            'identification' => 'identification',
+            'multilogin_id' => 'multilogin_id',
+            'multilogin_profile' => 'multilogin_profile',
+            'location' => 'location',
+            'active' => 0,
+            'user_id' => $this->user->id,
         ];
 
         $request = m::mock(AgentStoreRequest::class)->makePartial();
-        $request->shouldReceive("validated")->andReturn($data);
+        $request->shouldReceive('validated')->andReturn($data);
 
         $controller = new AgentController();
         $result = $controller->store($request);
 
-        $this->assertDatabaseHas("agents", $data);
+        $this->assertDatabaseHas('agents', $data);
         $this->assertInstanceOf(JsonResource::class, $result);
         $this->assertInstanceOf(Agent::class, $result->resource);
     }
@@ -111,19 +110,19 @@ class AgentControllerTest extends TestCase
         $agent = Agent::factory()->create();
 
         $data = new Request([
-            "name" => "agent updated",
-            "description" => "description",
-            "identification" => "identification",
-            "multilogin_id" => "multilogin_id",
-            "multilogin_profile" => "multilogin_profile",
-            "location" => "location",
-            "active" => 0
+            'name' => 'agent updated',
+            'description' => 'description',
+            'identification' => 'identification',
+            'multilogin_id' => 'multilogin_id',
+            'multilogin_profile' => 'multilogin_profile',
+            'location' => 'location',
+            'active' => 0,
         ]);
 
         $controller = new AgentController();
         $result = $controller->update($data, $agent);
 
-        $this->assertDatabaseHas("agents", $data->all());
+        $this->assertDatabaseHas('agents', $data->all());
         $this->assertInstanceOf(JsonResource::class, $result);
         $this->assertInstanceOf(Agent::class, $result->resource);
     }
@@ -136,8 +135,8 @@ class AgentControllerTest extends TestCase
         $controller = new AgentController();
         $result = $controller->destroy($agent);
 
-        $this->assertDatabaseMissing("agents", $agent->toArray());
+        $this->assertDatabaseMissing('agents', $agent->toArray());
         $this->assertInstanceOf(JsonResource::class, $result);
-        $this->assertEquals(true, $result->resource["status"]);
+        $this->assertEquals(true, $result->resource['status']);
     }
 }

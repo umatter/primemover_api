@@ -90,21 +90,11 @@ class CrawlerController extends Controller
     {
         $crawlers = Crawler::query()->where('testing', 1)
             ->where('active', 1)
-            ->with(['queues' => function ($q) {
-                $q->where('queues.reviewed', 1);
-            },
-            ])
-            ->with(
-                [
-                    'agent.preferences',
-                    'proxy',
-                    'configuration.preferences',
-                ]
-            )
-            ->whereHas('queues', function ($q) {
-                $q->where('reviewed', 1);
-            })
-            ->latest()->get();
+            ->with(['queues' => fn ($q) => $q->where('queues.reviewed', 1)])
+            ->with(['agent.preferences', 'proxy', 'configuration.preferences'])
+            ->whereHas('queues', fn ($q) => $q->where('reviewed', 1))
+            ->latest()
+            ->get();
 
         return ResourceCollection::make($crawlers);
     }
