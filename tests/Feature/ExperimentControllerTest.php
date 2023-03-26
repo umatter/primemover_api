@@ -7,6 +7,7 @@ use App\Models\DTO\Preference;
 use App\Models\User;
 use App\Modules\Experiment\Http\Controller\Api\v1\ExperimentController;
 use App\Modules\Experiment\Http\Request\ExperimentStoreRequest;
+use App\Modules\Experiment\Http\Service\ExperimentService;
 use App\Modules\Experiment\Model\Experiment;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -34,7 +35,7 @@ class ExperimentControllerTest extends TestCase
     /** @test */
     public function testIndex()
     {
-        $controller = new ExperimentController();
+        $controller = new ExperimentController(new ExperimentService(new Experiment()));
         $result = $controller->index();
 
         $this->assertInstanceOf(ResourceCollection::class, $result);
@@ -47,7 +48,7 @@ class ExperimentControllerTest extends TestCase
     /** @test */
     public function testAll()
     {
-        $controller = new ExperimentController();
+        $controller = new ExperimentController(new ExperimentService(new Experiment()));
         $result = $controller->all();
 
         $this->assertInstanceOf(ResourceCollection::class, $result);
@@ -73,7 +74,7 @@ class ExperimentControllerTest extends TestCase
 
         $requestMock->shouldReceive('getPreferences')->andReturn(null);
 
-        $controller = new ExperimentController();
+        $controller = new ExperimentController(new ExperimentService(new Experiment()));
         $result = $controller->store($requestMock);
 
         $this->assertInstanceOf(JsonResource::class, $result);
@@ -86,7 +87,7 @@ class ExperimentControllerTest extends TestCase
     {
         $experiment = Experiment::factory()->create();
 
-        $controller = new ExperimentController();
+        $controller = new ExperimentController(new ExperimentService(new Experiment()));
         $result = $controller->show($experiment);
 
         $this->assertInstanceOf(JsonResource::class, $result);
@@ -99,7 +100,7 @@ class ExperimentControllerTest extends TestCase
     {
         $experiment = Experiment::factory()->create();
 
-        $controller = new ExperimentController();
+        $controller = new ExperimentController(new ExperimentService(new Experiment()));
         $result = $controller->show($experiment);
 
         $this->assertInstanceOf(JsonResource::class, $result);
@@ -123,7 +124,7 @@ class ExperimentControllerTest extends TestCase
         
         $requestMock->shouldReceive('getPreferences')->andReturn(null);
 
-        $controller = new ExperimentController();
+        $controller = new ExperimentController(new ExperimentService(new Experiment()));
         $result = $controller->update($requestMock, $experiment);
 
         $this->assertInstanceOf(JsonResource::class, $result);
@@ -135,7 +136,7 @@ class ExperimentControllerTest extends TestCase
     {
         $experiment = Experiment::factory()->create();
         
-        $controller = new ExperimentController();
+        $controller = new ExperimentController(new ExperimentService(new Experiment()));
         $result = $controller->destroy($experiment);
 
         $this->assertInstanceOf(JsonResource::class, $result);
@@ -149,7 +150,7 @@ class ExperimentControllerTest extends TestCase
     {
         $experiment = Experiment::factory()->create();
 
-        $controller = new ExperimentController();
+        $controller = new ExperimentController(new ExperimentService(new Experiment()));
         $result = $controller->forceDelete($experiment);
 
         $this->assertInstanceOf(JsonResource::class, $result);

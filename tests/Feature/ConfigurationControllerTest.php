@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Modules\Configuration\Http\Controller\Api\v1\ConfigurationController;
 use App\Modules\Configuration\Http\Request\ConfigurationStoreRequest;
 use App\Modules\Configuration\Http\Request\ConfigurationUpdateRequest;
+use App\Modules\Configuration\Http\Service\ConfigurationService;
 use App\Modules\Configuration\Model\Configuration;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Resources\Json\ResourceCollection;
@@ -29,7 +30,7 @@ class ConfigurationControllerTest extends TestCase
     /** @test */
     public function testIndex()
     {
-        $controller = new ConfigurationController();
+        $controller = new ConfigurationController(new ConfigurationService(new Configuration()));
         $result = $controller->index();
 
         $this->assertInstanceOf(ResourceCollection::class, $result);
@@ -50,7 +51,7 @@ class ConfigurationControllerTest extends TestCase
         $request = m::mock(ConfigurationStoreRequest::class)->makePartial();
         $request->allows('validated')->andReturns($data);
 
-        $controller = new ConfigurationController();
+        $controller = new ConfigurationController(new ConfigurationService(new Configuration()));
         $result = $controller->store($request);
 
         $this->assertDatabaseHas('configurations', $data);
@@ -63,7 +64,7 @@ class ConfigurationControllerTest extends TestCase
     {
         $configuration = Configuration::factory()->create();
 
-        $controller = new ConfigurationController();
+        $controller = new ConfigurationController(new ConfigurationService(new Configuration()));
         $result = $controller->show($configuration);
 
         $this->assertInstanceOf(JsonResource::class, $result);
@@ -76,7 +77,7 @@ class ConfigurationControllerTest extends TestCase
     {
         $configuration = Configuration::factory()->create();
 
-        $controller = new ConfigurationController();
+        $controller = new ConfigurationController(new ConfigurationService(new Configuration()));
         $result = $controller->edit($configuration);
 
         $this->assertInstanceOf(JsonResource::class, $result);
@@ -98,7 +99,7 @@ class ConfigurationControllerTest extends TestCase
         $request = m::mock(ConfigurationUpdateRequest::class)->makePartial();
         $request->shouldReceive('validated')->andReturn($data);
 
-        $controller = new ConfigurationController();
+        $controller = new ConfigurationController(new ConfigurationService(new Configuration()));
         $result = $controller->update($request, $configuration);
 
         $this->assertDatabaseHas('configurations', $data);
@@ -112,7 +113,7 @@ class ConfigurationControllerTest extends TestCase
     {
         $configuration = Configuration::factory()->create();
 
-        $controller = new ConfigurationController();
+        $controller = new ConfigurationController(new ConfigurationService(new Configuration()));
         $result = $controller->destroy($configuration);
 
         $this->assertInstanceOf(JsonResource::class, $result);

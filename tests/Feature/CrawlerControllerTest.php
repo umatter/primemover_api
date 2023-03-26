@@ -8,6 +8,7 @@ use App\Modules\Configuration\Model\Configuration;
 use App\Modules\Crawler\Http\Controller\Api\v1\CrawlerController;
 use App\Modules\Crawler\Http\Request\StoreCrawlerRequest;
 use App\Modules\Crawler\Http\Request\UpdateCrawlerRequest;
+use App\Modules\Crawler\Http\Service\CrawlerService;
 use App\Modules\Crawler\Model\Crawler;
 use App\Modules\Experiment\Model\Experiment;
 use App\Modules\Job\Model\Job;
@@ -23,7 +24,6 @@ use Illuminate\Support\Collection;
 use Mockery as m;
 use Tests\TestCase;
 
-use function PHPUnit\Framework\assertInstanceOf;
 
 class CrawlerControllerTest extends TestCase
 {
@@ -43,7 +43,7 @@ class CrawlerControllerTest extends TestCase
     {
         $request = new Request();
 
-        $controller = new CrawlerController();
+        $controller = new CrawlerController(new CrawlerService(new Crawler()));
         $result = $controller->index($request);
         
         $this->assertInstanceOf(ResourceCollection::class, $result);
@@ -53,7 +53,7 @@ class CrawlerControllerTest extends TestCase
     /** @test */
     public function testInactive()
     {
-        $controller = new CrawlerController();
+        $controller = new CrawlerController(new CrawlerService(new Crawler()));
         $result = $controller->inactive();
 
         $this->assertInstanceOf(ResourceCollection::class, $result);
@@ -66,7 +66,7 @@ class CrawlerControllerTest extends TestCase
     /** @test */
     public function testWithProcessedQueues()
     {
-        $controller = new CrawlerController();
+        $controller = new CrawlerController(new CrawlerService(new Crawler()));
         $result = $controller->withProcessedQueues();
 
         $this->assertInstanceOf(ResourceCollection::class, $result);
@@ -79,45 +79,48 @@ class CrawlerControllerTest extends TestCase
     /** @test */
     public function testWithReviewedQueues()
     {
-        $controller = new CrawlerController();
+        $controller = new CrawlerController(new CrawlerService(new Crawler()));
         $result = $controller->withReviewedQueues();
 
         $this->assertInstanceOf(ResourceCollection::class, $result);
         $this->assertInstanceOf(Collection::class, $result->resource);
 
-        if($result->resource[0])
-            $this->assertInstanceOf(Crawler::class, $result->resource[0]);
+        foreach ($result->resource as $crawler){
+            $this->assertInstanceOf(Crawler::class, $crawler);
+        }
     }
 
     /** @test */
     public function testWithUnprocessedQueues()
     {
-        $controller = new CrawlerController();
+        $controller = new CrawlerController(new CrawlerService(new Crawler()));
         $result = $controller->withUnprocessedQueues();
 
         $this->assertInstanceOf(ResourceCollection::class, $result);
         $this->assertInstanceOf(Collection::class, $result->resource);
 
-        if($result->resource[0])
-            $this->assertInstanceOf(Crawler::class, $result->resource[0]);
+        foreach ($result->resource as $crawler){
+            $this->assertInstanceOf(Crawler::class, $crawler);
+        }
     }
 
     /** @test */
     public function testTesting()
     {
-        $controller = new CrawlerController();
+        $controller = new CrawlerController(new CrawlerService(new Crawler()));
         $result = $controller->testing();
 
         $this->assertInstanceOf(ResourceCollection::class, $result);
 
-        if($result->resource[0])
-            $this->assertInstanceOf(Crawler::class, $result->resource[0]);
+        foreach ($result->resource as $crawler){
+            $this->assertInstanceOf(Crawler::class, $crawler);
+        }
     }
 
     /** @test */
     public function testCreate()
     {
-        $controller = new CrawlerController();
+        $controller = new CrawlerController(new CrawlerService(new Crawler()));
         $result = $controller->create();
 
         $this->assertInstanceOf(JsonResource::class, $result);
@@ -144,7 +147,7 @@ class CrawlerControllerTest extends TestCase
         $requestMock = m::mock(StoreCrawlerRequest::class)->makePartial();
         $requestMock->shouldReceive('validated')->andReturn($data);
 
-        $controller = new CrawlerController();
+        $controller = new CrawlerController(new CrawlerService(new Crawler()));
         $result = $controller->store($requestMock);
 
         $this->assertInstanceOf(JsonResource::class, $result);
@@ -177,7 +180,7 @@ class CrawlerControllerTest extends TestCase
 
         $crawler = $crawlerMock->firstOrFail();
 
-        $controller = new CrawlerController();
+        $controller = new CrawlerController(new CrawlerService(new Crawler()));
         $result = $controller->show($crawler);
 
         $this->assertInstanceOf(JsonResource::class, $result);
@@ -210,7 +213,7 @@ class CrawlerControllerTest extends TestCase
 
         $crawler = $crawlerMock->firstOrFail();
 
-        $controller = new CrawlerController();
+        $controller = new CrawlerController(new CrawlerService(new Crawler()));
         $result = $controller->edit($crawler);
 
         $this->assertInstanceOf(JsonResource::class, $result);
@@ -249,7 +252,7 @@ class CrawlerControllerTest extends TestCase
         $requestMock = m::mock(UpdateCrawlerRequest::class)->makePartial();
         $requestMock->shouldReceive('validated')->andReturn($data);
 
-        $controller = new CrawlerController();
+        $controller = new CrawlerController(new CrawlerService(new Crawler()));
         $result = $controller->update($requestMock, $crawler->firstOrFail());
 
         $this->assertInstanceOf(JsonResource::class, $result);
@@ -259,7 +262,7 @@ class CrawlerControllerTest extends TestCase
     /** @test */
     public function testDisableProdCrawlers()
     {
-        $controller = new CrawlerController();
+        $controller = new CrawlerController(new CrawlerService(new Crawler()));
         $result = $controller->disableProdCrawlers();
 
         $this->assertInstanceOf(ResourceCollection::class, $result);
@@ -285,7 +288,7 @@ class CrawlerControllerTest extends TestCase
             "experiment_id" => $experiment->id
         ]);
 
-        $controller = new CrawlerController();
+        $controller = new CrawlerController(new CrawlerService(new Crawler()));
         $result = $controller->forceDelete($crawler);
 
         $this->assertInstanceOf(ResourceCollection::class, $result);
@@ -319,7 +322,7 @@ class CrawlerControllerTest extends TestCase
 
         $crawler = $crawlerMock->firstOrFail();
 
-        $controller = new CrawlerController();
+        $controller = new CrawlerController(new CrawlerService(new Crawler()));
         $result = $controller->destroy($crawler);
 
         $this->assertInstanceOf(ResourceCollection::class, $result);
@@ -334,27 +337,16 @@ class CrawlerControllerTest extends TestCase
             "ip" => "127.0.0.2"
         ]);
 
-        $controller = new CrawlerController();
+        $controller = new CrawlerController(new CrawlerService(new Crawler()));
         $result = $controller->ip($request->ip);
 
         $this->assertInstanceOf(JsonResponse::class, $result);
     }
 
     /** @test */
-    public function testIsLocalAddress()
-    {
-        $ip = "127.0.0.1";
-
-        $controller = new CrawlerController();
-        $result= $controller->isLocalAddress($ip);
-
-        $this->assertIsBool($result);
-    }
-
-    /** @test */
     public function testUndo()
     {
-        $controller = new CrawlerController();
+        $controller = new CrawlerController(new CrawlerService(new Crawler()));
         $result = $controller->undo();
 
 
@@ -371,7 +363,7 @@ class CrawlerControllerTest extends TestCase
     /** @test */
     public function testCleanup()
     {
-        $controller = new CrawlerController();
+        $controller = new CrawlerController(new CrawlerService(new Crawler()));
         $result = $controller->cleanup();
 
         $this->assertInstanceOf(ResourceCollection::class, $result);
@@ -432,7 +424,7 @@ class CrawlerControllerTest extends TestCase
             return $request;
         });
 
-        $controller = new CrawlerController();
+        $controller = new CrawlerController(new CrawlerService(new Crawler()));
         $result = $controller->load();
 
         $this->assertInstanceOf(JsonResponse::class, $result);
@@ -494,8 +486,8 @@ class CrawlerControllerTest extends TestCase
             ],
         ];
 
-        $controller = new CrawlerController();
-        $controller->makeQueues($data, $crawler);
+        $controller = new CrawlerController(new CrawlerService(new Crawler()));
+        $controller->makeQueues($crawler, $data);
 
         $this->assertTrue(true);
     }
@@ -521,7 +513,7 @@ class CrawlerControllerTest extends TestCase
             ]
         ];
 
-        $controller = new CrawlerController();
+        $controller = new CrawlerController(new CrawlerService(new Crawler()));
         $controller->makeJobs($data, $queue);
 
         $this->assertTrue(true);
@@ -543,7 +535,7 @@ class CrawlerControllerTest extends TestCase
             ]
         ];
 
-        $controller = new CrawlerController();
+        $controller = new CrawlerController(new CrawlerService(new Crawler()));
         $controller->makeBehaviors($data, $job);
         
         $this->assertTrue(true);
@@ -576,7 +568,7 @@ class CrawlerControllerTest extends TestCase
             ]
         ];
 
-        $controller = new CrawlerController();
+        $controller = new CrawlerController(new CrawlerService(new Crawler()));
         $result = $controller->makeProxies($data, $crawler);
 
         $this->assertInstanceOf(Proxy::class, $result);
@@ -606,7 +598,7 @@ class CrawlerControllerTest extends TestCase
             ]
         ];
 
-        $controller = new CrawlerController();
+        $controller = new CrawlerController(new CrawlerService(new Crawler()));
         $result = $controller->makeConfigurations($data, $crawler);
 
         $this->assertInstanceOf(Configuration::class, $result);
@@ -626,7 +618,7 @@ class CrawlerControllerTest extends TestCase
             ]
         ];
 
-        $controller = new CrawlerController();
+        $controller = new CrawlerController(new CrawlerService(new Crawler()));
         $controller->makePreferences($data, $agent);
 
         $this->assertTrue(true);
@@ -658,7 +650,7 @@ class CrawlerControllerTest extends TestCase
             ]
         ];
 
-        $controller = new CrawlerController();
+        $controller = new CrawlerController(new CrawlerService(new Crawler()));
         $result = $controller->makeAgents($data, $crawler);
 
         $this->assertInstanceOf(Agent::class, $result);

@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\User;
 use App\Modules\Agent\Http\Controller\Api\v1\AgentController;
 use App\Modules\Agent\Http\Request\AgentStoreRequest;
+use App\Modules\Agent\Http\Service\AgentService;
 use App\Modules\Agent\Model\Agent;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -29,7 +30,7 @@ class AgentControllerTest extends TestCase
     /** @test */
     public function testIndex()
     {
-        $controller = new AgentController();
+        $controller = new AgentController(new AgentService(new Agent()));
         $result = $controller->index();
 
         $this->actingAs($this->user)
@@ -47,7 +48,7 @@ class AgentControllerTest extends TestCase
     /** @test */
     public function testCreate()
     {
-        $controller = new AgentController();
+        $controller = new AgentController(new AgentService(new Agent()));
         $result = $controller->create();
 
         $this->assertInstanceOf(ResourceCollection::class, $result);
@@ -58,7 +59,7 @@ class AgentControllerTest extends TestCase
     {
         $agent = Agent::factory()->create();
 
-        $controller = new AgentController();
+        $controller = new AgentController(new AgentService(new Agent()));
         $result = $controller->show($agent->id);
 
         $this->assertInstanceOf(JsonResource::class, $result);
@@ -83,7 +84,7 @@ class AgentControllerTest extends TestCase
         $request = m::mock(AgentStoreRequest::class)->makePartial();
         $request->shouldReceive('validated')->andReturn($data);
 
-        $controller = new AgentController();
+        $controller = new AgentController(new AgentService(new Agent()));
         $result = $controller->store($request);
 
         $this->assertDatabaseHas('agents', $data);
@@ -96,7 +97,7 @@ class AgentControllerTest extends TestCase
     {
         $agent = Agent::factory()->create();
 
-        $controller = new AgentController();
+        $controller = new AgentController(new AgentService(new Agent()));
         $result = $controller->edit($agent);
 
         $this->assertInstanceOf(JsonResource::class, $result);
@@ -119,7 +120,7 @@ class AgentControllerTest extends TestCase
             'active' => 0,
         ]);
 
-        $controller = new AgentController();
+        $controller = new AgentController(new AgentService(new Agent()));
         $result = $controller->update($data, $agent);
 
         $this->assertDatabaseHas('agents', $data->all());
@@ -132,7 +133,7 @@ class AgentControllerTest extends TestCase
     {
         $agent = Agent::factory()->create();
 
-        $controller = new AgentController();
+        $controller = new AgentController(new AgentService(new Agent()));
         $result = $controller->destroy($agent);
 
         $this->assertDatabaseMissing('agents', $agent->toArray());

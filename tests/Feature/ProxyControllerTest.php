@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\User;
 use App\Modules\Proxy\Http\Controller\Api\v1\ProxyController;
+use App\Modules\Proxy\Http\Service\ProxyService;
 use App\Modules\Proxy\Http\Request\ProxyIndexRequest;
 use App\Modules\Proxy\Model\Proxy;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -33,7 +34,7 @@ class ProxyControllerTest extends TestCase
         $proxyIndexRequest = Mockery::mock(ProxyIndexRequest::class)->makePartial();
         $proxyIndexRequest->shouldReceive("getPaged")->andReturn(1);
 
-        $controller = new ProxyController();
+        $controller = new ProxyController(new ProxyService(new Proxy()));
         $result = $controller->index($proxyIndexRequest);
 
         $this->assertInstanceOf(ResourceCollection::class, $result);
@@ -56,7 +57,7 @@ class ProxyControllerTest extends TestCase
             "active" => 0
         ]);
 
-        $controller = new ProxyController();
+        $controller = new ProxyController(new ProxyService(new Proxy()));
         $result = $controller->store($data);
 
         $this->assertDatabaseHas("proxies", $data->all());
@@ -69,7 +70,7 @@ class ProxyControllerTest extends TestCase
     {
         $proxy = Proxy::factory()->create();
 
-        $controller = new ProxyController();
+        $controller = new ProxyController(new ProxyService(new Proxy()));
         $result = $controller->show($proxy);
 
         $this->assertEquals($proxy->id, $result->resource->id);
@@ -82,7 +83,7 @@ class ProxyControllerTest extends TestCase
     {
         $proxy = Proxy::factory()->create();
 
-        $controller = new ProxyController();
+        $controller = new ProxyController(new ProxyService(new Proxy()));
         $result = $controller->edit($proxy);
 
         $this->assertEquals($proxy->id, $result->resource->id);
@@ -106,7 +107,7 @@ class ProxyControllerTest extends TestCase
             "active" => 0
         ]);
 
-        $controller = new ProxyController();
+        $controller = new ProxyController(new ProxyService(new Proxy()));
         $result = $controller->update($data, $proxy);
 
         $this->assertDatabaseHas("proxies", $data->all());
@@ -119,7 +120,7 @@ class ProxyControllerTest extends TestCase
     {
         $proxy = Proxy::factory()->create();
 
-        $controller = new ProxyController();
+        $controller = new ProxyController(new ProxyService(new Proxy()));
         $result = $controller->destroy($proxy);
 
         $this->assertDatabaseMissing("proxies", $proxy->toArray());

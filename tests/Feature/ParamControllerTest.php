@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\User;
 use App\Modules\Param\Http\Controller\Api\v1\ParamController;
+use App\Modules\Param\Http\Service\ParamService;
 use App\Modules\Param\Model\Param;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -28,7 +29,7 @@ class ParamControllerTest extends TestCase
     /** @test */
     public function testIndex()
     {
-        $controller = new ParamController();
+        $controller = new ParamController(new ParamService(new Param()));
         $result = $controller->index();
 
         $this->assertInstanceOf(ResourceCollection::class, $result);
@@ -80,7 +81,7 @@ class ParamControllerTest extends TestCase
 
         $request = new Request($data);
 
-        $controller = new ParamController();
+        $controller = new ParamController(new ParamService(new Param()));
         $result = $controller->store($request);
 
         $this->assertInstanceOf(JsonResource::class, $result);
@@ -132,7 +133,7 @@ class ParamControllerTest extends TestCase
 
         $param = Param::create($data);
 
-        $controller = new ParamController();
+        $controller = new ParamController(new ParamService(new Param()));
         $result = $controller->show($param->id);
 
         $this->assertInstanceOf(JsonResource::class, $result);
@@ -184,7 +185,7 @@ class ParamControllerTest extends TestCase
 
         $param = Param::create($data);
 
-        $controller = new ParamController();
+        $controller = new ParamController(new ParamService(new Param()));
         $result = $controller->edit($param);
 
         $this->assertInstanceOf(JsonResource::class, $result);
@@ -236,9 +237,10 @@ class ParamControllerTest extends TestCase
 
         $param = Param::create($data);
 
-        $controller = new ParamController();
+        $controller = new ParamController(new ParamService(new Param()));
         $result = $controller->update($request, $param);
 
+        $data["search_terms"] = json_encode($data["search_terms"]);
         $this->assertDatabaseHas("params", $data);
         $this->assertInstanceOf(JsonResource::class, $result);
         $this->assertInstanceOf(Param::class, $result->resource);
@@ -286,7 +288,7 @@ class ParamControllerTest extends TestCase
 
         $param = Param::create($data);
 
-        $controller = new ParamController();
+        $controller = new ParamController(new ParamService(new Param()));
         $result = $controller->destroy($param);
 
         $this->assertDatabaseMissing("params", $param->toArray());

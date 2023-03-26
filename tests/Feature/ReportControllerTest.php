@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\User;
 use App\Modules\Report\Http\Controller\Api\v1\ReportController;
+use App\Modules\Report\Http\Service\ReportService;
 use App\Modules\Report\Model\Report;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Request;
@@ -31,7 +32,7 @@ class ReportControllerTest extends TestCase
     /** @test */
     public function testIndex()
     {
-        $controller = new ReportController();
+        $controller = new ReportController(new ReportService(new Report()));
         $result = $controller->index();
 
         $this->assertInstanceOf(ResourceCollection::class, $result);
@@ -49,11 +50,11 @@ class ReportControllerTest extends TestCase
             'mimetype' => 'jpg',
         ]);
 
-        $controller = new ReportController();
+        $controller = new ReportController(new ReportService(new Report()));
         $result = $controller->store($data);
 
         $this->assertDatabaseHas('reports', $data->all());
-        $this->assertInstanceOf(Response::class, $result);
+        $this->assertInstanceOf(JsonResource::class, $result);
     }
 
     /** @test */
@@ -61,7 +62,7 @@ class ReportControllerTest extends TestCase
     {
         $report = Report::factory()->create();
 
-        $controller = new ReportController();
+        $controller = new ReportController(new ReportService(new Report()));
         $result = $controller->show($report);
 
         $this->assertInstanceOf(JsonResource::class, $result);
@@ -74,7 +75,7 @@ class ReportControllerTest extends TestCase
     {
         $report = Report::factory()->create();
 
-        $controller = new ReportController();
+        $controller = new ReportController(new ReportService(new Report()));
         $result = $controller->destroy($report);
 
         $this->assertDatabaseMissing('reports', $report->toArray());

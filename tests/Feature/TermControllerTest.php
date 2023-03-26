@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\User;
 use App\Modules\Term\Http\Controller\Api\v1\TermController;
+use App\Modules\Term\Http\Service\TermService;
 use App\Modules\Term\Model\Term;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -31,7 +32,7 @@ class TermControllerTest extends TestCase
             "user_id" => $this->user->id
         ]);
 
-        $controller = new TermController();
+        $controller = new TermController(new TermService(new Term()));
         $result = $controller->index();
 
         $this->assertInstanceOf(ResourceCollection::class, $result);

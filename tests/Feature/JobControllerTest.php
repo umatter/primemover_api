@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Modules\Job\Http\Controller\Api\v1\JobController;
 use App\Modules\Job\Http\Request\StoreJobRequest;
 use App\Modules\Job\Http\Request\UpdateJobRequest;
+use App\Modules\Job\Http\Service\JobService;
 use App\Modules\Job\Model\Job;
 use App\Modules\Queue\Model\Queue;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -36,7 +37,7 @@ class JobControllerTest extends TestCase
 
         $request->shouldReceive("input")->with("queue")->once()->andReturn(1);
 
-        $controller = new JobController();
+        $controller = new JobController(new JobService(new Job()));
         $result = $controller->index($request);
 
         $this->assertInstanceOf(ResourceCollection::class, $result);
@@ -60,7 +61,7 @@ class JobControllerTest extends TestCase
         $requestMock = Mockery::mock(StoreJobRequest::class)->makePartial();
         $requestMock->shouldReceive('validated')->andReturn($data);
 
-        $controller = new JobController();
+        $controller = new JobController(new JobService(new Job()));
         $result = $controller->store($requestMock);
 
         $this->assertInstanceOf(JsonResource::class, $result);
@@ -73,7 +74,7 @@ class JobControllerTest extends TestCase
     {
         $job = Job::factory()->create();
 
-        $controller = new JobController();
+        $controller = new JobController(new JobService(new Job()));
         $result = $controller->show($job->id);
 
         $this->assertInstanceOf(JsonResource::class, $result);
@@ -85,7 +86,7 @@ class JobControllerTest extends TestCase
     {
         $job = Job::factory()->create();
 
-        $controller = new JobController();
+        $controller = new JobController(new JobService(new Job()));
         $result = $controller->edit($job);
 
         $this->assertInstanceOf(JsonResource::class, $result);
@@ -108,7 +109,7 @@ class JobControllerTest extends TestCase
         $requestMock = Mockery::mock(UpdateJobRequest::class)->makePartial();
         $requestMock->shouldReceive('validated')->andReturn($data);
 
-        $controller = new JobController();
+        $controller = new JobController(new JobService(new Job()));
         $result = $controller->update($requestMock, $job);
 
         $this->assertInstanceOf(JsonResource::class, $result);
@@ -121,7 +122,7 @@ class JobControllerTest extends TestCase
     {
         $job = Job::factory()->create();
 
-        $controller = new JobController();
+        $controller = new JobController(new JobService(new Job()));
         $result = $controller->destroy($job);
 
         $this->assertInstanceOf(ResourceCollection::class, $result);

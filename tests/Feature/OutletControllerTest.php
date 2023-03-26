@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\User;
 use App\Modules\Outlet\Http\Controller\Api\v1\OutletController;
+use App\Modules\Outlet\Http\Service\OutletService;
 use App\Modules\Outlet\Model\Outlet;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -30,7 +31,7 @@ class OutletControllerTest extends TestCase
     /** @test */
     public function testIndex()
     {
-        $controller = new OutletController();
+        $controller = new OutletController(new OutletService(new Outlet));
         $result = $controller->index();
 
         $this->assertInstanceOf(ResourceCollection::class, $result);
@@ -50,7 +51,7 @@ class OutletControllerTest extends TestCase
             "pi" => -0.0221973135909118
         ]);
 
-        $controller = new OutletController();
+        $controller = new OutletController(new OutletService(new Outlet));
         $result = $controller->store($request);
 
         $this->assertInstanceOf(JsonResource::class, $result);
@@ -70,7 +71,7 @@ class OutletControllerTest extends TestCase
             "pi" => -0.0221973135909118
         ]);
 
-        $controller = new OutletController();
+        $controller = new OutletController(new OutletService(new Outlet));
         $result = $controller->show($outlet->id);
 
         $this->assertInstanceOf(JsonResource::class, $result);
@@ -95,7 +96,7 @@ class OutletControllerTest extends TestCase
 
         $outlet = $outletMock->create();
 
-        $controller = new OutletController();
+        $controller = new OutletController(new OutletService(new Outlet));
         $result = $controller->edit($outlet);
 
         $this->assertInstanceOf(JsonResource::class, $result);
@@ -123,7 +124,7 @@ class OutletControllerTest extends TestCase
             "pi" => -0.0221973135909118
         ]);
 
-        $controller = new OutletController();
+        $controller = new OutletController(new OutletService(new Outlet));
         $result = $controller->update($request, $outlet);
 
         $this->assertInstanceOf(JsonResource::class, $result);
@@ -143,7 +144,7 @@ class OutletControllerTest extends TestCase
             "pi" => -0.0221973135909118
         ]);
 
-        $controller = new OutletController();
+        $controller = new OutletController(new OutletService(new Outlet));
         $result = $controller->destroy($outlet);
 
         $this->assertDatabaseMissing("outlets", $outlet->toArray());
