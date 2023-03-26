@@ -82,4 +82,15 @@ class BehaviorServiceTest extends TestCase
         $this->assertDatabaseHas("behaviors", $data);
         $this->assertEquals($behavior->id, $result->id);
     }
+
+    /** @test */
+    public function testDelete()
+    {
+        $behavior = Behavior::factory()->create();
+        
+        $service = new BehaviorService(new Behavior());
+        $service->delete($behavior);
+
+        $this->assertTrue(true);
+    }
 }
