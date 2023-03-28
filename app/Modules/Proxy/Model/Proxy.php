@@ -6,6 +6,7 @@ use App\Models\BaseModel;
 use App\Models\User;
 use App\Modules\Crawler\Model\Crawler;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
@@ -22,6 +23,8 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  */
 class Proxy extends BaseModel
 {
+    use HasFactory;
+    
     protected $guarded = [];
 
     protected $visible = ['id', 'name', 'description', 'hostname', 'port', 'username', 'type', 'password'];

@@ -5,6 +5,7 @@ namespace App\Modules\Behavior\Model;
 use App\Models\BaseModel;
 use App\Models\User;
 use App\Modules\Job\Model\Job;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
@@ -17,6 +18,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class Behavior extends BaseModel
 {
+    use HasFactory;
+    
     protected $guarded = [];
 
     public function user(): BelongsTo

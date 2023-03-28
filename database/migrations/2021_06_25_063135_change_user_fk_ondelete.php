@@ -2,19 +2,17 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 class ChangeUserFkOndelete extends Migration
 {
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
-    public function up()
+    public function up(): void
     {
         Schema::table('proxies', function (Blueprint $table) {
-            $table->dropForeign(['user_id']);
+            if ('sqlite' !== DB::getDriverName()) {
+                $table->dropForeign(['user_id']);
+            }
 
             $table->foreign('user_id')
                 ->references('id')
@@ -23,7 +21,9 @@ class ChangeUserFkOndelete extends Migration
         });
 
         Schema::table('crawlers', function (Blueprint $table) {
-            $table->dropForeign(['user_id']);
+            if ('sqlite' !== DB::getDriverName()) {
+                $table->dropForeign(['user_id']);
+            }
 
             $table->foreign('user_id')
                 ->references('id')
@@ -32,8 +32,9 @@ class ChangeUserFkOndelete extends Migration
         });
 
         Schema::table('configurations', function (Blueprint $table) {
-            $table->dropForeign(['user_id']);
-
+            if ('sqlite' !== DB::getDriverName()) {
+                $table->dropForeign(['user_id']);
+            }
             $table->foreign('user_id')
                 ->references('id')
                 ->on('users')
@@ -41,7 +42,9 @@ class ChangeUserFkOndelete extends Migration
         });
 
         Schema::table('experiments', function (Blueprint $table) {
-            $table->dropForeign(['user_id']);
+            if ('sqlite' !== DB::getDriverName()) {
+                $table->dropForeign(['user_id']);
+            }
 
             $table->foreign('user_id')
                 ->references('id')
@@ -50,7 +53,9 @@ class ChangeUserFkOndelete extends Migration
         });
 
         Schema::table('agents', function (Blueprint $table) {
-            $table->dropForeign(['user_id']);
+            if ('sqlite' !== DB::getDriverName()) {
+                $table->dropForeign(['user_id']);
+            }
 
             $table->foreign('user_id')
                 ->references('id')
@@ -59,7 +64,9 @@ class ChangeUserFkOndelete extends Migration
         });
 
         Schema::table('queues', function (Blueprint $table) {
-            $table->dropForeign(['user_id']);
+            if ('sqlite' !== DB::getDriverName()) {
+                $table->dropForeign(['user_id']);
+            }
 
             $table->foreign('user_id')
                 ->references('id')
@@ -68,7 +75,9 @@ class ChangeUserFkOndelete extends Migration
         });
 
         Schema::table('jobs', function (Blueprint $table) {
-            $table->dropForeign(['user_id']);
+            if ('sqlite' !== DB::getDriverName()) {
+                $table->dropForeign(['user_id']);
+            }
 
             $table->foreign('user_id')
                 ->references('id')
@@ -77,7 +86,9 @@ class ChangeUserFkOndelete extends Migration
         });
 
         Schema::table('behaviors', function (Blueprint $table) {
-            $table->dropForeign(['user_id']);
+            if ('sqlite' !== DB::getDriverName()) {
+                $table->dropForeign(['user_id']);
+            }
 
             $table->foreign('user_id')
                 ->references('id')
@@ -86,7 +97,9 @@ class ChangeUserFkOndelete extends Migration
         });
 
         Schema::table('reports', function (Blueprint $table) {
-            $table->dropForeign(['user_id']);
+            if ('sqlite' !== DB::getDriverName()) {
+                $table->dropForeign(['user_id']);
+            }
 
             $table->foreign('user_id')
                 ->references('id')
@@ -95,8 +108,9 @@ class ChangeUserFkOndelete extends Migration
         });
 
         Schema::table('params', function (Blueprint $table) {
-            $table->dropForeign(['user_id']);
-
+            if ('sqlite' !== DB::getDriverName()) {
+                $table->dropForeign(['user_id']);
+            }
             $table->foreign('user_id')
                 ->references('id')
                 ->on('users')
@@ -104,8 +118,9 @@ class ChangeUserFkOndelete extends Migration
         });
 
         Schema::table('preferences', function (Blueprint $table) {
-            $table->dropForeign(['user_id']);
-
+            if ('sqlite' !== DB::getDriverName()) {
+                $table->dropForeign(['user_id']);
+            }
             $table->foreign('user_id')
                 ->references('id')
                 ->on('users')
@@ -113,8 +128,9 @@ class ChangeUserFkOndelete extends Migration
         });
 
         Schema::table('outlets', function (Blueprint $table) {
-            $table->dropForeign(['user_id']);
-
+            if ('sqlite' !== DB::getDriverName()) {
+                $table->dropForeign(['user_id']);
+            }
             $table->foreign('user_id')
                 ->references('id')
                 ->on('users')
@@ -122,8 +138,9 @@ class ChangeUserFkOndelete extends Migration
         });
 
         Schema::table('terms', function (Blueprint $table) {
-            $table->dropForeign(['user_id']);
-
+            if ('sqlite' !== DB::getDriverName()) {
+                $table->dropForeign(['user_id']);
+            }
             $table->foreign('user_id')
                 ->references('id')
                 ->on('users')
@@ -131,12 +148,7 @@ class ChangeUserFkOndelete extends Migration
         });
     }
 
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
-    public function down()
+    public function down(): void
     {
     }
 }
