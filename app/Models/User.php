@@ -6,6 +6,7 @@ use App\Modules\Agent\Model\Agent;
 use App\Modules\Configuration\Model\Configuration;
 use App\Modules\Experiment\Model\Experiment;
 use App\Modules\Job\Model\Job;
+use App\Modules\Outlet\Model\Outlet;
 use App\Modules\Proxy\Model\Proxy;
 use App\Notifications\ResetPassword;
 use App\Notifications\VerifyEmail;
@@ -96,5 +97,10 @@ class User extends Authenticatable implements JWTSubject
     public function jobs(): HasMany
     {
         return $this->hasMany(Job::class);
+    }
+
+    public function outlets(): HasMany
+    {
+        return $this->hasMany(Outlet::class);
     }
 }

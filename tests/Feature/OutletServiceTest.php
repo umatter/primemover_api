@@ -6,16 +6,17 @@ use App\Models\User;
 use App\Modules\Outlet\Http\Service\OutletService;
 use App\Modules\Outlet\Model\Outlet;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Tests\TestCase;
 use Mockery as m;
+use Tests\TestCase;
 
+/**
+ * @internal
+ */
 class OutletServiceTest extends TestCase
 {
     protected $user;
 
-    public function setUp():void 
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -30,12 +31,11 @@ class OutletServiceTest extends TestCase
 
         $this->assertInstanceOf(Collection::class, $result);
 
-        foreach($result as $outlet){
-            unset($outlet->user);
-            unset($outlet->updated_at);
-            unset($outlet->created_at);
+        foreach ($result as $outlet) {
+            unset($outlet->user, $outlet->updated_at, $outlet->created_at);
+
             $this->assertInstanceOf(Outlet::class, $outlet);
-            $this->assertDatabaseHas("outlets", $outlet->toArray());
+            $this->assertDatabaseHas('outlets', $outlet->toArray());
         }
     }
 
@@ -43,18 +43,18 @@ class OutletServiceTest extends TestCase
     public function testGetById()
     {
         $outlet = m::mock(Outlet::class);
-        $outlet->shouldReceive("getAttribute")->with("id")->andReturn(1);
-        $outlet->shouldReceive("with")->with(["user"])->andReturn(new User([
-            "id" => 1,
-            'name' => "user name",
-            'email' => "user@example.com",
+        $outlet->allows('getAttribute')->with('id')->andReturns(1);
+        $outlet->allows('with')->with(['user'])->andReturns(new User([
+            'id' => 1,
+            'name' => 'user name',
+            'email' => 'user@example.com',
             'email_verified_at' => now(),
             'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
         ]));
-        $outlet->shouldReceive("findOrFail")->andReturn(new Outlet([
-            "id" => 1,
-            "title" => "outlet title",
-            "outlet" => "outlet",
+        $outlet->allows('findOrFail')->andReturns(new Outlet([
+            'id' => 1,
+            'title' => 'outlet title',
+            'outlet' => 'outlet',
         ]));
 
         $service = new OutletService(new Outlet());
@@ -69,14 +69,14 @@ class OutletServiceTest extends TestCase
     public function testSave()
     {
         $data = [
-            "title" => "outlet title",
-            "outlet" => "outlet",
+            'title' => 'outlet title',
+            'outlet' => 'outlet',
         ];
 
         $service = new OutletService(new Outlet());
         $result = $service->save($data);
 
-        $this->assertDatabaseHas("outlets", $data);
+        $this->assertDatabaseHas('outlets', $data);
         $this->assertInstanceOf(Outlet::class, $result);
     }
 
@@ -84,23 +84,24 @@ class OutletServiceTest extends TestCase
     public function testUpdate()
     {
         $data = [
-            "title" => "outlet title updated",
-            "outlet" => "outlet update",
+            'title' => 'outlet title updated',
+            'outlet' => 'outlet update',
         ];
 
         $outletMock = m::mock(Outlet::class);
-        $outletMock->shouldReceive("firstOrFail")->andReturn(new Outlet([
-            "id" => 1,
-            "title" => "outlet title",
-            "outlet" => "outlet",
+        $outletMock->allows('firstOrFail')->andReturns(new Outlet([
+            'id' => 1,
+            'title' => 'outlet title',
+            'outlet' => 'outlet',
         ]));
-        $outletMock->shouldReceive("getAttribute")->with(["title", "outlet"])->andReturn(["title" => "outlet title", "outlet" => "outlet"]);
-        $outletMock->shouldReceive("toArray")->andReturn($data);
+        $outletMock->allows('getAttribute')->with(['title', 'outlet'])->andReturns(['title' => 'outlet title', 'outlet' => 'outlet']);
+        $outletMock->allows('toArray')->andReturns($data);
         $outlet = $outletMock->firstOrFail();
-        
-        $outletMock->shouldReceive("update")->andReturnUsing(function () use ($outlet, $data) {
-            $outlet->title = $data["title"];
-            $outlet->outlet = $data["outlet"];
+
+        $outletMock->allows('update')->andReturnUsing(function () use ($outlet, $data) {
+            $outlet->title = $data['title'];
+            $outlet->outlet = $data['outlet'];
+
             return true;
         });
 
@@ -115,18 +116,19 @@ class OutletServiceTest extends TestCase
     public function testDelete()
     {
         $outlet = Outlet::create([
-            "user_id" => $this->user->id,
-            "title" => "outlet title",
-            "outlet" => "outlet"
+            'user_id' => $this->user->id,
+            'title' => 'outlet title',
+            'outlet' => 'outlet',
         ]);
 
         $service = new OutletService(new Outlet());
         $result = $service->delete($outlet);
 
-        $this->assertDatabaseMissing("outlets", $outlet->toArray());
+        $this->assertDatabaseMissing('outlets', $outlet->toArray());
         $this->assertInstanceOf(Collection::class, $result);
-        
-        foreach ($result as $outlet)
+
+        foreach ($result as $outlet) {
             $this->assertInstanceOf(Outlet::class, $outlet);
+        }
     }
 }
