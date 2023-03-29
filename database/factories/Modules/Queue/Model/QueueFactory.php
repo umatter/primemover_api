@@ -2,7 +2,6 @@
 
 namespace Database\Factories\Modules\Queue\Model;
 
-use App\Modules\Crawler\Model\Crawler;
 use App\Modules\Queue\Model\Queue;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -17,7 +16,7 @@ class QueueFactory extends Factory
     {
         return [
             'user_id' => 1,
-            'crawler_id' => Crawler::query()->inRandomOrder()->first()->id,
+            'crawler_id' => 1,
             'name' => $this->faker->name,
             'status_code' => $this->faker->randomElement(['success', 'failed']),
             'description' => 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor.',

@@ -25,7 +25,7 @@ class JobFactory extends Factory
 
         return [
             'user_id' => 1,
-            'queue_id' => Queue::query()->inRandomOrder()->first()->id,
+            'queue_id' => Queue::factory()->create()->id,
             'name' => $this->faker->lastName,
             'status_code' => $this->faker->randomElement(['failed', 'success']),
             'status_message' => $this->faker->randomElement(['Random', 'Message']),

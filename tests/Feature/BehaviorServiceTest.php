@@ -29,7 +29,7 @@ class BehaviorServiceTest extends TestCase
         $result = $service->getData();
 
         $this->assertInstanceOf(LengthAwarePaginator::class, $result);
-        
+
         foreach($result as $behavior) {
             unset($behavior->job);
             unset($behavior->user);
@@ -39,7 +39,7 @@ class BehaviorServiceTest extends TestCase
             $this->assertInstanceOf(Behavior::class, $behavior);
         }
     }
-
+    
     /** @test */
     public function testGetById()
     {

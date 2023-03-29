@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Modules\Agent\Model\Agent;
 use App\Modules\Configuration\Model\Configuration;
+use App\Modules\Experiment\Model\Experiment;
 use App\Modules\Job\Model\Job;
 use App\Modules\Proxy\Model\Proxy;
 use App\Notifications\ResetPassword;
@@ -85,6 +86,11 @@ class User extends Authenticatable implements JWTSubject
     public function agents(): HasMany
     {
         return $this->hasMany(Agent::class);
+    }
+
+    public function experiments(): HasMany
+    {
+        return $this->hasMany(Experiment::class);
     }
 
     public function jobs(): HasMany

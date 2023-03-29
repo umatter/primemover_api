@@ -50,7 +50,7 @@ class CrawlerController extends Controller
     public function withReviewedQueues(): ResourceCollection
     {
         $crawlers = $this->crawlerService->reviewed();
-
+        
         return ResourceCollection::make($crawlers);
     }
 

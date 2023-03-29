@@ -22,6 +22,7 @@ class CrawlerFactory extends Factory
             'proxy_id' => 1,
             'agent_id' => 1,
             'configuration_id' => 1,
+            'experiment_id' => 1,
         ];
     }
 }

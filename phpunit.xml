@@ -31,7 +31,12 @@
         <server name="SESSION_DRIVER" value="array"/>
         <server name="TELESCOPE_ENABLED" value="false"/>
 	    <env name="TELESCOPE_ENABLED" value="false"/>
+<<<<<<< HEAD
         <env name="DB_CONNECTION" value="mysql"/>
+=======
+	    <env name="DB_FOREIGN_KEYS" value="false"/>
+        <env name="DB_CONNECTION" value="sqlite"/>
+>>>>>>> a0f23239176685ace0f5d3bfba6844227f39d03c
         <env name="DB_DATABASE" value=":memory:"/>
     </php>
 </phpunit>
