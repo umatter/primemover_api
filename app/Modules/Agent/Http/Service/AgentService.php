@@ -16,7 +16,7 @@ class AgentService
         $this->agent = $agent;
     }
     
-    public function getData()
+    public function getData(): QueryBuilder
     {
         $agents = QueryBuilder::for($this->agent)
             ->allowedFilters([
