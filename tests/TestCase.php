@@ -31,5 +31,6 @@ abstract class TestCase extends BaseTestCase
         $queue->jobs()->getModel()->factory()->count(10)->create();
         $queue = $crawler->queues()->getModel()->factory()->create(['reviewed' => 1]);
         $queue->jobs()->getModel()->factory()->count(10)->create();
+        $user->outlets()->getModel()->factory()->count(10)->create();
     }
 }

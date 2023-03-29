@@ -19,7 +19,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Behavior extends BaseModel
 {
     use HasFactory;
-    
+
     protected $guarded = [];
 
     public function user(): BelongsTo
