@@ -33,7 +33,12 @@ class AgentServiceTest extends TestCase
         $result = $service->getData();
 
         $this->assertInstanceOf(Collection::class, $result->get());
-        $this>assertInstanceOf(Agent::class, $result->first());
+
+        foreach ($result->get() as $agent){
+            unset($agent->preferences);
+            $this->assertDatabaseHas("agents", $agent->toArray());
+            $this->assertInstanceOf(Agent::class, $agent);
+        }
     }
 
     /** @test */

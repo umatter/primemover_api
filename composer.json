@@ -22,6 +22,7 @@
         "laravel/telescope": "^4.14.0",
         "laravel/tinker": "^2.8",
         "laravel/ui": "^4.2.1",
+        "nelkasovic/ipstack-finder": "^1.0",
         "netresearch/jsonmapper": "^4.1.0",
         "predis/predis": "^2.1.2",
         "psr/http-factory-implementation": "^1.0.1",
@@ -43,7 +44,7 @@
         "mockery/mockery": "^1.4.4",
         "nunomaduro/collision": "^7.0",
         "nunomaduro/phpinsights": "^2.7",
-        "phpunit/phpunit": "^9.0",
+        "phpunit/phpunit": "^10.0",
         "spatie/laravel-ignition": "^2.0"
     },
     "autoload": {

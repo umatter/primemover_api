@@ -30,7 +30,13 @@ class ExperimentServiceTest extends TestCase
         $result = $service->getData();
 
         $this->assertInstanceOf(LengthAwarePaginator::class, $result);
-        $this->assertInstanceOf(Experiment::class, $result->first());
+
+        foreach ($result as $experiment) {
+            unset($experiment->created_at);
+            unset($experiment->updated_at);
+            $this->assertInstanceOf(Experiment::class, $experiment);
+            $this->assertDatabaseHas("experiments", $experiment->toArray());
+        }
     }
 
     /** @test */

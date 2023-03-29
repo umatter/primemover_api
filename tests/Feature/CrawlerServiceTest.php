@@ -283,7 +283,7 @@ class CrawlerServiceTest extends TestCase
     /** @test */
     public function testIp()
     {
-        $ip = "127.0.0.1";
+        $ip = "127.0.0.2";
 
         $service = new CrawlerService(new Crawler());
         $result = $service->ip($ip);

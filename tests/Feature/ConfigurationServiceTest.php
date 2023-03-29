@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\User;
 use App\Modules\Configuration\Http\Service\ConfigurationService;
 use App\Modules\Configuration\Model\Configuration;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Spatie\QueryBuilder\QueryBuilder;
@@ -28,7 +29,14 @@ class ConfigurationServiceTest extends TestCase
         $result = $service->getData();
 
         $this->assertInstanceOf(QueryBuilder::class, $result);
-        $this->assertInstanceOf(Configuration::class, $result->first());
+        $this->assertInstanceOf(Collection::class, $result->get());
+
+        foreach ($result->get() as $configuration) {
+            unset($configuration->params);
+            unset($configuration->preferences);
+            $this->assertDatabaseHas("configurations", $configuration->toArray());
+            $this->assertInstanceOf(Configuration::class, $configuration);
+        }
     }
 
     /** @test */
