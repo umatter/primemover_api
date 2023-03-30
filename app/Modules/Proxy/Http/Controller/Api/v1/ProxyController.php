@@ -12,11 +12,8 @@ use Illuminate\Http\Resources\Json\ResourceCollection;
 
 class ProxyController extends Controller
 {
-    protected $proxyService;
-
-    public function __construct(ProxyService $proxyService)
+    public function __construct(protected ProxyService $proxyService)
     {
-        $this->proxyService = $proxyService;
     }
 
     public function index(ProxyIndexRequest $request): ResourceCollection

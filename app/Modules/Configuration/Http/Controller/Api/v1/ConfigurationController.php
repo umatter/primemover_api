@@ -12,11 +12,8 @@ use Illuminate\Http\Resources\Json\ResourceCollection;
 
 class ConfigurationController extends Controller
 {
-    protected $configurationService;
-
-    public function __construct(ConfigurationService $configurationService)
+    public function __construct(protected ConfigurationService $configurationService)
     {
-        $this->configurationService = $configurationService;
     }
 
     public function index(): ResourceCollection

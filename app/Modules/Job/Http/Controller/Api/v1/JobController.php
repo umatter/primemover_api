@@ -14,11 +14,8 @@ use Illuminate\Http\Resources\Json\ResourceCollection;
 
 class JobController extends Controller
 {
-    protected $jobService;
-
-    public function __construct(JobService $jobService)
+    public function __construct(protected JobService $jobService)
     {
-        $this->jobService = $jobService;
     }
 
     public function index(Request $request): ResourceCollection

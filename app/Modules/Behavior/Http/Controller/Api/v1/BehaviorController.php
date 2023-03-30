@@ -12,11 +12,8 @@ use Illuminate\Http\Resources\Json\ResourceCollection;
 
 class BehaviorController extends Controller
 {
-    protected $behaviorService;
-
-    public function __construct(BehaviorService $behaviorService)
+    public function __construct(protected BehaviorService $behaviorService)
     {
-        $this->behaviorService = $behaviorService;
     }
 
     public function index(): ResourceCollection

@@ -26,11 +26,8 @@ use Throwable;
 
 class ExperimentController extends Controller
 {
-    protected $experimentService;
-
-    public function __construct(ExperimentService $experimentService)
+    public function __construct(protected ExperimentService $experimentService)
     {
-        $this->experimentService = $experimentService;
     }
 
     public function index(): ResourceCollection

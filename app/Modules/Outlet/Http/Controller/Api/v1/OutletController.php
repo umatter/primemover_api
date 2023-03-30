@@ -11,11 +11,8 @@ use Illuminate\Http\Resources\Json\ResourceCollection;
 
 class OutletController extends Controller
 {
-    protected $outletService;
-
-    public function __construct(OutletService $outletService)
+    public function __construct(protected OutletService $outletService)
     {
-        $this->outletService = $outletService;
     }
 
     public function index(): ResourceCollection

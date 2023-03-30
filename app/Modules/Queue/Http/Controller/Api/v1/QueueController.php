@@ -15,11 +15,8 @@ use Illuminate\Http\Resources\Json\ResourceCollection;
 
 class QueueController extends Controller
 {
-    protected QueueService $queueService;
-
-    public function __construct(QueueService $queueService)
+    public function __construct(protected QueueService $queueService)
     {
-        $this->queueService = $queueService;
     }
 
     public function index(Request $request): ResourceCollection

@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Storage;
 
 class S3Controller extends Controller
 {
-    public function download($filename): Response
+    public function download(string $filename): Response
     {
         if ( ! Storage::disk('s3')->exists($filename)) {
             abort(404, 'File not found.');

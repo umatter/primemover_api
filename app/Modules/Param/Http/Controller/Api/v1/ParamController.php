@@ -11,11 +11,8 @@ use Illuminate\Http\Resources\Json\ResourceCollection;
 
 class ParamController extends Controller
 {
-    protected $paramService;
-
-    public function __construct(ParamService $paramService)
+    public function __construct(protected ParamService $paramService)
     {
-        $this->paramService = $paramService;
     }
 
     public function index(): ResourceCollection

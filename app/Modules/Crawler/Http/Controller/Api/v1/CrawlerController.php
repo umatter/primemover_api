@@ -18,11 +18,8 @@ use Illuminate\Http\Resources\Json\ResourceCollection;
 
 class CrawlerController extends Controller
 {
-    protected $crawlerService;
-
-    public function __construct(CrawlerService $crawlerService)
+    public function __construct(protected CrawlerService $crawlerService)
     {
-        $this->crawlerService = $crawlerService;
     }
 
     public function index(Request $request): ResourceCollection

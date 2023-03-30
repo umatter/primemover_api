@@ -13,11 +13,8 @@ use Illuminate\Support\Facades\App;
 
 class AgentController extends Controller
 {
-    protected $agentService;
-
-    public function __construct(AgentService $agentService)
+    public function __construct(protected AgentService $agentService)
     {
-        $this->agentService = $agentService;
     }
 
     public function index(): ResourceCollection

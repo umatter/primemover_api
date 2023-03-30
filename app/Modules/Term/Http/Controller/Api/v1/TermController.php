@@ -8,11 +8,8 @@ use Illuminate\Http\Resources\Json\ResourceCollection;
 
 class TermController extends Controller
 {
-    protected $termService;
-
-    public function __construct(TermService $termService)
+    public function __construct(protected TermService $termService)
     {
-        $this->termService = $termService;
     }
 
     public function index(): ResourceCollection

@@ -12,11 +12,8 @@ use Illuminate\Validation\ValidationException;
 
 class ReportController extends Controller
 {
-    protected $reportService;
-
-    public function __construct(ReportService $reportService)
+    public function __construct(protected ReportService $reportService)
     {
-        $this->reportService = $reportService;
     }
 
     public function index(): ResourceCollection
