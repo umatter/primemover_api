@@ -1,13 +1,17 @@
 <?php
 
-namespace App\Modules\Behavior\Service;
+namespace App\Modules\Behavior\Repository;
 
 use App\Modules\Behavior\Model\Behavior;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Auth;
+use Tests\Feature\Modules\Behavior\Service\BehaviorServiceTest;
 
-class BehaviorService
+/**
+ * @see BehaviorServiceTest
+ */
+class BehaviorRepository
 {
     public function __construct(protected Behavior $behavior)
     {

@@ -1,9 +1,9 @@
 <?php
 
-namespace Tests\Feature\Modules\Behavior\Service;
+namespace Tests\Feature\Modules\Behavior\Repository;
 
 use App\Modules\Behavior\Model\Behavior;
-use App\Modules\Behavior\Service\BehaviorService;
+use App\Modules\Behavior\Repository\BehaviorRepository;
 use App\Modules\Job\Model\Job;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Tests\TestCase;
@@ -11,16 +11,16 @@ use Tests\TestCase;
 /**
  * @internal
  *
- * @coversDefaultClass \App\Modules\Behavior\Service\BehaviorService
+ * @coversDefaultClass \App\Modules\Behavior\Repository\BehaviorRepository
  */
-class BehaviorServiceTest extends TestCase
+class BehaviorRepositoryTest extends TestCase
 {
     /**
      * @covers ::getData
      */
     public function testGetData(): void
     {
-        $service = new BehaviorService(new Behavior());
+        $service = new BehaviorRepository(new Behavior());
         $result = $service->getData();
 
         $this->assertInstanceOf(LengthAwarePaginator::class, $result);
@@ -40,7 +40,7 @@ class BehaviorServiceTest extends TestCase
     {
         $behavior = Behavior::factory()->create();
 
-        $service = new BehaviorService(new Behavior());
+        $service = new BehaviorRepository(new Behavior());
         $result = $service->getById($behavior->id);
 
         $this->assertInstanceOf(Behavior::class, $result);
@@ -62,7 +62,7 @@ class BehaviorServiceTest extends TestCase
             'active' => 1,
         ];
 
-        $service = new BehaviorService(new Behavior());
+        $service = new BehaviorRepository(new Behavior());
         $result = $service->save($data);
 
         $this->assertInstanceOf(Behavior::class, $result);
@@ -82,7 +82,7 @@ class BehaviorServiceTest extends TestCase
             'value' => 'value',
         ];
 
-        $service = new BehaviorService(new Behavior());
+        $service = new BehaviorRepository(new Behavior());
         $result = $service->update($data, $behavior);
 
         $this->assertInstanceOf(Behavior::class, $result);
@@ -97,7 +97,7 @@ class BehaviorServiceTest extends TestCase
     {
         $behavior = Behavior::factory()->create();
 
-        $service = new BehaviorService(new Behavior());
+        $service = new BehaviorRepository(new Behavior());
         $service->delete($behavior);
 
         $this->assertTrue(true);
