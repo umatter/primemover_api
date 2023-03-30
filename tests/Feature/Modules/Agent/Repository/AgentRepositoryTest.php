@@ -1,25 +1,25 @@
 <?php
 
-namespace Tests\Feature\Modules\Agent\Service;
+namespace Tests\Feature\Modules\Agent\Repository;
 
 use App\Modules\Agent\Model\Agent;
-use App\Modules\Agent\Service\AgentService;
+use App\Modules\Agent\Repository\AgentRepository;
 use Illuminate\Support\Collection;
 use Tests\TestCase;
 
 /**
  * @internal
  *
- * @coversDefaultClass \App\Modules\Agent\Service\AgentService
+ * @coversDefaultClass \App\Modules\Agent\Repository\AgentRepository
  */
-class AgentServiceTest extends TestCase
+class AgentRepositoryTest extends TestCase
 {
     /**
      * @covers ::getData
      */
     public function testGetData(): void
     {
-        $service = new AgentService(new Agent());
+        $service = new AgentRepository(new Agent());
         $result = $service->getData();
 
         $this->assertInstanceOf(Collection::class, $result->get());
@@ -36,7 +36,7 @@ class AgentServiceTest extends TestCase
      */
     public function testAdditional(): void
     {
-        $service = new AgentService(new Agent());
+        $service = new AgentRepository(new Agent());
         $agentBuilder = $service->getData();
         $result = $service->additional($agentBuilder);
 
@@ -50,7 +50,7 @@ class AgentServiceTest extends TestCase
     {
         $agent = Agent::factory()->create();
 
-        $service = new AgentService(new Agent());
+        $service = new AgentRepository(new Agent());
         $result = $service->getById($agent->id);
 
         $this->assertInstanceOf(Agent::class, $result);
@@ -73,7 +73,7 @@ class AgentServiceTest extends TestCase
             'user_id' => $this->user->id,
         ];
 
-        $service = new AgentService(new Agent());
+        $service = new AgentRepository(new Agent());
         $result = $service->save($data);
 
         $this->assertInstanceOf(Agent::class, $result);
@@ -96,7 +96,7 @@ class AgentServiceTest extends TestCase
             'location' => 'location',
         ];
 
-        $service = new AgentService(new Agent());
+        $service = new AgentRepository(new Agent());
         $result = $service->update($data, $agent);
 
         $this->assertInstanceOf(Agent::class, $result);
@@ -110,7 +110,7 @@ class AgentServiceTest extends TestCase
     {
         $agent = Agent::factory()->create();
 
-        $service = new AgentService(new Agent());
+        $service = new AgentRepository(new Agent());
         $result = $service->delete($agent);
 
         $this->assertIsArray($result);

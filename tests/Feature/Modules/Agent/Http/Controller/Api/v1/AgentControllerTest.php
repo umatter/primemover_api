@@ -5,7 +5,7 @@ namespace Tests\Feature\Modules\Agent\Http\Controller\Api\v1;
 use App\Modules\Agent\Http\Controller\Api\v1\AgentController;
 use App\Modules\Agent\Http\Request\AgentStoreRequest;
 use App\Modules\Agent\Model\Agent;
-use App\Modules\Agent\Service\AgentService;
+use App\Modules\Agent\Repository\AgentRepository;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Resources\Json\ResourceCollection;
@@ -24,7 +24,7 @@ class AgentControllerTest extends TestCase
      */
     public function testIndex(): void
     {
-        $controller = new AgentController(new AgentService(new Agent()));
+        $controller = new AgentController(new AgentRepository(new Agent()));
         $result = $controller->index();
 
         $this->actingAs($this->user)
@@ -44,7 +44,7 @@ class AgentControllerTest extends TestCase
      */
     public function testCreate(): void
     {
-        $controller = new AgentController(new AgentService(new Agent()));
+        $controller = new AgentController(new AgentRepository(new Agent()));
         $result = $controller->create();
 
         $this->assertInstanceOf(ResourceCollection::class, $result);
@@ -57,7 +57,7 @@ class AgentControllerTest extends TestCase
     {
         $agent = Agent::factory()->create();
 
-        $controller = new AgentController(new AgentService(new Agent()));
+        $controller = new AgentController(new AgentRepository(new Agent()));
         $result = $controller->show($agent->id);
 
         $this->assertInstanceOf(JsonResource::class, $result);
@@ -84,7 +84,7 @@ class AgentControllerTest extends TestCase
         $request = m::mock(AgentStoreRequest::class)->makePartial();
         $request->allows('validated')->andReturns($data);
 
-        $controller = new AgentController(new AgentService(new Agent()));
+        $controller = new AgentController(new AgentRepository(new Agent()));
         $result = $controller->store($request);
 
         $this->assertDatabaseHas('agents', $data);
@@ -99,7 +99,7 @@ class AgentControllerTest extends TestCase
     {
         $agent = Agent::factory()->create();
 
-        $controller = new AgentController(new AgentService(new Agent()));
+        $controller = new AgentController(new AgentRepository(new Agent()));
         $result = $controller->edit($agent);
 
         $this->assertInstanceOf(JsonResource::class, $result);
@@ -124,7 +124,7 @@ class AgentControllerTest extends TestCase
             'active' => 0,
         ]);
 
-        $controller = new AgentController(new AgentService(new Agent()));
+        $controller = new AgentController(new AgentRepository(new Agent()));
         $result = $controller->update($data, $agent);
 
         $this->assertDatabaseHas('agents', $data->all());
@@ -139,7 +139,7 @@ class AgentControllerTest extends TestCase
     {
         $agent = Agent::factory()->create();
 
-        $controller = new AgentController(new AgentService(new Agent()));
+        $controller = new AgentController(new AgentRepository(new Agent()));
         $result = $controller->destroy($agent);
 
         $this->assertDatabaseMissing('agents', $agent->toArray());

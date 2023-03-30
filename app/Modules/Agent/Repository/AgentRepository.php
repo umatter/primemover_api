@@ -1,12 +1,17 @@
 <?php
 
-namespace App\Modules\Agent\Service;
+namespace App\Modules\Agent\Repository;
 
 use App\Modules\Agent\Model\Agent;
+use Illuminate\Database\Eloquent\Model;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
+use Tests\Feature\Modules\Agent\Service\AgentServiceTest;
 
-class AgentService
+/**
+ * @see AgentServiceTest
+ */
+class AgentRepository
 {
     public function __construct(protected Agent $agent)
     {
@@ -45,7 +50,7 @@ class AgentService
             ->findOr($id, fn () => ['status' => false]);
     }
 
-    public function save(array $data): Agent
+    public function save(array $data): Agent|Model
     {
         return $this->agent->query()->create($data);
     }
