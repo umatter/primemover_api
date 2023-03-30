@@ -11,9 +11,9 @@ class CreateParamsTable extends Migration
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
-        Schema::create('params', function (Blueprint $table) {
+        Schema::create('params', function (Blueprint $table): void {
             $table->id();
 
             $table->string('pi')->nullable();
@@ -39,7 +39,7 @@ class CreateParamsTable extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::dropIfExists('params');
     }

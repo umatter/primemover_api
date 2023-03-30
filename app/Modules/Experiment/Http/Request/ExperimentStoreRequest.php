@@ -34,7 +34,7 @@ class ExperimentStoreRequest extends FormRequest
     public function getPreferences(): ?Collection
     {
         $preferences = $this->input('preferences');
-        if (! $preferences) {
+        if ( ! $preferences) {
             return null;
         }
 
@@ -43,7 +43,7 @@ class ExperimentStoreRequest extends FormRequest
             ->mapList($preferences, Preference::class);
     }
 
-    protected function prepareForValidation()
+    protected function prepareForValidation(): void
     {
         $this->merge([
             'user_id' => Auth::id(),

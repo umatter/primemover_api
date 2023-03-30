@@ -3,8 +3,8 @@
 namespace App\Modules\Param\Http\Controller\Api\v1;
 
 use App\Http\Controllers\API\v1\Controller;
-use App\Modules\Param\Http\Service\ParamService;
 use App\Modules\Param\Model\Param;
+use App\Modules\Param\Service\ParamService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Resources\Json\ResourceCollection;

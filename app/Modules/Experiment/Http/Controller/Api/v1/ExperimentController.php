@@ -8,8 +8,8 @@ use App\Modules\Configuration\Model\Configuration;
 use App\Modules\Crawler\Http\Request\StoreCrawlerRequest;
 use App\Modules\Crawler\Model\Crawler;
 use App\Modules\Experiment\Http\Request\ExperimentStoreRequest;
-use App\Modules\Experiment\Http\Service\ExperimentService;
 use App\Modules\Experiment\Model\Experiment;
+use App\Modules\Experiment\Service\ExperimentService;
 use App\Modules\Job\Http\Request\StoreJobRequest;
 use App\Modules\Job\Model\Job;
 use App\Modules\Param\Model\Param;
@@ -22,6 +22,7 @@ use Illuminate\Http\Resources\Json\ResourceCollection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use Throwable;
 
 class ExperimentController extends Controller
 {
@@ -31,7 +32,7 @@ class ExperimentController extends Controller
     {
         $this->experimentService = $experimentService;
     }
-    
+
     public function index(): ResourceCollection
     {
         $experiments = $this->experimentService->getData();
@@ -106,36 +107,37 @@ class ExperimentController extends Controller
                 $requestConfiguration = new ConfigurationStoreRequest($itemConfiguration);
                 $validationConfiguration = Validator::make($itemConfiguration, $requestConfiguration->rules());
 
-                if($validationConfiguration->fails()) {
+                if ($validationConfiguration->fails()) {
                     JsonResource::wrap('messages');
-                    $err = "error in configuration";
+                    $err = 'error in configuration';
+
                     return JsonResource::make([
                         $err,
-                        "errors" => $validationConfiguration->errors()
+                        'errors' => $validationConfiguration->errors(),
                     ]);
                 }
 
                 $configuration = Configuration::create($validationConfiguration->validated());
 
                 // Params
-                if($configuration) {
-                    foreach($requestConfiguration->params as $params){
+                if ($configuration) {
+                    foreach ($requestConfiguration->params as $params) {
                         Param::create([
-                            'pi' => $params["pi"],
-                            'psi' => $params["psi"],
-                            'alpha' => $params["alpha"],
-                            'tau' => $params["tau"],
-                            'kappa' => $params["kappa"],
-                            'beta' => $params["beta"],
+                            'pi' => $params['pi'],
+                            'psi' => $params['psi'],
+                            'alpha' => $params['alpha'],
+                            'tau' => $params['tau'],
+                            'kappa' => $params['kappa'],
+                            'beta' => $params['beta'],
                             'search_terms' => $params['search_terms'],
                             'user_id' => Auth::id(),
-                            'configuration_id' => $configuration->id
+                            'configuration_id' => $configuration->id,
                         ]);
                     }
                 }
-                
+
                 // Proxy
-                foreach($item['proxy'] as $proxy) {
+                foreach ($item['proxy'] as $proxy) {
                     $proxy['type'] = $proxy['job_type'];
                     $proxy['user_id'] = Auth::id();
                     unset($proxy['job_type']);
@@ -147,61 +149,62 @@ class ExperimentController extends Controller
                 $item['user_id'] = Auth::id();
                 $validationCrawlers = Validator::make($item, $requestCrawlers->rules());
 
-                if($validationCrawlers->fails()) {
+                if ($validationCrawlers->fails()) {
                     JsonResource::wrap('messages');
-                    $err = "error in crawlers";
+                    $err = 'error in crawlers';
+
                     return JsonResource::make([
                         $err,
-                        "errors" => $validationCrawlers->errors()
+                        'errors' => $validationCrawlers->errors(),
                     ]);
                 }
-                
+
                 $crawler = Crawler::query()->create([...$validationCrawlers->validated(), 'configuration_id' => $configuration->id, 'proxy_id' => $proxy->id]);
-     
+
                 // Queues
-                foreach($item['queues'] as $itemQueue){
+                foreach ($item['queues'] as $itemQueue) {
                     $itemQueue['user_id'] = Auth::id();
                     $itemQueue['crawler_id'] = $crawler->id;
                     $requestQueues = new StoreQueueRequest($itemQueue);
                     $validationQueues = Validator::make($itemQueue, $requestQueues->rules());
-    
-                    if($validationQueues->fails()) {
+
+                    if ($validationQueues->fails()) {
                         JsonResource::wrap('messages');
-                        $err = "error in queues";
+                        $err = 'error in queues';
+
                         return JsonResource::make([
                             $err,
-                            "errors" => $validationQueues->errors()
+                            'errors' => $validationQueues->errors(),
                         ]);
                     }
-    
+
                     $queues = Queue::create($validationQueues->validated());
-        
+
                     // jobs
-                    foreach($itemQueue['jobs'] as $itemJob) {
+                    foreach ($itemQueue['jobs'] as $itemJob) {
                         $itemJob['user_id'] = Auth::id();
                         $itemJob['queue_id'] = $queues->id;
-        
+
                         $requestJob = new StoreJobRequest($itemJob);
                         $validationJob = Validator::make($itemJob, $requestJob->rules());
-        
-                        if($validationJob->fails()) {
+
+                        if ($validationJob->fails()) {
                             JsonResource::wrap('messages');
-                            $err = "error in jobs";
+                            $err = 'error in jobs';
+
                             return JsonResource::make([
                                 $err,
-                                "errors" => $validationJob->errors()
+                                'errors' => $validationJob->errors(),
                             ]);
                         }
-        
+
                         Job::create($validationJob->validated());
                     }
                 }
-    
             }
-        } catch (\Throwable $th) {
+        } catch (Throwable $th) {
             throw $th;
         }
-        
 
         return JsonResource::make(Crawler::find($crawler->id));
     }

@@ -5,8 +5,8 @@ namespace App\Modules\Configuration\Http\Controller\Api\v1;
 use App\Http\Controllers\API\v1\Controller;
 use App\Modules\Configuration\Http\Request\ConfigurationStoreRequest;
 use App\Modules\Configuration\Http\Request\ConfigurationUpdateRequest;
-use App\Modules\Configuration\Http\Service\ConfigurationService;
 use App\Modules\Configuration\Model\Configuration;
+use App\Modules\Configuration\Service\ConfigurationService;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
@@ -22,9 +22,9 @@ class ConfigurationController extends Controller
     public function index(): ResourceCollection
     {
         $configurations = $this->configurationService->getData();
-        
+
         return ResourceCollection::make($configurations->get())
-                                ->additional($this->configurationService->additional($configurations));
+            ->additional($this->configurationService->additional($configurations));
     }
 
     public function store(ConfigurationStoreRequest $request): JsonResource

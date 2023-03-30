@@ -20,8 +20,8 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
 class User extends Authenticatable implements JWTSubject
 {
     use HasApiTokens;
-    use Notifiable;
     use HasFactory;
+    use Notifiable;
 
     protected $fillable = [
         'name', 'email', 'password',
@@ -41,7 +41,7 @@ class User extends Authenticatable implements JWTSubject
 
     public function getPhotoUrlAttribute(): string
     {
-        return 'https://www.gravatar.com/avatar/' . md5(strtolower($this->email)) . '.jpg?s=200&d=mm';
+        return 'https://www.gravatar.com/avatar/'.md5(mb_strtolower($this->email)).'.jpg?s=200&d=mm';
     }
 
     public function oauthProviders(): HasMany
@@ -52,7 +52,7 @@ class User extends Authenticatable implements JWTSubject
     /**
      * Send the password reset notification.
      *
-     * @param string $token
+     * @param  string  $token
      */
     public function sendPasswordResetNotification($token): void
     {

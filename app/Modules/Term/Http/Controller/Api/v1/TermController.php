@@ -3,7 +3,7 @@
 namespace App\Modules\Term\Http\Controller\Api\v1;
 
 use App\Http\Controllers\API\v1\Controller;
-use App\Modules\Term\Http\Service\TermService;
+use App\Modules\Term\Service\TermService;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
 class TermController extends Controller
@@ -18,6 +18,7 @@ class TermController extends Controller
     public function index(): ResourceCollection
     {
         $terms = $this->termService->getData();
+
         return ResourceCollection::make($terms);
     }
 }

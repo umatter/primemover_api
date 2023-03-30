@@ -2,8 +2,8 @@
 
 namespace App\Modules\Configuration\Provider;
 
-use App\Modules\Configuration\Http\Service\ConfigurationService;
 use App\Modules\Configuration\Model\Configuration;
+use App\Modules\Configuration\Service\ConfigurationService;
 use Illuminate\Support\ServiceProvider;
 
 class ConfigurationServiceProvider extends ServiceProvider
@@ -13,11 +13,9 @@ class ConfigurationServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function register()
+    public function register(): void
     {
-        $this->app->singleton(ConfigurationService::class, function ($app) {
-            return new ConfigurationService(new Configuration());
-        });
+        $this->app->singleton(ConfigurationService::class, fn ($app) => new ConfigurationService(new Configuration()));
     }
 
     /**
@@ -25,8 +23,7 @@ class ConfigurationServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot()
+    public function boot(): void
     {
-        //
     }
 }

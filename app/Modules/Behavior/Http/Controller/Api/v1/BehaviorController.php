@@ -3,8 +3,8 @@
 namespace App\Modules\Behavior\Http\Controller\Api\v1;
 
 use App\Http\Controllers\API\v1\Controller;
-use App\Modules\Behavior\Http\Service\BehaviorService;
 use App\Modules\Behavior\Model\Behavior;
+use App\Modules\Behavior\Service\BehaviorService;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -18,7 +18,6 @@ class BehaviorController extends Controller
     {
         $this->behaviorService = $behaviorService;
     }
-
 
     public function index(): ResourceCollection
     {

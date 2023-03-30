@@ -3,8 +3,8 @@
 namespace App\Modules\Outlet\Http\Controller\Api\v1;
 
 use App\Http\Controllers\API\v1\Controller;
-use App\Modules\Outlet\Http\Service\OutletService;
 use App\Modules\Outlet\Model\Outlet;
+use App\Modules\Outlet\Service\OutletService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Resources\Json\ResourceCollection;

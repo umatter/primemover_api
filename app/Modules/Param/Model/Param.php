@@ -5,6 +5,7 @@ namespace App\Modules\Param\Model;
 use App\Models\BaseModel;
 use App\Models\User;
 use App\Modules\Configuration\Model\Configuration;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
@@ -21,10 +22,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class Param extends BaseModel
 {
+    use HasFactory;
+
     protected $guarded = [];
 
     protected $casts = [
-        'search_terms' => 'array'
+        'search_terms' => 'array',
     ];
 
     public function user(): BelongsTo

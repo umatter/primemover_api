@@ -3,8 +3,8 @@
 namespace App\Modules\Report\Http\Controller\Api\v1;
 
 use App\Http\Controllers\API\v1\Controller;
-use App\Modules\Report\Http\Service\ReportService;
 use App\Modules\Report\Model\Report;
+use App\Modules\Report\Service\ReportService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Resources\Json\ResourceCollection;
@@ -18,7 +18,7 @@ class ReportController extends Controller
     {
         $this->reportService = $reportService;
     }
-    
+
     public function index(): ResourceCollection
     {
         $reports = $this->reportService->getData();

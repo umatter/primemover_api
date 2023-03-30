@@ -23,7 +23,7 @@ class PreferenceService
 
     public function createManyForModel(Collection $data, Model $model): void
     {
-        $data->map(function (PreferenceDto $preferenceData) use ($model) {
+        $data->map(function (PreferenceDto $preferenceData) use ($model): void {
             $this->create($preferenceData)
                 ->preferencable()
                 ->associate($model)

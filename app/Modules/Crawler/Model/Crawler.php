@@ -31,7 +31,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Crawler extends BaseModel
 {
     use HasFactory;
-    
+
     protected $guarded = [];
 
     protected $appends = [
@@ -135,7 +135,7 @@ class Crawler extends BaseModel
     {
         return $this->hasMany(Queue::class)
             ->whereDate('started_at', '>', Carbon::now()->subHours($hoursBack))
-            ->when($status, function (Builder $builder) use ($status) {
+            ->when($status, function (Builder $builder) use ($status): void {
                 $builder->where('status_code', '=', $status);
             });
     }
