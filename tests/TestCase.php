@@ -2,6 +2,7 @@
 
 namespace Tests;
 
+use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Modules\Agent\Model\Agent;
 use App\Modules\Configuration\Model\Configuration;
@@ -12,13 +13,20 @@ use App\Modules\Outlet\Model\Outlet;
 use App\Modules\Param\Model\Param;
 use App\Modules\Proxy\Model\Proxy;
 use App\Modules\Queue\Model\Queue;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
+use Mockery\MockInterface;
 
 abstract class TestCase extends BaseTestCase
 {
     use CreatesApplication;
     use RefreshDatabase;
+
+    /**
+     * @var Controller|MockInterface|Model
+     */
+    protected mixed $testObject;
 
     protected User $user;
 
