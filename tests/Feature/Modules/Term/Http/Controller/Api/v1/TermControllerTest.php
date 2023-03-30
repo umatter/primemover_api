@@ -4,7 +4,7 @@ namespace Tests\Feature\Modules\Term\Http\Controller\Api\v1;
 
 use App\Modules\Term\Http\Controller\Api\v1\TermController;
 use App\Modules\Term\Model\Term;
-use App\Modules\Term\Service\TermService;
+use App\Modules\Term\Repository\TermRepository;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 use Tests\TestCase;
 
@@ -25,7 +25,7 @@ class TermControllerTest extends TestCase
             'user_id' => $this->user->id,
         ]);
 
-        $controller = new TermController(new TermService(new Term()));
+        $controller = new TermController(new TermRepository(new Term()));
         $result = $controller->index();
 
         self::assertInstanceOf(ResourceCollection::class, $result);

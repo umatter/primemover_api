@@ -6,11 +6,7 @@ use App\Modules\Agent\Model\Agent;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
-use Tests\Feature\Modules\Agent\Service\AgentServiceTest;
 
-/**
- * @see AgentServiceTest
- */
 class AgentRepository
 {
     public function __construct(protected Agent $agent)

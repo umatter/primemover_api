@@ -9,11 +9,7 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Resources\Json\ResourceCollection;
-use Tests\Feature\Modules\Behavior\Http\Controller\Api\v1\BehaviorControllerTest;
 
-/**
- * @see BehaviorControllerTest
- */
 class BehaviorController extends Controller
 {
     public function __construct(protected BehaviorRepository $repository)

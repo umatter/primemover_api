@@ -9,7 +9,7 @@ use App\Modules\Crawler\Http\Request\StoreCrawlerRequest;
 use App\Modules\Crawler\Model\Crawler;
 use App\Modules\Experiment\Http\Request\ExperimentStoreRequest;
 use App\Modules\Experiment\Model\Experiment;
-use App\Modules\Experiment\Service\ExperimentService;
+use App\Modules\Experiment\Repository\ExperimentRepository;
 use App\Modules\Job\Http\Request\StoreJobRequest;
 use App\Modules\Job\Model\Job;
 use App\Modules\Param\Model\Param;
@@ -26,20 +26,20 @@ use Throwable;
 
 class ExperimentController extends Controller
 {
-    public function __construct(protected ExperimentService $experimentService)
+    public function __construct(protected ExperimentRepository $repository)
     {
     }
 
     public function index(): ResourceCollection
     {
-        $experiments = $this->experimentService->getData();
+        $experiments = $this->repository->getData();
 
         return ResourceCollection::make($experiments);
     }
 
     public function all(): ResourceCollection
     {
-        $experiments = $this->experimentService->all();
+        $experiments = $this->repository->all();
 
         return ResourceCollection::make($experiments);
     }
@@ -49,14 +49,14 @@ class ExperimentController extends Controller
      */
     public function store(ExperimentStoreRequest $request): JsonResource
     {
-        $experiment = $this->experimentService->save($request);
+        $experiment = $this->repository->save($request);
 
         return JsonResource::make($experiment);
     }
 
     public function show(Experiment $experiment): JsonResource
     {
-        return JsonResource::make($this->experimentService->getById($experiment));
+        return JsonResource::make($this->repository->getById($experiment));
     }
 
     public function edit(Experiment $experiment): JsonResource
@@ -69,7 +69,7 @@ class ExperimentController extends Controller
      */
     public function update(ExperimentStoreRequest $request, Experiment $experiment): JsonResource
     {
-        return JsonResource::make($this->experimentService->update($request, $experiment));
+        return JsonResource::make($this->repository->update($request, $experiment));
     }
 
     /**
@@ -77,7 +77,7 @@ class ExperimentController extends Controller
      */
     public function destroy(Experiment $experiment): JsonResource
     {
-        return JsonResource::make($this->experimentService->delete($experiment));
+        return JsonResource::make($this->repository->delete($experiment));
     }
 
     /**
@@ -85,7 +85,7 @@ class ExperimentController extends Controller
      */
     public function forceDelete(Experiment $experiment): JsonResource
     {
-        return JsonResource::make($this->experimentService->forceDelete($experiment));
+        return JsonResource::make($this->repository->forceDelete($experiment));
     }
 
     public function upload(): JsonResource

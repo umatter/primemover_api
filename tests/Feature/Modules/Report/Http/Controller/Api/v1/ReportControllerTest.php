@@ -4,7 +4,7 @@ namespace Tests\Feature\Modules\Report\Http\Controller\Api\v1;
 
 use App\Modules\Report\Http\Controller\Api\v1\ReportController;
 use App\Modules\Report\Model\Report;
-use App\Modules\Report\Service\ReportService;
+use App\Modules\Report\Repository\ReportRepository;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Resources\Json\ResourceCollection;
@@ -22,7 +22,7 @@ class ReportControllerTest extends TestCase
      */
     public function testIndex(): void
     {
-        $controller = new ReportController(new ReportService(new Report()));
+        $controller = new ReportController(new ReportRepository(new Report()));
         $result = $controller->index();
 
         $this->assertInstanceOf(ResourceCollection::class, $result);
@@ -42,7 +42,7 @@ class ReportControllerTest extends TestCase
             'mimetype' => 'jpg',
         ]);
 
-        $controller = new ReportController(new ReportService(new Report()));
+        $controller = new ReportController(new ReportRepository(new Report()));
         $result = $controller->store($data);
 
         $this->assertDatabaseHas('reports', $data->all());
@@ -56,7 +56,7 @@ class ReportControllerTest extends TestCase
     {
         $report = Report::factory()->create();
 
-        $controller = new ReportController(new ReportService(new Report()));
+        $controller = new ReportController(new ReportRepository(new Report()));
         $result = $controller->show($report);
 
         $this->assertInstanceOf(JsonResource::class, $result);
@@ -71,7 +71,7 @@ class ReportControllerTest extends TestCase
     {
         $report = Report::factory()->create();
 
-        $controller = new ReportController(new ReportService(new Report()));
+        $controller = new ReportController(new ReportRepository(new Report()));
         $result = $controller->destroy($report);
 
         $this->assertDatabaseMissing('reports', $report->toArray());

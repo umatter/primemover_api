@@ -10,11 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 use Illuminate\Support\Facades\App;
-use Tests\Feature\Modules\Agent\Http\Controller\Api\v1\AgentControllerTest;
 
-/**
- * @see AgentControllerTest
- */
 class AgentController extends Controller
 {
     public function __construct(protected AgentRepository $repository)

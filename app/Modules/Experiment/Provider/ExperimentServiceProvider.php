@@ -2,13 +2,13 @@
 
 namespace App\Modules\Experiment\Provider;
 
-use App\Modules\Experiment\Service\ExperimentService;
+use App\Modules\Experiment\Repository\ExperimentRepository;
 use Illuminate\Support\ServiceProvider;
 
 class ExperimentServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
-        $this->app->singleton(ExperimentService::class);
+        $this->app->singleton(ExperimentRepository::class);
     }
 }

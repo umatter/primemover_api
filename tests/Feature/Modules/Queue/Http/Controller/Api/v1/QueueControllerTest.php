@@ -12,7 +12,7 @@ use App\Modules\Queue\Http\Controller\Api\v1\QueueController;
 use App\Modules\Queue\Http\Request\StoreQueueRequest;
 use App\Modules\Queue\Http\Request\UpdateQueueRequest;
 use App\Modules\Queue\Model\Queue;
-use App\Modules\Queue\Service\QueueService;
+use App\Modules\Queue\Repository\QueueRepository;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Resources\Json\ResourceCollection;
@@ -35,7 +35,7 @@ class QueueControllerTest extends TestCase
         $request->allows('input')->with('crawler')->andReturns(1);
         $request->allows('input')->with('sortBy')->andReturns('id');
 
-        $controller = new QueueController(new QueueService(new Queue()));
+        $controller = new QueueController(new QueueRepository(new Queue()));
         $result = $controller->index($request);
 
         $this->assertInstanceOf(ResourceCollection::class, $result);
@@ -72,7 +72,7 @@ class QueueControllerTest extends TestCase
         $request = m::mock(StoreQueueRequest::class)->makePartial();
         $request->allows('validated')->andReturns($data);
 
-        $controller = new QueueController(new QueueService(new Queue()));
+        $controller = new QueueController(new QueueRepository(new Queue()));
         $result = $controller->store($request);
 
         $this->assertDatabaseHas('queues', $data);
@@ -87,7 +87,7 @@ class QueueControllerTest extends TestCase
     {
         $queue = Queue::factory()->create();
 
-        $controller = new QueueController(new QueueService(new Queue()));
+        $controller = new QueueController(new QueueRepository(new Queue()));
         $result = $controller->show($queue);
 
         $this->assertEquals($queue->id, $result->resource->id);
@@ -102,7 +102,7 @@ class QueueControllerTest extends TestCase
     {
         $job = Job::factory()->create();
 
-        $controller = new QueueController(new QueueService(new Queue()));
+        $controller = new QueueController(new QueueRepository(new Queue()));
         $result = $controller->job($job->id);
 
         $this->assertInstanceOf(JsonResource::class, $result);
@@ -114,7 +114,7 @@ class QueueControllerTest extends TestCase
      */
     public function testProcessed(): void
     {
-        $controller = new QueueController(new QueueService(new Queue()));
+        $controller = new QueueController(new QueueRepository(new Queue()));
         $result = $controller->processed();
 
         $this->assertInstanceOf(ResourceCollection::class, $result);
@@ -130,7 +130,7 @@ class QueueControllerTest extends TestCase
      */
     public function testUnprocessed(): void
     {
-        $controller = new QueueController(new QueueService(new Queue()));
+        $controller = new QueueController(new QueueRepository(new Queue()));
         $result = $controller->unprocessed();
 
         $this->assertInstanceOf(ResourceCollection::class, $result);
@@ -146,7 +146,7 @@ class QueueControllerTest extends TestCase
      */
     public function testReviewed(): void
     {
-        $controller = new QueueController(new QueueService(new Queue()));
+        $controller = new QueueController(new QueueRepository(new Queue()));
         $result = $controller->reviewed();
 
         $this->assertInstanceOf(ResourceCollection::class, $result);
@@ -162,7 +162,7 @@ class QueueControllerTest extends TestCase
      */
     public function testUnreviewed(): void
     {
-        $controller = new QueueController(new QueueService(new Queue()));
+        $controller = new QueueController(new QueueRepository(new Queue()));
         $result = $controller->unreviewed();
 
         $this->assertInstanceOf(ResourceCollection::class, $result);
@@ -190,7 +190,7 @@ class QueueControllerTest extends TestCase
             'processed' => 1,
         ]);
 
-        $controller = new QueueController(new QueueService(new Queue()));
+        $controller = new QueueController(new QueueRepository(new Queue()));
         $result = $controller->experimentUnreviewed($experiment);
 
         $this->assertInstanceOf(ResourceCollection::class, $result);
@@ -218,7 +218,7 @@ class QueueControllerTest extends TestCase
             'reviewed' => 1,
         ]);
 
-        $controller = new QueueController(new QueueService(new Queue()));
+        $controller = new QueueController(new QueueRepository(new Queue()));
         $result = $controller->experimentReviewed($experiment);
 
         $this->assertInstanceOf(ResourceCollection::class, $result);
@@ -245,7 +245,7 @@ class QueueControllerTest extends TestCase
             'processed' => 0,
         ]);
 
-        $controller = new QueueController(new QueueService(new Queue()));
+        $controller = new QueueController(new QueueRepository(new Queue()));
         $result = $controller->experimentUnprocessed($experiment);
 
         $this->assertInstanceOf(ResourceCollection::class, $result);
@@ -272,7 +272,7 @@ class QueueControllerTest extends TestCase
             'processed' => 1,
         ]);
 
-        $controller = new QueueController(new QueueService(new Queue()));
+        $controller = new QueueController(new QueueRepository(new Queue()));
         $result = $controller->experimentProcessed($experiment);
 
         $this->assertInstanceOf(ResourceCollection::class, $result);
@@ -291,7 +291,7 @@ class QueueControllerTest extends TestCase
     {
         $queue = Queue::factory()->create();
 
-        $controller = new QueueController(new QueueService(new Queue()));
+        $controller = new QueueController(new QueueRepository(new Queue()));
         $result = $controller->edit($queue);
 
         $this->assertInstanceOf(JsonResource::class, $result);
@@ -327,7 +327,7 @@ class QueueControllerTest extends TestCase
         $request = m::mock(UpdateQueueRequest::class)->makePartial();
         $request->allows('validated')->andReturns($data);
 
-        $controller = new QueueController(new QueueService(new Queue()));
+        $controller = new QueueController(new QueueRepository(new Queue()));
         $result = $controller->update($request, $queue);
 
         $this->assertDatabaseHas('queues', $data);
@@ -342,7 +342,7 @@ class QueueControllerTest extends TestCase
     {
         $queue = Queue::factory()->create();
 
-        $controller = new QueueController(new QueueService(new Queue()));
+        $controller = new QueueController(new QueueRepository(new Queue()));
         $result = $controller->destroy($queue);
 
         $this->assertDatabaseMissing('queues', $queue->toArray());

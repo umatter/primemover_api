@@ -7,7 +7,7 @@ use App\Modules\Experiment\Model\Experiment;
 use App\Modules\Queue\Http\Request\StoreQueueRequest;
 use App\Modules\Queue\Http\Request\UpdateQueueRequest;
 use App\Modules\Queue\Model\Queue;
-use App\Modules\Queue\Service\QueueService;
+use App\Modules\Queue\Repository\QueueRepository;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -15,7 +15,7 @@ use Illuminate\Http\Resources\Json\ResourceCollection;
 
 class QueueController extends Controller
 {
-    public function __construct(protected QueueService $queueService)
+    public function __construct(protected QueueRepository $repository)
     {
     }
 
@@ -23,14 +23,14 @@ class QueueController extends Controller
     {
         $crawlerId = $request->input('crawler');
         $sortBy = $request->input('sortBy');
-        $queues = $this->queueService->getData($crawlerId, $sortBy);
+        $queues = $this->repository->getData($crawlerId, $sortBy);
 
         return ResourceCollection::make($queues);
     }
 
     public function store(StoreQueueRequest $request): JsonResource
     {
-        $queue = $this->queueService->save($request->validated());
+        $queue = $this->repository->save($request->validated());
 
         return JsonResource::make($queue);
     }
@@ -42,63 +42,63 @@ class QueueController extends Controller
 
     public function job($id): JsonResource
     {
-        $queue = $this->queueService->job($id);
+        $queue = $this->repository->job($id);
 
         return JsonResource::make($queue);
     }
 
     public function processed(): ResourceCollection
     {
-        $queue = $this->queueService->processed();
+        $queue = $this->repository->processed();
 
         return ResourceCollection::make($queue);
     }
 
     public function unprocessed(): ResourceCollection
     {
-        $queue = $this->queueService->unprocessed();
+        $queue = $this->repository->unprocessed();
 
         return ResourceCollection::make($queue);
     }
 
     public function reviewed(): ResourceCollection
     {
-        $queue = $this->queueService->reviewed();
+        $queue = $this->repository->reviewed();
 
         return ResourceCollection::make($queue);
     }
 
     public function unreviewed(): ResourceCollection
     {
-        $queue = $this->queueService->unreviewed();
+        $queue = $this->repository->unreviewed();
 
         return ResourceCollection::make($queue);
     }
 
     public function experimentUnreviewed(Experiment $experiment): ResourceCollection
     {
-        $queue = $this->queueService->experimentUnreviewed($experiment);
+        $queue = $this->repository->experimentUnreviewed($experiment);
 
         return ResourceCollection::make($queue);
     }
 
     public function experimentReviewed(Experiment $experiment): ResourceCollection
     {
-        $queue = $this->queueService->experimentReviewed($experiment);
+        $queue = $this->repository->experimentReviewed($experiment);
 
         return ResourceCollection::make($queue);
     }
 
     public function experimentUnprocessed(Experiment $experiment): ResourceCollection
     {
-        $queue = $this->queueService->experimentUnprocessed($experiment);
+        $queue = $this->repository->experimentUnprocessed($experiment);
 
         return ResourceCollection::make($queue);
     }
 
     public function experimentProcessed(Experiment $experiment): ResourceCollection
     {
-        $queue = $this->queueService->experimentProcessed($experiment);
+        $queue = $this->repository->experimentProcessed($experiment);
 
         return ResourceCollection::make($queue);
     }
@@ -110,7 +110,7 @@ class QueueController extends Controller
 
     public function update(UpdateQueueRequest $request, Queue $queue): JsonResource
     {
-        return JsonResource::make($this->queueService->update($request->validated(), $queue));
+        return JsonResource::make($this->repository->update($request->validated(), $queue));
     }
 
     /**
@@ -118,6 +118,6 @@ class QueueController extends Controller
      */
     public function destroy(Queue $queue): ResourceCollection
     {
-        return ResourceCollection::make($this->queueService->delete($queue));
+        return ResourceCollection::make($this->repository->delete($queue));
     }
 }

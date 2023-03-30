@@ -4,7 +4,7 @@ namespace Tests\Feature\Modules\Param\Http\Controller\Api\v1;
 
 use App\Modules\Param\Http\Controller\Api\v1\ParamController;
 use App\Modules\Param\Model\Param;
-use App\Modules\Param\Service\ParamService;
+use App\Modules\Param\Repository\ParamRepository;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Resources\Json\ResourceCollection;
@@ -22,7 +22,7 @@ class ParamControllerTest extends TestCase
      */
     public function testIndex(): void
     {
-        $controller = new ParamController(new ParamService(new Param()));
+        $controller = new ParamController(new ParamRepository(new Param()));
         $result = $controller->index();
 
         $this->assertInstanceOf(ResourceCollection::class, $result);
@@ -79,7 +79,7 @@ class ParamControllerTest extends TestCase
 
         $request = new Request($data);
 
-        $controller = new ParamController(new ParamService(new Param()));
+        $controller = new ParamController(new ParamRepository(new Param()));
         $result = $controller->store($request);
 
         $this->assertInstanceOf(JsonResource::class, $result);
@@ -134,7 +134,7 @@ class ParamControllerTest extends TestCase
 
         $param = Param::create($data);
 
-        $controller = new ParamController(new ParamService(new Param()));
+        $controller = new ParamController(new ParamRepository(new Param()));
         $result = $controller->show($param->id);
 
         $this->assertInstanceOf(JsonResource::class, $result);
@@ -188,7 +188,7 @@ class ParamControllerTest extends TestCase
 
         $param = Param::create($data);
 
-        $controller = new ParamController(new ParamService(new Param()));
+        $controller = new ParamController(new ParamRepository(new Param()));
         $result = $controller->edit($param);
 
         $this->assertInstanceOf(JsonResource::class, $result);
@@ -242,7 +242,7 @@ class ParamControllerTest extends TestCase
 
         $param = Param::create($data);
 
-        $controller = new ParamController(new ParamService(new Param()));
+        $controller = new ParamController(new ParamRepository(new Param()));
         $result = $controller->update($request, $param);
 
         $data['search_terms'] = json_encode($data['search_terms']);
@@ -295,7 +295,7 @@ class ParamControllerTest extends TestCase
 
         $param = Param::create($data);
 
-        $controller = new ParamController(new ParamService(new Param()));
+        $controller = new ParamController(new ParamRepository(new Param()));
         $result = $controller->destroy($param);
 
         $this->assertDatabaseMissing('params', $param->toArray());

@@ -5,25 +5,25 @@ namespace App\Modules\Proxy\Http\Controller\Api\v1;
 use App\Http\Controllers\API\v1\Controller;
 use App\Modules\Proxy\Http\Request\ProxyIndexRequest;
 use App\Modules\Proxy\Model\Proxy;
-use App\Modules\Proxy\Service\ProxyService;
+use App\Modules\Proxy\Repository\ProxyRepository;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
 class ProxyController extends Controller
 {
-    public function __construct(protected ProxyService $proxyService)
+    public function __construct(protected ProxyRepository $repository)
     {
     }
 
     public function index(ProxyIndexRequest $request): ResourceCollection
     {
-        return $this->proxyService->getData($request);
+        return $this->repository->getData($request);
     }
 
     public function store(Request $request): JsonResource
     {
-        $proxy = $this->proxyService->save($request->all());
+        $proxy = $this->repository->save($request->all());
 
         return JsonResource::make($proxy);
     }
@@ -40,11 +40,11 @@ class ProxyController extends Controller
 
     public function update(Request $request, Proxy $proxy): JsonResource
     {
-        return JsonResource::make($this->proxyService->update($request->all(), $proxy));
+        return JsonResource::make($this->repository->update($request->all(), $proxy));
     }
 
     public function destroy(Proxy $proxy): ResourceCollection
     {
-        return ResourceCollection::make($this->proxyService->delete($proxy));
+        return ResourceCollection::make($this->repository->delete($proxy));
     }
 }

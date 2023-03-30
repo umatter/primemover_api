@@ -8,59 +8,63 @@ use App\Modules\Configuration\Model\Configuration;
 use App\Modules\Crawler\Http\Request\StoreCrawlerRequest;
 use App\Modules\Crawler\Http\Request\UpdateCrawlerRequest;
 use App\Modules\Crawler\Model\Crawler;
-use App\Modules\Crawler\Service\CrawlerService;
+use App\Modules\Crawler\Repository\CrawlerRepository;
 use App\Modules\Proxy\Model\Proxy;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Resources\Json\ResourceCollection;
+use Tests\Feature\Modules\Crawler\Http\Controller\Api\v1\CrawlerControllerTest;
 
+/**
+ * @see CrawlerControllerTest
+ */
 class CrawlerController extends Controller
 {
-    public function __construct(protected CrawlerService $crawlerService)
+    public function __construct(protected CrawlerRepository $repository)
     {
     }
 
     public function index(Request $request): ResourceCollection
     {
         $experimentId = $request->input('experiment');
-        $crawlers = $this->crawlerService->getData($experimentId);
+        $crawlers = $this->repository->getData($experimentId);
 
         return ResourceCollection::make($crawlers);
     }
 
     public function inactive(): ResourceCollection
     {
-        $crawlers = $this->crawlerService->inactive();
+        $crawlers = $this->repository->inactive();
 
         return ResourceCollection::make($crawlers);
     }
 
     public function withProcessedQueues(): ResourceCollection
     {
-        $crawlers = $this->crawlerService->processed();
+        $crawlers = $this->repository->processed();
 
         return ResourceCollection::make($crawlers);
     }
 
     public function withReviewedQueues(): ResourceCollection
     {
-        $crawlers = $this->crawlerService->reviewed();
+        $crawlers = $this->repository->reviewed();
 
         return ResourceCollection::make($crawlers);
     }
 
     public function withUnprocessedQueues(): ResourceCollection
     {
-        $crawlers = $this->crawlerService->unprocessed();
+        $crawlers = $this->repository->unprocessed();
 
         return ResourceCollection::make($crawlers);
     }
 
     public function testing(): ResourceCollection
     {
-        $crawlers = $this->crawlerService->testing();
+        $crawlers = $this->repository->testing();
 
         return ResourceCollection::make($crawlers);
     }
@@ -72,14 +76,14 @@ class CrawlerController extends Controller
 
     public function store(StoreCrawlerRequest $request): JsonResource
     {
-        $crawler = $this->crawlerService->save($request->validated());
+        $crawler = $this->repository->save($request->validated());
 
         return JsonResource::make($crawler);
     }
 
     public function show(Crawler $crawler): JsonResource
     {
-        return JsonResource::make($this->crawlerService->getById($crawler));
+        return JsonResource::make($this->repository->getById($crawler));
     }
 
     public function edit(Crawler $crawler): JsonResource
@@ -89,14 +93,14 @@ class CrawlerController extends Controller
 
     public function update(UpdateCrawlerRequest $request, Crawler $crawler): JsonResource
     {
-        $crawler = $this->crawlerService->update($request->validated(), $crawler);
+        $crawler = $this->repository->update($request->validated(), $crawler);
 
         return JsonResource::make($crawler);
     }
 
     public function disableProdCrawlers(): ResourceCollection
     {
-        $crawler = $this->crawlerService->disableProdCrawlers();
+        $crawler = $this->repository->disableProdCrawlers();
 
         return ResourceCollection::make($crawler);
     }
@@ -106,61 +110,61 @@ class CrawlerController extends Controller
      */
     public function forceDelete(Crawler $crawler): ResourceCollection
     {
-        return ResourceCollection::make($this->crawlerService->forceDelete($crawler));
+        return ResourceCollection::make($this->repository->forceDelete($crawler));
     }
 
     public function destroy(Crawler $crawler): ResourceCollection
     {
-        return ResourceCollection::make($this->crawlerService->delete($crawler));
+        return ResourceCollection::make($this->repository->delete($crawler));
     }
 
     public function ip($ip = null): JsonResponse
     {
-        return $this->crawlerService->ip($ip);
+        return $this->repository->ip($ip);
     }
 
     public function undo(): ResourceCollection
     {
-        $crawlers = $this->crawlerService->undo();
+        $crawlers = $this->repository->undo();
 
         return ResourceCollection::make($crawlers);
     }
 
     public function cleanup(): ResourceCollection
     {
-        $crawlers = $this->crawlerService->cleanup();
+        $crawlers = $this->repository->cleanup();
 
         return ResourceCollection::make($crawlers);
     }
 
     public function load(): JsonResponse
     {
-        return $this->crawlerService->load();
+        return $this->repository->load();
     }
 
     public function makeCrawlers($data): JsonResponse
     {
-        return $this->crawlerService->makeCrawlers($data);
+        return $this->repository->makeCrawlers($data);
     }
 
     public function makeQueues($data, $crawler): void
     {
-        $this->crawlerService->makeQueues($crawler, $data);
+        $this->repository->makeQueues($crawler, $data);
     }
 
     public function makeJobs($data, $queue): void
     {
-        $this->crawlerService->makeJobs($data, $queue);
+        $this->repository->makeJobs($data, $queue);
     }
 
     public function makeBehaviors($data, $job): void
     {
-        $this->crawlerService->makeBehaviors($data, $job);
+        $this->repository->makeBehaviors($data, $job);
     }
 
     public function makeProxies($data, $crawler): Proxy
     {
-        return $this->crawlerService->makeProxies($data, $crawler);
+        return $this->repository->makeProxies($data, $crawler);
     }
 
     public function log($content): void
@@ -172,16 +176,16 @@ class CrawlerController extends Controller
 
     public function makeConfigurations($data, $crawler): Configuration
     {
-        return $this->crawlerService->makeConfigurations($data, $crawler);
+        return $this->repository->makeConfigurations($data, $crawler);
     }
 
     public function makePreferences($data, $model): void
     {
-        $this->crawlerService->makePreferences($data, $model);
+        $this->repository->makePreferences($data, $model);
     }
 
     public function makeAgents($data, $crawler): Agent
     {
-        return $this->crawlerService->makeAgents($data, $crawler);
+        return $this->repository->makeAgents($data, $crawler);
     }
 }
