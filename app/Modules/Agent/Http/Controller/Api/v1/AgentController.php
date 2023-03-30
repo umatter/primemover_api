@@ -4,8 +4,8 @@ namespace App\Modules\Agent\Http\Controller\Api\v1;
 
 use App\Http\Controllers\API\v1\Controller;
 use App\Modules\Agent\Http\Request\AgentStoreRequest;
-use App\Modules\Agent\Http\Service\AgentService;
 use App\Modules\Agent\Model\Agent;
+use App\Modules\Agent\Service\AgentService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Resources\Json\ResourceCollection;
@@ -23,9 +23,9 @@ class AgentController extends Controller
     public function index(): ResourceCollection
     {
         $agents = $this->agentService->getData();
-        
+
         return ResourceCollection::make($agents->get())
-                ->additional($this->agentService->additional($agents));
+            ->additional($this->agentService->additional($agents));
     }
 
     public function create(): ResourceCollection

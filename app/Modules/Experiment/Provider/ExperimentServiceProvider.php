@@ -2,31 +2,13 @@
 
 namespace App\Modules\Experiment\Provider;
 
-use App\Modules\Experiment\Http\Service\ExperimentService;
-use App\Modules\Experiment\Model\Experiment;
+use App\Modules\Experiment\Service\ExperimentService;
 use Illuminate\Support\ServiceProvider;
 
 class ExperimentServiceProvider extends ServiceProvider
 {
-    /**
-     * Register services.
-     *
-     * @return void
-     */
-    public function register()
+    public function register(): void
     {
-        $this->app->singleton(ExperimentService::class, function ($app) {
-            return new ExperimentService(new Experiment());
-        });
-    }
-
-    /**
-     * Bootstrap services.
-     *
-     * @return void
-     */
-    public function boot()
-    {
-        //
+        $this->app->singleton(ExperimentService::class);
     }
 }

@@ -9,7 +9,7 @@ class ChangeCrawlerFkOndelete extends Migration
 {
     public function up(): void
     {
-        Schema::table('crawlers', function (Blueprint $table) {
+        Schema::table('crawlers', function (Blueprint $table): void {
             if ('sqlite' !== DB::getDriverName()) {
                 $table->dropForeign(['experiment_id']);
             }
@@ -20,7 +20,7 @@ class ChangeCrawlerFkOndelete extends Migration
                 ->onDelete('cascade');
         });
 
-        Schema::table('crawlers', function (Blueprint $table) {
+        Schema::table('crawlers', function (Blueprint $table): void {
             if ('sqlite' !== DB::getDriverName()) {
                 $table->dropForeign(['user_id']);
             }
@@ -31,7 +31,7 @@ class ChangeCrawlerFkOndelete extends Migration
                 ->onDelete('cascade');
         });
 
-        Schema::table('crawlers', function (Blueprint $table) {
+        Schema::table('crawlers', function (Blueprint $table): void {
             if ('sqlite' !== DB::getDriverName()) {
                 $table->dropForeign(['proxy_id']);
             }
@@ -43,7 +43,7 @@ class ChangeCrawlerFkOndelete extends Migration
                 ->nullOnDelete();
         });
 
-        Schema::table('crawlers', function (Blueprint $table) {
+        Schema::table('crawlers', function (Blueprint $table): void {
             if ('sqlite' !== DB::getDriverName()) {
                 $table->dropForeign(['agent_id']);
             }
@@ -55,7 +55,7 @@ class ChangeCrawlerFkOndelete extends Migration
                 ->nullOnDelete();
         });
 
-        Schema::table('crawlers', function (Blueprint $table) {
+        Schema::table('crawlers', function (Blueprint $table): void {
             if ('sqlite' !== DB::getDriverName()) {
                 $table->dropForeign(['configuration_id']);
             }
@@ -67,7 +67,7 @@ class ChangeCrawlerFkOndelete extends Migration
                 ->nullOnDelete();
         });
 
-        Schema::table('queues', function (Blueprint $table) {
+        Schema::table('queues', function (Blueprint $table): void {
             if ('sqlite' !== DB::getDriverName()) {
                 $table->dropForeign(['crawler_id']);
             }
@@ -78,7 +78,7 @@ class ChangeCrawlerFkOndelete extends Migration
                 ->onDelete('cascade');
         });
 
-        Schema::table('jobs', function (Blueprint $table) {
+        Schema::table('jobs', function (Blueprint $table): void {
             if ('sqlite' !== DB::getDriverName()) {
                 $table->dropForeign(['queue_id']);
             }
@@ -88,7 +88,7 @@ class ChangeCrawlerFkOndelete extends Migration
                 ->on('queues')
                 ->onDelete('cascade');
         });
-        Schema::table('behaviors', function (Blueprint $table) {
+        Schema::table('behaviors', function (Blueprint $table): void {
             if ('sqlite' !== DB::getDriverName()) {
                 $table->dropForeign(['job_id']);
             }
@@ -98,7 +98,7 @@ class ChangeCrawlerFkOndelete extends Migration
                 ->on('jobs')
                 ->onDelete('cascade');
         });
-        Schema::table('params', function (Blueprint $table) {
+        Schema::table('params', function (Blueprint $table): void {
             if ('sqlite' !== DB::getDriverName()) {
                 $table->dropForeign(['configuration_id']);
             }
@@ -109,7 +109,7 @@ class ChangeCrawlerFkOndelete extends Migration
                 ->onDelete('cascade');
         });
 
-        Schema::table('reports', function (Blueprint $table) {
+        Schema::table('reports', function (Blueprint $table): void {
             if ('sqlite' !== DB::getDriverName()) {
                 $table->dropForeign(['job_id']);
             }

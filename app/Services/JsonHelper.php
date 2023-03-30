@@ -23,7 +23,7 @@ class JsonHelper
 
     public function encodeJson(mixed $data): ?string
     {
-        if (!$data) {
+        if ( ! $data) {
             return null;
         }
 

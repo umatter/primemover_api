@@ -2,31 +2,13 @@
 
 namespace App\Modules\Report\Provider;
 
-use App\Modules\Report\Http\Service\ReportService;
-use App\Modules\Report\Model\Report;
+use App\Modules\Report\Service\ReportService;
 use Illuminate\Support\ServiceProvider;
 
 class ReportServiceProvider extends ServiceProvider
 {
-    /**
-     * Register services.
-     *
-     * @return void
-     */
-    public function register()
+    public function register(): void
     {
-        $this->app->singleton(ReportService::class, function ($app) {
-            return new ReportService(new Report());
-        });
-    }
-
-    /**
-     * Bootstrap services.
-     *
-     * @return void
-     */
-    public function boot()
-    {
-        //
+        $this->app->singleton(ReportService::class);
     }
 }

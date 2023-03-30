@@ -4,8 +4,8 @@ namespace App\Modules\Proxy\Http\Controller\Api\v1;
 
 use App\Http\Controllers\API\v1\Controller;
 use App\Modules\Proxy\Http\Request\ProxyIndexRequest;
-use App\Modules\Proxy\Http\Service\ProxyService;
 use App\Modules\Proxy\Model\Proxy;
+use App\Modules\Proxy\Service\ProxyService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Resources\Json\ResourceCollection;
@@ -18,7 +18,7 @@ class ProxyController extends Controller
     {
         $this->proxyService = $proxyService;
     }
-    
+
     public function index(ProxyIndexRequest $request): ResourceCollection
     {
         return $this->proxyService->getData($request);

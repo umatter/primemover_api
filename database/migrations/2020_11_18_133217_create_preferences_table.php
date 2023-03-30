@@ -11,9 +11,9 @@ class CreatePreferencesTable extends Migration
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
-        Schema::create('preferences', function (Blueprint $table) {
+        Schema::create('preferences', function (Blueprint $table): void {
             $table->id();
             $table->string('name');
             $table->string('description');
@@ -33,7 +33,7 @@ class CreatePreferencesTable extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::dropIfExists('preferences');
     }

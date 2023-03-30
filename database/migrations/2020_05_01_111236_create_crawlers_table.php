@@ -11,9 +11,9 @@ class CreateCrawlersTable extends Migration
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
-        Schema::create('crawlers', function (Blueprint $table) {
+        Schema::create('crawlers', function (Blueprint $table): void {
             $table->id();
             $table->string('name')->default('Crawly');
             $table->string('description')->nullable();
@@ -39,7 +39,7 @@ class CreateCrawlersTable extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::dropIfExists('crawlers');
     }

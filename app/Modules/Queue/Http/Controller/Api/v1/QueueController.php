@@ -6,8 +6,8 @@ use App\Http\Controllers\API\v1\Controller;
 use App\Modules\Experiment\Model\Experiment;
 use App\Modules\Queue\Http\Request\StoreQueueRequest;
 use App\Modules\Queue\Http\Request\UpdateQueueRequest;
-use App\Modules\Queue\Http\Service\QueueService;
 use App\Modules\Queue\Model\Queue;
+use App\Modules\Queue\Service\QueueService;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -16,7 +16,7 @@ use Illuminate\Http\Resources\Json\ResourceCollection;
 class QueueController extends Controller
 {
     protected QueueService $queueService;
-    
+
     public function __construct(QueueService $queueService)
     {
         $this->queueService = $queueService;

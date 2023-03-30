@@ -34,7 +34,7 @@ class Handler extends ExceptionHandler
      *
      * @throws Exception
      */
-    public function report(Throwable $exception)
+    public function report(Throwable $exception): void
     {
         parent::report($exception);
     }
@@ -42,8 +42,7 @@ class Handler extends ExceptionHandler
     /**
      * Render an exception into an HTTP response.
      *
-     * @param \Illuminate\Http\Request $request
-     *
+     * @param  \Illuminate\Http\Request  $request
      * @return \Symfony\Component\HttpFoundation\Response
      *
      * @throws Throwable
@@ -56,8 +55,7 @@ class Handler extends ExceptionHandler
     /**
      * Convert an authentication exception into a response.
      *
-     * @param \Illuminate\Http\Request $request
-     *
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     protected function unauthenticated($request, AuthenticationException $exception)

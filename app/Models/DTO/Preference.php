@@ -5,8 +5,11 @@ namespace App\Models\DTO;
 class Preference
 {
     protected ?int $id = null;
+
     protected ?string $name = '';
+
     protected ?string $description = '';
+
     protected ?string $value = '';
 
     public function getId(): ?int

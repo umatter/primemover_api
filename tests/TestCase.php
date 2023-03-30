@@ -3,34 +3,61 @@
 namespace Tests;
 
 use App\Models\User;
+use App\Modules\Agent\Model\Agent;
+use App\Modules\Configuration\Model\Configuration;
+use App\Modules\Crawler\Model\Crawler;
+use App\Modules\Experiment\Model\Experiment;
+use App\Modules\Job\Model\Job;
+use App\Modules\Outlet\Model\Outlet;
+use App\Modules\Param\Model\Param;
+use App\Modules\Proxy\Model\Proxy;
+use App\Modules\Queue\Model\Queue;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 
 abstract class TestCase extends BaseTestCase
 {
-    use RefreshDatabase;
     use CreatesApplication;
+    use RefreshDatabase;
+
+    protected User $user;
+
+    protected Proxy $proxy;
+
+    protected Configuration $configuration;
+
+    protected Agent $agent;
+
+    protected Experiment $experiment;
+
+    protected Crawler $crawler;
+
+    protected Queue $queue;
 
     public function setUp(): void
     {
         parent::setUp();
         $this->withoutExceptionHandling();
 
-        /** @var User $user */
-        $user = User::factory()->create();
-        $proxy = $user->proxies()->getModel()->factory()->create();
-        $configuration = $user->configurations()->getModel()->factory()->create();
-        $agent = $user->agents()->getModel()->factory()->create();
-        $experiment = $user->experiments()->getModel()->factory()->create();
-        $crawler = $experiment->crawlers()->getModel()->factory()->create([
-            'proxy_id' => $proxy->id,
-            'agent_id' => $agent->id,
-            'configuration_id' => $configuration->id,
+        $this->user = User::factory()->create();
+
+        $this->proxy = Proxy::factory()->create(['user_id' => $this->user->id]);
+        $this->configuration = Configuration::factory()->create(['user_id' => $this->user->id]);
+        $this->agent = Agent::factory()->create(['user_id' => $this->user->id]);
+        $this->experiment = Experiment::factory()->create(['user_id' => $this->user->id]);
+
+        $this->crawler = Crawler::factory()->create([
+            'proxy_id' => $this->proxy->id,
+            'agent_id' => $this->agent->id,
+            'experiment_id' => $this->experiment->id,
+            'configuration_id' => $this->configuration->id,
         ]);
-        $queue = $crawler->queues()->getModel()->factory()->create();
-        $queue->jobs()->getModel()->factory()->count(10)->create();
-        $queue = $crawler->queues()->getModel()->factory()->create(['reviewed' => 1]);
-        $queue->jobs()->getModel()->factory()->count(10)->create();
-        $user->outlets()->getModel()->factory()->count(10)->create();
+
+        $this->queue = Queue::factory()->create(['crawler_id' => $this->crawler->id]);
+
+        Queue::factory()->create(['crawler_id' => $this->crawler->id, 'reviewed' => 1]);
+        Job::factory()->count(10)->create(['queue_id' => $this->queue->id]);
+        Outlet::factory()->count(10)->create(['user_id' => $this->user->id]);
+        Param::factory()->count(10)->create(['user_id' => $this->user->id, 'configuration_id' => $this->configuration->id]);
     }
 }

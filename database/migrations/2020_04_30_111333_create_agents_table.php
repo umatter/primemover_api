@@ -11,9 +11,9 @@ class CreateAgentsTable extends Migration
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
-        Schema::create('agents', function (Blueprint $table) {
+        Schema::create('agents', function (Blueprint $table): void {
             $table->id();
             $table->string('name')->nullable();
             $table->string('description')->nullable();
@@ -36,7 +36,7 @@ class CreateAgentsTable extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::dropIfExists('agents');
     }

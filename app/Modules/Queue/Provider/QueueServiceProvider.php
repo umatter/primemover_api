@@ -2,31 +2,13 @@
 
 namespace App\Modules\Queue\Provider;
 
-use App\Modules\Queue\Http\Service\QueueService;
-use App\Modules\Queue\Model\Queue;
+use App\Modules\Queue\Service\QueueService;
 use Illuminate\Support\ServiceProvider;
 
 class QueueServiceProvider extends ServiceProvider
 {
-    /**
-     * Register services.
-     *
-     * @return void
-     */
-    public function register()
+    public function register(): void
     {
-        $this->app->singleton(QueueService::class, function ($app) {
-            return new QueueService(new Queue());
-        });
-    }
-
-    /**
-     * Bootstrap services.
-     *
-     * @return void
-     */
-    public function boot()
-    {
-        //
+        $this->app->singleton(QueueService::class);
     }
 }

@@ -28,7 +28,7 @@ class AgentStoreRequest extends FormRequest
         ];
     }
 
-    protected function prepareForValidation()
+    protected function prepareForValidation(): void
     {
         $this->merge([
             'user_id' => Auth::id(),

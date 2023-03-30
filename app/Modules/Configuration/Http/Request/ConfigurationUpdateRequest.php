@@ -35,7 +35,7 @@ class ConfigurationUpdateRequest extends FormRequest
         return Arr::add($paramsData, 'user_id', Auth::id());
     }
 
-    protected function prepareForValidation()
+    protected function prepareForValidation(): void
     {
         $this->except(['params', 'preferences']);
     }

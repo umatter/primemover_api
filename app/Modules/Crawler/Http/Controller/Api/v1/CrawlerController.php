@@ -7,8 +7,8 @@ use App\Modules\Agent\Model\Agent;
 use App\Modules\Configuration\Model\Configuration;
 use App\Modules\Crawler\Http\Request\StoreCrawlerRequest;
 use App\Modules\Crawler\Http\Request\UpdateCrawlerRequest;
-use App\Modules\Crawler\Http\Service\CrawlerService;
 use App\Modules\Crawler\Model\Crawler;
+use App\Modules\Crawler\Service\CrawlerService;
 use App\Modules\Proxy\Model\Proxy;
 use Exception;
 use Illuminate\Http\JsonResponse;
@@ -24,7 +24,7 @@ class CrawlerController extends Controller
     {
         $this->crawlerService = $crawlerService;
     }
-    
+
     public function index(Request $request): ResourceCollection
     {
         $experimentId = $request->input('experiment');
@@ -50,7 +50,7 @@ class CrawlerController extends Controller
     public function withReviewedQueues(): ResourceCollection
     {
         $crawlers = $this->crawlerService->reviewed();
-        
+
         return ResourceCollection::make($crawlers);
     }
 
@@ -146,30 +146,27 @@ class CrawlerController extends Controller
         return $this->crawlerService->makeCrawlers($data);
     }
 
-    public function makeQueues($data, $crawler)
+    public function makeQueues($data, $crawler): void
     {
         $this->crawlerService->makeQueues($crawler, $data);
     }
 
-    public function makeJobs($data, $queue)
+    public function makeJobs($data, $queue): void
     {
         $this->crawlerService->makeJobs($data, $queue);
     }
 
-    public function makeBehaviors($data, $job)
+    public function makeBehaviors($data, $job): void
     {
         $this->crawlerService->makeBehaviors($data, $job);
     }
 
     public function makeProxies($data, $crawler): Proxy
     {
-
-        $new = $this->crawlerService->makeProxies($data, $crawler);
-
-        return $new;
+        return $this->crawlerService->makeProxies($data, $crawler);
     }
 
-    public function log($content)
+    public function log($content): void
     {
         echo '<pre>';
         print_r($content);
@@ -178,20 +175,16 @@ class CrawlerController extends Controller
 
     public function makeConfigurations($data, $crawler): Configuration
     {
-        $new = $this->crawlerService->makeConfigurations($data, $crawler);
-
-        return $new;
+        return $this->crawlerService->makeConfigurations($data, $crawler);
     }
 
-    public function makePreferences($data, $model)
+    public function makePreferences($data, $model): void
     {
         $this->crawlerService->makePreferences($data, $model);
     }
 
     public function makeAgents($data, $crawler): Agent
     {
-        $new = $this->crawlerService->makeAgents($data, $crawler);
-
-        return $new;
+        return $this->crawlerService->makeAgents($data, $crawler);
     }
 }

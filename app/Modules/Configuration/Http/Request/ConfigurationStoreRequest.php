@@ -36,7 +36,7 @@ class ConfigurationStoreRequest extends FormRequest
         return Arr::add($paramsData, 'user_id', Auth::id());
     }
 
-    protected function prepareForValidation()
+    protected function prepareForValidation(): void
     {
         $this->merge([
             'user_id' => Auth::id(),

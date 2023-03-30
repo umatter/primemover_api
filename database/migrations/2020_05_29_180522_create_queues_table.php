@@ -11,9 +11,9 @@ class CreateQueuesTable extends Migration
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
-        Schema::create('queues', function (Blueprint $table) {
+        Schema::create('queues', function (Blueprint $table): void {
             $table->id();
             $table->string('name');
             $table->string('description');
@@ -42,7 +42,7 @@ class CreateQueuesTable extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::dropIfExists('queues');
     }

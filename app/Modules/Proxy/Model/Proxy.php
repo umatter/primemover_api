@@ -24,7 +24,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 class Proxy extends BaseModel
 {
     use HasFactory;
-    
+
     protected $guarded = [];
 
     protected $visible = ['id', 'name', 'description', 'hostname', 'port', 'username', 'type', 'password'];
