@@ -3,7 +3,9 @@
 namespace App\Modules\Agent\Repository;
 
 use App\Modules\Agent\Model\Agent;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 
@@ -25,7 +27,7 @@ class AgentRepository
             ->latest();
     }
 
-    public function additional($agents): array
+    public function additional(Builder|Collection $agents): array
     {
         return [
             'values' => [
@@ -39,7 +41,7 @@ class AgentRepository
         ];
     }
 
-    public function getById($id): Agent
+    public function getById(int $id): Agent
     {
         return $this->agent->query()
             ->with(['preferences'])

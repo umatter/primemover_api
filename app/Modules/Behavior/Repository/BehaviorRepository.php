@@ -18,7 +18,7 @@ class BehaviorRepository
         return $this->behavior->with(['job', 'user'])->latest()->paginate(10);
     }
 
-    public function getById($id): Behavior|Model
+    public function getById(int $id): Behavior|Model
     {
         return $this->behavior->with(['user', 'job'])->findOrFail($id);
     }
