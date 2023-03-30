@@ -52,7 +52,7 @@ class CrawlerControllerTest extends TestCase
 
         $this->assertInstanceOf(ResourceCollection::class, $result);
         $this->assertInstanceOf(Collection::class, $result->resource);
-        if (!empty($result->resource[0])) {
+        if ( ! empty($result->resource[0])) {
             $this->assertInstanceOf(Crawler::class, $result->resource[0]);
         }
     }
