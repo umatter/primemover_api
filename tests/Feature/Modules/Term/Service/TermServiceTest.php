@@ -10,11 +10,13 @@ use Tests\TestCase;
 /**
  * @internal
  *
- * @coversNothing
+ * @coversDefaultClass \App\Modules\Term\Service\TermService
  */
 class TermServiceTest extends TestCase
 {
-    /** @test */
+    /**
+     * @covers ::getData
+     */
     public function testGetData(): void
     {
         $service = new TermService(new Term());
@@ -25,8 +27,8 @@ class TermServiceTest extends TestCase
         foreach ($result as $term) {
             unset($term->created_at, $term->updated_at);
 
-            $this->assertDatabaseHas('terms', $term->toArray());
-            $this->assertInstanceOf(Term::class, $term);
+            self::assertDatabaseHas('terms', $term->toArray());
+            self::assertInstanceOf(Term::class, $term);
         }
     }
 }

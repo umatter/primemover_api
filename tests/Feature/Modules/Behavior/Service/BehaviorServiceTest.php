@@ -11,11 +11,13 @@ use Tests\TestCase;
 /**
  * @internal
  *
- * @coversNothing
+ * @coversDefaultClass \App\Modules\Behavior\Service\BehaviorService
  */
 class BehaviorServiceTest extends TestCase
 {
-    /** @test */
+    /**
+     * @covers ::getData
+     */
     public function testGetData(): void
     {
         $service = new BehaviorService(new Behavior());
@@ -31,7 +33,9 @@ class BehaviorServiceTest extends TestCase
         }
     }
 
-    /** @test */
+    /**
+     * @covers ::getById
+     */
     public function testGetById(): void
     {
         $behavior = Behavior::factory()->create();
@@ -43,7 +47,9 @@ class BehaviorServiceTest extends TestCase
         $this->assertEquals($behavior->id, $result->id);
     }
 
-    /** @test */
+    /**
+     * @covers ::save
+     */
     public function testSave(): void
     {
         $job = Job::factory()->create();
@@ -63,7 +69,9 @@ class BehaviorServiceTest extends TestCase
         $this->assertDatabaseHas('behaviors', $data);
     }
 
-    /** @test */
+    /**
+     * @covers ::update
+     */
     public function testUpdate(): void
     {
         $behavior = Behavior::factory()->create();
@@ -82,7 +90,9 @@ class BehaviorServiceTest extends TestCase
         $this->assertEquals($behavior->id, $result->id);
     }
 
-    /** @test */
+    /**
+     * @covers ::delete
+     */
     public function testDelete(): void
     {
         $behavior = Behavior::factory()->create();

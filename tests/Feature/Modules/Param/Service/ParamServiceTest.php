@@ -13,11 +13,13 @@ use Tests\TestCase;
 /**
  * @internal
  *
- * @coversNothing
+ * @coversDefaultClass \App\Modules\Param\Service\ParamService
  */
 class ParamServiceTest extends TestCase
 {
-    /** @test */
+    /**
+     * @covers ::getData
+     */
     public function testGetData(): void
     {
         $service = new ParamService(new Param());
@@ -30,7 +32,9 @@ class ParamServiceTest extends TestCase
         }
     }
 
-    /** @test */
+    /**
+     * @covers ::getById
+     */
     public function testGetById(): void
     {
         $param = m::mock(Param::class);
@@ -73,7 +77,9 @@ class ParamServiceTest extends TestCase
         $this->assertEquals($param->id, $result->id);
     }
 
-    /** @test */
+    /**
+     * @covers ::save
+     */
     public function testSave(): void
     {
         self::markTestIncomplete('This test needs to be fixed.');
@@ -119,7 +125,9 @@ class ParamServiceTest extends TestCase
         $this->assertInstanceOf(Param::class, $result);
     }
 
-    /** @test */
+    /**
+     * @covers ::update
+     */
     public function testUpdate(): void
     {
         $data = [
@@ -174,7 +182,9 @@ class ParamServiceTest extends TestCase
         $this->assertInstanceOf(Param::class, $result);
     }
 
-    /** @test */
+    /**
+     * @covers ::delete
+     */
     public function testDelete(): void
     {
         $configuration = Configuration::factory()->create();

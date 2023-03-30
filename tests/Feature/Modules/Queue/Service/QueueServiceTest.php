@@ -18,11 +18,13 @@ use Tests\TestCase;
 /**
  * @internal
  *
- * @coversNothing
+ * @coversDefaultClass \App\Modules\Queue\Service\QueueService
  */
 class QueueServiceTest extends TestCase
 {
-    /** @test */
+    /**
+     * @covers ::getData
+     */
     public function testGetData(): void
     {
         $sortBy = 'created_at';
@@ -54,7 +56,9 @@ class QueueServiceTest extends TestCase
         }
     }
 
-    /** @test */
+    /**
+     * @covers ::save
+     */
     public function testSave(): void
     {
         $proxy = Proxy::factory()->create();
@@ -83,7 +87,9 @@ class QueueServiceTest extends TestCase
         $this->assertInstanceOf(Queue::class, $result);
     }
 
-    /** @test */
+    /**
+     * @covers ::update
+     */
     public function testUpdate(): void
     {
         $data = [
@@ -92,8 +98,8 @@ class QueueServiceTest extends TestCase
         ];
 
         $queueMock = m::mock(Queue::class);
-        $queueMock->shouldReceive('getAttribute')->with(['name', 'description'])->andReturn(['name' => 'Session', 'description' => 'Test']);
-        $queueMock->shouldReceive('firstOrFail')->andReturn(new Queue([
+        $queueMock->allows('getAttribute')->with(['name', 'description'])->andReturns(['name' => 'Session', 'description' => 'Test']);
+        $queueMock->allows('firstOrFail')->andReturns(new Queue([
             'user_id' => $this->user->id,
             'name' => 'Session',
             'description' => 'Test',
@@ -102,7 +108,7 @@ class QueueServiceTest extends TestCase
 
         $queue = $queueMock->firstOrFail();
 
-        $queueMock->shouldReceive('update')->andReturnUsing(function () use ($queue, $data) {
+        $queueMock->allows('update')->andReturnUsing(function () use ($queue, $data) {
             $queue->name = $data['name'];
             $queue->description = $data['description'];
 
@@ -115,7 +121,9 @@ class QueueServiceTest extends TestCase
         $this->assertInstanceOf(Queue::class, $result);
     }
 
-    /** @test */
+    /**
+     * @covers ::delete
+     */
     public function testDelete(): void
     {
         $proxy = Proxy::factory()->create();
@@ -143,7 +151,9 @@ class QueueServiceTest extends TestCase
         }
     }
 
-    /** @test */
+    /**
+     * @covers ::job
+     */
     public function testJob(): void
     {
         $proxy = Proxy::factory()->create();
@@ -151,7 +161,7 @@ class QueueServiceTest extends TestCase
         $configuration = Configuration::factory()->create();
         $experiment = Experiment::factory()->create();
 
-        $crawler = Crawler::factory()->create([
+        Crawler::factory()->create([
             'proxy_id' => $proxy->id,
             'agent_id' => $agent->id,
             'configuration_id' => $configuration->id,
@@ -167,7 +177,9 @@ class QueueServiceTest extends TestCase
         $this->assertEquals($job->queue()->first(), $result);
     }
 
-    /** @test */
+    /**
+     * @covers ::processed
+     */
     public function testProcessed(): void
     {
         $service = new QueueService(new Queue());
@@ -181,7 +193,9 @@ class QueueServiceTest extends TestCase
         }
     }
 
-    /** @test */
+    /**
+     * @covers ::unprocessed
+     */
     public function testUnprocessed(): void
     {
         $service = new QueueService(new Queue());
@@ -195,7 +209,9 @@ class QueueServiceTest extends TestCase
         }
     }
 
-    /** @test */
+    /**
+     * @covers ::reviewed
+     */
     public function testReviewed(): void
     {
         $service = new QueueService(new Queue());
@@ -209,7 +225,9 @@ class QueueServiceTest extends TestCase
         }
     }
 
-    /** @test */
+    /**
+     * @covers ::unreviewed
+     */
     public function testUnreviewed(): void
     {
         $service = new QueueService(new Queue());
@@ -223,7 +241,9 @@ class QueueServiceTest extends TestCase
         }
     }
 
-    /** @test */
+    /**
+     * @covers ::experimentUnreviewed
+     */
     public function testExperimentUnreviewed(): void
     {
         $experiment = Experiment::factory()->create();
@@ -240,7 +260,9 @@ class QueueServiceTest extends TestCase
         }
     }
 
-    /** @test */
+    /**
+     * @covers ::experimentReviewed
+     */
     public function testExperimentReviewed(): void
     {
         $experiment = Experiment::factory()->create();
@@ -256,7 +278,9 @@ class QueueServiceTest extends TestCase
         }
     }
 
-    /** @test */
+    /**
+     * @covers ::experimentUnprocessed
+     */
     public function testExperimentUnprocessed(): void
     {
         $experiment = Experiment::factory()->create();
@@ -272,7 +296,9 @@ class QueueServiceTest extends TestCase
         }
     }
 
-    /** @test */
+    /**
+     * @covers ::experimentProcessed
+     */
     public function testExperimentProcessed(): void
     {
         $experiment = Experiment::factory()->create();

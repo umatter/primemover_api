@@ -20,11 +20,13 @@ use Tests\TestCase;
 /**
  * @internal
  *
- * @coversNothing
+ * @coversDefaultClass \App\Modules\Crawler\Service\CrawlerService
  */
 class CrawlerServiceTest extends TestCase
 {
-    /** @test */
+    /**
+     * @covers ::getData
+     */
     public function testGetData(): void
     {
         $experiment = Experiment::factory()->create();
@@ -39,7 +41,9 @@ class CrawlerServiceTest extends TestCase
         }
     }
 
-    /** @test */
+    /**
+     * @covers ::getById
+     */
     public function testGetById(): void
     {
         $crawlerMock = m::mock(Crawler::class);
@@ -64,7 +68,9 @@ class CrawlerServiceTest extends TestCase
         $this->assertEquals($crawler->id, $result->id);
     }
 
-    /** @test */
+    /**
+     * @covers ::inactive
+     */
     public function testInactive(): void
     {
         $service = new CrawlerService(new Crawler());
@@ -77,7 +83,9 @@ class CrawlerServiceTest extends TestCase
         }
     }
 
-    /** @test */
+    /**
+     * @covers ::processed
+     */
     public function testProcessed(): void
     {
         $service = new CrawlerService(new Crawler());
@@ -95,7 +103,9 @@ class CrawlerServiceTest extends TestCase
         }
     }
 
-    /** @test */
+    /**
+     * @covers ::unprocessed
+     */
     public function testUnprocessed(): void
     {
         $service = new CrawlerService(new Crawler());
@@ -115,7 +125,9 @@ class CrawlerServiceTest extends TestCase
         }
     }
 
-    /** @test */
+    /**
+     * @covers ::reviewed
+     */
     public function testReviewed(): void
     {
         $service = new CrawlerService(new Crawler());
@@ -135,7 +147,9 @@ class CrawlerServiceTest extends TestCase
         }
     }
 
-    /** @test */
+    /**
+     * @covers ::testing
+     */
     public function testTesting(): void
     {
         $service = new CrawlerService(new Crawler());
@@ -150,7 +164,9 @@ class CrawlerServiceTest extends TestCase
         }
     }
 
-    /** @test */
+    /**
+     * @covers ::save
+     */
     public function testSave(): void
     {
         $experiment = Experiment::factory()->create();
@@ -170,7 +186,9 @@ class CrawlerServiceTest extends TestCase
         $this->assertInstanceOf(Crawler::class, $result);
     }
 
-    /** @test */
+    /**
+     * @covers ::update
+     */
     public function testUpdate(): void
     {
         $crawlerMock = m::mock(Crawler::class);
@@ -212,7 +230,9 @@ class CrawlerServiceTest extends TestCase
         $this->assertEquals($data['active'], $result->active);
     }
 
-    /** @test */
+    /**
+     * @covers ::disableProdCrawlers
+     */
     public function testDisableProdCrawlers(): void
     {
         $service = new CrawlerService(new Crawler());
@@ -226,7 +246,9 @@ class CrawlerServiceTest extends TestCase
         }
     }
 
-    /** @test */
+    /**
+     * @covers ::forceDelete
+     */
     public function testForceDelete(): void
     {
         $proxy = Proxy::factory()->create();
@@ -254,7 +276,9 @@ class CrawlerServiceTest extends TestCase
         }
     }
 
-    /** @test */
+    /**
+     * @covers ::delete
+     */
     public function testDelete(): void
     {
         $proxy = Proxy::factory()->create();
@@ -277,7 +301,9 @@ class CrawlerServiceTest extends TestCase
         $this->assertInstanceOf(Collection::class, $result);
     }
 
-    /** @test */
+    /**
+     * @covers ::ip
+     */
     public function testIp(): void
     {
         $ip = '127.0.0.2';
@@ -288,7 +314,9 @@ class CrawlerServiceTest extends TestCase
         $this->assertInstanceOf(JsonResponse::class, $result);
     }
 
-    /** @test */
+    /**
+     * @covers ::isLocalAddress
+     */
     public function testIsLocalAddress(): void
     {
         $ip = '127.0.0.1';
@@ -299,7 +327,9 @@ class CrawlerServiceTest extends TestCase
         $this->assertIsBool($result);
     }
 
-    /** @test */
+    /**
+     * @covers ::undo
+     */
     public function testUndo(): void
     {
         $service = new CrawlerService(new Crawler());
@@ -313,7 +343,9 @@ class CrawlerServiceTest extends TestCase
         }
     }
 
-    /** @test */
+    /**
+     * @covers ::cleanup
+     */
     public function testCleanUp(): void
     {
         $service = new CrawlerService(new Crawler());
@@ -327,7 +359,9 @@ class CrawlerServiceTest extends TestCase
         }
     }
 
-    /** @test */
+    /**
+     * @covers ::load
+     */
     public function testLoad(): void
     {
         $proxy = Proxy::factory()->create();
@@ -379,7 +413,9 @@ class CrawlerServiceTest extends TestCase
         $this->assertInstanceOf(JsonResponse::class, $result);
     }
 
-    /** @test */
+    /**
+     * @covers ::makeCrawlers
+     */
     public function testMakeCrawlers(): void
     {
         $proxy = Proxy::factory()->create();
@@ -429,7 +465,9 @@ class CrawlerServiceTest extends TestCase
         $this->assertInstanceOf(JsonResponse::class, $result);
     }
 
-    /** @test */
+    /**
+     * @covers ::makeQueues
+     */
     public function testMakeQueues(): void
     {
         $proxy = Proxy::factory()->create();
@@ -493,7 +531,9 @@ class CrawlerServiceTest extends TestCase
         $this->assertTrue(true);
     }
 
-    /** @test */
+    /**
+     * @covers ::makeJobs
+     */
     public function testMakeJobs(): void
     {
         $queue = Queue::factory()->create();
@@ -521,7 +561,9 @@ class CrawlerServiceTest extends TestCase
         $this->assertTrue(true);
     }
 
-    /** @test */
+    /**
+     * @covers ::makeBehaviors
+     */
     public function testMakeBehaviors(): void
     {
         $job = Job::factory()->create();
@@ -541,7 +583,9 @@ class CrawlerServiceTest extends TestCase
         $this->assertTrue(true);
     }
 
-    /** @test */
+    /**
+     * @covers ::makeProxies
+     */
     public function testMakeProxies(): void
     {
         $proxy = Proxy::factory()->create();
@@ -575,7 +619,9 @@ class CrawlerServiceTest extends TestCase
         $this->assertDatabaseHas('proxies', $data[0]);
     }
 
-    /** @test */
+    /**
+     * @covers ::makeConfigurations
+     */
     public function testMakeConfigurations(): void
     {
         $proxy = Proxy::factory()->create();
@@ -643,7 +689,9 @@ class CrawlerServiceTest extends TestCase
         $this->assertDatabaseHas('configurations', $data[0]);
     }
 
-    /** @test */
+    /**
+     * @covers ::makePreferences
+     */
     public function testMakePreferences(): void
     {
         $configuration = Configuration::factory()->create();
@@ -662,7 +710,9 @@ class CrawlerServiceTest extends TestCase
         $this->assertTrue(true);
     }
 
-    /** @test */
+    /**
+     * @covers ::makeAgents
+     */
     public function testMakeAgents(): void
     {
         $proxy = Proxy::factory()->create();

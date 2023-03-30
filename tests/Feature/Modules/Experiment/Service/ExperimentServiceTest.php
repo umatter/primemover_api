@@ -12,11 +12,13 @@ use Tests\TestCase;
 /**
  * @internal
  *
- * @coversNothing
+ * @coversDefaultClass \App\Modules\Experiment\Service\ExperimentService
  */
 class ExperimentServiceTest extends TestCase
 {
-    /** @test */
+    /**
+     * @covers ::getData
+     */
     public function testGetData(): void
     {
         $service = new ExperimentService(new Experiment());
@@ -32,7 +34,9 @@ class ExperimentServiceTest extends TestCase
         }
     }
 
-    /** @test */
+    /**
+     * @covers ::all
+     */
     public function testAll(): void
     {
         $service = new ExperimentService(new Experiment());
@@ -45,7 +49,9 @@ class ExperimentServiceTest extends TestCase
         }
     }
 
-    /** @test */
+    /**
+     * @covers ::getById
+     */
     public function testGetById(): void
     {
         $experiment = Experiment::factory()->create();
@@ -57,7 +63,9 @@ class ExperimentServiceTest extends TestCase
         $this->assertEquals($experiment->id, $result->id);
     }
 
-    /** @test */
+    /**
+     * @covers ::save
+     */
     public function testSave(): void
     {
         $data = [
@@ -67,8 +75,8 @@ class ExperimentServiceTest extends TestCase
         ];
 
         $mockData = m::mock($data);
-        $mockData->shouldReceive('getPreferences')->andReturn(null);
-        $mockData->shouldReceive('validated')->andReturn($data);
+        $mockData->allows('getPreferences')->andReturns(null);
+        $mockData->allows('validated')->andReturns($data);
 
         $service = new ExperimentService(new Experiment());
         $result = $service->save($mockData);
@@ -77,7 +85,9 @@ class ExperimentServiceTest extends TestCase
         $this->assertDatabaseHas('experiments', $data);
     }
 
-    /** @test */
+    /**
+     * @covers ::update
+     */
     public function testUpdate(): void
     {
         $experiment = Experiment::factory()->create();
@@ -88,8 +98,8 @@ class ExperimentServiceTest extends TestCase
         ];
 
         $mockData = m::mock($data)->makePartial();
-        $mockData->shouldReceive('validated')->andReturn($data);
-        $mockData->shouldReceive('getPreferences')->andReturn(false);
+        $mockData->allows('validated')->andReturns($data);
+        $mockData->allows('getPreferences')->andReturns(false);
 
         $service = new ExperimentService(new Experiment());
         $result = $service->update($mockData, $experiment);
@@ -98,7 +108,9 @@ class ExperimentServiceTest extends TestCase
         $this->assertInstanceOf(Experiment::class, $result);
     }
 
-    /** @test */
+    /**
+     * @covers ::delete
+     */
     public function testDelete(): void
     {
         $experiment = Experiment::factory()->create();
@@ -111,7 +123,9 @@ class ExperimentServiceTest extends TestCase
         $this->assertInstanceOf(Experiment::class, $result['experiment']);
     }
 
-    /** @test */
+    /**
+     * @covers ::forceDelete
+     */
     public function forceDelete(): void
     {
         $experiment = Experiment::factory()->create();

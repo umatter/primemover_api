@@ -11,11 +11,13 @@ use Tests\TestCase;
 /**
  * @internal
  *
- * @coversNothing
+ * @coversDefaultClass \App\Modules\Configuration\Service\ConfigurationService
  */
 class ConfigurationServiceTest extends TestCase
 {
-    /** @test */
+    /**
+     * @covers ::getData
+     */
     public function testGetData(): void
     {
         $service = new ConfigurationService(new Configuration());
@@ -32,7 +34,9 @@ class ConfigurationServiceTest extends TestCase
         }
     }
 
-    /** @test */
+    /**
+     * @covers ::additional
+     */
     public function testAdditional(): void
     {
         $service = new ConfigurationService(new Configuration());
@@ -43,7 +47,9 @@ class ConfigurationServiceTest extends TestCase
         $this->assertIsArray($result);
     }
 
-    /** @test */
+    /**
+     * @covers ::getById
+     */
     public function testGetById(): void
     {
         $configuration = Configuration::factory()->create();
@@ -55,7 +61,9 @@ class ConfigurationServiceTest extends TestCase
         $this->assertEquals($configuration->id, $result->id);
     }
 
-    /** @test */
+    /**
+     * @covers ::save
+     */
     public function testSave(): void
     {
         $data = [
@@ -72,7 +80,9 @@ class ConfigurationServiceTest extends TestCase
         $this->assertInstanceOf(Configuration::class, $result);
     }
 
-    /** @test */
+    /**
+     * @covers ::update
+     */
     public function testUpdate(): void
     {
         $configuration = Configuration::factory()->create();
@@ -92,7 +102,9 @@ class ConfigurationServiceTest extends TestCase
         $this->assertInstanceOf(Configuration::class, $result['data']);
     }
 
-    /** @test */
+    /**
+     * @covers ::delete
+     */
     public function testDelete(): void
     {
         $configuration = Configuration::factory()->create();

@@ -11,11 +11,13 @@ use Tests\TestCase;
 /**
  * @internal
  *
- * @coversNothing
+ * @coversDefaultClass \App\Modules\Report\Service\ReportService
  */
 class ReportServiceTest extends TestCase
 {
-    /** @test */
+    /**
+     * @covers ::getData
+     */
     public function testGetData(): void
     {
         $service = new ReportService(new Report());
@@ -31,7 +33,9 @@ class ReportServiceTest extends TestCase
         }
     }
 
-    /** @test */
+    /**
+     * @covers ::save
+     */
     public function testSave(): void
     {
         $job = Job::factory()->create();
@@ -53,7 +57,9 @@ class ReportServiceTest extends TestCase
         $this->assertInstanceOf(Report::class, $result);
     }
 
-    /** @test */
+    /**
+     * @covers ::delete
+     */
     public function testDelete(): void
     {
         $report = Report::factory()->create();

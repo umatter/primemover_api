@@ -11,11 +11,13 @@ use Tests\TestCase;
 /**
  * @internal
  *
- * @coversNothing
+ * @coversDefaultClass \App\Modules\Job\Service\JobService
  */
 class JobServiceTest extends TestCase
 {
-    /** @test */
+    /**
+     * @covers ::getData
+     */
     public function testGetData(): void
     {
         $queue = Queue::factory()->create();
@@ -34,7 +36,9 @@ class JobServiceTest extends TestCase
         }
     }
 
-    /** @test */
+    /**
+     * @covers ::getById
+     */
     public function testGetById(): void
     {
         $job = Job::factory()->create();
@@ -46,7 +50,9 @@ class JobServiceTest extends TestCase
         $this->assertEquals($job->id, $result->id);
     }
 
-    /** @test */
+    /**
+     * @covers ::save
+     */
     public function testSave(): void
     {
         $queue = Queue::factory()->create();
@@ -64,7 +70,9 @@ class JobServiceTest extends TestCase
         $this->assertInstanceOf(Job::class, $result);
     }
 
-    /** @test */
+    /**
+     * @covers ::update
+     */
     public function testUpdate(): void
     {
         $data = [
@@ -80,7 +88,9 @@ class JobServiceTest extends TestCase
         $this->assertInstanceOf(Job::class, $result);
     }
 
-    /** @test */
+    /**
+     * @covers ::delete
+     */
     public function testDelete(): void
     {
         $job = Job::factory()->create();

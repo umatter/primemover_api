@@ -13,15 +13,17 @@ use Tests\TestCase;
 /**
  * @internal
  *
- * @coversNothing
+ * @coversDefaultClass \App\Modules\Proxy\Service\ProxyService
  */
 class ProxyServiceTest extends TestCase
 {
-    /** @test */
+    /**
+     * @covers ::getData
+     */
     public function testGetData(): void
     {
         $data = m::mock(Request::class)->makePartial();
-        $data->shouldReceive('getPaged')->andReturn(1);
+        $data->allows('getPaged')->andReturns(1);
 
         $service = new ProxyService(new Proxy());
         $result = $service->getData($data);
@@ -34,7 +36,9 @@ class ProxyServiceTest extends TestCase
         }
     }
 
-    /** @test */
+    /**
+     * @covers ::save
+     */
     public function testSave(): void
     {
         $data = [
@@ -55,7 +59,9 @@ class ProxyServiceTest extends TestCase
         $this->assertInstanceOf(Proxy::class, $result);
     }
 
-    /** @test */
+    /**
+     * @covers ::update
+     */
     public function testUpdate(): void
     {
         $proxy = Proxy::factory()->create();
@@ -72,7 +78,9 @@ class ProxyServiceTest extends TestCase
         $this->assertInstanceOf(Proxy::class, $result);
     }
 
-    /** @test */
+    /**
+     * @covers ::delete
+     */
     public function testDelete(): void
     {
         $proxy = Proxy::factory()->create();

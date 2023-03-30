@@ -14,12 +14,9 @@ use Tests\TestCase;
  */
 class AgentServiceTest extends TestCase
 {
-    public function setUp(): void
-    {
-        parent::setUp();
-    }
-
-    /** @test */
+    /**
+     * @covers ::getData
+     */
     public function testGetData(): void
     {
         $service = new AgentService(new Agent());
@@ -34,7 +31,9 @@ class AgentServiceTest extends TestCase
         }
     }
 
-    /** @test */
+    /**
+     * @covers ::additional
+     */
     public function testAdditional(): void
     {
         $service = new AgentService(new Agent());
@@ -44,7 +43,9 @@ class AgentServiceTest extends TestCase
         $this->assertIsArray($result);
     }
 
-    /** @test */
+    /**
+     * @covers ::getById
+     */
     public function testGetById(): void
     {
         $agent = Agent::factory()->create();
@@ -56,7 +57,9 @@ class AgentServiceTest extends TestCase
         $this->assertEquals($agent->id, $result->id);
     }
 
-    /** @test */
+    /**
+     * @covers ::save
+     */
     public function testSave(): void
     {
         $data = [
@@ -77,7 +80,9 @@ class AgentServiceTest extends TestCase
         $this->assertDatabaseHas('agents', $data);
     }
 
-    /** @test */
+    /**
+     * @covers ::update
+     */
     public function testUpdate(): void
     {
         $agent = Agent::factory()->create();
@@ -98,7 +103,9 @@ class AgentServiceTest extends TestCase
         $this->assertDatabaseHas('agents', $data);
     }
 
-    /** @test */
+    /**
+     * @covers ::delete
+     */
     public function testDelete(): void
     {
         $agent = Agent::factory()->create();

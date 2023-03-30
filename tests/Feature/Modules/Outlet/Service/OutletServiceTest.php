@@ -12,11 +12,13 @@ use Tests\TestCase;
 /**
  * @internal
  *
- * @coversNothing
+ * @coversDefaultClass \App\Modules\Outlet\Service\OutletService
  */
 class OutletServiceTest extends TestCase
 {
-    /** @test */
+    /**
+     * @covers ::getData
+     */
     public function testGetData(): void
     {
         $service = new OutletService(new Outlet());
@@ -32,7 +34,9 @@ class OutletServiceTest extends TestCase
         }
     }
 
-    /** @test */
+    /**
+     * @covers ::getById
+     */
     public function testGetById(): void
     {
         $outlet = m::mock(Outlet::class);
@@ -58,7 +62,9 @@ class OutletServiceTest extends TestCase
         $this->assertEquals($outlet->id, $result->id);
     }
 
-    /** @test */
+    /**
+     * @covers ::save
+     */
     public function testSave(): void
     {
         $data = [
@@ -73,7 +79,9 @@ class OutletServiceTest extends TestCase
         $this->assertInstanceOf(Outlet::class, $result);
     }
 
-    /** @test */
+    /**
+     * @covers ::update
+     */
     public function testUpdate(): void
     {
         $data = [
@@ -105,7 +113,9 @@ class OutletServiceTest extends TestCase
         $this->assertEquals($data, $outletMock->toArray());
     }
 
-    /** @test */
+    /**
+     * @covers ::delete
+     */
     public function testDelete(): void
     {
         $outlet = Outlet::create([
