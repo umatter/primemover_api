@@ -36,4 +36,4 @@ jobs:
         DB_DATABASE: database/database.sqlite
       run: vendor/bin/phpunit
     - name: Execute laravel pint (code format standards)
-      run: copmposer lint
+      run: composer lint
