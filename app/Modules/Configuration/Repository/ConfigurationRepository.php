@@ -1,13 +1,17 @@
 <?php
 
-namespace App\Modules\Configuration\Service;
+namespace App\Modules\Configuration\Repository;
 
 use App\Modules\Configuration\Facade\Factory\ConfigurationFactory;
 use App\Modules\Configuration\Model\Configuration;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
+use Tests\Feature\Modules\Configuration\Service\ConfigurationServiceTest;
 
-class ConfigurationService
+/**
+ * @see ConfigurationServiceTest
+ */
+class ConfigurationRepository
 {
     public function __construct(protected Configuration $configuration)
     {

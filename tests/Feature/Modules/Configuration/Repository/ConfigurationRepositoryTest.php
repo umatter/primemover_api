@@ -1,9 +1,9 @@
 <?php
 
-namespace Tests\Feature\Modules\Configuration\Service;
+namespace Tests\Feature\Modules\Configuration\Repository;
 
 use App\Modules\Configuration\Model\Configuration;
-use App\Modules\Configuration\Service\ConfigurationService;
+use App\Modules\Configuration\Repository\ConfigurationRepository;
 use Illuminate\Database\Eloquent\Collection;
 use Spatie\QueryBuilder\QueryBuilder;
 use Tests\TestCase;
@@ -11,16 +11,16 @@ use Tests\TestCase;
 /**
  * @internal
  *
- * @coversDefaultClass \App\Modules\Configuration\Service\ConfigurationService
+ * @coversDefaultClass \App\Modules\Configuration\Repository\ConfigurationRepository
  */
-class ConfigurationServiceTest extends TestCase
+class ConfigurationRepositoryTest extends TestCase
 {
     /**
      * @covers ::getData
      */
     public function testGetData(): void
     {
-        $service = new ConfigurationService(new Configuration());
+        $service = new ConfigurationRepository(new Configuration());
         $result = $service->getData();
 
         $this->assertInstanceOf(QueryBuilder::class, $result);
@@ -39,7 +39,7 @@ class ConfigurationServiceTest extends TestCase
      */
     public function testAdditional(): void
     {
-        $service = new ConfigurationService(new Configuration());
+        $service = new ConfigurationRepository(new Configuration());
         $configurations = $service->getData()->get();
 
         $result = $service->additional($configurations);
@@ -54,7 +54,7 @@ class ConfigurationServiceTest extends TestCase
     {
         $configuration = Configuration::factory()->create();
 
-        $service = new ConfigurationService(new Configuration());
+        $service = new ConfigurationRepository(new Configuration());
         $result = $service->getById($configuration);
 
         $this->assertInstanceOf(Configuration::class, $result);
@@ -73,7 +73,7 @@ class ConfigurationServiceTest extends TestCase
             'active' => 1,
         ];
 
-        $service = new ConfigurationService(new Configuration());
+        $service = new ConfigurationRepository(new Configuration());
         $result = $service->save($data);
 
         $this->assertDatabaseHas('configurations', $data);
@@ -93,7 +93,7 @@ class ConfigurationServiceTest extends TestCase
             'active' => 1,
         ];
 
-        $service = new ConfigurationService(new Configuration());
+        $service = new ConfigurationRepository(new Configuration());
         $result = $service->update($data, $configuration);
 
         $this->assertDatabaseHas('configurations', $data);
@@ -109,7 +109,7 @@ class ConfigurationServiceTest extends TestCase
     {
         $configuration = Configuration::factory()->create();
 
-        $service = new ConfigurationService(new Configuration());
+        $service = new ConfigurationRepository(new Configuration());
         $result = $service->delete($configuration);
 
         $this->assertIsArray($result);
