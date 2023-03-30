@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\API\AuthController;
+use App\Http\Controllers\API\S3Controller;
 use App\Modules\Agent\Http\Controller\Api\v1\AgentController;
 use App\Modules\Behavior\Http\Controller\Api\v1\BehaviorController;
 use App\Modules\Configuration\Http\Controller\Api\v1\ConfigurationController;
@@ -75,6 +76,9 @@ Route::prefix('v1')->group(function () {
             });
 
         Route::get('file/{report}', [ReportController::class, 'getFile']);
+
+        Route::post('upload', [S3Controller::class, 'store']);
+        Route::get('download/{filename}', [S3Controller::class, 'download']);
     });
 
     Route::post('login', [AuthController::class, 'login']);
