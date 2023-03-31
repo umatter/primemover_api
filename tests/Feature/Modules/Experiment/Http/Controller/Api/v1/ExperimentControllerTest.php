@@ -7,10 +7,13 @@ use App\Modules\Experiment\Http\Request\ExperimentStoreRequest;
 use App\Modules\Experiment\Model\Experiment;
 use App\Modules\Experiment\Repository\ExperimentRepository;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Resources\Json\ResourceCollection;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Collection;
 use Mockery;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Tests\TestCase;
 
 /**
@@ -162,5 +165,17 @@ class ExperimentControllerTest extends TestCase
         $this->assertInstanceOf(JsonResource::class, $result);
         $this->assertInstanceOf(Experiment::class, $result->resource['experiment']);
         $this->assertEquals(true, $result->resource['deleted']);
+    }
+
+    /**
+     * @covers ::download
+     */
+    public function testDownload()
+    {
+        $controller = new ExperimentController(new ExperimentRepository(new Experiment()));
+        $result = $controller->download($this->experiment);
+
+        $this->assertInstanceOf(BinaryFileResponse::class, $result);
+        $this->assertEquals($this->experiment->id."_primemover_experiment.zip", $result->getFile()->getBasename());
     }
 }

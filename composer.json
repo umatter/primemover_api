@@ -24,6 +24,7 @@
     "laravel/tinker": "^2.8",
     "laravel/ui": "^4.2.1",
     "league/flysystem-aws-s3-v3": "^3.12",
+    "maatwebsite/excel": "^3.1",
     "nelkasovic/ipstack-finder": "^1.0",
     "netresearch/jsonmapper": "^4.1.0",
     "predis/predis": "^2.1.2",
