@@ -2,10 +2,14 @@
 
 namespace Tests\Feature\Modules\Experiment\Repository;
 
+use App\Modules\Crawler\Model\Crawler;
 use App\Modules\Experiment\Model\Experiment;
 use App\Modules\Experiment\Repository\ExperimentRepository;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Storage;
 use Mockery as m;
 use Tests\TestCase;
 
@@ -136,5 +140,17 @@ class ExperimentRepositoryTest extends TestCase
         $this->assertDatabaseMissing('experiments', $experiment->toArray());
         $this->assertTrue($result['deleted']);
         $this->assertInstanceOf(Experiment::class, $result['experiment']);
+    }
+
+    /**
+     * @covers ::download
+     */
+    public function testDownload()
+    {
+        $service = new ExperimentRepository(new Experiment());
+        $result = $service->download($this->experiment);
+
+        $this->assertInstanceOf(Response::class, $result);
+        Storage::disk("s3")->assertExists("/api-data/experiments/{$this->experiment->id}_primemover_experiment.zip");
     }
 }

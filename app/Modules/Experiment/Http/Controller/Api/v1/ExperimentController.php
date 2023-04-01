@@ -11,6 +11,8 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Resources\Json\ResourceCollection;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class ExperimentController extends Controller
@@ -84,10 +86,9 @@ class ExperimentController extends Controller
         return JsonResource::make(Crawler::find($crawler->id));
     }
 
-    public function download(Experiment $experiment): BinaryFileResponse
-    {
-        $zipFile = $this->repository->download($experiment);
-
-        return response()->download($zipFile)->deleteFileAfterSend();
+    public function download(Experiment $experiment): Response
+    {   
+        $response = $this->repository->download($experiment);
+        return $response;
     }
 }

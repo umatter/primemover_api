@@ -18,9 +18,12 @@ use App\Modules\Proxy\Model\Proxy;
 use App\Modules\Queue\Export\QueueExport;
 use App\Modules\Queue\Http\Request\StoreQueueRequest;
 use App\Modules\Queue\Model\Queue;
+use App\Modules\S3\Http\S3Controller;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Http\Response;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -235,14 +238,14 @@ class ExperimentRepository
         return $crawler;
     }
 
-    public function download(Experiment $experiment)
+    public function download(Experiment $experiment): Response
     {
+        $pathUploadS3 = "/api-data/experiments/" . $experiment->id . "_primemover_experiment.zip";
         $crawlerFile = "$experiment->id" . "_primemover_crawlers.csv";
         $queueFile = "$experiment->id" . "_primemover_queues.csv";
         $jobFile = "$experiment->id" . "_primemover_jobs.csv";
         $behaviorFile = "$experiment->id" . "_primemover_behaviors.csv";
         $zipFile = storage_path("app/$experiment->id" . "_primemover_experiment.zip");
-        // $zipFile = Storage::disk("s3")->put("/api-data/experiments/$experiment->id" . "_primemover_experiment.zip");
         $folderPath = storage_path("app/experiment");
 
         (new CrawlerExport($experiment))->store('experiment/' . $crawlerFile, 'local');
@@ -263,11 +266,13 @@ class ExperimentRepository
             rmdir($folderPath);
 
             $file = Storage::path("$experiment->id" . "_primemover_experiment.zip");
-            $file = str_replace("\0", "", $file);
 
-            Storage::disk("s3")->put("$experiment->id" . "_primemover_experiment.zip", file_get_contents($file));
+            Storage::disk("s3")->put($pathUploadS3, file_get_contents($file));
 
-            return $zipFile;
+            $s3Controller = new S3Controller();
+            $result = $s3Controller->download($pathUploadS3);
+
+            return $result;
         }else {
             return 'Failed to create zip file';
         }

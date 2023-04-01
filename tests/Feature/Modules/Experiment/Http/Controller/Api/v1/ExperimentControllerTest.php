@@ -10,8 +10,10 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Resources\Json\ResourceCollection;
+use Illuminate\Http\Response;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Storage;
 use Mockery;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Tests\TestCase;
@@ -175,7 +177,7 @@ class ExperimentControllerTest extends TestCase
         $controller = new ExperimentController(new ExperimentRepository(new Experiment()));
         $result = $controller->download($this->experiment);
 
-        $this->assertInstanceOf(BinaryFileResponse::class, $result);
-        $this->assertEquals($this->experiment->id."_primemover_experiment.zip", $result->getFile()->getBasename());
+        $this->assertInstanceOf(Response::class, $result);
+        Storage::disk("s3")->assertExists("/api-data/experiments/{$this->experiment->id}_primemover_experiment.zip");
     }
 }

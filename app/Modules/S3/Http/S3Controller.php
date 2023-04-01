@@ -20,7 +20,7 @@ class S3Controller extends Controller
 
         $response = new Response($file, 200);
         $response->header('Content-Type', Storage::disk('s3')->mimeType($filename));
-        $response->header('Content-Disposition', 'attachment; filename="'.$filename.'"');
+        $response->header('Content-Disposition', 'attachment; filename="'.basename($filename).'"');
 
         return $response;
     }
@@ -31,8 +31,15 @@ class S3Controller extends Controller
         $filename = $file->getClientOriginalName();
         $runOn = Storage::disk('s3')->put($filename, file_get_contents($file));
 
+        if ( ! $runOn)
+            return response()->json([
+                'status' => false,
+                'message' => 'upload file failed',
+                'data' => [],
+            ]);
+
         return response()->json([
-            'status' => $runOn ? 200 : false,
+            'status' => 200,
             'message' => 'file uploaded sucessfully',
             'data' => [],
         ]);
