@@ -6,6 +6,8 @@ use App\Models\BaseModel;
 use App\Models\User;
 use App\Modules\Crawler\Model\Crawler;
 use App\Modules\Job\Model\Job;
+use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -47,5 +49,10 @@ class Queue extends BaseModel
     {
         return $this->hasMany(Job::class)
             ->with('behaviors', 'reports:id,job_id,filename,path,created_at,updated_at');
+    }
+
+    public function scopeCrawler(Builder $query, int $crawlerId): Builder
+    {
+        return $query->where('crawler_id', $crawlerId);
     }
 }

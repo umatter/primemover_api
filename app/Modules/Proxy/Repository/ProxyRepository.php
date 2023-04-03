@@ -29,7 +29,7 @@ class ProxyRepository
 
         $response = $proxies
             ->when($data->getPaged(), fn (Builder $builder) => $builder->paginate($data->getPaged()))
-            ->when(!$data->getPaged(), fn (Builder $builder) => $builder->get());
+            ->when( ! $data->getPaged(), fn (Builder $builder) => $builder->get());
 
         return ResourceCollection::make($response)
             ->additional([

@@ -38,11 +38,12 @@ class CrawlerRepository
                 AllowedFilter::partial('name'),
                 AllowedFilter::scope('after'),
                 AllowedFilter::scope('recent'),
+                AllowedFilter::scope('experiment'),
             ])
             ->where('testing', 0)
             ->where('active', 1)
             ->with(['experiment'])
-            ->when($experimentId, fn (Builder $query) => $query->where('experiment_id', $experimentId))
+            //->when($experimentId, fn (Builder $query) => $query->where('experiment_id', $experimentId))
             ->latest()
             ->fastPaginate();
     }
@@ -206,7 +207,7 @@ class CrawlerRepository
     public function ip($ip)
     {
         $final = $ip ?: request()->ip();
-        if (!$this->isLocalAddress($final)) {
+        if ( ! $this->isLocalAddress($final)) {
             return response()->json([
                 'result' => IPStackFinderFacade::get($final),
             ], ResponseAlias::HTTP_OK);
