@@ -12,6 +12,8 @@ class StoreJobRequest extends FormRequest
         return [
             'name' => ['required'],
             'user_id' => ['required'],
+            'type' => ['required'],
+            'description' => ['nullable'],
             'queue_id' => ['required'],
         ];
     }
@@ -19,7 +21,7 @@ class StoreJobRequest extends FormRequest
     protected function prepareForValidation(): void
     {
         $this->merge([
-            'user_id' => Auth::id() ?? 1,
+            'user_id' => Auth::id(),
         ]);
     }
 }

@@ -48,4 +48,9 @@ class Proxy extends BaseModel
             ->orWhere('username', 'LIKE', "%{$keyword}%")
             ->orWhere('description', 'LIKE', "%{$keyword}%");
     }
+
+    public function scopeCrawler(Builder $query, int $crawlerId): Builder
+    {
+        return $query->whereHas('crawler', fn ($query) => $query->where('id', $crawlerId));
+    }
 }

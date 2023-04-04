@@ -24,6 +24,7 @@ class ProxyRepository
                 AllowedFilter::scope('search'),
                 AllowedFilter::scope('after'),
                 AllowedFilter::scope('recent'),
+                AllowedFilter::scope('crawler'),
             ])
             ->latest();
 

@@ -54,4 +54,9 @@ class Configuration extends BaseModel
             ->orWhere('name', 'LIKE', "%{$keyword}%")
             ->orWhere('description', 'LIKE', "%{$keyword}%");
     }
+
+    public function scopeCrawler(Builder $query, int $crawlerId): Builder
+    {
+        return $query->whereHas('crawler', fn ($query) => $query->where('id', $crawlerId));
+    }
 }

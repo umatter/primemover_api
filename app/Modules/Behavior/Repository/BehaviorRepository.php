@@ -6,6 +6,8 @@ use App\Modules\Behavior\Model\Behavior;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Auth;
+use Spatie\QueryBuilder\AllowedFilter;
+use Spatie\QueryBuilder\QueryBuilder;
 
 class BehaviorRepository
 {
@@ -15,7 +17,11 @@ class BehaviorRepository
 
     public function getData(): LengthAwarePaginator
     {
-        return $this->behavior->with(['job', 'user'])->latest()->paginate(10);
+        return QueryBuilder::for($this->behavior)
+            ->allowedFilters([AllowedFilter::scope('job')])
+            ->with(['job', 'user'])
+            ->latest()
+            ->paginate(10);
     }
 
     public function getById(int $id): Behavior|Model
