@@ -256,13 +256,11 @@ class ExperimentRepository
         $zip = new ZipArchive;
         
         if($zip->open($zipFile, ZipArchive::CREATE) === TRUE)  {
-            $this->addFolderToZip($folderPath, $zip);
+            $this->addFolderToZip($folderPath, $zip, $experiment->id);
             $zip->close();
 
-            Storage::disk("local")->delete("experiment/$crawlerFile");
-            Storage::disk("local")->delete("experiment/$queueFile");
-            Storage::disk("local")->delete("experiment/$jobFile");
-            Storage::disk("local")->delete("experiment/$behaviorFile");
+            array_map('unlink', glob("$folderPath/*.*"));
+
             rmdir($folderPath);
 
             $file = Storage::path("$experiment->id" . "_primemover_experiment.zip");
@@ -278,14 +276,16 @@ class ExperimentRepository
         }
     }
 
-    private function addFolderToZip($folderPath, $zip)
+    private function addFolderToZip($folderPath, $zip, $experimentId): void
     {
         $folderPath = rtrim($folderPath, '/') . '/';
         $files = glob($folderPath . '*');
 
         foreach ($files as $file) {
-            if (is_file($file)) {
-                $zip->addFile($file, basename($file));
+            $filename = basename($file);
+            $s = explode("_", $filename);
+            if (is_file($file) && $s[0] == $experimentId) {
+                $zip->addFile($file, $filename);
             }
         }
     }
