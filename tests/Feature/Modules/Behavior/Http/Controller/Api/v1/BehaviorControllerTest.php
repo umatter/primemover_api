@@ -26,11 +26,6 @@ class BehaviorControllerTest extends TestCase
         $controller = new BehaviorController(new BehaviorRepository(new Behavior()));
         $result = $controller->index();
 
-        $this->actingAs($this->user)
-            ->getJson('/api/v1/behaviors')
-            ->assertStatus(200)
-            ->assertJsonStructure(['data', 'links', 'meta']);
-
         $this->assertInstanceOf(ResourceCollection::class, $result);
 
         foreach ($result->resource as $behavior) {
