@@ -28,11 +28,7 @@ class ProxyRepository
             ])
             ->latest();
 
-        $response = $proxies
-            ->when($data->getPaged(), fn (Builder $builder) => $builder->paginate($data->getPaged()))
-            ->when( ! $data->getPaged(), fn (Builder $builder) => $builder->get());
-
-        return ResourceCollection::make($response)
+        return ResourceCollection::make($proxies->paginate())
             ->additional([
                 'values' => [
                     'name' => $proxies->pluck('name')->unique(),

@@ -20,7 +20,7 @@ class ConfigurationController extends Controller
     {
         $configurations = $this->repository->getData();
 
-        return ResourceCollection::make($configurations->get())
+        return ResourceCollection::make($configurations->paginate())
             ->additional($this->repository->additional($configurations));
     }
 
