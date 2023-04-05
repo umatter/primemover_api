@@ -25,7 +25,7 @@ class ReportRepository
         $path = 'local' === $env ? $dev : $prod;
 
         $job = Job::findOrFail($data['job_id']);
-        $desc = 'Bot: ' . $job->queue->crawler->name . ' | Job-Name: ' . $job->name . ', Job-ID: ' . $job->id . ', Job-Type: ' . $job->type . ')';
+        $desc = 'Bot: '.$job->queue->crawler->name.' | Job-Name: '.$job->name.', Job-ID: '.$job->id.', Job-Type: '.$job->type.')';
 
         $data['description'] ??= $desc;
         $data['user_id'] = auth()->user() ? auth()->user()->id : 1;
@@ -38,7 +38,7 @@ class ReportRepository
 
         $report = $this->report->create($data);
         if ($report && $data['filecontent']) {
-            $report->path = $path . '/file/' . $report->id;
+            $report->path = $path.'/file/'.$report->id;
         }
         $report->save();
 

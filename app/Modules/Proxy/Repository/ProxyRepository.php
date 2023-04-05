@@ -24,12 +24,13 @@ class ProxyRepository
                 AllowedFilter::scope('search'),
                 AllowedFilter::scope('after'),
                 AllowedFilter::scope('recent'),
+                AllowedFilter::scope('crawler'),
             ])
             ->latest();
 
         $response = $proxies
             ->when($data->getPaged(), fn (Builder $builder) => $builder->paginate($data->getPaged()))
-            ->when(!$data->getPaged(), fn (Builder $builder) => $builder->get());
+            ->when( ! $data->getPaged(), fn (Builder $builder) => $builder->get());
 
         return ResourceCollection::make($response)
             ->additional([

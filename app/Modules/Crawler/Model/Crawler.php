@@ -154,4 +154,9 @@ class Crawler extends BaseModel
     {
         return $this->getQueuesByStatus(24)->count();
     }
+
+    public function scopeExperiment(Builder $query, int $experimentId): Builder
+    {
+        return $query->where('experiment_id', $experimentId);
+    }
 }
