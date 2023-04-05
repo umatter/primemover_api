@@ -24,6 +24,7 @@ class QueueRepository
                 AllowedFilter::partial('name'),
                 AllowedFilter::scope('after'),
                 AllowedFilter::scope('recent'),
+                AllowedFilter::scope('crawler'),
             ])
             ->when($crawlerId, fn (Builder $query) => $query->where('crawler_id', $crawlerId))
             ->when($sortBy, fn (Builder $query) => $query->orderBy($sortBy))

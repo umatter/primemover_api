@@ -20,6 +20,7 @@ class ConfigurationRepository
                 AllowedFilter::scope('search'),
                 AllowedFilter::scope('after'),
                 AllowedFilter::scope('recent'),
+                AllowedFilter::scope('crawler'),
             ])
             ->with(['params', 'preferences'])
             ->latest();

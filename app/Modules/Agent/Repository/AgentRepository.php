@@ -20,6 +20,7 @@ class AgentRepository
                 AllowedFilter::scope('search'),
                 AllowedFilter::scope('after'),
                 AllowedFilter::scope('recent'),
+                AllowedFilter::scope('crawler'),
             ])
             ->with('preferences')
             ->latest();

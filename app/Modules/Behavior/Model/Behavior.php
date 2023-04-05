@@ -5,6 +5,7 @@ namespace App\Modules\Behavior\Model;
 use App\Models\BaseModel;
 use App\Models\User;
 use App\Modules\Job\Model\Job;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -30,5 +31,10 @@ class Behavior extends BaseModel
     public function job(): BelongsTo
     {
         return $this->belongsTo(Job::class);
+    }
+
+    public function scopeJob(Builder $query, int $jobId): Builder
+    {
+        return $query->where('job_id', $jobId);
     }
 }

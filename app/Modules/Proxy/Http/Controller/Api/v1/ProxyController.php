@@ -4,6 +4,7 @@ namespace App\Modules\Proxy\Http\Controller\Api\v1;
 
 use App\Http\Controllers\API\v1\Controller;
 use App\Modules\Proxy\Http\Request\ProxyIndexRequest;
+use App\Modules\Proxy\Http\Request\ProxyStoreRequest;
 use App\Modules\Proxy\Model\Proxy;
 use App\Modules\Proxy\Repository\ProxyRepository;
 use Illuminate\Http\Request;
@@ -21,9 +22,9 @@ class ProxyController extends Controller
         return $this->repository->getData($request);
     }
 
-    public function store(Request $request): JsonResource
+    public function store(ProxyStoreRequest $request): JsonResource
     {
-        $proxy = $this->repository->save($request->all());
+        $proxy = $this->repository->save($request->validated());
 
         return JsonResource::make($proxy);
     }

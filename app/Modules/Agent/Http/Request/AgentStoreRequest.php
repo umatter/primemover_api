@@ -24,7 +24,7 @@ class AgentStoreRequest extends FormRequest
             'multilogin_profile' => ['nullable'],
             'location' => ['nullable'],
             'user_id' => ['required'],
-            'active' => ['required'],
+            'active' => [],
         ];
     }
 
@@ -32,6 +32,9 @@ class AgentStoreRequest extends FormRequest
     {
         $this->merge([
             'user_id' => Auth::id(),
+            'active' => true,
+            'multilogin_profile' => $this->input('multiLoginProfile'),
+            'multilogin_id' => $this->input('multiLoginId'),
         ]);
     }
 }
