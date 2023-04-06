@@ -2,23 +2,24 @@
 
 namespace App\Modules\Experiment\Repository;
 
+use App\Facades\Factories\PipelineFactory;
 use App\Facades\Services\PreferenceService;
-use App\Modules\Behavior\Export\BehaviorExport;
 use App\Modules\Configuration\Http\Request\ConfigurationStoreRequest;
 use App\Modules\Configuration\Model\Configuration;
-use App\Modules\Crawler\Export\CrawlerExport;
 use App\Modules\Crawler\Http\Request\StoreCrawlerRequest;
 use App\Modules\Crawler\Model\Crawler;
+use App\Modules\Experiment\Model\DownloadData;
 use App\Modules\Experiment\Model\Experiment;
-use App\Modules\Job\Export\JobExport;
+use App\Modules\Experiment\Pipe\Download\CreateAndStoreExportLocally;
+use App\Modules\Experiment\Pipe\Download\CreateZipArchive;
+use App\Modules\Experiment\Pipe\Download\CreateZipArchiveOrFail;
+use App\Modules\Experiment\Pipe\Download\PrepareFilePathAndName;
 use App\Modules\Job\Http\Request\StoreJobRequest;
 use App\Modules\Job\Model\Job;
 use App\Modules\Param\Model\Param;
 use App\Modules\Proxy\Model\Proxy;
-use App\Modules\Queue\Export\QueueExport;
 use App\Modules\Queue\Http\Request\StoreQueueRequest;
 use App\Modules\Queue\Model\Queue;
-use App\Modules\S3\Http\S3Controller;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -30,7 +31,6 @@ use Illuminate\Support\Facades\Validator;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 use Throwable;
-use ZipArchive;
 
 class ExperimentRepository
 {
@@ -239,54 +239,16 @@ class ExperimentRepository
 
     public function download(Experiment $experiment): Response
     {
-        $pathUploadS3 = '/api-data/experiments/'.$experiment->id.'_primemover_experiment.zip';
-        $crawlerFile = "{$experiment->id}".'_primemover_crawlers.csv';
-        $queueFile = "{$experiment->id}".'_primemover_queues.csv';
-        $jobFile = "{$experiment->id}".'_primemover_jobs.csv';
-        $behaviorFile = "{$experiment->id}".'_primemover_behaviors.csv';
-        $zipFile = storage_path("app/{$experiment->id}".'_primemover_experiment.zip');
-        $folderPath = storage_path('app/experiment');
+        $passable = DownloadData::from(compact('experiment'));
 
-        (new CrawlerExport($experiment))->store('experiment/'.$crawlerFile, 'local');
-        (new QueueExport($experiment))->store('experiment/'.$queueFile, 'local');
-        (new JobExport($experiment))->store('experiment/'.$jobFile, 'local');
-        (new BehaviorExport($experiment))->store('experiment/'.$behaviorFile, 'local');
-
-        $zip = new ZipArchive();
-
-        if (true === $zip->open($zipFile, ZipArchive::CREATE)) {
-            $this->addFolderToZip($folderPath, $zip, $experiment->id);
-            $zip->close();
-
-            array_map('unlink', glob("{$folderPath}/*.*"));
-
-            rmdir($folderPath);
-
-            $file = Storage::path("{$experiment->id}".'_primemover_experiment.zip');
-
-            Storage::disk('s3')->put($pathUploadS3, file_get_contents($file));
-
-            $s3Controller = new S3Controller();
-            $result = $s3Controller->download($pathUploadS3);
-
-            return $result;
-        }
-
-            return 'Failed to create zip file';
-
-    }
-
-    private function addFolderToZip($folderPath, $zip, $experimentId): void
-    {
-        $folderPath = rtrim($folderPath, '/').'/';
-        $files = glob($folderPath.'*');
-
-        foreach ($files as $file) {
-            $filename = basename($file);
-            $s = explode('_', $filename);
-            if (is_file($file) && $s[0] === $experimentId) {
-                $zip->addFile($file, $filename);
-            }
-        }
+        return PipelineFactory::create()
+            ->send($passable)
+            ->through([
+                PrepareFilePathAndName::class,
+                CreateAndStoreExportLocally::class,
+                CreateZipArchiveOrFail::class,
+                CreateZipArchive::class,
+            ])
+            ->then(fn (DownloadData $passable) => $passable->getResponse());
     }
 }
