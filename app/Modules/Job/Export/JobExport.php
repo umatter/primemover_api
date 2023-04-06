@@ -42,10 +42,10 @@ class JobExport implements FromQuery, WithHeadings
     public function query()
     {
         $crawlers = $this->experiment->crawlers;
-        $crawlerIds = $crawlers->pluck("id")->toArray();
+        $crawlerIds = $crawlers->pluck('id')->toArray();
 
-        $queues = Queue::query()->whereIn("crawler_id", $crawlerIds)->get();
-        $queueIds = $queues->pluck("id")->toArray();
+        $queues = Queue::query()->whereIn('crawler_id', $crawlerIds)->get();
+        $queueIds = $queues->pluck('id')->toArray();
 
         return Job::query()->whereIn('queue_id', $queueIds);
     }

@@ -35,7 +35,8 @@
     "symfony/postmark-mailer": "^6.2.7",
     "toin0u/geocoder-laravel": "^4.6.0",
     "torann/geoip": "^3.0.5",
-    "tymon/jwt-auth": "^2.0.0"
+    "tymon/jwt-auth": "^2.0.0",
+    "ext-zip": "*"
   },
   "require-dev": {
     "beyondcode/laravel-dump-server": "^1.9.0",

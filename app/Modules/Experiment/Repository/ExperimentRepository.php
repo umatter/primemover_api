@@ -23,7 +23,6 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Response;
-use Illuminate\Http\UploadedFile;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -240,51 +239,52 @@ class ExperimentRepository
 
     public function download(Experiment $experiment): Response
     {
-        $pathUploadS3 = "/api-data/experiments/" . $experiment->id . "_primemover_experiment.zip";
-        $crawlerFile = "$experiment->id" . "_primemover_crawlers.csv";
-        $queueFile = "$experiment->id" . "_primemover_queues.csv";
-        $jobFile = "$experiment->id" . "_primemover_jobs.csv";
-        $behaviorFile = "$experiment->id" . "_primemover_behaviors.csv";
-        $zipFile = storage_path("app/$experiment->id" . "_primemover_experiment.zip");
-        $folderPath = storage_path("app/experiment");
+        $pathUploadS3 = '/api-data/experiments/'.$experiment->id.'_primemover_experiment.zip';
+        $crawlerFile = "{$experiment->id}".'_primemover_crawlers.csv';
+        $queueFile = "{$experiment->id}".'_primemover_queues.csv';
+        $jobFile = "{$experiment->id}".'_primemover_jobs.csv';
+        $behaviorFile = "{$experiment->id}".'_primemover_behaviors.csv';
+        $zipFile = storage_path("app/{$experiment->id}".'_primemover_experiment.zip');
+        $folderPath = storage_path('app/experiment');
 
-        (new CrawlerExport($experiment))->store('experiment/' . $crawlerFile, 'local');
-        (new QueueExport($experiment))->store('experiment/' . $queueFile, 'local');
-        (new JobExport($experiment))->store('experiment/' . $jobFile, 'local');
-        (new BehaviorExport($experiment))->store('experiment/' . $behaviorFile, 'local');
+        (new CrawlerExport($experiment))->store('experiment/'.$crawlerFile, 'local');
+        (new QueueExport($experiment))->store('experiment/'.$queueFile, 'local');
+        (new JobExport($experiment))->store('experiment/'.$jobFile, 'local');
+        (new BehaviorExport($experiment))->store('experiment/'.$behaviorFile, 'local');
 
-        $zip = new ZipArchive;
-        
-        if($zip->open($zipFile, ZipArchive::CREATE) === TRUE)  {
+        $zip = new ZipArchive();
+
+        if (true === $zip->open($zipFile, ZipArchive::CREATE)) {
             $this->addFolderToZip($folderPath, $zip, $experiment->id);
             $zip->close();
 
-            array_map('unlink', glob("$folderPath/*.*"));
+            array_map('unlink', glob("{$folderPath}/*.*"));
 
             rmdir($folderPath);
 
-            $file = Storage::path("$experiment->id" . "_primemover_experiment.zip");
+            $file = Storage::path("{$experiment->id}".'_primemover_experiment.zip');
 
-            Storage::disk("s3")->put($pathUploadS3, file_get_contents($file));
+            Storage::disk('s3')->put($pathUploadS3, file_get_contents($file));
 
             $s3Controller = new S3Controller();
             $result = $s3Controller->download($pathUploadS3);
 
             return $result;
-        }else {
-            return 'Failed to create zip file';
         }
+
+            return 'Failed to create zip file';
+
     }
 
     private function addFolderToZip($folderPath, $zip, $experimentId): void
     {
-        $folderPath = rtrim($folderPath, '/') . '/';
-        $files = glob($folderPath . '*');
+        $folderPath = rtrim($folderPath, '/').'/';
+        $files = glob($folderPath.'*');
 
         foreach ($files as $file) {
             $filename = basename($file);
-            $s = explode("_", $filename);
-            if (is_file($file) && $s[0] == $experimentId) {
+            $s = explode('_', $filename);
+            if (is_file($file) && $s[0] === $experimentId) {
                 $zip->addFile($file, $filename);
             }
         }

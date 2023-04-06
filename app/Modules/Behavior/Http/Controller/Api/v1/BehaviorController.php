@@ -16,7 +16,7 @@ class BehaviorController extends Controller
     {
     }
 
-    public function index(Request $request): ResourceCollection
+    public function index(): ResourceCollection
     {
         $behaviors = $this->repository->getData();
 

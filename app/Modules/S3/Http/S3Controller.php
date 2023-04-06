@@ -31,12 +31,13 @@ class S3Controller extends Controller
         $filename = $file->getClientOriginalName();
         $runOn = Storage::disk('s3')->put($filename, file_get_contents($file));
 
-        if ( ! $runOn)
+        if ( ! $runOn) {
             return response()->json([
                 'status' => false,
                 'message' => 'upload file failed',
                 'data' => [],
             ]);
+        }
 
         return response()->json([
             'status' => 200,

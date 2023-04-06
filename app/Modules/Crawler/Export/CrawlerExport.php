@@ -38,6 +38,6 @@ class CrawlerExport implements FromQuery, WithHeadings
 
     public function query()
     {
-        return Crawler::query()->where("experiment_id", $this->experiment->id);
+        return Crawler::query()->where('experiment_id', $this->experiment->id);
     }
 }

@@ -43,7 +43,7 @@ class QueueExport implements FromQuery, WithHeadings
     public function query()
     {
         $crawlers = $this->experiment->crawlers;
-        $crawlersIds = $crawlers->pluck("id")->toArray();
+        $crawlersIds = $crawlers->pluck('id')->toArray();
 
         return Queue::query()->whereIn('crawler_id', $crawlersIds);
     }

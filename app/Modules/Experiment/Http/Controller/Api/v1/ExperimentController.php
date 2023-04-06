@@ -12,8 +12,6 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Storage;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class ExperimentController extends Controller
 {
@@ -87,8 +85,7 @@ class ExperimentController extends Controller
     }
 
     public function download(Experiment $experiment): Response
-    {   
-        $response = $this->repository->download($experiment);
-        return $response;
+    {
+        return $this->repository->download($experiment);
     }
 }

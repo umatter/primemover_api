@@ -33,7 +33,7 @@ class S3Test extends TestCase
         $filename = 'test_file.txt';
         $fileContent = 'Hello, world!';
         Storage::disk('s3')->put($filename, $fileContent);
-        
+
         $this->actingAs($this->user)
             ->get('/api/v1/download/'.$filename)
             ->assertStatus(200)
