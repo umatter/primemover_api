@@ -3,32 +3,27 @@
 namespace App\Modules\Experiment\Http\Controller\Api\v1;
 
 use App\Http\Controllers\API\v1\Controller;
-use App\Modules\Crawler\Model\Crawler;
+use App\Modules\Experiment\Facade\ExperimentRepository;
 use App\Modules\Experiment\Http\Request\ExperimentStoreRequest;
+use App\Modules\Experiment\Http\Request\ExperimentUploadRequest;
 use App\Modules\Experiment\Model\Experiment;
-use App\Modules\Experiment\Repository\ExperimentRepository;
 use Exception;
-use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 use Illuminate\Http\Response;
 
 class ExperimentController extends Controller
 {
-    public function __construct(protected ExperimentRepository $repository)
-    {
-    }
-
     public function index(): ResourceCollection
     {
-        $experiments = $this->repository->getData();
+        $experiments = ExperimentRepository::getData();
 
         return ResourceCollection::make($experiments);
     }
 
     public function all(): ResourceCollection
     {
-        $experiments = $this->repository->all();
+        $experiments = ExperimentRepository::all();
 
         return ResourceCollection::make($experiments);
     }
@@ -38,14 +33,14 @@ class ExperimentController extends Controller
      */
     public function store(ExperimentStoreRequest $request): JsonResource
     {
-        $experiment = $this->repository->save($request);
+        $experiment = ExperimentRepository::save($request);
 
         return JsonResource::make($experiment);
     }
 
     public function show(Experiment $experiment): JsonResource
     {
-        return JsonResource::make($this->repository->getById($experiment));
+        return JsonResource::make(ExperimentRepository::getById($experiment));
     }
 
     public function edit(Experiment $experiment): JsonResource
@@ -58,7 +53,7 @@ class ExperimentController extends Controller
      */
     public function update(ExperimentStoreRequest $request, Experiment $experiment): JsonResource
     {
-        return JsonResource::make($this->repository->update($request, $experiment));
+        return JsonResource::make(ExperimentRepository::update($request, $experiment));
     }
 
     /**
@@ -66,7 +61,7 @@ class ExperimentController extends Controller
      */
     public function destroy(Experiment $experiment): JsonResource
     {
-        return JsonResource::make($this->repository->delete($experiment));
+        return JsonResource::make(ExperimentRepository::delete($experiment));
     }
 
     /**
@@ -74,18 +69,18 @@ class ExperimentController extends Controller
      */
     public function forceDelete(Experiment $experiment): JsonResource
     {
-        return JsonResource::make($this->repository->forceDelete($experiment));
+        return JsonResource::make(ExperimentRepository::forceDelete($experiment));
     }
 
-    public function upload(Request $request): JsonResource
+    public function upload(ExperimentUploadRequest $request, Experiment $experiment): JsonResource
     {
-        $crawler = $this->repository->upload($request);
+        $upload = ExperimentRepository::upload($request, $experiment);
 
-        return JsonResource::make(Crawler::find($crawler->id));
+        return JsonResource::make($upload);
     }
 
     public function download(Experiment $experiment): Response
     {
-        return $this->repository->download($experiment);
+        return ExperimentRepository::download($experiment);
     }
 }

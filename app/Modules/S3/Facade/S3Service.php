@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Facade;
 
 /**
  * @method static Response downloadFile(string $filename)
+ * @method static string getTargetDisk()
  *
  * @see \App\Modules\S3\Service\S3Service
  */

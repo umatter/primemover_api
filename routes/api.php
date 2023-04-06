@@ -49,6 +49,7 @@ Route::prefix('v1')->group(function (): void {
                 Route::get('experiments-list', 'all');
                 Route::delete('{experiment}/destroy', 'forceDelete');
                 Route::post('upload', 'upload');
+                Route::post('{experiment}/upload', 'upload');
                 Route::get('{experiment}/download', 'download');
             });
 

@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Modules\Experiment\Model;
+namespace App\Modules\Experiment\Model\DTO;
 
-use Illuminate\Http\Response;
+use App\Modules\Experiment\Model\Experiment;
 use Spatie\LaravelData\Data;
 use ZipArchive;
 
@@ -28,8 +28,6 @@ class DownloadData extends Data
 
     public ZipArchive $zipArchive;
 
-    private Response $response;
-
     public function getFinalArchiveName(): string
     {
         return $this->finalArchiveName;
@@ -50,18 +48,6 @@ class DownloadData extends Data
     public function setZipArchive(ZipArchive $zipArchive): DownloadData
     {
         $this->zipArchive = $zipArchive;
-
-        return $this;
-    }
-
-    public function getResponse(): Response
-    {
-        return $this->response;
-    }
-
-    public function setResponse(Response $response): DownloadData
-    {
-        $this->response = $response;
 
         return $this;
     }

@@ -2,7 +2,7 @@
 
 namespace App\Modules\Experiment\Pipe\Download;
 
-use App\Modules\Experiment\Model\DownloadData;
+use App\Modules\Experiment\Model\DTO\DownloadData;
 use Closure;
 use Illuminate\Support\Str;
 

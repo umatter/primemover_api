@@ -3,7 +3,7 @@
 namespace App\Modules\Experiment\Pipe\Download;
 
 use App\Modules\Experiment\Facade\ExportFactory;
-use App\Modules\Experiment\Model\DownloadData;
+use App\Modules\Experiment\Model\DTO\DownloadData;
 use Closure;
 
 class CreateAndStoreExportLocally
