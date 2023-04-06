@@ -37,7 +37,6 @@ class ParamControllerTest extends TestCase
      */
     public function testStore(): void
     {
-        self::markTestIncomplete('This test needs to be fixed.');
         $data = [
             'pi' => -0.50049837032537,
             'psi' => 0.086705270313224,
@@ -46,7 +45,6 @@ class ParamControllerTest extends TestCase
             'kappa' => 1,
             'beta' => 0.0034437549399552,
             'configuration_id' => 1,
-            'user_id' => 1,
         ];
 
         $data['search_terms'] = json_encode([
@@ -77,6 +75,7 @@ class ParamControllerTest extends TestCase
             ],
         ]);
 
+        $this->actingAs($this->user);
         $request = new Request($data);
 
         $controller = new ParamController(new ParamRepository(new Param()));

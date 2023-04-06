@@ -3,6 +3,7 @@
 namespace App\Modules\S3\Http;
 
 use App\Http\Controllers\Controller;
+use App\Modules\S3\Facade\S3Service;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -12,17 +13,7 @@ class S3Controller extends Controller
 {
     public function download(string $filename): Response
     {
-        if ( ! Storage::disk('s3')->exists($filename)) {
-            abort(404, 'File not found.');
-        }
-
-        $file = Storage::disk('s3')->get($filename);
-
-        $response = new Response($file, 200);
-        $response->header('Content-Type', Storage::disk('s3')->mimeType($filename));
-        $response->header('Content-Disposition', 'attachment; filename="'.$filename.'"');
-
-        return $response;
+        return S3Service::download($filename);
     }
 
     public function store(Request $request): JsonResponse
@@ -31,8 +22,16 @@ class S3Controller extends Controller
         $filename = $file->getClientOriginalName();
         $runOn = Storage::disk('s3')->put($filename, file_get_contents($file));
 
+        if ( ! $runOn) {
+            return response()->json([
+                'status' => false,
+                'message' => 'upload file failed',
+                'data' => [],
+            ]);
+        }
+
         return response()->json([
-            'status' => $runOn ? 200 : false,
+            'status' => 200,
             'message' => 'file uploaded sucessfully',
             'data' => [],
         ]);

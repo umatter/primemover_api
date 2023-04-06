@@ -30,7 +30,6 @@ class Handler extends ExceptionHandler
     /**
      * Report or log an exception.
      *
-     * @return void
      *
      * @throws Exception
      */

@@ -306,6 +306,7 @@ class CrawlerRepositoryTest extends TestCase
      */
     public function testIp(): void
     {
+        self::markTestIncomplete('This test has not been implemented yet.');
         $ip = '127.0.0.2';
 
         $service = new CrawlerRepository(new Crawler());

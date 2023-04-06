@@ -82,7 +82,6 @@ class ParamRepositoryTest extends TestCase
      */
     public function testSave(): void
     {
-        self::markTestIncomplete('This test needs to be fixed.');
         $data = [
             'configuration_id' => $this->configuration->id,
             'pi' => -0.50049837032537,
@@ -91,7 +90,6 @@ class ParamRepositoryTest extends TestCase
             'tau' => 1.0,
             'kappa' => 1,
             'beta' => 0.0034437549399552,
-            'user_id' => $this->user->id,
             'search_terms' => json_encode([
                 [
                     'term' => 'black american',
@@ -115,6 +113,8 @@ class ParamRepositoryTest extends TestCase
                 ],
             ]),
         ];
+
+        $this->actingAs($this->user);
 
         $service = new ParamRepository(new Param());
         $result = $service->save($data);
