@@ -61,7 +61,9 @@ class ExperimentController extends Controller
      */
     public function destroy(Experiment $experiment): JsonResource
     {
-        return JsonResource::make(ExperimentRepository::delete($experiment));
+        return JsonResource::make([
+            'status' => ExperimentRepository::delete($experiment),
+        ]);
     }
 
     /**
@@ -69,7 +71,9 @@ class ExperimentController extends Controller
      */
     public function forceDelete(Experiment $experiment): JsonResource
     {
-        return JsonResource::make(ExperimentRepository::forceDelete($experiment));
+        return JsonResource::make([
+            'status' => ExperimentRepository::forceDelete($experiment),
+        ]);
     }
 
     public function upload(ExperimentUploadRequest $request, Experiment $experiment): JsonResource

@@ -6,9 +6,9 @@ use App\Modules\Experiment\Model\Experiment;
 use App\Modules\Experiment\Repository\ExperimentRepository;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Response;
-use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Storage;
 use Mockery as m;
+use Spatie\QueryBuilder\QueryBuilder;
 use Tests\TestCase;
 
 /**
@@ -26,7 +26,7 @@ class ExperimentRepositoryTest extends TestCase
         $service = new ExperimentRepository(new Experiment());
         $result = $service->getData();
 
-        $this->assertInstanceOf(LengthAwarePaginator::class, $result);
+        $this->assertInstanceOf(QueryBuilder::class, $result);
 
         foreach ($result as $experiment) {
             unset($experiment->created_at, $experiment->updated_at);
@@ -121,8 +121,7 @@ class ExperimentRepositoryTest extends TestCase
         $result = $service->delete($experiment);
 
         $this->assertDatabaseMissing('experiments', $experiment->toArray());
-        $this->assertTrue($result['deleted']);
-        $this->assertInstanceOf(Experiment::class, $result['experiment']);
+        $this->assertTrue($result);
     }
 
     /**
