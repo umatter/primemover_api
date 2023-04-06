@@ -1,7 +1,4 @@
 version: "3"
-networks:
-  laravel:
-    driver: bridge
 services:
   apache:
     build:
@@ -22,8 +19,6 @@ services:
     restart: unless-stopped
     depends_on:
       - mysql
-    networks:
-      - laravel
   php:
     build:
       context: ./docker/${PHPVERSION}-fpm
@@ -35,8 +30,6 @@ services:
     restart: on-failure
     #command: bash /var/www/docker/laravel/supervisor.sh
     tty: true
-    networks:
-      - laravel
   mysql:
     image: mysql:8.0.25
     container_name: '${COMPOSE_PROJECT_NAME}-mysql'
@@ -53,15 +46,10 @@ services:
       MYSQL_USER: '${DB_USERNAME}'
       MYSQL_PASSWORD: '${DB_PASSWORD}'
       MYSQL_ALLOW_EMPTY_PASSWORD: 1
-    networks:
-      - laravel
   memcached:
     container_name: '${COMPOSE_PROJECT_NAME}-memcached'
     image: memcached:latest
     restart: on-failure
-    networks:
-      - laravel
-
   redis:
     container_name: '${COMPOSE_PROJECT_NAME}-redis'
     image: redis:alpine
@@ -70,5 +58,3 @@ services:
       - ./storage/app/data/redis:/data
     ports:
       - "8889:6379"
-    networks:
-      - laravel
