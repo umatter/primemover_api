@@ -12,7 +12,7 @@ services:
       - php
       - redis
     volumes:
-      - ${DOCUMENT_ROOT}:/var/www:cached
+      - ${DOCUMENT_ROOT}:/var/www/html:cached
     environment:
       PMA_PORT: ${HOST_MACHINE_PMA_PORT}
       XDEBUG_COOKIE_VALUE: ${XDEBUG_COOKIE_VALUE}
@@ -24,12 +24,22 @@ services:
       context: ./docker/${PHPVERSION}-fpm
     container_name: '${COMPOSE_PROJECT_NAME}-${PHPVERSION}'
     volumes:
-      - ${DOCUMENT_ROOT}:/var/www:cached
+      - ${DOCUMENT_ROOT}:/var/www/html:cached
       - ${PHP_INI}:/usr/local/etc/php/php.ini
       - ./docker/${PHPVERSION}-fpm/etc/php/conf.d:/usr/local/etc/php/conf.d
     restart: on-failure
     #command: bash /var/www/docker/laravel/supervisor.sh
     tty: true
+  php_xdebug:
+    build:
+      context: ./docker/${PHPVERSION}-xdebug
+    container_name: ${COMPOSE_PROJECT_NAME}-xdebug-${PHPVERSION}
+    volumes:
+      - ${DOCUMENT_ROOT}:/var/www/html:delegated
+      - ${PHP_INI}:/usr/local/etc/php/php.ini
+      - ./docker/${PHPVERSION}-xdebug/etc/php/conf.d:/usr/local/etc/php/conf.d
+    environment:
+      XDEBUG_COOKIE_VALUE: ${XDEBUG_COOKIE_VALUE}
   mysql:
     image: mysql:8.0.25
     container_name: '${COMPOSE_PROJECT_NAME}-mysql'
@@ -39,7 +49,7 @@ services:
     volumes:
       - ${MYSQL_DATA_DIR-./data/mysql}:/var/lib/mysql:cached
       - ${MYSQL_LOG_DIR-./logs/mysql}:/var/log/mysql:cached
-      - ${DOCUMENT_ROOT}:/var/www:cached
+      - ${DOCUMENT_ROOT}:/var/www/html:cached
     environment:
       MYSQL_ROOT_PASSWORD: '${DB_PASSWORD}'
       MYSQL_DATABASE: '${DB_DATABASE}'

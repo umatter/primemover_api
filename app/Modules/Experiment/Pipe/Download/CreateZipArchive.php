@@ -26,8 +26,8 @@ class CreateZipArchive
         }
 
         $this->addFolderToZip($folderPath, $zipArchive, $experiment->id);
-        //$this->cleanUpTemp($folderPath);
-        //$this->storeFile($passable);
+        $this->cleanUpTemp($folderPath);
+        $this->storeFile($passable);
 
         $passable->setResponse(
             S3Service::downloadFile($passable->getPathUploadS3())
@@ -39,7 +39,7 @@ class CreateZipArchive
     private function storeFile(DownloadData $passable): void
     {
         $zipArchive = Storage::path($passable->getFinalArchiveName());
-        Storage::disk('local')->put($passable->getPathUploadS3(), file_get_contents($zipArchive));
+        Storage::disk('s3')->put($passable->getPathUploadS3(), file_get_contents($zipArchive));
     }
 
     private function cleanUpTemp($folderPath): void
@@ -56,7 +56,7 @@ class CreateZipArchive
         foreach ($files as $file) {
             $filename = basename($file);
             $s = explode('_', $filename);
-            if (is_file($file) && $s[0] === $experimentId) {
+            if (is_file($file) && intval($s[0]) === $experimentId) {
                 $zip->addFile($file, $filename);
             }
         }
