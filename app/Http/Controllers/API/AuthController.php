@@ -4,8 +4,14 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Notifications\ResetPassword;
+use Carbon\Carbon;
+use Illuminate\Auth\Events\PasswordReset;
+use Illuminate\Auth\Passwords\PasswordBroker;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Route;
 
 class AuthController extends Controller
@@ -66,5 +72,53 @@ class AuthController extends Controller
 
         // return response(['user' => auth()->user(), 'access_token' => $accessToken]);
         return response(['user' => $user, 'access_token' => $token]);
+    }
+
+    public function resetPassword(Request $request)
+    {
+        $request->validate(["email" => 'required|email']);
+        
+        $email = $request->email;
+        $response = $this->broker()->sendResetLink($request->only("email"));
+
+        if($response == Password::RESET_LINK_SENT)
+            return response()->json(["message" => trans($response)]);
+
+        Log::alert(now(), ["email" => $email]);        
+    }
+
+    public function newPassword(Request $request)
+    {
+        $request->validate([
+            "token" => "required",
+            "email" => "email",
+            "password" => "required|confirmed|string|min:8|regex:/^(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).+$/",
+        ]);
+
+
+        $response = $this->broker()->reset(
+            $request->only("email", "password", "password_confirmation", "token"),
+            function ($user, $password) {
+                $user->password = bcrypt($password);
+                $user->save();
+                event(new PasswordReset($user));
+            }
+        );
+
+        if ( $response == Password::PASSWORD_RESET )
+            return response()->json([
+                "status" => true,
+                "email" => trans($response)
+            ]);
+
+        return response()->json([
+            "status" => false,
+            "message" => trans($response)
+        ]);
+    }
+
+    public function broker()
+    {
+        return Password::broker();
     }
 }
