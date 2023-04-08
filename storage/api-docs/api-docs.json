@@ -1020,6 +1020,233 @@
             }
           }
         },
+        "/api/v1/load": {
+          "post": {
+            "tags": [
+              "Crawlers"
+            ],
+            "security": [
+              {
+                "bearerAuth": []
+              }
+            ],
+            "consumes": [
+              "application/json"
+            ],
+            "summary": "Load",
+            "requestBody": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string"
+                        },
+                        "description": {
+                          "type": "string"
+                        },
+                        "active": {
+                          "type": "integer"
+                        },
+                        "testing": {
+                          "type": "integer"
+                        },
+                        "configuration": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "name": {
+                                "type": "string"
+                              },
+                              "description": {
+                                "type": "string"
+                              },
+                              "params": {
+                                "type": "array",
+                                "items": {
+                                  "type": "object",
+                                  "properties": {
+                                    "pi": {
+                                      "type": "integer"
+                                    },
+                                    "psi": {
+                                      "type": "integer"
+                                    },
+                                    "alpha": {
+                                      "type": "integer"
+                                    },
+                                    "tau": {
+                                      "type": "integer"
+                                    },
+                                    "kappa": {
+                                      "type": "integer"
+                                    },
+                                    "beta": {
+                                      "type": "integer"
+                                    },
+                                    "search_terms": {
+                                      "type": "array",
+                                      "items": {
+                                        "type": "object",
+                                        "properties": {
+                                          "term": {
+                                            "type": "string"
+                                          },
+                                          "pi": {
+                                            "type": "integer"
+                                          }
+                                        }
+                                      }
+                                    },
+                                    "media_outlet_urls": {
+                                      "type": "array",
+                                      "items": {
+                                        "type": "object",
+                                        "properties": {
+                                          "domain": {
+                                            "type": "string"
+                                          },
+                                          "url": {
+                                            "type": "string"
+                                          },
+                                          "pi": {
+                                            "type": "integer"
+                                          }
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+                              },
+                              "preferences": {
+                                "type": "array",
+                                "items": {
+                                  "type": "object",
+                                  "properties": {
+                                    "name": {
+                                      "type": "string"
+                                    },
+                                    "value": {
+                                      "type": "string"
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        },
+                        "proxy": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "name": {
+                                "type": "string"
+                              },
+                              "description": {
+                                "type": "string"
+                              },
+                              "type": {
+                                "type": "string"
+                              },
+                              "hostname": {
+                                "type": "string"
+                              },
+                              "port": {
+                                "type": "integer"
+                              },
+                              "username": {
+                                "type": "string"
+                              },
+                              "password": {
+                                "type": "string"
+                              }
+                            }
+                          }
+                        },
+                        "experiment_id": {
+                          "type": "integer"
+                        },
+                        "queues": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "name": {
+                                "type": "string"
+                              },
+                              "description": {
+                                "type": "string"
+                              },
+                              "start_at": {
+                                "type": "string"
+                              },
+                              "jobs": {
+                                "type": "array",
+                                "items": {
+                                  "type": "object",
+                                  "properties": {
+                                    "name": {
+                                      "type": "string"
+                                    },
+                                    "type": {
+                                      "type": "string"
+                                    },
+                                    "description": {
+                                      "type": "string"
+                                    },
+                                    "behaviors": {
+                                      "type": "array",
+                                      "items": {
+                                        "type": "object",
+                                        "properties": {
+                                          "name": {
+                                            "type": "string"
+                                          },
+                                          "description": {
+                                            "type": "string"
+                                          },
+                                          "value": {
+                                            "type": "string"
+                                          }
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "required": ["name", "active"]
+                  }
+                }
+              }
+            },  
+            "responses": {
+              "200": {
+                "description": "Successful create response.",
+                "headers": {
+                    "Content-Type": {
+                      "type": "string",
+                      "description": "The content type of the response body.",
+                      "example": "application/json"
+                    }
+                },
+                "content": {
+                  "application/json": {
+                  }
+                }
+              }
+            }
+          }
+        },
 
         "/api/v1/agents": {
           "get": {
