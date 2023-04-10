@@ -12,7 +12,6 @@ use App\Modules\Preference\Model\Preference;
 use App\Modules\Proxy\Model\Proxy;
 use App\Modules\Queue\Model\Queue;
 use Arimolzer\IPStackFinder\Facade\IPStackFinderFacade;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
@@ -31,7 +30,7 @@ class CrawlerRepository
     {
     }
 
-    public function getData($experimentId): LengthAwarePaginator
+    public function getData(): QueryBuilder
     {
         return QueryBuilder::for($this->crawler)
             ->allowedFilters([
@@ -43,9 +42,7 @@ class CrawlerRepository
             ->where('testing', 0)
             ->where('active', 1)
             ->with(['experiment'])
-            //->when($experimentId, fn (Builder $query) => $query->where('experiment_id', $experimentId))
-            ->latest()
-            ->fastPaginate();
+            ->latest();
     }
 
     public function getById(Crawler $crawler): Crawler
