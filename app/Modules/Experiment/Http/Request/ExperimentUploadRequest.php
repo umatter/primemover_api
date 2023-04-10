@@ -6,6 +6,7 @@ use Exception;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rule;
 use Throwable;
 
 class ExperimentUploadRequest extends FormRequest
@@ -18,7 +19,7 @@ class ExperimentUploadRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'json' => ['required'],
+            'json' => Rule::when( ! $this->getContent(), ['required']),
         ];
     }
 
@@ -33,12 +34,10 @@ class ExperimentUploadRequest extends FormRequest
     /**
      * @throws Exception
      */
-    public function getJsonFileContent(): array
+    public function getJsonFileContent(): ?array
     {
-        $contents = Storage::get($this->getUploadedFile());
-
         try {
-            return json_decode($contents, true);
+            return json_decode($this->getFileOrContent(), true);
         } catch (Throwable $exception) {
             Log::error('1680821526: Unable to decode json', [
                 'message' => $exception->getMessage(),
@@ -46,5 +45,14 @@ class ExperimentUploadRequest extends FormRequest
 
             throw new Exception('Unable to decode json', 422, $exception);
         }
+    }
+
+    public function getFileOrContent(): ?string
+    {
+        if ($this->getContent()) {
+            return $this->getContent();
+        }
+
+        return Storage::get($this->getUploadedFile());
     }
 }

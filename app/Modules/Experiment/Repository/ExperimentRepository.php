@@ -23,6 +23,7 @@ use App\Modules\Experiment\Pipe\Upload\CreateCrawlerConfiguration;
 use App\Modules\Experiment\Pipe\Upload\CreateCrawlerProxy;
 use App\Modules\Experiment\Pipe\Upload\CreateCrawlerQueues;
 use App\Modules\Experiment\Pipe\Upload\CreateExperimentCrawlers;
+use App\Modules\Experiment\Pipe\Upload\RemoveNewFlag;
 use App\Modules\S3\Facade\S3Service;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
@@ -122,6 +123,7 @@ class ExperimentRepository
                     ->send($crawlerDto->setExperiment($experiment))
                     ->through([
                         AssertExperimentExists::class,
+                        RemoveNewFlag::class,
                         CreateCrawlerConfiguration::class,
                         CreateConfigurationParams::class,
                         CreateConfigurationPreferences::class,

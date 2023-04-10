@@ -22,6 +22,8 @@ class CreateExperimentCrawlers
                 'name' => $crawlerDto->getName(),
                 'description' => $crawlerDto->getDescription(),
                 'testing' => $crawlerDto->getTesting(),
+                'updated' => $crawlerDto->getUpdated(),
+                'new' => $crawlerDto->getNew(),
                 'user_id' => Auth::id(),
                 'configuration_id' => $crawlerDto->getCrawlerConfiguration()->id,
                 'proxy_id' => $crawlerDto->getCrawlerProxy()->id,

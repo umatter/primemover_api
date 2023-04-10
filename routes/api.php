@@ -72,7 +72,6 @@ Route::prefix('v1')->group(function (): void {
                 Route::get('crawlers-disable', 'disableProdCrawlers');
                 Route::get('crawlers-testing', 'testing');
                 Route::get('crawlers-protected', 'index');
-                Route::post('load', 'load');
                 Route::delete('undo', 'undo');
                 Route::delete('cleanup', 'cleanup');
             });

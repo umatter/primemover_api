@@ -3,13 +3,10 @@
 namespace App\Modules\Crawler\Http\Controller\Api\v1;
 
 use App\Http\Controllers\API\v1\Controller;
-use App\Modules\Agent\Model\Agent;
-use App\Modules\Configuration\Model\Configuration;
 use App\Modules\Crawler\Http\Request\StoreCrawlerRequest;
 use App\Modules\Crawler\Http\Request\UpdateCrawlerRequest;
 use App\Modules\Crawler\Model\Crawler;
 use App\Modules\Crawler\Repository\CrawlerRepository;
-use App\Modules\Proxy\Model\Proxy;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -133,57 +130,5 @@ class CrawlerController extends Controller
         $crawlers = $this->repository->cleanup();
 
         return ResourceCollection::make($crawlers);
-    }
-
-    public function load(): JsonResponse
-    {
-        return $this->repository->load();
-    }
-
-    public function makeCrawlers($data): JsonResponse
-    {
-        return $this->repository->makeCrawlers($data);
-    }
-
-    public function makeQueues($data, $crawler): void
-    {
-        $this->repository->makeQueues($crawler, $data);
-    }
-
-    public function makeJobs($data, $queue): void
-    {
-        $this->repository->makeJobs($data, $queue);
-    }
-
-    public function makeBehaviors($data, $job): void
-    {
-        $this->repository->makeBehaviors($data, $job);
-    }
-
-    public function makeProxies($data, $crawler): Proxy
-    {
-        return $this->repository->makeProxies($data, $crawler);
-    }
-
-    public function log($content): void
-    {
-        echo '<pre>';
-        print_r($content);
-        echo '</pre>';
-    }
-
-    public function makeConfigurations($data, $crawler): Configuration
-    {
-        return $this->repository->makeConfigurations($data, $crawler);
-    }
-
-    public function makePreferences($data, $model): void
-    {
-        $this->repository->makePreferences($data, $model);
-    }
-
-    public function makeAgents($data, $crawler): Agent
-    {
-        return $this->repository->makeAgents($data, $crawler);
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Modules\Experiment\Http\Controller\Api\v1;
 
 use App\Http\Controllers\API\v1\Controller;
+use App\Modules\Crawler\Model\Crawler;
 use App\Modules\Experiment\Facade\ExperimentRepository;
 use App\Modules\Experiment\Http\Request\ExperimentStoreRequest;
 use App\Modules\Experiment\Http\Request\ExperimentUploadRequest;
@@ -78,9 +79,15 @@ class ExperimentController extends Controller
 
     public function upload(ExperimentUploadRequest $request, Experiment $experiment): JsonResource
     {
-        $upload = ExperimentRepository::upload($request, $experiment);
+        ExperimentRepository::upload($request, $experiment);
 
-        return JsonResource::make($upload);
+        return JsonResource::make([
+            'crawlers' => Crawler::query()
+                ->where('updated', 1)
+                ->with(['proxy', 'agent.preferences', 'configuration.preferences', 'queuesNew'])
+                ->get(),
+        ]);
+
     }
 
     public function download(Experiment $experiment): Response

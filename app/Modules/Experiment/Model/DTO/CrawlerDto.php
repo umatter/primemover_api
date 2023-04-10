@@ -18,8 +18,6 @@ class CrawlerDto extends Data
 
     public ?string $description = null;
 
-    public ?bool $testing = true;
-
     public ?ConfigurationDto $configuration = null;
 
     public ?ProxyDto $proxy = null;
@@ -46,6 +44,12 @@ class CrawlerDto extends Data
      */
     public ?array $queues = [];
 
+    private ?bool $updated = true;
+
+    private ?bool $new = true;
+
+    private ?bool $testing = false;
+
     private ?bool $active = true;
 
     /**
@@ -54,6 +58,30 @@ class CrawlerDto extends Data
     private mixed $crawlerAgent = null;
 
     private ?AgentDto $agent = null;
+
+    public function getUpdated(): ?bool
+    {
+        return $this->updated;
+    }
+
+    public function setUpdated(?bool $updated): CrawlerDto
+    {
+        $this->updated = $updated;
+
+        return $this;
+    }
+
+    public function getNew(): ?bool
+    {
+        return $this->new;
+    }
+
+    public function setNew(?bool $new): CrawlerDto
+    {
+        $this->new = $new;
+
+        return $this;
+    }
 
     public function getCrawlerConfiguration(): Model|Configuration|null
     {

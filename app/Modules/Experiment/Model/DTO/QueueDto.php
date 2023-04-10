@@ -12,12 +12,26 @@ class QueueDto
 
     public ?Carbon $start_at = null;
 
-    public ?bool $active = null;
-
     /**
      * @var JobDto[]
      */
     public ?array $jobs = null;
+
+    private ?bool $active = true;
+
+    private ?bool $new = true;
+
+    public function getNew(): ?bool
+    {
+        return $this->new;
+    }
+
+    public function setNew(?bool $new): QueueDto
+    {
+        $this->new = $new;
+
+        return $this;
+    }
 
     public function getName(): ?string
     {
