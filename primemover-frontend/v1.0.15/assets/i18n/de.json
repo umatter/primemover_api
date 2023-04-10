@@ -189,7 +189,9 @@
     "createIntroText": "Geben Sie die erforderlichen Daten ein, um eine neue Queue zu erstellen.",
     "label": "Queue",
     "list": "Liste aller Queues.",
-    "startAt": "Startzeit"
+    "notStartedYet": "Nicht gestartet",
+    "startAt": "Startzeit",
+    "startedAt": "Gestartet"
   },
   "status": {
     "code": "Code",
