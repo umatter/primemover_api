@@ -8,7 +8,21 @@ class PreferenceDto
 
     public ?string $value = null;
 
-    public ?string $description = null;
+    private ?string $description = null;
+
+    private ?bool $active = true;
+
+    public function getActive(): ?bool
+    {
+        return $this->active;
+    }
+
+    public function setActive(?bool $active): PreferenceDto
+    {
+        $this->active = $active;
+
+        return $this;
+    }
 
     public function getDescription(): ?string
     {

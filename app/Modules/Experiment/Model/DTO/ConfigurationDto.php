@@ -8,14 +8,28 @@ class ConfigurationDto extends Data
 {
     public ?string $name = null;
 
-    public ?string $description = null;
-
     public ?ParamDto $params = null;
 
     /**
      * @var PreferenceDto[]
      */
     public ?array $preferences = [];
+
+    private ?string $description = null;
+
+    private ?bool $active = true;
+
+    public function getActive(): ?bool
+    {
+        return $this->active;
+    }
+
+    public function setActive(?bool $active): ConfigurationDto
+    {
+        $this->active = $active;
+
+        return $this;
+    }
 
     public function getName(): ?string
     {

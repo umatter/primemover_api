@@ -21,12 +21,11 @@ class CreateExperimentCrawlers
             $crawler = Crawler::query()->create([
                 'name' => $crawlerDto->getName(),
                 'description' => $crawlerDto->getDescription(),
-                'active' => $crawlerDto->getActive(),
                 'testing' => $crawlerDto->getTesting(),
                 'user_id' => Auth::id(),
                 'configuration_id' => $crawlerDto->getCrawlerConfiguration()->id,
                 'proxy_id' => $crawlerDto->getCrawlerProxy()->id,
-                'agent_id' => $crawlerDto->getCrawlerAgent()->id,
+                'agent_id' => $crawlerDto->getCrawlerAgent()->id ?? null,
                 'experiment_id' => $crawlerDto->getExperiment()->id,
 
             ]);

@@ -18,6 +18,20 @@ class ProxyDto
 
     public ?string $type = null;
 
+    private ?bool $active = true;
+
+    public function getActive(): ?bool
+    {
+        return $this->active;
+    }
+
+    public function setActive(?bool $active): ProxyDto
+    {
+        $this->active = $active;
+
+        return $this;
+    }
+
     public function getName(): ?string
     {
         return $this->name;

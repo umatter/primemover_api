@@ -16,11 +16,11 @@ class CreateCrawlerAgent
      */
     public function handle(CrawlerDto $crawlerDto, Closure $next): mixed
     {
-        try {
-            $agent = $crawlerDto
-                ->setUserId(Auth::id())
-                ->getAgent();
+        if ( ! $agent = $crawlerDto->setUserId(Auth::id())->getAgent()) {
+            return $next($crawlerDto);
+        }
 
+        try {
             $crawlerAgent = Agent::query()->create([
                 'name' => $agent->getName(),
                 'description' => $agent->getDescription(),
@@ -28,7 +28,6 @@ class CreateCrawlerAgent
                 'multilogin_id' => $agent->getMultiloginId(),
                 'multilogin_profile' => $agent->getMultiloginProfile(),
                 'location' => $agent->getLocation(),
-                'active' => $agent->getActive(),
                 'user_id' => $crawlerDto->getUserId(),
             ]);
 

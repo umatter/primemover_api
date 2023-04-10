@@ -26,6 +26,20 @@ class ParamDto
      */
     public ?array $media_outlet_urls = [];
 
+    private ?bool $active = true;
+
+    public function getActive(): ?bool
+    {
+        return $this->active;
+    }
+
+    public function setActive(?bool $active): ParamDto
+    {
+        $this->active = $active;
+
+        return $this;
+    }
+
     public function getPi(): ?string
     {
         return $this->pi;

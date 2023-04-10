@@ -16,7 +16,7 @@ class AgentDto
 
     public ?string $location = null;
 
-    public ?bool $active = true;
+    private ?bool $active = true;
 
     public function getName(): ?string
     {

@@ -34,7 +34,6 @@ class CreateCrawlerQueues
                         'name' => $dto->getName(),
                         'description' => $dto->getDescription(),
                         'start_at' => $dto->getStartAt(),
-                        'active' => $dto->getActive(),
                         'user_id' => $crawlerDto->getUserId(),
                     ]);
                 $this->createJobs($queue, $dto, $crawlerDto);
@@ -58,7 +57,6 @@ class CreateCrawlerQueues
                     'name' => $dto->getName(),
                     'description' => $dto->getDescription(),
                     'type' => $dto->getType(),
-                    'active' => $dto->getActive(),
                     'user_id' => $crawlerDto->getUserId(),
                 ]);
                 $this->createBehaviors($job, $dto, $crawlerDto);
@@ -80,7 +78,6 @@ class CreateCrawlerQueues
                     'name' => $dto->getName(),
                     'description' => $dto->getDescription(),
                     'value' => $dto->getValue(),
-                    'active' => $dto->getActive(),
                     'user_id' => $crawlerDto->getUserId(),
                 ]);
             });

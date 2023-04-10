@@ -18,15 +18,11 @@ class CrawlerDto extends Data
 
     public ?string $description = null;
 
-    public ?bool $active = true;
-
     public ?bool $testing = true;
 
     public ?ConfigurationDto $configuration = null;
 
     public ?ProxyDto $proxy = null;
-
-    public ?AgentDto $agent = null;
 
     public ?int $user_id = null;
 
@@ -41,11 +37,6 @@ class CrawlerDto extends Data
     public mixed $crawlerProxy = null;
 
     /**
-     * @var Model|Agent|null
-     */
-    public mixed $crawlerAgent = null;
-
-    /**
      * @var Model|Crawler|null
      */
     public mixed $experimentCrawler = null;
@@ -54,6 +45,15 @@ class CrawlerDto extends Data
      * @var QueueDto[]
      */
     public ?array $queues = [];
+
+    private ?bool $active = true;
+
+    /**
+     * @var Model|Agent|null
+     */
+    private mixed $crawlerAgent = null;
+
+    private ?AgentDto $agent = null;
 
     public function getCrawlerConfiguration(): Model|Configuration|null
     {
