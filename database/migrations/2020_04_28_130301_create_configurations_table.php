@@ -4,11 +4,8 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateConfigurationsTable extends Migration
+return new class() extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('configurations', function (Blueprint $table): void {
@@ -32,4 +29,4 @@ class CreateConfigurationsTable extends Migration
     {
         Schema::dropIfExists('configurations');
     }
-}
+};

@@ -4,11 +4,8 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateQueuesTable extends Migration
+return new class() extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('queues', function (Blueprint $table): void {
@@ -42,4 +39,4 @@ class CreateQueuesTable extends Migration
     {
         Schema::dropIfExists('queues');
     }
-}
+};

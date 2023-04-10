@@ -5,7 +5,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
-class ChangeCrawlerFkOndelete extends Migration
+return new class() extends Migration
 {
     public function up(): void
     {
@@ -124,4 +124,4 @@ class ChangeCrawlerFkOndelete extends Migration
     public function down(): void
     {
     }
-}
+};

@@ -4,11 +4,8 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateCrawlersTable extends Migration
+return new class() extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('crawlers', function (Blueprint $table): void {
@@ -40,3 +37,4 @@ class CreateCrawlersTable extends Migration
         Schema::dropIfExists('crawlers');
     }
 }
+;
