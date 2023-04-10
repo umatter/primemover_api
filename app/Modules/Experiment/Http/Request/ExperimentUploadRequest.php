@@ -18,15 +18,15 @@ class ExperimentUploadRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'file_json' => ['required'],
+            'json' => ['required'],
         ];
     }
 
     public function getUploadedFile(): bool|string
     {
         return $this
-            ->file('file_json')
-            ->store('json_files');
+            ->file('json')
+            ->store('experiment-upload');
 
     }
 

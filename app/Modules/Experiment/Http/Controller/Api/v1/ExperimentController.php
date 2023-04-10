@@ -18,7 +18,7 @@ class ExperimentController extends Controller
     {
         $experiments = ExperimentRepository::getData();
 
-        return ResourceCollection::make($experiments);
+        return ResourceCollection::make($experiments->paginate());
     }
 
     public function all(): ResourceCollection

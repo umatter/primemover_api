@@ -8,12 +8,12 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Response;
-use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Facade;
+use Spatie\QueryBuilder\QueryBuilder;
 
 /**
  * @method static Response download(Experiment $experiment)
- * @method static LengthAwarePaginator getData()
+ * @method static QueryBuilder getData()
  * @method static Collection all()
  * @method static Experiment getById($experiment)
  * @method static Experiment save($data)
