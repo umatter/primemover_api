@@ -12,7 +12,6 @@ use App\Modules\Crawler\Repository\CrawlerRepository;
 use App\Modules\Proxy\Model\Proxy;
 use Exception;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 use Tests\Feature\Modules\Crawler\Http\Controller\Api\v1\CrawlerControllerTest;
@@ -26,12 +25,11 @@ class CrawlerController extends Controller
     {
     }
 
-    public function index(Request $request): ResourceCollection
+    public function index(): ResourceCollection
     {
-        $experimentId = $request->input('experiment');
-        $crawlers = $this->repository->getData($experimentId);
+        $crawlers = $this->repository->getData();
 
-        return ResourceCollection::make($crawlers);
+        return ResourceCollection::make($crawlers->paginate());
     }
 
     public function inactive(): ResourceCollection
