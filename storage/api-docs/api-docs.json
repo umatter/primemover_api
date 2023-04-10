@@ -255,6 +255,44 @@
                 }
             }
         },
+        "/api/v1/ip/{ip}": {
+          "get": {
+            "tags": [
+              "Auth"
+            ],
+            "summary": "Ip.",
+            "security": [
+                {
+                  "bearerAuth": []
+                }
+            ],
+            "parameters": [
+              {
+              "name": "ip",
+              "in": "path",
+              "required": true,
+              "type": "string",
+              "format": "text",
+              "example": "127.0.0.1"
+              }
+            ],
+            "responses": {
+              "200": {
+                "description": "OK",
+                "schema": {
+                  "type": "object"
+                }
+              },
+              "404": {
+                "description": "not found."
+              },
+              "500": {
+                "description": "Error internal server."
+              }
+            }
+          }
+        },
+
         "/api/v1/crawlers": {
             "get": {
                 "tags": [
@@ -749,6 +787,460 @@
                         "type": "object",
                         "properties": {}
                     }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "/api/v1/crawlers-processed": {
+            "get": {
+                "tags": [
+                  "Crawlers"
+                ],
+                "summary": "Get crawlers processed.",
+                "security": [
+                    {
+                      "bearerAuth": []
+                    }
+                ],
+                "responses": {
+                  "200": {
+                    "description": "OK",
+                    "schema": {
+                      "type": "object"
+                    }
+                  },
+                  "404": {
+                    "description": "not found."
+                  },
+                  "500": {
+                    "description": "Error internal server."
+                  }
+                }
+            }
+        },
+        "/api/v1/crawlers-unprocessed": {
+          "get": {
+              "tags": [
+                "Crawlers"
+              ],
+              "summary": "Get crawlers unprocessed.",
+              "security": [
+                  {
+                    "bearerAuth": []
+                  }
+              ],
+              "responses": {
+                "200": {
+                  "description": "OK",
+                  "schema": {
+                    "type": "object"
+                  }
+                },
+                "404": {
+                  "description": "not found."
+                },
+                "500": {
+                  "description": "Error internal server."
+                }
+              }
+          }
+        },
+        "/api/v1/crawlers-reviewed": {
+          "get": {
+              "tags": [
+                "Crawlers"
+              ],
+              "summary": "Get crawlers reviewed.",
+              "security": [
+                  {
+                    "bearerAuth": []
+                  }
+              ],
+              "responses": {
+                "200": {
+                  "description": "OK",
+                  "schema": {
+                    "type": "object"
+                  }
+                },
+                "404": {
+                  "description": "not found."
+                },
+                "500": {
+                  "description": "Error internal server."
+                }
+              }
+          }
+        },
+        "/api/v1/crawlers-inactive": {
+          "get": {
+              "tags": [
+                "Crawlers"
+              ],
+              "summary": "Get crawlers inactive.",
+              "security": [
+                  {
+                    "bearerAuth": []
+                  }
+              ],
+              "responses": {
+                "200": {
+                  "description": "OK",
+                  "schema": {
+                    "type": "object"
+                  }
+                },
+                "404": {
+                  "description": "not found."
+                },
+                "500": {
+                  "description": "Error internal server."
+                }
+              }
+          }
+        },
+        "/api/v1/crawlers-disable": {
+          "get": {
+              "tags": [
+                "Crawlers"
+              ],
+              "summary": "Get crawlers disable.",
+              "security": [
+                  {
+                    "bearerAuth": []
+                  }
+              ],
+              "responses": {
+                "200": {
+                  "description": "OK",
+                  "schema": {
+                    "type": "object"
+                  }
+                },
+                "404": {
+                  "description": "not found."
+                },
+                "500": {
+                  "description": "Error internal server."
+                }
+              }
+          }
+        },
+        "/api/v1/crawlers-testing": {
+          "get": {
+              "tags": [
+                "Crawlers"
+              ],
+              "summary": "Get crawlers testing.",
+              "security": [
+                  {
+                    "bearerAuth": []
+                  }
+              ],
+              "responses": {
+                "200": {
+                  "description": "OK",
+                  "schema": {
+                    "type": "object"
+                  }
+                },
+                "404": {
+                  "description": "not found."
+                },
+                "500": {
+                  "description": "Error internal server."
+                }
+              }
+          }
+        },
+        "/api/v1/crawlers-protected": {
+          "get": {
+              "tags": [
+                "Crawlers"
+              ],
+              "summary": "Get crawlers protected.",
+              "security": [
+                  {
+                    "bearerAuth": []
+                  }
+              ],
+              "responses": {
+                "200": {
+                  "description": "OK",
+                  "schema": {
+                    "type": "object"
+                  }
+                },
+                "404": {
+                  "description": "not found."
+                },
+                "500": {
+                  "description": "Error internal server."
+                }
+              }
+          }
+        },
+        "/api/v1/undo": {
+          "delete": {
+            "tags": [
+              "Crawlers"
+            ],
+            "summary": "Undo crawlers",
+            "security": [
+                {
+                  "bearerAuth": []
+                }
+            ],
+            "responses": {
+              "200": {
+                "description": "Successful Undo Data.",
+                "type": "object"
+              }
+            }
+          }
+        },
+        "/api/v1/cleanup": {
+          "delete": {
+            "tags": [
+              "Crawlers"
+            ],
+            "summary": "Cleanup crawlers",
+            "security": [
+                {
+                  "bearerAuth": []
+                }
+            ],
+            "responses": {
+              "200": {
+                "description": "Successful cleanup Data.",
+                "type": "object"
+              }
+            }
+          }
+        },
+        "/api/v1/load": {
+          "post": {
+            "tags": [
+              "Crawlers"
+            ],
+            "security": [
+              {
+                "bearerAuth": []
+              }
+            ],
+            "consumes": [
+              "application/json"
+            ],
+            "summary": "Load",
+            "requestBody": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string"
+                        },
+                        "description": {
+                          "type": "string"
+                        },
+                        "active": {
+                          "type": "integer"
+                        },
+                        "testing": {
+                          "type": "integer"
+                        },
+                        "configuration": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "name": {
+                                "type": "string"
+                              },
+                              "description": {
+                                "type": "string"
+                              },
+                              "params": {
+                                "type": "array",
+                                "items": {
+                                  "type": "object",
+                                  "properties": {
+                                    "pi": {
+                                      "type": "integer"
+                                    },
+                                    "psi": {
+                                      "type": "integer"
+                                    },
+                                    "alpha": {
+                                      "type": "integer"
+                                    },
+                                    "tau": {
+                                      "type": "integer"
+                                    },
+                                    "kappa": {
+                                      "type": "integer"
+                                    },
+                                    "beta": {
+                                      "type": "integer"
+                                    },
+                                    "search_terms": {
+                                      "type": "array",
+                                      "items": {
+                                        "type": "object",
+                                        "properties": {
+                                          "term": {
+                                            "type": "string"
+                                          },
+                                          "pi": {
+                                            "type": "integer"
+                                          }
+                                        }
+                                      }
+                                    },
+                                    "media_outlet_urls": {
+                                      "type": "array",
+                                      "items": {
+                                        "type": "object",
+                                        "properties": {
+                                          "domain": {
+                                            "type": "string"
+                                          },
+                                          "url": {
+                                            "type": "string"
+                                          },
+                                          "pi": {
+                                            "type": "integer"
+                                          }
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+                              },
+                              "preferences": {
+                                "type": "array",
+                                "items": {
+                                  "type": "object",
+                                  "properties": {
+                                    "name": {
+                                      "type": "string"
+                                    },
+                                    "value": {
+                                      "type": "string"
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        },
+                        "proxy": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "name": {
+                                "type": "string"
+                              },
+                              "description": {
+                                "type": "string"
+                              },
+                              "type": {
+                                "type": "string"
+                              },
+                              "hostname": {
+                                "type": "string"
+                              },
+                              "port": {
+                                "type": "integer"
+                              },
+                              "username": {
+                                "type": "string"
+                              },
+                              "password": {
+                                "type": "string"
+                              }
+                            }
+                          }
+                        },
+                        "experiment_id": {
+                          "type": "integer"
+                        },
+                        "queues": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "name": {
+                                "type": "string"
+                              },
+                              "description": {
+                                "type": "string"
+                              },
+                              "start_at": {
+                                "type": "string"
+                              },
+                              "jobs": {
+                                "type": "array",
+                                "items": {
+                                  "type": "object",
+                                  "properties": {
+                                    "name": {
+                                      "type": "string"
+                                    },
+                                    "type": {
+                                      "type": "string"
+                                    },
+                                    "description": {
+                                      "type": "string"
+                                    },
+                                    "behaviors": {
+                                      "type": "array",
+                                      "items": {
+                                        "type": "object",
+                                        "properties": {
+                                          "name": {
+                                            "type": "string"
+                                          },
+                                          "description": {
+                                            "type": "string"
+                                          },
+                                          "value": {
+                                            "type": "string"
+                                          }
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "required": ["name", "active"]
+                  }
+                }
+              }
+            },  
+            "responses": {
+              "200": {
+                "description": "Successful create response.",
+                "headers": {
+                    "Content-Type": {
+                      "type": "string",
+                      "description": "The content type of the response body.",
+                      "example": "application/json"
+                    }
+                },
+                "content": {
+                  "application/json": {
                   }
                 }
               }
@@ -1608,6 +2100,479 @@
             }
           }
         },
+        "/api/v1/experiments/{id}/destroy": {
+          "delete": {
+            "tags": [
+              "Experiments"
+            ],
+            "summary": "Force delete Experiment",
+            "security": [
+                {
+                  "bearerAuth": []
+                }
+            ],
+            "parameters": [
+                {
+                "name": "id",
+                "in": "path",
+                "required": true,
+                "schema": {
+                    "type": "integer"
+                }
+                }
+            ],
+            "responses": {
+              "200": {
+                "description": "Successful Delete Data.",
+                "headers": {
+                    "Content-Type": {
+                      "type": "string",
+                      "description": "The content type of the response body.",
+                      "example": "application/json"
+                    }
+                },
+                "content": {
+                  "application/json": {
+                    "schema": {
+                        "produces": [
+                            "application/json"
+                        ],
+                        "type": "object",
+                        "properties": {
+                          "data": {
+                            "type": "object",
+                            "example": {
+                              "status": true
+                            }
+                          }
+                        }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "/api/v1/experiments/{id}/download": {
+          "get": {
+            "tags": [
+              "Experiments"
+            ],
+            "summary": "Download data experiment.",
+            "security": [
+                {
+                  "bearerAuth": []
+                }
+            ],
+            "parameters": [
+              {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "type": "integer",
+              "format": "int32",
+              "example": 1
+              }
+            ],
+            "responses": {
+              "200": {
+                "description": "OK",
+                "schema": {
+                  "type": "file"
+                }
+              },
+              "404": {
+                "description": "File not found."
+              },
+              "500": {
+                "description": "Error internal server."
+              }
+            }
+          }
+        },
+        "/api/v1/experiments/{id}/queues-processed": {
+          "get": {
+            "tags": [
+              "Experiments"
+            ],
+            "summary": "Queues processed.",
+            "security": [
+                {
+                  "bearerAuth": []
+                }
+            ],
+            "parameters": [
+              {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "type": "integer",
+              "format": "int32",
+              "example": 1
+              }
+            ],
+            "responses": {
+              "200": {
+                "description": "Successful Get Data.",
+                "headers": {
+                    "Content-Type": {
+                      "type": "string",
+                      "description": "The content type of the response body.",
+                      "example": "application/json"
+                    }
+                },
+                "content": {
+                  "application/json": {
+                    "schema": {
+                        "produces": [
+                            "application/json"
+                        ],
+                        "type": "object",
+                        "properties": {
+                            "data": {
+                                "type": "object",
+                                "example": [
+                                  {
+                                    "id": 1,
+                                    "name": "Deron Turcotte",
+                                    "description": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor.",
+                                    "active": 1,
+                                    "new": 0,
+                                    "processed": 1,
+                                    "processing": 0,
+                                    "reviewed": 1,
+                                    "status_code": "success",
+                                    "status_message": null,
+                                    "order": 1,
+                                    "start_at": "2023-03-29T03:52:55.850760Z",
+                                    "updated_at": "2023-03-29T13:57:56.000000Z",
+                                    "created_at": "2023-03-29T13:57:56.000000Z",
+                                    "started_at": "2023-03-29T03:53:55.851539Z",
+                                    "finished_at": null,
+                                    "user_id": 1,
+                                    "crawler_id": 1,
+                                    "jobs": []
+                                }
+                              ]
+                            }
+                        }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "/api/v1/experiments/{id}/queues-unprocessed": {
+          "get": {
+            "tags": [
+              "Experiments"
+            ],
+            "summary": "Queues unprocessed.",
+            "security": [
+                {
+                  "bearerAuth": []
+                }
+            ],
+            "parameters": [
+              {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "type": "integer",
+              "format": "int32",
+              "example": 1
+              }
+            ],
+            "responses": {
+              "200": {
+                "description": "Successful Get Data.",
+                "headers": {
+                    "Content-Type": {
+                      "type": "string",
+                      "description": "The content type of the response body.",
+                      "example": "application/json"
+                    }
+                },
+                "content": {
+                  "application/json": {
+                    "schema": {
+                        "produces": [
+                            "application/json"
+                        ],
+                        "type": "object",
+                        "properties": {
+                            "data": {
+                                "type": "object",
+                                "example": [
+                                  {
+                                    "id": 5,
+                                    "name": "Ardith Armstrong",
+                                    "description": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor.",
+                                    "active": 1,
+                                    "new": 0,
+                                    "processed": 0,
+                                    "processing": 0,
+                                    "reviewed": 1,
+                                    "status_code": "success",
+                                    "status_message": null,
+                                    "order": 1,
+                                    "start_at": "2023-03-29T03:52:55.850760Z",
+                                    "updated_at": "2023-03-29T13:57:56.000000Z",
+                                    "created_at": "2023-03-29T13:57:56.000000Z",
+                                    "started_at": "2023-03-29T03:53:55.851539Z",
+                                    "finished_at": null,
+                                    "user_id": 1,
+                                    "crawler_id": 1,
+                                    "jobs": []
+                                }
+                              ]
+                            }
+                        }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "/api/v1/experiments/{id}/queues-reviewed": {
+          "get": {
+            "tags": [
+              "Experiments"
+            ],
+            "summary": "Queues reviewed.",
+            "security": [
+                {
+                  "bearerAuth": []
+                }
+            ],
+            "parameters": [
+              {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "type": "integer",
+              "format": "int32",
+              "example": 1
+              }
+            ],
+            "responses": {
+              "200": {
+                "description": "Successful Get Data.",
+                "headers": {
+                    "Content-Type": {
+                      "type": "string",
+                      "description": "The content type of the response body.",
+                      "example": "application/json"
+                    }
+                },
+                "content": {
+                  "application/json": {
+                    "schema": {
+                        "produces": [
+                            "application/json"
+                        ],
+                        "type": "object",
+                        "properties": {
+                            "data": {
+                                "type": "object",
+                                "example": [
+                                  {
+                                    "id": 1,
+                                    "name": "Deron Turcotte",
+                                    "description": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor.",
+                                    "active": 1,
+                                    "new": 0,
+                                    "processed": 1,
+                                    "processing": 0,
+                                    "reviewed": 1,
+                                    "status_code": "success",
+                                    "status_message": null,
+                                    "order": 1,
+                                    "start_at": "2023-03-29T03:52:55.850760Z",
+                                    "updated_at": "2023-03-29T13:57:56.000000Z",
+                                    "created_at": "2023-03-29T13:57:56.000000Z",
+                                    "started_at": "2023-03-29T03:53:55.851539Z",
+                                    "finished_at": null,
+                                    "user_id": 1,
+                                    "crawler_id": 1,
+                                    "jobs": []
+                                }
+                              ]
+                            }
+                        }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "/api/v1/experiments/{id}/queues-unreviewed": {
+          "get": {
+            "tags": [
+              "Experiments"
+            ],
+            "summary": "Queues unreviewed.",
+            "security": [
+                {
+                  "bearerAuth": []
+                }
+            ],
+            "parameters": [
+              {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "type": "integer",
+              "format": "int32",
+              "example": 1
+              }
+            ],
+            "responses": {
+              "200": {
+                "description": "Successful Get Data.",
+                "headers": {
+                    "Content-Type": {
+                      "type": "string",
+                      "description": "The content type of the response body.",
+                      "example": "application/json"
+                    }
+                },
+                "content": {
+                  "application/json": {
+                    "schema": {
+                        "produces": [
+                            "application/json"
+                        ],
+                        "type": "object",
+                        "properties": {
+                            "data": {
+                                "type": "object",
+                                "example": [
+                                  {
+                                    "id": 1,
+                                    "name": "Deron Turcotte",
+                                    "description": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor.",
+                                    "active": 1,
+                                    "new": 0,
+                                    "processed": 1,
+                                    "processing": 0,
+                                    "reviewed": 0,
+                                    "status_code": "success",
+                                    "status_message": null,
+                                    "order": 1,
+                                    "start_at": "2023-03-29T03:52:55.850760Z",
+                                    "updated_at": "2023-03-29T13:57:56.000000Z",
+                                    "created_at": "2023-03-29T13:57:56.000000Z",
+                                    "started_at": "2023-03-29T03:53:55.851539Z",
+                                    "finished_at": null,
+                                    "user_id": 1,
+                                    "crawler_id": 1,
+                                    "jobs": []
+                                }
+                              ]
+                            }
+                        }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "/api/v1/experiments/experiments-list": {
+          "get": {
+            "tags": [
+              "Experiments"
+            ],
+            "summary": "Experiments List",
+            "security": [
+                {
+                  "bearerAuth": []
+                }
+            ],
+            "responses": {
+              "200": {
+                "description": "Successful Get Data.",
+                "headers": {
+                    "Content-Type": {
+                      "type": "string",
+                      "description": "The content type of the response body.",
+                      "example": "application/json"
+                    }
+                },
+                "content": {
+                  "application/json": {
+                    "schema": {
+                        "produces": [
+                            "application/json"
+                        ],
+                        "type": "object"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "/api/v1/experiments/upload": {
+          "post": {
+            "tags": [
+              "Experiments"
+            ],
+            "summary": "Upload File",
+            "security": [
+                {
+                  "bearerAuth": []
+                }
+            ],
+            "consumes": [
+              "multipart/form-data"
+            ],
+            "produces": [
+              "application/json"
+            ],
+            "requestBody": {
+              "required": true,
+              "content": {
+                "multipart/form-data": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "file_json": {
+                        "type": "file"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "responses": {
+              "200": {
+                "description": "Successful Get Data.",
+                "headers": {
+                    "Content-Type": {
+                      "type": "string",
+                      "description": "The content type of the response body.",
+                      "example": "application/json"
+                    }
+                },
+                "content": {
+                  "application/json": {
+                    "schema": {
+                        "produces": [
+                            "application/json"
+                        ],
+                        "type": "file"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
 
         "/api/v1/queues": {
           "get": {
@@ -2201,6 +3166,119 @@
             }
           }
         },
+        "/api/v1/queues/job/{id}": {
+          "get": {
+            "tags": [
+              "Queues"
+            ],
+            "summary": "Queue job.",
+            "security": [
+                {
+                  "bearerAuth": []
+                }
+            ],
+            "parameters": [
+              {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "type": "integer",
+              "format": "int32",
+              "example": 1
+              }
+            ],
+            "responses": {
+              "200": {
+                "description": "Successful Get Data.",
+                "headers": {
+                    "Content-Type": {
+                      "type": "string",
+                      "description": "The content type of the response body.",
+                      "example": "application/json"
+                    }
+                },
+                "content": {
+                  "application/json": {
+                    "schema": {
+                        "produces": [
+                            "application/json"
+                        ],
+                        "type": "object",
+                        "properties": {
+                            "data": {
+                                "type": "object",
+                                "example": {
+                                  "id": 101,
+                                  "name": "Paxton Bashirian",
+                                  "description": "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor.",
+                                  "active": 1,
+                                  "new": 1,
+                                  "processed": 0,
+                                  "processing": 0,
+                                  "reviewed": 0,
+                                  "status_code": "failed",
+                                  "status_message": null,
+                                  "order": 1,
+                                  "start_at": null,
+                                  "updated_at": "2023-03-29T13:57:56.000000Z",
+                                  "created_at": "2023-03-29T13:57:56.000000Z",
+                                  "started_at": null,
+                                  "finished_at": null,
+                                  "user_id": 1,
+                                  "crawler_id": 1,
+                                  "jobs": [
+                                      {
+                                          "id": 1,
+                                          "name": "Reilly",
+                                          "description": null,
+                                          "type": "visitjob",
+                                          "status_code": "failed",
+                                          "status_message": "Random",
+                                          "order": 1,
+                                          "active": 1,
+                                          "updated_at": "2023-03-29T13:58:00.000000Z",
+                                          "created_at": "2023-03-29T13:58:00.000000Z",
+                                          "started_at": "2023-03-29T03:53:56.801792Z",
+                                          "finished_at": "2023-03-29T03:54:56.801534Z",
+                                          "user_id": 1,
+                                          "queue_id": 101,
+                                          "captcha_found": null,
+                                          "captcha_solved": null,
+                                          "behaviors": [
+                                              {
+                                                  "id": 1,
+                                                  "name": "url",
+                                                  "description": "Target URL",
+                                                  "value": "https://www.motherjones.com/",
+                                                  "active": 1,
+                                                  "updated_at": "2023-03-29T18:58:03.000000Z",
+                                                  "created_at": "2023-03-29T18:58:03.000000Z",
+                                                  "user_id": 1,
+                                                  "job_id": 1
+                                              }
+                                          ],
+                                          "reports": [
+                                              {
+                                                  "id": 1,
+                                                  "job_id": 1,
+                                                  "filename": "Testarchiv",
+                                                  "path": "https://siaw.primemover.example/api/v1/file/1",
+                                                  "created_at": "2023-03-29T13:58:03.000000Z",
+                                                  "updated_at": "2023-03-29T13:58:03.000000Z"
+                                              }
+                                          ]
+                                      }
+                                  ]
+                              }
+                            }
+                        }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
 
         "/api/v1/configurations": {
           "get": {
@@ -2395,7 +3473,7 @@
             "consumes": [
               "application/json"
             ],
-            "summary": "Create configurations.",
+            "summary": "store configuration.",
             "requestBody": {
               "content": {
                 "application/json": {
@@ -2772,6 +3850,59 @@
                               }
                             }
                           }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "delete": {
+            "tags": [
+              "Configurations"
+            ],
+            "summary": "Delete configuration by id.",
+            "security": [
+                {
+                  "bearerAuth": []
+                }
+            ],
+            "parameters": [
+                {
+                "name": "id",
+                "in": "path",
+                "required": true,
+                "schema": {
+                    "type": "integer"
+                }
+                }
+            ],
+            "responses": {
+              "200": {
+                "description": "Successful Delete Data.",
+                "headers": {
+                    "Content-Type": {
+                      "type": "string",
+                      "description": "The content type of the response body.",
+                      "example": "application/json"
+                    }
+                },
+                "content": {
+                  "application/json": {
+                    "schema": {
+                        "produces": [
+                            "application/json"
+                        ],
+                        "type": "object",
+                        "properties": {
+                          "data": {
+                            "type": "object",
+                            "example": [
+                              {
+                                  "status": true
+                              }
+                            ]
+                          }
+                        }
                     }
                   }
                 }
@@ -3688,6 +4819,8 @@
             }
           }
         },
+
+
         "/api/v1/outlet": {
           "get": {
             "tags": [
@@ -3921,6 +5054,114 @@
                     }
                   }
                 }
+              }
+            }
+          }
+        },
+
+        "/api/v1/upload": {
+          "post": {
+            "tags": [
+              "S3"
+            ],
+            "summary": "Upload File To S3",
+            "security": [
+                {
+                  "bearerAuth": []
+                }
+            ],
+            "consumes": [
+              "multipart/form-data"
+            ],
+            "produces": [
+              "application/json"
+            ],
+            "requestBody": {
+              "required": true,
+              "content": {
+                "multipart/form-data": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "file": {
+                        "type": "file"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "responses": {
+              "200": {
+                "description": "Successful Get Data.",
+                "headers": {
+                    "Content-Type": {
+                      "type": "string",
+                      "description": "The content type of the response body.",
+                      "example": "application/json"
+                    }
+                },
+                "content": {
+                  "application/json": {
+                    "schema": {
+                        "produces": [
+                            "application/json"
+                          ],
+                          "type": "object",
+                          "properties": {
+                            "status": {
+                                "type": "integer",
+                                "example": 200
+                            },
+                            "message": {
+                                "type": "string",
+                                "example": "file uploaded succesfully"
+                            },
+                            "data": {
+                                "type": "object",
+                                "example": []
+                            }
+                        }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "/api/v1/download/{filename}": {
+          "get": {
+            "tags": [
+              "S3"
+            ],
+            "summary": "Download from s3.",
+            "security": [
+                {
+                  "bearerAuth": []
+                }
+            ],
+            "parameters": [
+              {
+              "name": "filename",
+              "in": "path",
+              "required": true,
+              "type": "string",
+              "format": "text",
+              "example": "images.jpeg"
+              }
+            ],
+            "responses": {
+              "200": {
+                "description": "OK",
+                "schema": {
+                  "type": "file"
+                }
+              },
+              "404": {
+                "description": "File not found."
+              },
+              "500": {
+                "description": "Error internal server."
               }
             }
           }
