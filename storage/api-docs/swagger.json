@@ -220,14 +220,13 @@
             "in": "query",
             "description": "User's email address.",
             "required": true,
-            "example": "researcher@primemover.example"
+            "example": "test@test.ch"
           },
           {
             "name": "password",
             "in": "query",
             "description": "User's password.",
-            "required": true,
-            "example": "CHANGEME-backend-password"
+            "required": true
           }
         ],
         "responses": {
@@ -249,7 +248,7 @@
                       "example": {
                         "id": 2,
                         "name": "Primemover PY",
-                        "email": "researcher@primemover.example",
+                        "email": "test@test.ch",
                         "email_verified_at": "2023-03-04T11:06:37.000000Z",
                         "created_at": null,
                         "updated_at": null,
@@ -285,14 +284,13 @@
             "in": "query",
             "description": "User's email address.",
             "required": false,
-            "example": "researcher@primemover.example"
+            "example": "test@test.ch"
           },
           {
             "name": "password",
             "in": "query",
             "description": "User's password.",
-            "required": false,
-            "example": "CHANGEME-backend-password"
+            "required": false
           },
           {
             "name": "client_id",
@@ -367,7 +365,7 @@
                     },
                     "email": {
                       "type": "string",
-                      "example": "researcher@primemover.example"
+                      "example": "test@test.ch"
                     },
                     "email_verified_at": {
                       "type": "string",
@@ -4458,7 +4456,7 @@
                         "hostname": "us-30m.geosurf.io",
                         "port": 8000,
                         "username": "000000+US-MA-BOSTON+000000-982060",
-                        "password": "CHANGEME-password",
+                        "password": "testPassword",
                         "type": null
                       }
                     }
