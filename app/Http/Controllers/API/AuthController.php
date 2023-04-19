@@ -10,7 +10,9 @@ use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Auth\Passwords\PasswordBroker;
 use Illuminate\Auth\Passwords\PasswordBrokerManager;
 use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Password;
@@ -84,12 +86,20 @@ class AuthController extends Controller
         $response = Password::broker()->sendResetLink($request->only("email"));
         
         if($response == Password::RESET_LINK_SENT)
-            return response()->json(["message" => trans($response)]);
+            return response()->json([
+                "status" => true,
+                "message" => trans($response)
+            ]);
 
-        Log::alert(now(), ["email" => $email]);        
+        Log::alert(now(), ["email" => $email]);
+
+        return response()->json([
+            "status" => false,
+            "message" => trans($response)
+        ], 400);
     }
 
-    public function resetPassword(Request $request)
+    public function resetPassword(Request $request): JsonResponse
     {
         $request->validate([
             "token" => "required",
@@ -106,15 +116,14 @@ class AuthController extends Controller
             }
         );
 
-        if ( $response == Password::PASSWORD_RESET )
+        if($response == Password::PASSWORD_RESET) 
             return response()->json([
-                "status" => true,
                 "message" => trans($response)
             ]);
+    
 
         return response()->json([
-            "status" => false,
             "message" => trans($response)
-        ], 404);
+        ], 400);
     }
 }
