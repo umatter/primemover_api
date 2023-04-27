@@ -26,7 +26,7 @@ class CreateCrawlerAgent
                 'description' => $agent->getDescription(),
                 'identification' => $agent->getIdentification(),
                 'multilogin_id' => $agent->getMultiloginId(),
-                'multilogin_profile' => $agent->getMultiloginProfile(),
+                'multilogin_profile' => $agent->getEncodedMultiloginProfile(),
                 'location' => $agent->getLocation(),
                 'user_id' => $crawlerDto->getUserId(),
             ]);

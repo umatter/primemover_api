@@ -2,6 +2,8 @@
 
 namespace App\Modules\Experiment\Model\DTO;
 
+use App\Facades\Services\JsonHelper;
+
 class AgentDto
 {
     public ?string $name = null;
@@ -12,7 +14,7 @@ class AgentDto
 
     public ?string $multilogin_id = null;
 
-    public ?string $multilogin_profile = null;
+    public mixed $multilogin_profile = null;
 
     public ?string $location = null;
 
@@ -66,12 +68,21 @@ class AgentDto
         return $this;
     }
 
-    public function getMultiloginProfile(): ?string
+    public function getMultiloginProfile(): mixed
     {
         return $this->multilogin_profile;
     }
 
-    public function setMultiloginProfile(?string $multilogin_profile): AgentDto
+    public function getEncodedMultiloginProfile(): ?string
+    {
+        if ( ! $this->getMultiloginProfile()) {
+            return null;
+        }
+
+        return JsonHelper::encodeJson($this->getMultiloginProfile());
+    }
+
+    public function setMultiloginProfile(mixed $multilogin_profile): AgentDto
     {
         $this->multilogin_profile = $multilogin_profile;
 
