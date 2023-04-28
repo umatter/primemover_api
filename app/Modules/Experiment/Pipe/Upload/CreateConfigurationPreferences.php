@@ -8,6 +8,7 @@ use Closure;
 use Exception;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Throwable;
 
 class CreateConfigurationPreferences
@@ -34,6 +35,8 @@ class CreateConfigurationPreferences
                         'user_id' => $crawlerDto->getUserId(),
                     ]);
             });
+
+            Log::info('1682672350: Configuration preferences created', compact('preferences'));
 
         } catch (Throwable $e) {
             throw new Exception('Configuration preferences could not be created', 422, $e);

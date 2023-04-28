@@ -28,6 +28,7 @@ use App\Modules\S3\Facade\S3Service;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
@@ -132,7 +133,9 @@ class ExperimentRepository
                         CreateExperimentCrawlers::class,
                         CreateCrawlerQueues::class,
                     ])
-                    ->thenReturn();
+                    ->then(function (): void {
+                        Log::info('1682672742: Crawler upload done');
+                    });
             });
     }
 

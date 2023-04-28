@@ -7,6 +7,7 @@ use App\Modules\Proxy\Model\Proxy;
 use Closure;
 use Exception;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Throwable;
 
 class CreateCrawlerProxy
@@ -31,6 +32,8 @@ class CreateCrawlerProxy
                  'type' => $proxy->getType(),
                  'user_id' => $crawlerDto->getUserId(),
              ]);
+
+             Log::info('1682672390: Proxy created', compact('crawlerProxy', 'proxy'));
 
         } catch (Throwable $e) {
             throw new Exception('Proxy could not be created', 422, $e);

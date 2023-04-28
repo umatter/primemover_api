@@ -2,6 +2,8 @@
 
 namespace App\Modules\Experiment\Model\DTO;
 
+use App\Facades\Services\JsonHelper;
+
 class ParamDto
 {
     public ?string $pi = null;
@@ -124,9 +126,27 @@ class ParamDto
         return $this;
     }
 
+    public function getSearchTermsEncoded(): ?string
+    {
+        if ( ! $this->getSearchTerms()) {
+            return null;
+        }
+
+        return JsonHelper::encodeJson($this->getSearchTerms());
+    }
+
     public function getMediaOutletUrls(): ?array
     {
         return $this->media_outlet_urls;
+    }
+
+    public function getMediaOutletUrlsEncoded(): ?string
+    {
+        if ( ! $this->getMediaOutletUrls()) {
+            return null;
+        }
+
+        return JsonHelper::encodeJson($this->getMediaOutletUrls());
     }
 
     public function setMediaOutletUrls(?array $media_outlet_urls): ParamDto

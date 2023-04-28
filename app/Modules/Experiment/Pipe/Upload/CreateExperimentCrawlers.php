@@ -7,6 +7,7 @@ use App\Modules\Experiment\Model\DTO\CrawlerDto;
 use Closure;
 use Exception;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Throwable;
 
 class CreateExperimentCrawlers
@@ -31,6 +32,8 @@ class CreateExperimentCrawlers
                 'experiment_id' => $crawlerDto->getExperiment()->id,
 
             ]);
+
+            Log::info('1682672455: Crawler created', compact('crawler'));
 
         } catch (Throwable $e) {
             throw new Exception('Crawler could not be created', 422, $e);
