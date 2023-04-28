@@ -4,17 +4,11 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
-use App\Notifications\ResetPassword;
-use Carbon\Carbon;
 use Illuminate\Auth\Events\PasswordReset;
-use Illuminate\Auth\Passwords\PasswordBroker;
-use Illuminate\Auth\Passwords\PasswordBrokerManager;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Route;
 
@@ -80,50 +74,51 @@ class AuthController extends Controller
 
     public function forgotPassword(Request $request)
     {
-        $request->validate(["email" => 'required|email']);
-        
-        $email = $request->email;
-        $response = Password::broker()->sendResetLink($request->only("email"));
-        
-        if($response == Password::RESET_LINK_SENT)
-            return response()->json([
-                "status" => true,
-                "message" => trans($response)
-            ]);
+        $request->validate(['email' => 'required|email']);
 
-        Log::alert(now(), ["email" => $email]);
+        $email = $request->email;
+        $response = Password::broker()->sendResetLink($request->only('email'));
+
+        if (Password::RESET_LINK_SENT === $response) {
+            return response()->json([
+                'status' => true,
+                'message' => trans($response),
+            ]);
+        }
+
+        Log::alert(now(), ['email' => $email]);
 
         return response()->json([
-            "status" => false,
-            "message" => trans($response)
+            'status' => false,
+            'message' => trans($response),
         ], 400);
     }
 
     public function resetPassword(Request $request): JsonResponse
     {
         $request->validate([
-            "token" => "required",
-            "email" => "email",
-            "password" => "required|confirmed|string|min:8|regex:/^(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).+$/",
+            'token' => 'required',
+            'email' => 'email',
+            'password' => "required|confirmed|string|min:8|regex:/^(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).+$/",
         ]);
 
         $response = Password::broker()->reset(
-            $request->only("email", "password", "password_confirmation", "token"),
-            function ($user, $password) {
+            $request->only('email', 'password', 'password_confirmation', 'token'),
+            function ($user, $password): void {
                 $user->password = bcrypt($password);
                 $user->save();
                 event(new PasswordReset($user));
             }
         );
 
-        if($response == Password::PASSWORD_RESET) 
+        if (Password::PASSWORD_RESET === $response) {
             return response()->json([
-                "message" => trans($response)
+                'message' => trans($response),
             ]);
-    
+        }
 
         return response()->json([
-            "message" => trans($response)
+            'message' => trans($response),
         ], 400);
     }
 }
