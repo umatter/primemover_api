@@ -88,4 +88,6 @@ Route::prefix('v1')->group(function (): void {
     Route::group(['middleware' => ['auth:api']], function (): void {
         Route::get('auth/user', [AuthController::class, 'user']);
     });
+    Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
+    Route::post('/reset-password', [AuthController::class, 'resetPassword']);
 });

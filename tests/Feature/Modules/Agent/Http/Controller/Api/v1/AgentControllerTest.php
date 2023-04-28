@@ -4,8 +4,8 @@ namespace Tests\Feature\Modules\Agent\Http\Controller\Api\v1;
 
 use App\Modules\Agent\Http\Controller\Api\v1\AgentController;
 use App\Modules\Agent\Http\Request\AgentStoreRequest;
+use App\Modules\Agent\Http\Request\AgentUpdateRequest;
 use App\Modules\Agent\Model\Agent;
-use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 use Illuminate\Support\Facades\App;
@@ -102,7 +102,7 @@ class AgentControllerTest extends TestCase
      */
     public function testEdit(): void
     {
-        $result = $this->testObject->edit($this->agent);
+        $result = $this->testObject->edit($this->agent->id);
 
         $this->assertInstanceOf(JsonResource::class, $result);
         $this->assertInstanceOf(Agent::class, $result->resource);
@@ -114,7 +114,7 @@ class AgentControllerTest extends TestCase
      */
     public function testUpdate(): void
     {
-        $data = new Request([
+        $data = [
             'name' => 'agent updated',
             'description' => 'description',
             'identification' => 'identification',
@@ -122,11 +122,16 @@ class AgentControllerTest extends TestCase
             'multilogin_profile' => 'multilogin_profile',
             'location' => 'location',
             'active' => 0,
-        ]);
+        ];
 
-        $result = $this->testObject->update($data, $this->agent);
+        $request = m::mock(AgentUpdateRequest::class);
+        $request->expects('validated')
+            ->twice()
+            ->andReturns($data);
 
-        $this->assertDatabaseHas('agents', $data->all());
+        $result = $this->testObject->update($request, $this->agent);
+
+        $this->assertDatabaseHas('agents', $request->validated());
         $this->assertInstanceOf(JsonResource::class, $result);
         $this->assertInstanceOf(Agent::class, $result->resource);
     }
