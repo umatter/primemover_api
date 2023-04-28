@@ -35,6 +35,12 @@ class Queue extends BaseModel
 
     protected $guarded = [];
 
+    protected $casts = [
+        'start_at' => 'datetime',
+        'started_at' => 'datetime',
+        'finished_at' => 'datetime',
+    ];
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);

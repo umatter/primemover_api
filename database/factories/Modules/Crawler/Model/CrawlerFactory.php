@@ -17,7 +17,7 @@ class CrawlerFactory extends Factory
         return [
             'user_id' => 1,
             'name' => $this->faker->lastName,
-            'description' => $this->faker->text,
+            'description' => $this->faker->text(15),
             'active' => 1,
             'proxy_id' => 1,
             'agent_id' => 1,

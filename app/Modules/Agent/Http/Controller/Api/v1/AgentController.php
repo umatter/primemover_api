@@ -4,9 +4,9 @@ namespace App\Modules\Agent\Http\Controller\Api\v1;
 
 use App\Http\Controllers\API\v1\Controller;
 use App\Modules\Agent\Http\Request\AgentStoreRequest;
+use App\Modules\Agent\Http\Request\AgentUpdateRequest;
 use App\Modules\Agent\Model\Agent;
 use App\Modules\Agent\Repository\AgentRepository;
-use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 use Illuminate\Support\Facades\App;
@@ -37,19 +37,19 @@ class AgentController extends Controller
         return JsonResource::make($newAgent);
     }
 
-    public function show($id): JsonResource
+    public function show(int $id): JsonResource
     {
         return JsonResource::make($this->repository->getById($id));
     }
 
-    public function edit(Agent $agent): JsonResource
+    public function edit(int $id): JsonResource
     {
-        return JsonResource::make($agent);
+        return JsonResource::make($this->repository->getById($id));
     }
 
-    public function update(Request $request, Agent $agent): JsonResource
+    public function update(AgentUpdateRequest $request, Agent $agent): JsonResource
     {
-        $agent = $this->repository->update($request->all(), $agent);
+        $agent = $this->repository->update($request->validated(), $agent);
 
         return JsonResource::make($agent);
     }

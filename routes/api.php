@@ -49,6 +49,8 @@ Route::prefix('v1')->group(function (): void {
                 Route::get('experiments-list', 'all');
                 Route::delete('{experiment}/destroy', 'forceDelete');
                 Route::post('upload', 'upload');
+                Route::post('{experiment}/upload', 'upload');
+                Route::get('{experiment}/download', 'download');
             });
 
         Route::controller(QueueController::class)
@@ -70,7 +72,6 @@ Route::prefix('v1')->group(function (): void {
                 Route::get('crawlers-disable', 'disableProdCrawlers');
                 Route::get('crawlers-testing', 'testing');
                 Route::get('crawlers-protected', 'index');
-                Route::post('load', 'load');
                 Route::delete('undo', 'undo');
                 Route::delete('cleanup', 'cleanup');
             });

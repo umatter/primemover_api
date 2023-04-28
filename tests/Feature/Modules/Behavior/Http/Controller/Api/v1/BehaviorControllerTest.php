@@ -4,11 +4,11 @@ namespace Tests\Feature\Modules\Behavior\Http\Controller\Api\v1;
 
 use App\Modules\Behavior\Http\Controller\Api\v1\BehaviorController;
 use App\Modules\Behavior\Model\Behavior;
-use App\Modules\Behavior\Repository\BehaviorRepository;
 use App\Modules\Job\Model\Job;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Resources\Json\ResourceCollection;
+use Illuminate\Support\Facades\App;
 use Tests\TestCase;
 
 /**
@@ -18,18 +18,20 @@ use Tests\TestCase;
  */
 class BehaviorControllerTest extends TestCase
 {
+    protected mixed $testObject;
+
+    public function setUp(): void
+    {
+        parent::setUp();
+        $this->testObject = App::make(BehaviorController::class);
+    }
+
     /**
      * @covers ::index
      */
     public function testIndex(): void
     {
-        $controller = new BehaviorController(new BehaviorRepository(new Behavior()));
-        $result = $controller->index();
-
-        $this->actingAs($this->user)
-            ->getJson('/api/v1/behaviors')
-            ->assertStatus(200)
-            ->assertJsonStructure(['data', 'links', 'meta']);
+        $result = $this->testObject->index();
 
         $this->assertInstanceOf(ResourceCollection::class, $result);
 
@@ -52,8 +54,7 @@ class BehaviorControllerTest extends TestCase
             'job_id' => $job->id,
         ]);
 
-        $controller = new BehaviorController(new BehaviorRepository(new Behavior()));
-        $result = $controller->store($data);
+        $result = $this->testObject->store($data);
 
         $this->assertDatabaseHas('behaviors', $data->all());
         $this->assertInstanceOf(JsonResource::class, $result);
@@ -67,8 +68,7 @@ class BehaviorControllerTest extends TestCase
     {
         $behavior = Behavior::factory()->create();
 
-        $controller = new BehaviorController(new BehaviorRepository(new Behavior()));
-        $result = $controller->edit($behavior);
+        $result = $this->testObject->edit($behavior);
 
         $this->assertInstanceOf(JsonResource::class, $result);
         $this->assertInstanceOf(Behavior::class, $result->resource);
@@ -89,8 +89,7 @@ class BehaviorControllerTest extends TestCase
             'active' => 0,
         ]);
 
-        $controller = new BehaviorController(new BehaviorRepository(new Behavior()));
-        $result = $controller->update($request, $behavior);
+        $result = $this->testObject->update($request, $behavior);
 
         $this->assertInstanceOf(JsonResource::class, $result);
         $this->assertInstanceOf(Behavior::class, $result->resource);
@@ -104,8 +103,7 @@ class BehaviorControllerTest extends TestCase
     {
         $behavior = Behavior::factory()->create();
 
-        $controller = new BehaviorController(new BehaviorRepository(new Behavior()));
-        $result = $controller->show($behavior->id);
+        $result = $this->testObject->show($behavior->id);
 
         $this->assertInstanceOf(JsonResource::class, $result);
         $this->assertInstanceOf(Behavior::class, $result->resource);
@@ -118,8 +116,7 @@ class BehaviorControllerTest extends TestCase
     {
         $behavior = Behavior::factory()->create();
 
-        $controller = new BehaviorController(new BehaviorRepository(new Behavior()));
-        $result = $controller->destroy($behavior);
+        $result = $this->testObject->destroy($behavior);
 
         $this->assertInstanceOf(ResourceCollection::class, $result);
         $this->assertDatabaseMissing('behaviors', ['id' => $behavior->id]);

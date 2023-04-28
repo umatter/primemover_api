@@ -5,8 +5,10 @@ namespace Tests\Feature\Modules\Experiment\Repository;
 use App\Modules\Experiment\Model\Experiment;
 use App\Modules\Experiment\Repository\ExperimentRepository;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Storage;
 use Mockery as m;
+use Spatie\QueryBuilder\QueryBuilder;
 use Tests\TestCase;
 
 /**
@@ -24,7 +26,7 @@ class ExperimentRepositoryTest extends TestCase
         $service = new ExperimentRepository(new Experiment());
         $result = $service->getData();
 
-        $this->assertInstanceOf(LengthAwarePaginator::class, $result);
+        $this->assertInstanceOf(QueryBuilder::class, $result);
 
         foreach ($result as $experiment) {
             unset($experiment->created_at, $experiment->updated_at);
@@ -119,8 +121,7 @@ class ExperimentRepositoryTest extends TestCase
         $result = $service->delete($experiment);
 
         $this->assertDatabaseMissing('experiments', $experiment->toArray());
-        $this->assertTrue($result['deleted']);
-        $this->assertInstanceOf(Experiment::class, $result['experiment']);
+        $this->assertTrue($result);
     }
 
     /**
@@ -136,5 +137,19 @@ class ExperimentRepositoryTest extends TestCase
         $this->assertDatabaseMissing('experiments', $experiment->toArray());
         $this->assertTrue($result['deleted']);
         $this->assertInstanceOf(Experiment::class, $result['experiment']);
+    }
+
+    /**
+     * @covers ::download
+     */
+    public function testDownload(): void
+    {
+        self::markTestIncomplete('This test must be refactored to not fail within GitHub action.');
+
+        $service = new ExperimentRepository(new Experiment());
+        $result = $service->download($this->experiment);
+
+        $this->assertInstanceOf(Response::class, $result);
+        Storage::disk('s3')->assertExists("/api-data/experiments/{$this->experiment->id}_primemover_experiment.zip");
     }
 }

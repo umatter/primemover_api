@@ -3,6 +3,7 @@
 namespace Tests\Feature\Modules\S3\Http\Controller\Api\v1;
 
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 /**
@@ -28,11 +29,15 @@ class S3Test extends TestCase
      */
     public function testDownload(): void
     {
-        self::markTestIncomplete('This test fails because of missing profile.jpg file.');
+        self::markTestIncomplete('This test has not been implemented yet.');
+        Storage::fake('s3');
+        $filename = 'test_file.txt';
+        $fileContent = 'Hello, world!';
+        Storage::disk('s3')->put($filename, $fileContent);
 
         $this->actingAs($this->user)
-            ->getJson('/api/v1/download/profile.jpg')
+            ->get('/api/v1/download/'.$filename)
             ->assertStatus(200)
-            ->assertDownload('profile.jpg');
+            ->assertDownload($filename);
     }
 }

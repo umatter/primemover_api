@@ -40,11 +40,11 @@ class AgentRepository
         ];
     }
 
-    public function getById(int $id): Agent
+    public function getById(int $id): Agent|Model
     {
         return $this->agent->query()
-            ->with(['preferences'])
-            ->findOr($id, fn () => ['status' => false]);
+            ->with(['preferences', 'crawler'])
+            ->findOrFail($id);
     }
 
     public function save(array $data): Agent|Model
@@ -55,6 +55,7 @@ class AgentRepository
     public function update(array $data, Agent $agent): Agent
     {
         $this->agent = $agent;
+
         $this->agent->update($data);
 
         return $this->agent;

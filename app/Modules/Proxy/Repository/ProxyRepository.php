@@ -3,7 +3,6 @@
 namespace App\Modules\Proxy\Repository;
 
 use App\Modules\Proxy\Model\Proxy;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Resources\Json\ResourceCollection;
