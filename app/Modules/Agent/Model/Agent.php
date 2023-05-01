@@ -26,7 +26,7 @@ class Agent extends BaseModel
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'description', 'identification', 'multilogin_id', 'multilogin_profile', 'location', 'active'];
+    protected $fillable = ['name', 'description', 'identification', 'multilogin_id', 'multilogin_profile', 'location', 'active', 'user_id'];
 
     protected $visible = ['id', 'name', 'description', 'identification', 'multilogin_id', 'multilogin_profile', 'location', 'preferences', 'active', 'crawler'];
 

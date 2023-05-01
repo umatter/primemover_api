@@ -21,6 +21,7 @@ class AgentUpdateRequest extends FormRequest
             'multilogin_profile' => ['string', 'nullable'],
             'location' => ['string', 'nullable'],
             'active' => ['bool', 'nullable'],
+            'user_id' => ['nullable'],
             'preferences' => ['nullable'],
         ];
     }
