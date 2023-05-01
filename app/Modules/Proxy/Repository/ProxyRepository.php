@@ -50,7 +50,7 @@ class ProxyRepository
     {
         $proxy->update($data);
 
-        return $proxy;
+        return $proxy->fresh();
     }
 
     public function delete(Proxy $proxy): Collection

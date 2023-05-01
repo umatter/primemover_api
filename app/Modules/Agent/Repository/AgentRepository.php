@@ -58,7 +58,7 @@ class AgentRepository
 
         $this->agent->update($data);
 
-        return $this->agent;
+        return $this->agent->fresh();
     }
 
     public function delete(Agent $agent): array

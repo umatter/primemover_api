@@ -150,7 +150,7 @@ class CrawlerRepository
     {
         $crawler->update($data);
 
-        return $crawler;
+        return $crawler->fresh();
     }
 
     public function disableProdCrawlers(): Collection

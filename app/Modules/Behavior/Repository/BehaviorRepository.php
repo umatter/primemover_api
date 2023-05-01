@@ -41,7 +41,7 @@ class BehaviorRepository
         $this->behavior = $behavior;
         $this->behavior->update($data);
 
-        return $this->behavior;
+        return $this->behavior->fresh();
     }
 
     public function delete(Behavior $behavior): void

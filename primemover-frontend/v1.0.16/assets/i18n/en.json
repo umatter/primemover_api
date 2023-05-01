@@ -10,6 +10,7 @@
   },
   "auth": {
     "password": "password",
+    "settings": "Settings",
     "signIn": "Register",
     "signOut": "Sign out",
     "username": "User name"
@@ -26,7 +27,7 @@
     "actionPermanentWarning": "This action cannot be undone!",
     "agentRequiredError": "Agent is Required",
     "areYouSure": "Are you sure?",
-    "cancel": "Interrupt",
+    "cancel": "Cancel",
     "clear": "Clear",
     "configRequiredError": "Configuration is Required",
     "confirm": "Confirm",
@@ -187,9 +188,9 @@
   "queue": {
     "add": "Add Queue",
     "createIntroText": "Enter the required data to create a new queue.",
+    "finishedAt": "Done",
     "label": "Queue",
     "list": "List of all queues.",
-    "notStartedYet": "Not started yet",
     "startAt": "Start At",
     "startedAt": "Started"
   },

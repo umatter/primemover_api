@@ -89,7 +89,7 @@ class ExperimentRepository
             PreferenceService::createManyForModel($data->getPreferences(), $experiment);
         }
 
-        return $experiment;
+        return $experiment->fresh();
     }
 
     public function delete(Experiment $experiment): bool

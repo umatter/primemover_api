@@ -48,7 +48,7 @@ class JobRepository
     {
         $job->update($data);
 
-        return $job;
+        return $job->fresh();
     }
 
     public function delete(Job $job): void

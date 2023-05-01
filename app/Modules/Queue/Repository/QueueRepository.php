@@ -42,7 +42,7 @@ class QueueRepository
     {
         $queue->update($data);
 
-        return $queue;
+        return $queue->fresh();
     }
 
     public function delete(Queue $queue): Collection
