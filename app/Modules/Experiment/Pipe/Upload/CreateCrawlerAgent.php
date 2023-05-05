@@ -3,6 +3,7 @@
 namespace App\Modules\Experiment\Pipe\Upload;
 
 use App\Modules\Agent\Model\Agent;
+use App\Modules\Agent\Model\IdentificationEnum;
 use App\Modules\Experiment\Model\DTO\CrawlerDto;
 use Closure;
 use Exception;
@@ -25,7 +26,7 @@ class CreateCrawlerAgent
             $crawlerAgent = Agent::query()->create([
                 'name' => $agent->getName(),
                 'description' => $agent->getDescription(),
-                'identification' => $agent->getIdentification(),
+                'identification' => $agent->getIdentification() ?? IdentificationEnum::default(),
                 'multilogin_id' => $agent->getMultiloginId(),
                 'multilogin_profile' => $agent->getEncodedMultiloginProfile(),
                 'location' => $agent->getLocation(),

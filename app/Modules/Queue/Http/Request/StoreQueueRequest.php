@@ -14,6 +14,19 @@ class StoreQueueRequest extends FormRequest
             'description' => ['required'],
             'user_id' => ['required'],
             'crawler_id' => ['required'],
+            'active' => [],
+            'new' => [],
+            'processed' => [],
+            'processing' => [],
+            'reviewed' => [],
+            'status_code' => [],
+            'status_message' => [],
+            'order' => [],
+            'start_at' => [],
+            'updated_at' => [],
+            'created_at' => [],
+            'started_at' => [],
+            'finished_at' => [],
         ];
     }
 

@@ -2,8 +2,10 @@
 
 namespace App\Modules\Agent\Http\Request;
 
+use App\Modules\Agent\Model\IdentificationEnum;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 
 class AgentStoreRequest extends FormRequest
 {
@@ -19,7 +21,7 @@ class AgentStoreRequest extends FormRequest
         return [
             'name' => ['required'],
             'description' => ['nullable'],
-            'identification' => ['nullable'],
+            'identification' => ['required', Rule::in(IdentificationEnum::values())],
             'multilogin_id' => ['nullable'],
             'multilogin_profile' => ['nullable'],
             'location' => ['nullable'],
@@ -33,6 +35,7 @@ class AgentStoreRequest extends FormRequest
         $this->merge([
             'user_id' => Auth::id(),
             'active' => true,
+            'identification' => $this->input('identification') ?? IdentificationEnum::default(),
             'multilogin_profile' => $this->input('multiLoginProfile'),
             'multilogin_id' => $this->input('multiLoginId'),
         ]);

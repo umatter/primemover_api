@@ -20,19 +20,6 @@ Route::prefix('v1')->group(function (): void {
     Route::post('load-test', [CrawlerController::class, 'load']);
 
     Route::group(['middleware' => 'auth:api'], function (): void {
-        Route::resource('configurations', ConfigurationController::class);
-        Route::resource('agents', AgentController::class);
-        Route::resource('proxies', ProxyController::class);
-        Route::resource('jobs', JobController::class);
-        Route::resource('queues', QueueController::class);
-        Route::resource('crawlers', CrawlerController::class);
-        Route::resource('experiments', ExperimentController::class);
-        Route::resource('behaviors', BehaviorController::class);
-        Route::resource('reports', ReportController::class);
-        Route::resource('terms', TermController::class);
-        Route::resource('outlets', OutletController::class);
-        Route::resource('params', ParamController::class);
-
         // Experiment
         Route::prefix('experiments')
             ->controller(QueueController::class)
@@ -80,6 +67,19 @@ Route::prefix('v1')->group(function (): void {
 
         Route::post('upload', [S3Controller::class, 'store']);
         Route::get('download/{filename}', [S3Controller::class, 'download']);
+
+        Route::apiResource('configurations', ConfigurationController::class);
+        Route::apiResource('agents', AgentController::class);
+        Route::apiResource('proxies', ProxyController::class);
+        Route::apiResource('jobs', JobController::class);
+        Route::apiResource('queues', QueueController::class);
+        Route::apiResource('crawlers', CrawlerController::class);
+        Route::apiResource('experiments', ExperimentController::class);
+        Route::apiResource('behaviors', BehaviorController::class);
+        Route::apiResource('reports', ReportController::class);
+        Route::apiResource('terms', TermController::class);
+        Route::apiResource('outlets', OutletController::class);
+        Route::apiResource('params', ParamController::class);
     });
 
     Route::post('login', [AuthController::class, 'login']);

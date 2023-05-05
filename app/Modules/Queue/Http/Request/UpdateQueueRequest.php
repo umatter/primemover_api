@@ -9,9 +9,21 @@ class UpdateQueueRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required'],
-            'description' => ['required'],
-            'crawler_id' => ['required'],
+            'name' => [],
+            'description' => [],
+            'active' => [],
+            'new' => [],
+            'processed' => [],
+            'processing' => [],
+            'reviewed' => [],
+            'status_code' => [],
+            'status_message' => [],
+            'order' => [],
+            'start_at' => [],
+            'updated_at' => [],
+            'created_at' => [],
+            'started_at' => [],
+            'finished_at' => [],
         ];
     }
 }
