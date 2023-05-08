@@ -9,7 +9,7 @@ class UpdateQueueRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => [],
+            'name' => ['required'],
             'description' => [],
             'active' => [],
             'new' => [],
