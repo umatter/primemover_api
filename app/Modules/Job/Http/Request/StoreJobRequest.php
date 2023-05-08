@@ -15,6 +15,14 @@ class StoreJobRequest extends FormRequest
             'type' => ['required'],
             'description' => ['nullable'],
             'queue_id' => ['required'],
+            'status_code' => [],
+            'status_message' => [],
+            'order' => [],
+            'active' => [],
+            'started_at' => [],
+            'finished_at' => [],
+            'captcha_found' => [],
+            'captcha_solved' => [],
         ];
     }
 

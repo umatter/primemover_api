@@ -10,7 +10,18 @@ class UpdateJobRequest extends FormRequest
     {
         return [
             'name' => ['required'],
-            'queue_id' => ['required'],
+            'description' => [],
+            'queue_id' => [],
+            'type' => [],
+            'status_code' => [],
+            'status_message' => [],
+            'order' => [],
+            'active' => [],
+            'started_at' => [],
+            'finished_at' => [],
+            'user_id' => [],
+            'captcha_found' => [],
+            'captcha_solved' => [],
         ];
     }
 }

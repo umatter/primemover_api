@@ -16,14 +16,14 @@ class AgentUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['string', 'required'],
-            'description' => ['string', 'nullable'],
+            'name' => ['required', 'string'],
+            'description' => ['nullable', 'string'],
             'identification' => ['required', Rule::in(IdentificationEnum::values())],
-            'multilogin_id' => ['string', 'nullable'],
-            'multilogin_profile' => ['string', 'nullable'],
-            'location' => ['string', 'nullable'],
-            'active' => ['bool', 'nullable'],
-            'user_id' => ['nullable'],
+            'multilogin_id' => ['nullable', 'string'],
+            'multilogin_profile' => ['nullable', 'string'],
+            'location' => ['nullable', 'string'],
+            'active' => ['nullable', 'bool'],
+            'user_id' => ['nullable', 'integer'],
             'preferences' => ['nullable'],
         ];
     }
