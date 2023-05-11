@@ -16,7 +16,7 @@ class AgentUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required', 'string'],
+            'name' => ['string'],
             'description' => ['nullable', 'string'],
             'identification' => ['required', Rule::in(IdentificationEnum::values())],
             'multilogin_id' => ['nullable', 'string'],

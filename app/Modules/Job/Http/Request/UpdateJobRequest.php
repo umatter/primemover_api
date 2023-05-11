@@ -9,8 +9,8 @@ class UpdateJobRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required'],
-            'queue_id' => ['required'],
+            'name' => [],
+            'queue_id' => [],
             'description' => [],
             'type' => [],
             'status_code' => [],
