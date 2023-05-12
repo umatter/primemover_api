@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Carbon\Carbon;
+use DateTimeInterface;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
@@ -21,5 +22,11 @@ class BaseModel extends Model
     public function scopeRecent(Builder $query, $daysInPast = 30): Builder
     {
         return $query->where('created_at', '>=', Carbon::now()->subDays($daysInPast));
+    }
+
+    /** @noinspection PhpPossiblePolymorphicInvocationInspection */
+    protected function serializeDate(DateTimeInterface $date): string
+    {
+        return $date->toIso8601String();
     }
 }
