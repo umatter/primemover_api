@@ -29,7 +29,6 @@ class ExperimentControllerTest extends TestCase
      */
     public function testIndex(): void
     {
-        self::markTestIncomplete('This test has not been implemented yet.');
         $controller = new ExperimentController();
         $result = $controller->index();
 
@@ -38,6 +37,19 @@ class ExperimentControllerTest extends TestCase
         foreach ($result->resource as $experiment) {
             $this->assertInstanceOf(Experiment::class, $experiment);
         }
+
+        $this->actingAs($this->user)
+            ->getJson('/api/v1/experiments')
+            ->assertJsonStructure([
+                "data" => [
+                    [
+                        "id",
+                        "name"
+                    ]
+                ],
+                "meta", "links"
+            ])
+            ->assertSuccessful();
     }
 
     /**
@@ -173,11 +185,10 @@ class ExperimentControllerTest extends TestCase
      */
     public function testDownload(): void
     {
-        self::markTestIncomplete('This test must be refactored to not fail within GitHub action.');
-        $controller = new ExperimentController(new ExperimentRepository(new Experiment()));
-        $result = $controller->download($this->experiment);
 
-        $this->assertInstanceOf(Response::class, $result);
-        $this->assertNotNull($result->getContent());
+        $this->actingAs($this->user)
+            ->getJson('/api/v1/experiments/1/download')
+            ->assertSuccessful()
+            ->assertDownload();
     }
 }

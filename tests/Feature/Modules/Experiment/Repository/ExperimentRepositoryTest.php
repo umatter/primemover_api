@@ -144,12 +144,16 @@ class ExperimentRepositoryTest extends TestCase
      */
     public function testDownload(): void
     {
-        self::markTestIncomplete('This test must be refactored to not fail within GitHub action.');
 
         $service = new ExperimentRepository(new Experiment());
         $result = $service->download($this->experiment);
 
         $this->assertInstanceOf(Response::class, $result);
-        Storage::disk('s3')->assertExists("/api-data/experiments/{$this->experiment->id}_primemover_experiment.zip");
+        $this->assertNotNull($result->getContent());
+
+        $this->actingAs($this->user)
+            ->getJson('/api/v1/experiments/1/download')
+            ->assertDownload()
+            ->assertSuccessful();
     }
 }

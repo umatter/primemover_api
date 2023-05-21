@@ -115,6 +115,10 @@ class QueueRepositoryTest extends TestCase
             return true;
         });
 
+        $queueMock->allows('fresh')->andReturnUsing(function () use ($queue) {
+            return $queue;
+        });
+
         $service = new QueueRepository(new Queue());
         $result = $service->update($data, $queueMock);
 

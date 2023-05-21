@@ -13,7 +13,7 @@ class S3Controller extends Controller
 {
     public function download(string $filename): Response
     {
-        return S3Service::download($filename);
+        return S3Service::downloadFile($filename);
     }
 
     public function store(Request $request): JsonResponse

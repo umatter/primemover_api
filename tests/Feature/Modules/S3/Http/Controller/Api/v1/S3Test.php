@@ -29,7 +29,6 @@ class S3Test extends TestCase
      */
     public function testDownload(): void
     {
-        self::markTestIncomplete('This test has not been implemented yet.');
         Storage::fake('s3');
         $filename = 'test_file.txt';
         $fileContent = 'Hello, world!';
