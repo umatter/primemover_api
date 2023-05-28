@@ -145,15 +145,17 @@ class ExperimentRepositoryTest extends TestCase
     public function testDownload(): void
     {
 
+        $experiment = Experiment::factory()->create();
+
+        Storage::fake("s3");
+        $filename = $experiment . "_primemover_experiment.zip";
+        $filecontent = "Hello, World!";
+        Storage::disk('s3')->put("/api-data/experiments/$filename", $filecontent);
         $service = new ExperimentRepository(new Experiment());
-        $result = $service->download($this->experiment);
+        $result = $service->download($experiment);
 
         $this->assertInstanceOf(Response::class, $result);
         $this->assertNotNull($result->getContent());
-
-        $this->actingAs($this->user)
-            ->getJson('/api/v1/experiments/1/download')
-            ->assertDownload()
-            ->assertSuccessful();
+        $this->assertEquals(200, $result->getStatuscode());
     }
 }

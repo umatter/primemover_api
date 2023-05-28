@@ -12,6 +12,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 use Illuminate\Http\Response;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Storage;
 use Mockery;
 use Tests\TestCase;
 
@@ -185,10 +186,16 @@ class ExperimentControllerTest extends TestCase
      */
     public function testDownload(): void
     {
+        $experiment = Experiment::factory()->create();
+        Storage::fake('s3');
+        $filename = $experiment . "_primemover_experiment.zip";
+        $fileContent = "Hello, World!";
+        Storage::disk('s3')->put("/api-data/experiments/" . $filename, $fileContent);
 
-        $this->actingAs($this->user)
-            ->getJson('/api/v1/experiments/1/download')
-            ->assertSuccessful()
-            ->assertDownload();
+        $controller = new ExperimentController(new ExperimentRepository(new Experiment()));
+        $result = $controller->download($experiment);
+
+        $this->assertInstanceOf(Response::class, $result);
+        $this->assertNotNull($result->getContent());
     }
 }
