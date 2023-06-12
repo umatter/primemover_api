@@ -45,7 +45,9 @@ class ReportRepository
             $report->path = $path.'/file/'.$report->id;
         }
 
-        return $report->save();
+        $report->save();
+
+        return $report;
     }
 
     public function delete(Report $report): bool
