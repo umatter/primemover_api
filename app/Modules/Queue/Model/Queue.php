@@ -2,6 +2,7 @@
 
 namespace App\Modules\Queue\Model;
 
+use App\Events\ModelUpdateEvent;
 use App\Models\BaseModel;
 use App\Models\User;
 use App\Modules\Crawler\Model\Crawler;
@@ -9,6 +10,7 @@ use App\Modules\Job\Model\Job;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
@@ -60,5 +62,15 @@ class Queue extends BaseModel
     public function scopeCrawler(Builder $query, int $crawlerId): Builder
     {
         return $query->where('crawler_id', $crawlerId);
+    }
+
+    public static function booted(): void
+    {
+        self::saved(fn (Model $model) => self::bootedSaved($model));
+    }
+
+    public static function bootedSaved(Model $model): void
+    {
+        ModelUpdateEvent::dispatch($model);
     }
 }

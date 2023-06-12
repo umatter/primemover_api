@@ -2,6 +2,7 @@
 
 namespace Tests;
 
+use App\Events\ModelUpdateEvent;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Modules\Agent\Model\Agent;
@@ -13,15 +14,18 @@ use App\Modules\Outlet\Model\Outlet;
 use App\Modules\Param\Model\Param;
 use App\Modules\Proxy\Model\Proxy;
 use App\Modules\Queue\Model\Queue;
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
+use Illuminate\Support\Facades\Event;
 use Mockery\MockInterface;
 
 abstract class TestCase extends BaseTestCase
 {
     use CreatesApplication;
     use RefreshDatabase;
+    use WithoutModelEvents;
 
     /**
      * @var Controller|MockInterface|Model
@@ -45,6 +49,7 @@ abstract class TestCase extends BaseTestCase
     public function setUp(): void
     {
         parent::setUp();
+        Event::fake(ModelUpdateEvent::class);
         $this->withoutExceptionHandling();
 
         $this->user = User::factory()->create();

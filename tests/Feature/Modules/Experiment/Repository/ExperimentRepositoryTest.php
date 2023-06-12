@@ -147,10 +147,10 @@ class ExperimentRepositoryTest extends TestCase
 
         $experiment = Experiment::factory()->create();
 
-        Storage::fake("s3");
-        $filename = $experiment . "_primemover_experiment.zip";
-        $filecontent = "Hello, World!";
-        Storage::disk('s3')->put("/api-data/experiments/$filename", $filecontent);
+        Storage::fake('s3');
+        $filename = $experiment.'_primemover_experiment.zip';
+        $filecontent = 'Hello, World!';
+        Storage::disk('s3')->put("/api-data/experiments/{$filename}", $filecontent);
         $service = new ExperimentRepository(new Experiment());
         $result = $service->download($experiment);
 

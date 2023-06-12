@@ -2,11 +2,13 @@
 
 namespace App\Modules\Experiment\Model;
 
+use App\Events\ModelUpdateEvent;
 use App\Models\BaseModel;
 use App\Models\User;
 use App\Modules\Crawler\Model\Crawler;
 use App\Modules\Preference\Model\Preference;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
@@ -37,5 +39,15 @@ class Experiment extends BaseModel
     public function preferences(): MorphMany
     {
         return $this->morphMany(Preference::class, 'preferencable');
+    }
+
+    public static function booted(): void
+    {
+        self::saved(fn (Model $model) => self::bootedSaved($model));
+    }
+
+    public static function bootedSaved(Model $model): void
+    {
+        ModelUpdateEvent::dispatch($model);
     }
 }

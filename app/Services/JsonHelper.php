@@ -28,7 +28,7 @@ class JsonHelper
         }
 
         try {
-            return json_encode($data, JSON_THROW_ON_ERROR);
+            return json_encode($data, JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT);
         } catch (Exception $e) {
             Log::alert('1649254291: Failed to encode json', [
                 'data' => $data,
