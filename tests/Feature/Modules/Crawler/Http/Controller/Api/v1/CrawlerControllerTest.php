@@ -10,9 +10,7 @@ use App\Modules\Crawler\Http\Request\UpdateCrawlerRequest;
 use App\Modules\Crawler\Model\Crawler;
 use App\Modules\Crawler\Repository\CrawlerRepository;
 use App\Modules\Experiment\Model\Experiment;
-use App\Modules\Job\Model\Job;
 use App\Modules\Proxy\Model\Proxy;
-use App\Modules\Queue\Model\Queue;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -277,9 +275,7 @@ class CrawlerControllerTest extends TestCase
             return true;
         });
 
-        $crawlerMock->allows('fresh')->andReturnUsing(function () use ($crawler) {
-            return $crawler;
-        });
+        $crawlerMock->allows('fresh')->andReturnUsing(fn () => $crawler);
 
         $requestMock = m::mock(UpdateCrawlerRequest::class)->makePartial();
         $requestMock->allows('validated')->andReturns($data);
@@ -372,7 +368,7 @@ class CrawlerControllerTest extends TestCase
      */
     public function testIp(): void
     {
-        self::markTestSkipped("There is an error in the repository");
+        self::markTestSkipped('There is an error in the repository');
 
         $request = new Request([
             'ip' => '127.0.0.3',

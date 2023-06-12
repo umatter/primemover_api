@@ -7,12 +7,10 @@ use App\Modules\Configuration\Model\Configuration;
 use App\Modules\Crawler\Model\Crawler;
 use App\Modules\Crawler\Repository\CrawlerRepository;
 use App\Modules\Experiment\Model\Experiment;
-use App\Modules\Job\Model\Job;
 use App\Modules\Proxy\Model\Proxy;
 use App\Modules\Queue\Model\Queue;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Mockery as m;
 use Spatie\QueryBuilder\QueryBuilder;
@@ -228,9 +226,7 @@ class CrawlerRepositoryTest extends TestCase
             return true;
         });
 
-        $crawlerMock->allows('fresh')->andReturnUsing(function () use ($crawler) {
-            return $crawler;
-        });
+        $crawlerMock->allows('fresh')->andReturnUsing(fn () => $crawler);
 
         $service = new CrawlerRepository(new Crawler());
         $result = $service->update($data, $crawlerMock);
@@ -316,7 +312,7 @@ class CrawlerRepositoryTest extends TestCase
      */
     public function testIp(): void
     {
-        self::markTestSkipped("There is an error in the repository");
+        self::markTestSkipped('There is an error in the repository');
         $ip = '127.0.0.2';
 
         $service = new CrawlerRepository(new Crawler());

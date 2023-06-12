@@ -23,6 +23,7 @@ use App\Modules\Experiment\Pipe\Upload\CreateCrawlerConfiguration;
 use App\Modules\Experiment\Pipe\Upload\CreateCrawlerProxy;
 use App\Modules\Experiment\Pipe\Upload\CreateCrawlerQueues;
 use App\Modules\Experiment\Pipe\Upload\CreateExperimentCrawlers;
+use App\Modules\Experiment\Pipe\Upload\DispatchUploadEvents;
 use App\Modules\Experiment\Pipe\Upload\RemoveNewFlag;
 use App\Modules\S3\Facade\S3Service;
 use Illuminate\Database\Eloquent\Collection;
@@ -132,6 +133,7 @@ class ExperimentRepository
                         CreateCrawlerAgent::class,
                         CreateExperimentCrawlers::class,
                         CreateCrawlerQueues::class,
+                        DispatchUploadEvents::class,
                     ])
                     ->then(function (): void {
                         Log::info('1682672742: Crawler upload done');

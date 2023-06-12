@@ -42,13 +42,13 @@ class ExperimentControllerTest extends TestCase
         $this->actingAs($this->user)
             ->getJson('/api/v1/experiments')
             ->assertJsonStructure([
-                "data" => [
+                'data' => [
                     [
-                        "id",
-                        "name"
-                    ]
+                        'id',
+                        'name',
+                    ],
                 ],
-                "meta", "links"
+                'meta', 'links',
             ])
             ->assertSuccessful();
     }
@@ -188,9 +188,9 @@ class ExperimentControllerTest extends TestCase
     {
         $experiment = Experiment::factory()->create();
         Storage::fake('s3');
-        $filename = $experiment . "_primemover_experiment.zip";
-        $fileContent = "Hello, World!";
-        Storage::disk('s3')->put("/api-data/experiments/" . $filename, $fileContent);
+        $filename = $experiment.'_primemover_experiment.zip';
+        $fileContent = 'Hello, World!';
+        Storage::disk('s3')->put('/api-data/experiments/'.$filename, $fileContent);
 
         $controller = new ExperimentController(new ExperimentRepository(new Experiment()));
         $result = $controller->download($experiment);

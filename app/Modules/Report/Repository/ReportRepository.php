@@ -6,6 +6,7 @@ use App\Modules\Job\Model\Job;
 use App\Modules\Report\Model\Report;
 use Illuminate\Pagination\LengthAwarePaginator;
 
+// TODO Refactor asap
 class ReportRepository
 {
     public function __construct(protected Report $report)
@@ -14,7 +15,10 @@ class ReportRepository
 
     public function getData(): LengthAwarePaginator
     {
-        return $this->report->query()->latest()->paginate(10);
+        return $this->report
+            ->query()
+            ->latest()
+            ->paginate(10);
     }
 
     public function save(array $data): Report
@@ -40,9 +44,8 @@ class ReportRepository
         if ($report && $data['filecontent']) {
             $report->path = $path.'/file/'.$report->id;
         }
-        $report->save();
 
-        return $report;
+        return $report->save();
     }
 
     public function delete(Report $report): bool
