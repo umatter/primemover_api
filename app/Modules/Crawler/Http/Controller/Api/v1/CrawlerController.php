@@ -3,6 +3,7 @@
 namespace App\Modules\Crawler\Http\Controller\Api\v1;
 
 use App\Http\Controllers\API\v1\Controller;
+use App\Modules\Crawler\Http\Request\CrawlerUploadRequest;
 use App\Modules\Crawler\Http\Request\StoreCrawlerRequest;
 use App\Modules\Crawler\Http\Request\UpdateCrawlerRequest;
 use App\Modules\Crawler\Model\Crawler;
@@ -130,5 +131,10 @@ class CrawlerController extends Controller
         $crawlers = $this->repository->cleanup();
 
         return ResourceCollection::make($crawlers);
+    }
+
+    public function upload(CrawlerUploadRequest $request, Crawler $crawler)
+    {
+        return $this->repository->upload($request, $crawler);
     }
 }

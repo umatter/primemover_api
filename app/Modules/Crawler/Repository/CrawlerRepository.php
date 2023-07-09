@@ -2,11 +2,17 @@
 
 namespace App\Modules\Crawler\Repository;
 
+use App\Facades\Factories\PipelineFactory;
+use App\Facades\Services\DataMapper;
+use App\Modules\Crawler\Http\Request\CrawlerUploadRequest;
 use App\Modules\Crawler\Model\Crawler;
+use App\Modules\Crawler\Pipe\Upload\CreateQueue;
+use App\Modules\Experiment\Model\DTO\QueueDto;
 use Arimolzer\IPStackFinder\Facade\IPStackFinderFacade;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Log;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 use Symfony\Component\HttpFoundation\Response as ResponseAlias;
@@ -239,5 +245,22 @@ class CrawlerRepository
                 'user',
             ]
         )->latest()->get();
+    }
+
+    public function upload(CrawlerUploadRequest $request, Crawler $crawler)
+    {
+        return DataMapper::disableEnforceType()
+                ->removeUndefinedAttributes()
+                ->mapList($request->getJsonFileContent(), QueueDto::class)
+                ->map(function (QueueDto $queueDto) use ($crawler) {
+                    return PipelineFactory::create()
+                            ->send($queueDto->setCrawler($crawler))
+                            ->through([
+                                CreateQueue::class
+                            ])
+                            ->then(function (): void {
+                                Log::info('1682672742: Queue Upload done');
+                            });
+                });
     }
 }
