@@ -27,11 +27,11 @@ class QueueDto
      */
     public ?array $jobs = null;
 
+    public ?int $user_id = null;
+
     private ?bool $active = true;
 
     private ?bool $new = true;
-
-    public ?int $user_id = null;
 
     public function getNew(): ?bool
     {
@@ -146,5 +146,4 @@ class QueueDto
 
         return $this;
     }
-
 }

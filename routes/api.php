@@ -73,7 +73,7 @@ Route::prefix('v1')->group(function (): void {
                 Route::get('crawlers-protected', 'index');
                 Route::delete('undo', 'undo');
                 Route::delete('cleanup', 'cleanup');
-                Route::post('crawler/{crawler}/upload', 'upload');
+                Route::post('crawlers/{crawler}/upload', 'upload');
             });
 
         // Files

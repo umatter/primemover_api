@@ -3,7 +3,6 @@
 namespace App\Modules\Crawler\Pipe\Upload;
 
 use App\Modules\Experiment\Model\DTO\BehaviorDto;
-use App\Modules\Experiment\Model\DTO\CrawlerDto;
 use App\Modules\Experiment\Model\DTO\JobDto;
 use App\Modules\Experiment\Model\DTO\QueueDto;
 use App\Modules\Job\Model\Job;
@@ -24,13 +23,14 @@ class CreateQueue
     public function handle(QueueDto $queueDto, Closure $next): mixed
     {
         try {
-            $queue = Queue::create([
+
+            $queue = Queue::query()->forceCreateQuietly([
                 'name' => $queueDto->getName(),
-                "description" => $queueDto->getDescription(),
-                "start_at" => $queueDto->getStartAt(),
-                "active" => $queueDto->getActive(),
-                "crawler_id" => $queueDto->getCrawler()->id,
-                "user_id" => Auth::id()
+                'description' => $queueDto->getDescription(),
+                'start_at' => $queueDto->getStartAt(),
+                'active' => $queueDto->getActive(),
+                'crawler_id' => $queueDto->getCrawler()->id,
+                'user_id' => Auth::id(),
             ]);
 
             $queueDto
@@ -41,20 +41,19 @@ class CreateQueue
             $result = Collection::make($queueDto->getJobs())->map(function (JobDto $dto) use ($queueDto): void {
                 $job = $queueDto->getCrawlerQueue()
                     ->jobs()
-                    ->create([
-                    'name' => $dto->getName(),
-                    'description' => $dto->getDescription(),
-                    'type' => $dto->getType(),
-                    'user_id' => $queueDto->getUserId(),
-                ]);
+                    ->forceCreateQuietly([
+                        'name' => $dto->getName(),
+                        'description' => $dto->getDescription(),
+                        'type' => $dto->getType(),
+                        'user_id' => $queueDto->getUserId(),
+                    ]);
                 $this->createBehaviors($job, $dto, $queueDto);
-                Log::info('1682672566: Queue job created', compact('job'));
             });
 
-            Log::info('Queue jobs created', compact('queueDto', 'result'));
+            Log::info('1692374261: Queue jobs created', ['count' => $result->count()]);
 
         } catch (Throwable $e) {
-            throw new Exception('Queue job could not be created', 422, $e);
+            throw new Exception('Queue job could not be created', 422, $e->getMessage());
         }
 
         return $next($queueDto);
@@ -67,16 +66,15 @@ class CreateQueue
     {
         try {
             Collection::make($dto->getBehaviors())->map(function (BehaviorDto $dto) use ($queueDto, $job): void {
-                $behaviors = $job->behaviors()->create([
+                $job->behaviors()->forceCreateQuietly([
                     'name' => $dto->getName(),
                     'description' => $dto->getDescription(),
                     'value' => $dto->getValue(),
                     'user_id' => $queueDto->getUserId(),
                 ]);
-                Log::info('1682672577: Job behaviors created', compact('behaviors'));
             });
         } catch (Throwable $e) {
-            throw new Exception('Job behavior could not be created', 422, $e);
+            throw new Exception('Job behavior could not be created', 422, $e->getMessage());
         }
     }
 }
