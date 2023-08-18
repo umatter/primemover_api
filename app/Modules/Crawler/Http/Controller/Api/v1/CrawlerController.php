@@ -3,6 +3,7 @@
 namespace App\Modules\Crawler\Http\Controller\Api\v1;
 
 use App\Http\Controllers\API\v1\Controller;
+use App\Modules\Crawler\Http\Request\CrawlerUploadRequest;
 use App\Modules\Crawler\Http\Request\StoreCrawlerRequest;
 use App\Modules\Crawler\Http\Request\UpdateCrawlerRequest;
 use App\Modules\Crawler\Model\Crawler;
@@ -11,6 +12,7 @@ use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Resources\Json\ResourceCollection;
+use Illuminate\Support\Collection;
 use Tests\Feature\Modules\Crawler\Http\Controller\Api\v1\CrawlerControllerTest;
 
 /**
@@ -130,5 +132,13 @@ class CrawlerController extends Controller
         $crawlers = $this->repository->cleanup();
 
         return ResourceCollection::make($crawlers);
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function upload(CrawlerUploadRequest $request, Crawler $crawler): Collection
+    {
+        return $this->repository->upload($request, $crawler);
     }
 }

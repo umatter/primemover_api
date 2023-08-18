@@ -2,10 +2,20 @@
 
 namespace App\Modules\Experiment\Model\DTO;
 
+use App\Modules\Crawler\Model\Crawler;
+use App\Modules\Queue\Model\Queue;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Model;
 
 class QueueDto
 {
+    public Crawler|Model|null $crawler = null;
+
+    /**
+     * @var Model|Queue|null
+     */
+    public mixed $CrawlerQueue = null;
+
     public ?string $name = null;
 
     public ?string $description = null;
@@ -16,6 +26,8 @@ class QueueDto
      * @var JobDto[]
      */
     public ?array $jobs = null;
+
+    public ?int $user_id = null;
 
     private ?bool $active = true;
 
@@ -95,6 +107,42 @@ class QueueDto
     public function setActive(?bool $active): QueueDto
     {
         $this->active = $active;
+
+        return $this;
+    }
+
+    public function getCrawler(): Model|Crawler|null
+    {
+        return $this->crawler;
+    }
+
+    public function setCrawler(Model|Crawler|null $crawler): QueueDto
+    {
+        $this->crawler = $crawler;
+
+        return $this;
+    }
+
+    public function getUserId(): int
+    {
+        return $this->user_id;
+    }
+
+    public function setUserId(?int $user_id): QueueDto
+    {
+        $this->user_id = $user_id;
+
+        return $this;
+    }
+
+    public function getCrawlerQueue(): Queue|Model|null
+    {
+        return $this->CrawlerQueue;
+    }
+
+    public function setCrawlerQueue(Queue|Model|null $CrawlerQueue): QueueDto
+    {
+        $this->CrawlerQueue = $CrawlerQueue;
 
         return $this;
     }

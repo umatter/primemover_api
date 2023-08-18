@@ -2,8 +2,14 @@
 
 namespace App\Modules\Crawler\Repository;
 
+use App\Facades\Factories\PipelineFactory;
+use App\Facades\Services\DataMapper;
+use App\Modules\Crawler\Http\Request\CrawlerUploadRequest;
 use App\Modules\Crawler\Model\Crawler;
+use App\Modules\Crawler\Pipe\Upload\CreateQueue;
+use App\Modules\Experiment\Model\DTO\QueueDto;
 use Arimolzer\IPStackFinder\Facade\IPStackFinderFacade;
+use Exception;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -239,5 +245,23 @@ class CrawlerRepository
                 'user',
             ]
         )->latest()->get();
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function upload(CrawlerUploadRequest $request, Crawler $crawler): \Illuminate\Support\Collection
+    {
+        return DataMapper::disableEnforceType()
+            ->removeUndefinedAttributes()
+            ->mapList($request->getJsonFileContent(), QueueDto::class)
+            ->map(function (QueueDto $queueDto) use ($crawler) {
+                return PipelineFactory::create()
+                    ->send($queueDto->setCrawler($crawler))
+                    ->through([
+                        CreateQueue::class,
+                    ])
+                    ->thenReturn();
+            });
     }
 }
