@@ -53,6 +53,8 @@ class CreateQueue
             Log::info('1692374261: Queue jobs created', ['count' => $result->count()]);
 
         } catch (Throwable $e) {
+            Log::error('1692374264: Queue job could not be created', ['exception' => $e->getMessage()]);
+
             throw new Exception('Queue job could not be created', 422, $e);
         }
 
@@ -74,6 +76,8 @@ class CreateQueue
                 ]);
             });
         } catch (Throwable $e) {
+            Log::error('1692374266: Job behavior could not be created', ['exception' => $e->getMessage()]);
+
             throw new Exception('Job behavior could not be created', 422, $e);
         }
     }
