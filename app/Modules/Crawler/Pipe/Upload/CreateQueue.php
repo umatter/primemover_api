@@ -24,14 +24,15 @@ class CreateQueue
     {
         try {
 
-            $queue = Queue::query()->forceCreateQuietly([
+            $queue = Queue::withoutEvents(fn () => Queue::query()->create([
                 'name' => $queueDto->getName(),
                 'description' => $queueDto->getDescription(),
                 'start_at' => $queueDto->getStartAt(),
                 'active' => $queueDto->getActive(),
                 'crawler_id' => $queueDto->getCrawler()->id,
                 'user_id' => Auth::id(),
-            ]);
+            ])
+            );
 
             $queueDto
                 ->setUserId(Auth::id())
