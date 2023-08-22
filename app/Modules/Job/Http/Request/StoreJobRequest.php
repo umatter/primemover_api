@@ -12,7 +12,7 @@ class StoreJobRequest extends FormRequest
         return [
             'name' => ['required'],
             'user_id' => ['required'],
-            'type' => ['required'],
+            'type' => ['required','in:visitjob,waitjob,tryentertextfieldjob,entertextfieldjob,singleselecturljob,singleselectjob,tryswitchjob,switchjob,tryclickjob,clickjob,scrollbydurationjob,scrollbylengthjob,handlealertjob,tryhandlealertjob'],
             'description' => ['nullable'],
             'queue_id' => ['required'],
             'status_code' => [],
