@@ -42,7 +42,7 @@ class CreateQueue
             $result = Collection::make($queueDto->getJobs())->map(function (JobDto $dto) use ($queueDto): void {
                 $job = $queueDto->getCrawlerQueue()
                     ->jobs()
-                    ->forceCreateQuietly([
+                    ->create([
                         'name' => $dto->getName(),
                         'description' => $dto->getDescription(),
                         'type' => $dto->getType(),
@@ -69,7 +69,7 @@ class CreateQueue
     {
         try {
             Collection::make($dto->getBehaviors())->map(function (BehaviorDto $dto) use ($queueDto, $job): void {
-                $job->behaviors()->forceCreateQuietly([
+                $job->behaviors()->create([
                     'name' => $dto->getName(),
                     'description' => $dto->getDescription(),
                     'value' => $dto->getValue(),
