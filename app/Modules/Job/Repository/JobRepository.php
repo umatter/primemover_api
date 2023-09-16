@@ -26,7 +26,7 @@ class JobRepository
             ])
             ->latest()
             ->when($queueId, fn (Builder $query) => $query->where('queue_id', $queueId))
-            ->with(['queue'])
+            ->with(['queue', 'reports'])
             ->latest()
             ->fastPaginate();
     }

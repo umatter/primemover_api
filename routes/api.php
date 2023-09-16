@@ -80,6 +80,7 @@ Route::prefix('v1')->group(function (): void {
         Route::get('file/{report}', [ReportController::class, 'getFile']);
         Route::post('upload', [S3Controller::class, 'store']);
         Route::get('download/{filename}', [S3Controller::class, 'download']);
+        Route::get('download/report/{job}', [ReportController::class, 'download']);
 
         // Api Resources
         Route::apiResource('configurations', ConfigurationController::class);
