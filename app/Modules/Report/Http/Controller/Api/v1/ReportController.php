@@ -61,14 +61,14 @@ class ReportController extends Controller
             $file = Storage::disk('s3')->get($path);
             $filename = basename($path);
 
-            Storage::disk("public")->put("report-" . $report->id . "/$filename", $file);
+            Storage::disk("public")->put("report-job-" . $job->id . "/$filename", $file);
         }
 
         $zip = ZipFactory::create();
-        $zipPath = storage_path('app/public/report.zip');
+        $zipPath = storage_path('app/public/report-job-' . $job->id . '.zip');
  
         if($zip->open($zipPath, ZipArchive::CREATE | ZipArchive::OVERWRITE)) {
-            $folderPath = storage_path('app/public/report-' . $report->id . '/');
+            $folderPath = storage_path('app/public/report-job-' . $job->id . '/');
 
             $files = glob($folderPath.'*');
             foreach($files as $file){
@@ -86,7 +86,7 @@ class ReportController extends Controller
             throw new Exception('Unable to create ZIP archive');
         }
 
-        return response()->download($zipPath, 'report-' . $report->id . '.zip', [
+        return response()->download($zipPath, 'report-job-' . $job->id . '.zip', [
             'Content-Type' => 'application/zip',
         ])->deleteFileAfterSend();
     }
