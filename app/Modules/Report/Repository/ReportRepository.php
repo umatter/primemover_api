@@ -2,9 +2,16 @@
 
 namespace App\Modules\Report\Repository;
 
+use App\Facades\Factories\PipelineFactory;
 use App\Modules\Job\Model\Job;
 use App\Modules\Report\Model\Report;
+use App\Modules\Report\Pipe\AddFilesToArchive;
+use App\Modules\Report\Pipe\AssertJobHasReports;
+use App\Modules\Report\Pipe\CreateJobReportBinaries;
+use App\Modules\Report\Pipe\JobReportData;
+use Exception;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Log;
 
 // TODO Refactor asap
 class ReportRepository
@@ -53,5 +60,27 @@ class ReportRepository
     public function delete(Report $report): bool
     {
         return $report->delete();
+    }
+
+    public function download(Job $job): ?string
+    {
+        $jobReportData = JobReportData::from([])->setJob($job);
+        try {
+            return PipelineFactory::create()
+                ->send($jobReportData)
+                ->through([
+                    AssertJobHasReports::class,
+                    CreateJobReportBinaries::class,
+                    AddFilesToArchive::class,
+                ])
+                ->then(fn (JobReportData $jobReportData) => $jobReportData->getZipPath());
+
+        } catch (Exception $exception) {
+            Log::error('1695906366: Failed to get report data', [
+                'exception' => $exception->getMessage(),
+            ]);
+        }
+
+        return null;
     }
 }

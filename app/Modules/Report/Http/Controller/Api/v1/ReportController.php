@@ -2,19 +2,16 @@
 
 namespace App\Modules\Report\Http\Controller\Api\v1;
 
-use App\Facades\Factories\ZipFactory;
 use App\Http\Controllers\API\v1\Controller;
 use App\Modules\Job\Model\Job;
 use App\Modules\Report\Model\Report;
 use App\Modules\Report\Repository\ReportRepository;
 use Exception;
-use Illuminate\Support\Facades\Response;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Resources\Json\ResourceCollection;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Response;
 use Illuminate\Validation\ValidationException;
-use ZipArchive;
 
 class ReportController extends Controller
 {
@@ -54,40 +51,19 @@ class ReportController extends Controller
         return $this->repository->delete($report);
     }
 
-    public function download(Job $job)
+    /**
+     * @throws Exception
+     */
+    public function download(Job $job): \Symfony\Component\HttpFoundation\Response
     {
-        foreach($job->reports()->get() as $report) {
-            $path = Storage::disk('s3')->path($report->path);
-            $file = Storage::disk('s3')->get($path);
-            $filename = basename($path);
+        $response = \App\Modules\Report\Facade\ReportRepository::download($job);
 
-            Storage::disk("public")->put("report-job-" . $job->id . "/$filename", $file);
+        if ($response) {
+            return Response::download($response, 'report-job-'.$job->id.'.zip', [
+                'Content-Type' => 'application/zip',
+            ])->deleteFileAfterSend();
         }
 
-        $zip = ZipFactory::create();
-        $zipPath = storage_path('app/public/report-job-' . $job->id . '.zip');
- 
-        if($zip->open($zipPath, ZipArchive::CREATE | ZipArchive::OVERWRITE)) {
-            $folderPath = storage_path('app/public/report-job-' . $job->id . '/');
-
-            $files = glob($folderPath.'*');
-            foreach($files as $file){
-                $filename = basename($file);
-                if(is_file($file)) {
-                    $zip->addFile($file, $filename);
-                }
-            }
-
-            $zip->close();
-
-            array_map('unlink', glob("{$folderPath}*.*"));
-            rmdir($folderPath);
-        }else {
-            throw new Exception('Unable to create ZIP archive');
-        }
-
-        return response()->download($zipPath, 'report-job-' . $job->id . '.zip', [
-            'Content-Type' => 'application/zip',
-        ])->deleteFileAfterSend();
+        return Response::noContent();
     }
 }
