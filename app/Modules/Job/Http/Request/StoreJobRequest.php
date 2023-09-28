@@ -15,6 +15,7 @@ class StoreJobRequest extends FormRequest
             'type' => ['required', 'in:visitjob,waitjob,tryentertextfieldjob,entertextfieldjob,singleselecturljob,singleselectjob,tryswitchjob,switchjob,tryclickjob,clickjob,scrollbydurationjob,scrollbylengthjob,handlealertjob,tryhandlealertjob'],
             'description' => ['nullable'],
             'queue_id' => ['required'],
+            'previous_job_id' => ['required', 'exists:App\Modules\Job\Model\Job,id'],
             'status_code' => [],
             'status_message' => [],
             'order' => [],

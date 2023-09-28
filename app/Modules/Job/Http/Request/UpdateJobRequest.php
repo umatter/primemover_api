@@ -11,6 +11,7 @@ class UpdateJobRequest extends FormRequest
         return [
             'name' => [],
             'queue_id' => [],
+            'previous_job_id' => ['required', 'exists:App\Modules\Job\Model\Job,id'],
             'description' => [],
             'type' => [],
             'status_code' => [],

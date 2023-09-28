@@ -29,6 +29,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property Carbon $started_at
  * @property Carbon $start_at
  * @property Carbon $finished_at
+ * @property int $previous_job_id
+ * @property \App\Modules\Job\Model\Job previousJob
  */
 class Job extends BaseModel
 {
@@ -49,6 +51,11 @@ class Job extends BaseModel
     public function reports(): HasMany
     {
         return $this->hasMany(Report::class);
+    }
+
+    public function previousJob(): BelongsTo
+    {
+        return $this->belongsTo(Job::class, 'previous_job_id');
     }
 
     public function queue(): BelongsTo
