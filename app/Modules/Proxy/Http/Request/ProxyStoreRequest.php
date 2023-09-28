@@ -19,8 +19,9 @@ class ProxyStoreRequest extends FormRequest
             'description' => 'nullable|string',
             'hostname' => 'required|string',
             'port' => 'required|integer',
-            'username' => 'required|string',
-            'password' => 'required|string',
+            'type' => 'required|string',
+            'username' => 'required_unless:type,http',
+            'password' => 'required_unless:type,http',
         ];
     }
 
