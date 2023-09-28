@@ -1,0 +1,257 @@
+{
+  "agent": {
+    "add": "Add agent",
+    "createIntroText": "Please enter the required data to create a new agent.",
+    "generalInfo": "Please provide a name and contact information to create an agent.",
+    "label": "Agent",
+    "list": "List of all agents.",
+    "notSelected": "No agent selected",
+    "selected": "agent selected"
+  },
+  "auth": {
+    "confirmPassword": "Confirm Password",
+    "email": "Email",
+    "newPassword": "New Password",
+    "password": "password",
+    "passwordConfirmError": "The password confirmation does not match.",
+    "passwordMinCharsError": "Password minimun 8 character",
+    "passwordPatternError": "At least one capital letter, at least one number, at least one special char",
+    "passwordRequiredError": "Password is required",
+    "resetPassword": "Reset password",
+    "settings": "Settings",
+    "signIn": "Register",
+    "signOut": "Sign out",
+    "username": "User name"
+  },
+  "behavior": {
+    "add": "Add behavior",
+    "createIntroText": "Enter the required data to create a new entry.",
+    "label": "Behavior",
+    "list": "Behavior list",
+    "name": "Name",
+    "value": "Value"
+  },
+  "common": {
+    "actionPermanentWarning": "This action cannot be undone!",
+    "agentRequiredError": "Agent is Required",
+    "areYouSure": "Are you sure?",
+    "cancel": "Cancel",
+    "clear": "Clear",
+    "configRequiredError": "Configuration is Required",
+    "confirm": "Confirm",
+    "contact": "Contact",
+    "contactPlaceholder": "e.g. Max Mustermann, 066 555 22 44",
+    "contactRequiredError": "At least one contact is required",
+    "crawlerRequiredError": "Crawler is required",
+    "delete": "Delete",
+    "description": "Description",
+    "descriptionPlaceholder": "e.g. It is a new experiment, ...",
+    "descriptionRequiredError": "Description is Required",
+    "edit": "Edit",
+    "experimentRequiredError": "Experiment is Required",
+    "home": "Home",
+    "hostName": "Host Name",
+    "hostNamePlaceholder": "e.g. proxy.geosurf.io",
+    "id": "Id",
+    "identification": "Identification",
+    "identificationPlaceholder": "e.g. Browser-v10",
+    "label": "Choose",
+    "location": "Location",
+    "locationPlaceholder": "e.g. US-OK-OKLAHOMA",
+    "maxLengthExceed": "Maximum Length Exceed",
+    "multiLoginId": "Multilogin-ID",
+    "multiLoginIdPlaceholder": "e.g. ML-123456XYZ",
+    "multiLoginProfile": "Multilogin Profil",
+    "multiLoginProfilePlaceholder": "e.g. {\"browser\":\"chrome\",\"os\":\"windows\",\"screen\":\"1920x1080\"}",
+    "name": "Name",
+    "namePlaceholder": "e.g. Maria Berlusconi",
+    "nameRequiredError": "Name is required",
+    "new": "New",
+    "password": "Password",
+    "passwordPlaceholder": "e.g. a really good password",
+    "passwordRequiredError": "Password is required",
+    "port": "Port",
+    "portPlaceholder": "e.g. 8080",
+    "portRequiredError": "Port is required",
+    "proxyRequiredError": "Proxy is Required",
+    "queueRequiredError": "Queue is required",
+    "reset": "Reset",
+    "save": "Save",
+    "select": "Choose",
+    "show": "Show",
+    "startDateRequiredError": "Start Date is Required",
+    "typeRequiredError": "Type is Required",
+    "updatedAt": "Updated at",
+    "username": "User Name",
+    "usernamePlaceholder": "",
+    "usernameRequiredError": "Username is required"
+  },
+  "config": {
+    "add": "Add configuration",
+    "createIntroText": "Please enter the required data to create a new configuration.",
+    "generalInfo": "Please provide a name and contact information to create a configuration.",
+    "label": "Config",
+    "list": "List of all configurations.",
+    "notSelected": "No configuration selected",
+    "selected": "Configuration selected"
+  },
+  "confirmation-delete": {
+    "experiment": {
+      "cancelButton": "No",
+      "experimentDeleteMSG": "Are you sure do you want to delete {{experiment}}: {{experimentName}}?",
+      "otherButton": "Yes"
+    }
+  },
+  "crawler": {
+    "add": "Add crawlers",
+    "create": "Create crawler",
+    "createText": "Select the parent experiment. Fill out mandatory fields.",
+    "label": "Crawler",
+    "list": "List of all crawlers including the experiment to which they are assigned."
+  },
+  "experiment": {
+    "add": "Add experiment",
+    "createIntroText": "Enter the required data to create a new experiment.",
+    "generalInfo": "Please provide a name and contact information to create an experiment.",
+    "label": "Experiment",
+    "list": "List of all experiments.",
+    "notSelected": "No experiment selected",
+    "selected": "experiment selected"
+  },
+  "filter": {
+    "bodyText": "Active filters are displayed here.",
+    "reset": "reset filter",
+    "title": "Filter"
+  },
+  "foo": "bar",
+  "job": {
+    "add": "add jobs",
+    "crawlerId": "Crawler-ID",
+    "createIntroText": "Geben Sie die erforderlichen Daten ein, um einen neuen Job zu erstellen.",
+    "label": "Job",
+    "list": "List all Jobs",
+    "selectType": "Select Type",
+    "type": {
+      "clickjob": "Click",
+      "entertextfieldjob": "Enter text field",
+      "handlealertjob": "Handle alert",
+      "label": "Type",
+      "scrollbydurationjob": "Scroll by duration",
+      "scrollbylengthjob": "Scroll by length",
+      "singleselectjob": "Single select",
+      "singleselecturljob": "Single select URL",
+      "switchjob": "Switch",
+      "tryclickjob": "Try click",
+      "tryentertextfieldjob": "Try enter text field",
+      "tryhandlealertjob": "Try handle alert",
+      "tryswitchjob": "Try switch",
+      "visitjob": "Visit",
+      "waitjob": "Wait"
+    }
+  },
+  "loading": {
+    "text": "This may take a few seconds, please don't close this page.",
+    "title": "Loading contents ..."
+  },
+  "meta": {
+    "agent": {
+      "agentDescription": "Agent Description",
+      "agentIdentification": "Agent Identification",
+      "agentLocation": "Agent Location",
+      "agentMultiloginId": "Agent MultiloginId",
+      "agentMultiloginprofile": "Agent Multilogin-profile",
+      "agentName": "Agent Name"
+    },
+    "bodyText": "Here the details of the selected context are shown. To see more, please select at least one experiment.",
+    "common": {
+      "browser": "Browser",
+      "geolocation": "Geolocation",
+      "name": "Name",
+      "navigator": "Navigator",
+      "network": "Network"
+    },
+    "configuration": {
+      "configurationName": "Configuration Name",
+      "label": "Configuration"
+    },
+    "crawler": {
+      "crawler": "Crawler",
+      "crawlerId": "Crawler Id",
+      "crawlerName": "Crawler Name"
+    },
+    "experiment": {
+      "experiment": "Experiment",
+      "experimentContant": "Experiment Contact",
+      "experimentDescription": "Experiment Description",
+      "experimentId": "Experiment Id",
+      "experimentName": "Experiment Name",
+      "experimentUpdatedAt": "Experiment Updated-At",
+      "exprimentCreatedAt": "Experiment Created-At"
+    },
+    "proxy": {
+      "ProxyPort": "Proxy Port",
+      "proxyDescription": "Proxy Description",
+      "proxyHostname": "Proxy Hostname",
+      "proxyName": "Proxy Name",
+      "proxyPassword": "Proxy Password",
+      "proxyUserName": "Proxy User Name"
+    },
+    "title": "Meta Information"
+  },
+  "pagination": {
+    "label": "Pagination",
+    "nextLabel": "Next",
+    "onPage": "On the website",
+    "page": "Page",
+    "previousLabel": "Back"
+  },
+  "proxy": {
+    "add": "Add Proxy",
+    "createIntroText": "Enter the necessary data to create a new proxy.",
+    "generalInfo": "Please provide a name and contact information to create a proxy.",
+    "label": "Proxy",
+    "list": "List of all proxies.",
+    "notSelected": "No proxy selected",
+    "selected": "Proxy selected"
+  },
+  "queue": {
+    "add": "Add Queue",
+    "createIntroText": "Enter the required data to create a new queue.",
+    "finishedAt": "Done",
+    "label": "Queue",
+    "list": "List of all queues.",
+    "startAt": "Start At",
+    "startedAt": "Started"
+  },
+  "status": {
+    "code": "Code",
+    "failed": "Failed",
+    "failure": "Failed",
+    "label": "Status",
+    "message": "Report",
+    "processed": "Completed",
+    "processing": "Running",
+    "review": "Review",
+    "running": "Running",
+    "sipped": "Skipped",
+    "success": "Success",
+    "type": "Type",
+    "unknown": "Unknown"
+  },
+  "upload": {
+    "clickToUpload": "Click to upload file",
+    "experimentUploadFormat": "JSON Format",
+    "fileExampleLabel": "API documentation",
+    "fileExampleText": "Details about required JSON file.",
+    "fileUpload": "Upload file",
+    "noCrawlerSelected": "No selected crawler",
+    "noExperimentSelected": "No selected experiment",
+    "orDragAndDrop": "or drag and drop it here",
+    "selectCrawler": "Select crawler",
+    "selectExperiment": "Select experiment",
+    "uploadCrawlerIntroText": "In order to upload crawler data you need to have selected the crawler first. Upload data requires a valid JSON file. See API-docs for details.",
+    "uploadCrawlerTitle": "Upload crawler data",
+    "uploadExperimentIntroText": "In order to upload experiment data you need to have selected the experiment first. Upload data requires a valid JSON file. See API-docs for details.",
+    "uploadExperimentTitle": "Upload experiment data"
+  }
+}
