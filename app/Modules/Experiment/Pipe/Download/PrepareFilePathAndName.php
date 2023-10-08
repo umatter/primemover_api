@@ -4,6 +4,7 @@ namespace App\Modules\Experiment\Pipe\Download;
 
 use App\Modules\Experiment\Model\DTO\DownloadData;
 use Closure;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class PrepareFilePathAndName
@@ -30,6 +31,10 @@ class PrepareFilePathAndName
             ->setZipFilePath($this->replacePlaceholder($zipFilePath, $experiment->id))
             ->setFolderPath($this->replacePlaceholder($folderPath, $experiment->id))
             ->setFinalArchiveName($this->replacePlaceholder($finalArchiveName, $experiment->id));
+
+        Log::info('1682672336: Download processing', [
+            'data' => $passable->toArray(),
+        ]);
 
         return $next($passable);
     }
