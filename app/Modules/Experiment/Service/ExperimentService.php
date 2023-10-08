@@ -68,12 +68,14 @@ class ExperimentService
                 CleanUpTempFilesAndFolders::class,
                 StoreCreatedZipArchive::class,
             ])
-            ->onFailure(function (DownloadData $downloadData, Throwable $throwable): void {
+            ->onFailure(function (DownloadData $downloadData, Throwable $throwable): Response {
                 Log::error('1682672685: Experiment download failed', [
                     'experiment' => $downloadData->getExperiment()->name,
                     's3path' => $downloadData->getPathUploadS3(),
                     'error' => $throwable->getMessage(),
                 ]);
+
+                return \Illuminate\Support\Facades\Response::noContent(500);
             })
             ->then(function (DownloadData $passable) {
                 Log::info('1682672710: Experiment download pipeline done', [
