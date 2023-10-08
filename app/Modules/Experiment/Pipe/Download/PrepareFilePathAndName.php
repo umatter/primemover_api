@@ -14,7 +14,7 @@ class PrepareFilePathAndName
         $experiment = $passable->getExperiment();
 
         $finalArchiveName = '%experiment%_primemover_experiment.zip';
-        $pathUploadS3 = '/api-data/experiments/%experiment%_primemover_experiment.zip';
+        $pathUploadS3 = 'api-data/experiments/%experiment%_primemover_experiment.zip';
         $crawlerFile = '%experiment%_primemover_crawlers.csv';
         $queueFile = '%experiment%_primemover_queues.csv';
         $jobFile = '%experiment%_primemover_jobs.csv';

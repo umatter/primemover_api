@@ -21,8 +21,6 @@ class StoreCreatedZipArchive
         Log::debug('1682678478: Storage info', [
             'disk' => S3Service::getTargetDisk(),
             'path' => $passable->getPathUploadS3(),
-            'name' => $passable->getFinalArchiveName(),
-            'content' => file_get_contents($zipArchive),
             'archive' => $zipArchive,
         ]);
 
