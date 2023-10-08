@@ -59,6 +59,7 @@ class ExperimentService
     {
         return PipelineFactory::create()
             ->withTransaction()
+            ->withEvents()
             ->send($downloadData)
             ->through([
                 PrepareFilePathAndName::class,
