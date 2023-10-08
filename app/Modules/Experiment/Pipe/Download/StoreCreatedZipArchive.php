@@ -30,7 +30,6 @@ class StoreCreatedZipArchive
 
             Log::debug('1682678476: File info', [
                 'success' => $putFile,
-                'check' => Storage::disk(S3Service::getTargetDisk())->exists($passable->getPathUploadS3()),
             ]);
         } catch (Throwable $e) {
             Log::error('1682678937: Failed to store archive', [
