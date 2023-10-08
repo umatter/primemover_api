@@ -5,6 +5,7 @@ namespace App\Modules\Experiment\Pipe\Download;
 use App\Modules\Experiment\Facade\ExportFactory;
 use App\Modules\Experiment\Model\DTO\DownloadData;
 use Closure;
+use Illuminate\Support\Facades\Log;
 
 class CreateAndStoreExportLocally
 {
@@ -23,6 +24,8 @@ class CreateAndStoreExportLocally
 
         ExportFactory::forBehavior($experiment)
             ->store('experiment/'.$passable->getBehaviorFile(), 'local');
+
+        Log::debug('1682678767: Exports created');
 
         return $next($passable);
     }

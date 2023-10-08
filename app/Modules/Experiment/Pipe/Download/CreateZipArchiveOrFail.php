@@ -6,6 +6,7 @@ use App\Facades\Factories\ZipFactory;
 use App\Modules\Experiment\Model\DTO\DownloadData;
 use Closure;
 use Exception;
+use Illuminate\Support\Facades\Log;
 use ZipArchive;
 
 class CreateZipArchiveOrFail
@@ -20,6 +21,8 @@ class CreateZipArchiveOrFail
         if (false === $zipArchive->open($passable->getZipFilePath(), ZipArchive::CREATE)) {
             throw new Exception('Unable to create ZIP archive');
         }
+
+        Log::debug('1682678766: Archive created', ['archive' => $zipArchive]);
 
         return $next($passable->setZipArchive($zipArchive));
     }
