@@ -102,7 +102,7 @@ class ExperimentRepository
         DataMapper::disableEnforceType()
             ->removeUndefinedAttributes()
             ->mapList($request->getJsonContent(), CrawlerDto::class)
-            ->each(fn (CrawlerDto $crawlerDto) => ExperimentService::upload($experiment, $crawlerDto));
+            ->map(fn (CrawlerDto $crawlerDto) => ExperimentService::upload($experiment, $crawlerDto));
     }
 
     public function download(Experiment $experiment): Response

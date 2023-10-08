@@ -43,7 +43,7 @@ class CreateCrawlerQueues
                 Log::info('1682672555: Crawler queue created');
             });
 
-            Log::info('Crawler queues created', compact('crawlerDto', 'result'));
+            Log::info('Crawler queues created');
 
         } catch (Throwable $e) {
             Log::error('1695992803: Crawler queue could not be created', [
