@@ -16,15 +16,6 @@ class S3Service
     {
         $targetDisk = $this->getTargetDisk();
 
-        if ( ! Storage::disk($targetDisk)->exists($filename)) {
-            Log::error('1682672839: File not found', [
-                'filename' => $filename,
-                'disk' => $targetDisk,
-            ]);
-
-            return Response::noContent(404);
-        }
-
         try {
             $file = Storage::disk($targetDisk)->get($filename);
 
