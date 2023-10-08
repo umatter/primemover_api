@@ -2,8 +2,8 @@
 
 namespace App\Facades\Factories;
 
-use Illuminate\Pipeline\Pipeline;
 use Illuminate\Support\Facades\Facade;
+use MichaelRubel\EnhancedPipeline\Pipeline;
 
 /**
  * @method static Pipeline create()

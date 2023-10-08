@@ -22,6 +22,10 @@ class QueueDto
 
     public ?Carbon $start_at = null;
 
+    public ?string $timezone = null;
+
+    public ?string $timezone_utc_offset = null;
+
     /**
      * @var JobDto[]
      */
@@ -143,6 +147,30 @@ class QueueDto
     public function setCrawlerQueue(Queue|Model|null $CrawlerQueue): QueueDto
     {
         $this->CrawlerQueue = $CrawlerQueue;
+
+        return $this;
+    }
+
+    public function getTimezone(): ?string
+    {
+        return $this->timezone;
+    }
+
+    public function setTimezone(?string $timezone): QueueDto
+    {
+        $this->timezone = $timezone;
+
+        return $this;
+    }
+
+    public function getTimezoneUtcOffset(): ?string
+    {
+        return $this->timezone_utc_offset;
+    }
+
+    public function setTimezoneUtcOffset(?string $timezone_utc_offset): QueueDto
+    {
+        $this->timezone_utc_offset = $timezone_utc_offset;
 
         return $this;
     }

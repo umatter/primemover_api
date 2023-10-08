@@ -30,8 +30,7 @@ class CreateCrawlerConfiguration
 
             $crawlerDto->setCrawlerConfiguration($configuration);
             Log::info('1682672209: Configuration created', [
-                'configuration' => $configuration,
-                'source' => $itemConfiguration,
+                'configuration' => $configuration->getAttribute('name'),
             ]);
 
         } catch (Throwable $e) {

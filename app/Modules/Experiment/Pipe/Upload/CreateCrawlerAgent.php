@@ -33,7 +33,7 @@ class CreateCrawlerAgent
                 'user_id' => $crawlerDto->getUserId(),
             ]);
 
-            Log::info('1682672426: Agent created', compact('crawlerAgent'));
+            Log::info('1682672426: Agent created');
 
         } catch (Throwable $e) {
             throw new Exception('Agent could not be created', 422, $e);

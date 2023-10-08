@@ -28,22 +28,27 @@ class CreateCrawlerQueues
                 ->setUserId(Auth::id())
                 ->getQueues();
 
-            $result = Collection::make($queues)->map(function (QueueDto $dto) use ($crawlerDto): void {
+            Collection::make($queues)->map(function (QueueDto $dto) use ($crawlerDto): void {
                 $queue = $crawlerDto->getExperimentCrawler()
                     ->queues()
-                    ->create([
+                    ->createQuietly([
                         'name' => $dto->getName(),
                         'description' => $dto->getDescription(),
                         'start_at' => $dto->getStartAt(),
+                        'timezone' => $dto->getTimezone(),
+                        'timezone_utc_offset' => $dto->getTimezoneUtcOffset(),
                         'user_id' => $crawlerDto->getUserId(),
                     ]);
                 $this->createJobs($queue, $dto, $crawlerDto);
-                Log::info('1682672555: Crawler queue created', compact('queue'));
+                Log::info('1682672555: Crawler queue created');
             });
 
             Log::info('Crawler queues created', compact('crawlerDto', 'result'));
 
         } catch (Throwable $e) {
+            Log::error('1695992803: Crawler queue could not be created', [
+                'exception' => $e->getMessage(),
+            ]);
             throw new Exception('Crawler queue could not be created', 422, $e);
         }
 
@@ -64,7 +69,7 @@ class CreateCrawlerQueues
                     'user_id' => $crawlerDto->getUserId(),
                 ]);
                 $this->createBehaviors($job, $dto, $crawlerDto);
-                Log::info('1682672566: Crawler job created', compact('job'));
+                Log::info('1682672566: Crawler job created');
 
             });
         } catch (Throwable $e) {
@@ -80,13 +85,12 @@ class CreateCrawlerQueues
     {
         try {
             Collection::make($dto->getBehaviors())->map(function (BehaviorDto $dto) use ($crawlerDto, $job): void {
-                $behaviors = $job->behaviors()->create([
+                $job->behaviors()->create([
                     'name' => $dto->getName(),
                     'description' => $dto->getDescription(),
                     'value' => $dto->getValue(),
                     'user_id' => $crawlerDto->getUserId(),
                 ]);
-                Log::info('1682672577: Job behaviors created', compact('behaviors'));
             });
         } catch (Throwable $e) {
             throw new Exception('Job behavior could not be created', 422, $e);

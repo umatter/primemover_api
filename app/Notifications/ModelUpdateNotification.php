@@ -29,11 +29,8 @@ class ModelUpdateNotification extends Notification
             ->getModel()
             ->toJson(JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
 
-        Log::info('1686589691: Model update notification', [
+        Log::info('1686589762: Model update notification', [
             'notifiable' => $notifiable,
-            'mail' => $mail,
-            'user' => $this->user,
-            'model' => $data,
         ]);
 
         return (new MailMessage())

@@ -5,6 +5,7 @@ namespace App\Http;
 use App\Http\Middleware\Authenticate;
 use App\Http\Middleware\CheckForMaintenanceMode;
 use App\Http\Middleware\EncryptCookies;
+use App\Http\Middleware\FormDataHandler;
 use App\Http\Middleware\HeaderMiddleware;
 use App\Http\Middleware\RedirectIfAuthenticated;
 use App\Http\Middleware\SetLocale;
@@ -31,11 +32,7 @@ use Laravel\Passport\Http\Middleware\CheckClientCredentials;
 class Kernel extends HttpKernel
 {
     /**
-     * The application's global HTTP middleware stack.
-     *
-     * These middleware are run during every request to your application.
-     *
-     * @var array
+     * @var array<string>
      */
     protected $middleware = [
         TrustProxies::class,
@@ -48,9 +45,7 @@ class Kernel extends HttpKernel
     ];
 
     /**
-     * The application's route middleware groups.
-     *
-     * @var array
+     * @var array<string>
      */
     protected $middlewareGroups = [
         'web' => [
@@ -78,6 +73,7 @@ class Kernel extends HttpKernel
      * @var array<string>
      */
     protected $routeMiddleware = [
+        'formdata' => FormDataHandler::class,
         'auth' => Authenticate::class,
         'client' => CheckClientCredentials::class,
         'auth.basic' => AuthenticateWithBasicAuth::class,

@@ -28,6 +28,8 @@ class CreateQueue
                 'name' => $queueDto->getName(),
                 'description' => $queueDto->getDescription(),
                 'start_at' => $queueDto->getStartAt(),
+                'timezone' => $queueDto->getTimezone(),
+                'timezone_utc_offset' => $queueDto->getTimezoneUtcOffset(),
                 'active' => $queueDto->getActive(),
                 'crawler_id' => $queueDto->getCrawler()->id,
                 'user_id' => Auth::id(),

@@ -33,7 +33,7 @@ class CreateCrawlerProxy
                 'user_id' => $crawlerDto->getUserId(),
             ]);
 
-            Log::info('1682672390: Proxy created', compact('crawlerProxy', 'proxy'));
+            Log::info('1682672390: Proxy created');
 
         } catch (Throwable $e) {
             throw new Exception('Proxy could not be created', 422, $e);

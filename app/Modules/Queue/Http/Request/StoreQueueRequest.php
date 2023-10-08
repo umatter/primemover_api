@@ -14,6 +14,8 @@ class StoreQueueRequest extends FormRequest
             'description' => ['required'],
             'user_id' => ['required'],
             'crawler_id' => ['required'],
+            'timezone' => ['required'],
+            'timezone_utc_offset' => ['required'],
             'active' => [],
             'new' => [],
             'processed' => [],

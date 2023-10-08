@@ -33,7 +33,7 @@ class CreateExperimentCrawlers
 
             ]);
 
-            Log::info('1682672455: Crawler created', compact('crawler'));
+            Log::info('1682672455: Crawler created');
 
         } catch (Throwable $e) {
             throw new Exception('Crawler could not be created', 422, $e);

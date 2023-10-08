@@ -36,7 +36,7 @@ class CreateConfigurationParams
                 'media_outlet_urls' => $dto->getMediaOutletUrlsEncoded(),
             ]);
 
-            Log::info('1682672275: Configuration params created', compact('param'));
+            Log::info('1682672275: Configuration params created');
 
         } catch (Throwable $e) {
             throw new Exception('Configuration params could not be created', 422, $e);

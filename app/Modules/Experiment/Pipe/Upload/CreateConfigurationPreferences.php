@@ -36,7 +36,7 @@ class CreateConfigurationPreferences
                     ]);
             });
 
-            Log::info('1682672350: Configuration preferences created', compact('preferences'));
+            Log::info('1682672350: Configuration preferences created');
 
         } catch (Throwable $e) {
             throw new Exception('Configuration preferences could not be created', 422, $e);

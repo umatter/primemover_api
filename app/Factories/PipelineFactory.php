@@ -2,8 +2,8 @@
 
 namespace App\Factories;
 
-use Illuminate\Pipeline\Pipeline;
 use Illuminate\Support\Facades\App;
+use MichaelRubel\EnhancedPipeline\Pipeline;
 
 class PipelineFactory
 {

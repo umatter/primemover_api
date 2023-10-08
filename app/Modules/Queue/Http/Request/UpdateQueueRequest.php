@@ -14,6 +14,8 @@ class UpdateQueueRequest extends FormRequest
             'active' => [],
             'new' => [],
             'processed' => [],
+            'timezone' => [],
+            'timezone_utc_offset' => [],
             'processing' => [],
             'reviewed' => [],
             'status_code' => [],

@@ -2,34 +2,16 @@
 
 namespace App\Modules\Experiment\Repository;
 
-use App\Facades\Factories\PipelineFactory;
 use App\Facades\Services\DataMapper;
 use App\Facades\Services\PreferenceService;
+use App\Modules\Experiment\Facade\ExperimentService;
 use App\Modules\Experiment\Http\Request\ExperimentUploadRequest;
 use App\Modules\Experiment\Model\DTO\CrawlerDto;
 use App\Modules\Experiment\Model\DTO\DownloadData;
 use App\Modules\Experiment\Model\Experiment;
-use App\Modules\Experiment\Pipe\Download\AddFilesToZipArchive;
-use App\Modules\Experiment\Pipe\Download\CleanUpTempFilesAndFolders;
-use App\Modules\Experiment\Pipe\Download\CreateAndStoreExportLocally;
-use App\Modules\Experiment\Pipe\Download\CreateZipArchiveOrFail;
-use App\Modules\Experiment\Pipe\Download\PrepareFilePathAndName;
-use App\Modules\Experiment\Pipe\Download\StoreCreatedZipArchive;
-use App\Modules\Experiment\Pipe\Upload\AssertExperimentExists;
-use App\Modules\Experiment\Pipe\Upload\CreateConfigurationParams;
-use App\Modules\Experiment\Pipe\Upload\CreateConfigurationPreferences;
-use App\Modules\Experiment\Pipe\Upload\CreateCrawlerAgent;
-use App\Modules\Experiment\Pipe\Upload\CreateCrawlerConfiguration;
-use App\Modules\Experiment\Pipe\Upload\CreateCrawlerProxy;
-use App\Modules\Experiment\Pipe\Upload\CreateCrawlerQueues;
-use App\Modules\Experiment\Pipe\Upload\CreateExperimentCrawlers;
-use App\Modules\Experiment\Pipe\Upload\DispatchUploadEvents;
-use App\Modules\Experiment\Pipe\Upload\RemoveNewFlag;
-use App\Modules\S3\Facade\S3Service;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
@@ -115,46 +97,18 @@ class ExperimentRepository
      * @throws Throwable
      * @throws ValidationException
      */
-    public function upload(ExperimentUploadRequest $request, Experiment $experiment): mixed
+    public function upload(ExperimentUploadRequest $request, Experiment $experiment): void
     {
-        return DataMapper::disableEnforceType()
+        DataMapper::disableEnforceType()
             ->removeUndefinedAttributes()
-            ->mapList($request->getJsonFileContent(), CrawlerDto::class)
-            ->map(function (CrawlerDto $crawlerDto) use ($experiment) {
-                return PipelineFactory::create()
-                    ->send($crawlerDto->setExperiment($experiment))
-                    ->through([
-                        AssertExperimentExists::class,
-                        RemoveNewFlag::class,
-                        CreateCrawlerConfiguration::class,
-                        CreateConfigurationParams::class,
-                        CreateConfigurationPreferences::class,
-                        CreateCrawlerProxy::class,
-                        CreateCrawlerAgent::class,
-                        CreateExperimentCrawlers::class,
-                        CreateCrawlerQueues::class,
-                        DispatchUploadEvents::class,
-                    ])
-                    ->then(function (): void {
-                        Log::info('1682672742: Crawler upload done');
-                    });
-            });
+            ->mapList($request->getJsonContent(), CrawlerDto::class)
+            ->each(fn (CrawlerDto $crawlerDto) => ExperimentService::upload($experiment, $crawlerDto));
     }
 
     public function download(Experiment $experiment): Response
     {
         $passable = DownloadData::from(compact('experiment'));
 
-        return PipelineFactory::create()
-            ->send($passable)
-            ->through([
-                PrepareFilePathAndName::class,
-                CreateAndStoreExportLocally::class,
-                CreateZipArchiveOrFail::class,
-                AddFilesToZipArchive::class,
-                CleanUpTempFilesAndFolders::class,
-                StoreCreatedZipArchive::class,
-            ])
-            ->then(fn (DownloadData $passable) => S3Service::downloadFile($passable->getPathUploadS3()));
+        return ExperimentService::download($passable);
     }
 }
