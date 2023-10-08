@@ -66,8 +66,8 @@ class ExperimentService
                 CreateAndStoreExportLocally::class,
                 CreateZipArchiveOrFail::class,
                 AddFilesToZipArchive::class,
-                CleanUpTempFilesAndFolders::class,
                 StoreCreatedZipArchive::class,
+                CleanUpTempFilesAndFolders::class,
             ])
             ->onFailure(function (DownloadData $downloadData, Throwable $throwable): Response {
                 Log::error('1682672685: Experiment download failed', [
