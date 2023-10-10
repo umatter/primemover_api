@@ -7,6 +7,7 @@ use App\Http\Middleware\CheckForMaintenanceMode;
 use App\Http\Middleware\EncryptCookies;
 use App\Http\Middleware\FormDataHandler;
 use App\Http\Middleware\HeaderMiddleware;
+use App\Http\Middleware\OauthRequestModifier;
 use App\Http\Middleware\RedirectIfAuthenticated;
 use App\Http\Middleware\SetLocale;
 use App\Http\Middleware\TrimStrings;
@@ -74,6 +75,7 @@ class Kernel extends HttpKernel
      */
     protected $routeMiddleware = [
         'formdata' => FormDataHandler::class,
+        'oauth.token' => OauthRequestModifier::class,
         'auth' => Authenticate::class,
         'client' => CheckClientCredentials::class,
         'auth.basic' => AuthenticateWithBasicAuth::class,

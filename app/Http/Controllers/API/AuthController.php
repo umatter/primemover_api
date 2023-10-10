@@ -2,34 +2,34 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Password;
-use Illuminate\Support\Facades\Route;
+use Symfony\Component\HttpFoundation\Response;
 
 class AuthController extends Controller
 {
-    public function token(Request $request)
+    public const OAUTH_TOKEN_ENDPOINT = 'oauth/token';
+
+    public function token(Request $request): Response
     {
-        $request->request->add([
-            'grant_type' => 'password',
-            'client_id' => config('auth.passport.client_id'),
-            'client_secret' => config('auth.passport.client_secret'),
-        ]);
+        $proxy = $request->create(self::OAUTH_TOKEN_ENDPOINT, 'POST', $request->all());
 
-        $proxy = Request::create('oauth/token', 'post');
+        Log::debug('1696930633: Handling oauth token request');
 
-        return Route::dispatch($proxy);
+        return App::handle($proxy);
     }
 
     public function user(): ?Authenticatable
     {
-        return auth()->user();
+        return Auth::user();
     }
 
     public function register(Request $request)

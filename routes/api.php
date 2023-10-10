@@ -98,12 +98,20 @@ Route::prefix('v1')->group(function (): void {
 
     });
 
-    Route::post('login', [AuthController::class, 'login']);
-    Route::get('ip/{ip?}', [CrawlerController::class, 'ip']);
-    Route::post('auth/token', [AuthController::class, 'token']);
-    Route::group(['middleware' => ['auth:api']], function (): void {
-        Route::get('auth/user', [AuthController::class, 'user']);
+    Route::controller(AuthController::class)->group(function (): void {
+        Route::post('login', 'login');
+        Route::post('forgot-password', 'forgotPassword');
+        Route::post('reset-password', 'resetPassword');
+
+        Route::middleware(['oauth.token'])->group(function (): void {
+            Route::post('auth/token', 'token');
+        });
+
+        Route::middleware(['auth:api'])->group(function (): void {
+            Route::get('auth/user', 'user');
+        });
     });
-    Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
-    Route::post('/reset-password', [AuthController::class, 'resetPassword']);
+
+    Route::get('ip/{ip?}', [CrawlerController::class, 'ip']);
+
 });
