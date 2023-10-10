@@ -57,7 +57,7 @@ class ExperimentUploadRequest extends FormRequest
             'json.*.queues.*.jobs.*.behaviors.*.name' => ['required', 'string', 'max:255'],
             'json.*.queues.*.jobs.*.behaviors.*.description' => ['nullable', 'string', 'max:255'],
             'json.*.queues.*.jobs.*.behaviors.*.active' => ['boolean'],
-            'json.*.queues.*.jobs.*.behaviors.*.value' => ['required'],
+            'json.*.queues.*.jobs.*.behaviors.*.value' => ['nullable'],
         ];
     }
 
