@@ -13,7 +13,7 @@ class AssertJobHasReports
     public function handle(JobReportData $jobReportData, Closure $next): mixed
     {
         if (0 === $jobReportData->getJob()->reports()->count()) {
-            throw new Exception('Job has no reports');
+            throw new Exception('Job has no reports attached');
         }
 
         return $next($jobReportData);

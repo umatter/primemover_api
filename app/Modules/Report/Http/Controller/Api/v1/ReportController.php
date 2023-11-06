@@ -10,6 +10,7 @@ use App\Modules\Report\Model\Report;
 use Exception;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Resources\Json\ResourceCollection;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Response;
 
 class ReportController extends Controller
@@ -44,13 +45,15 @@ class ReportController extends Controller
     public function download(Job $job): \Symfony\Component\HttpFoundation\Response
     {
         $response = ReportRepository::download($job);
+        $filename = $job->getReportZipFilename();
 
-        if ($response) {
-            return Response::download($response, 'report-job-'.$job->id.'.zip', [
-                'Content-Type' => 'application/zip',
-            ])->deleteFileAfterSend();
+        if ( ! $response) {
+            App::abort(404, 'Report not found or invalid');
         }
 
-        return Response::noContent();
+        return Response::download($response, $filename, [
+            'Content-Type' => 'application/zip',
+            'Content-Disposition' => "attachment; filename={$filename}",
+        ])->deleteFileAfterSend();
     }
 }

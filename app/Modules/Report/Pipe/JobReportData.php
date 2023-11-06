@@ -3,6 +3,7 @@
 namespace App\Modules\Report\Pipe;
 
 use App\Modules\Job\Model\Job;
+use Illuminate\Support\Collection;
 use Spatie\LaravelData\Data;
 use ZipArchive;
 
@@ -13,6 +14,8 @@ class JobReportData extends Data
     private ?string $zipPath = null;
 
     private ?Job $job = null;
+
+    private ?Collection $reports = null;
 
     public function getZipArchive(): ?ZipArchive
     {
@@ -46,6 +49,18 @@ class JobReportData extends Data
     public function setJob(?Job $job): JobReportData
     {
         $this->job = $job;
+
+        return $this;
+    }
+
+    public function getReports(): ?Collection
+    {
+        return $this->reports;
+    }
+
+    public function setReports(?Collection $reports): JobReportData
+    {
+        $this->reports = $reports;
 
         return $this;
     }

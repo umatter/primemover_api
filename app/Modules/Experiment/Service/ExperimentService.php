@@ -51,6 +51,7 @@ class ExperimentService
                     'crawler' => $crawlerDto->getName(),
                     'error' => $throwable->getMessage(),
                 ]);
+                throw $throwable;
             })
             ->then(fn () => Log::info('1682672742: Crawler upload done'));
     }

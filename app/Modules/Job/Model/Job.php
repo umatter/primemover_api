@@ -31,12 +31,18 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property Carbon $finished_at
  * @property int $previous_job_id
  * @property \App\Modules\Job\Model\Job previousJob
+ *
+ * @method static HasMany reportsWithRemotePath()
  */
 class Job extends BaseModel
 {
     use HasFactory;
 
     protected $guarded = [];
+
+    protected $appends = [
+        'reports_with_path_count',
+    ];
 
     public function crawler(): BelongsTo
     {
@@ -72,5 +78,20 @@ class Job extends BaseModel
     public function scopeQueue(Builder $query, int $queueId): Builder
     {
         return $query->where('queue_id', $queueId);
+    }
+
+    public function scopeReportsWithRemotePath(): HasMany
+    {
+        return $this->reports()->whereNotNull('path');
+    }
+
+    public function getReportsWithPathCountAttribute(): int
+    {
+        return $this->reportsWithRemotePath()->count();
+    }
+
+    public function getReportZipFilename(): string
+    {
+        return 'report-job-'.$this->id.'.zip';
     }
 }

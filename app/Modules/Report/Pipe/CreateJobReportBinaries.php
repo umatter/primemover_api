@@ -3,6 +3,8 @@
 namespace App\Modules\Report\Pipe;
 
 use App\Facades\Factories\ZipFactory;
+use App\Modules\Report\Exception\ReportDownloadException;
+use App\Modules\Report\Facade\Service\ReportService;
 use Closure;
 use Exception;
 use Illuminate\Support\Facades\Log;
@@ -20,27 +22,28 @@ class CreateJobReportBinaries
 
         $job = $jobReportData->getJob();
 
-        try {
-
-            foreach ($job->reports()->get() as $report) {
-                $path = Storage::disk('s3')->path($report->path);
-                $file = Storage::disk('s3')->get($path);
+        foreach ($jobReportData->getReports() as $report) {
+            try {
+                $path = ReportService::getRemotePath($report);
+                $file = ReportService::getFileByPath($path);
                 $filename = basename($path);
 
                 Storage::disk('public')->put('report-job-'.$job->id."/{$filename}", $file);
+            } catch (ReportDownloadException) {
+                Log::error('1695907101: Failed to download report', [
+                    'job' => $job->id,
+                    'report' => $report->id,
+                ]);
+
+                continue;
             }
-        } catch (Throwable $exception) {
-            Log::error('1695907087: Failed to create binary', [
-                'exception' => $exception->getMessage(),
-            ]);
-            throw $exception;
         }
 
-        $zip = ZipFactory::create();
-        $zipPath = Storage::path('app/public/report-job-'.$job->id.'.zip');
+        $zipArchive = ZipFactory::create();
+        $zipPath = ReportService::getZipPath($job);
 
         return $next(
-            $jobReportData->setZipArchive($zip)->setZipPath($zipPath)
+            $jobReportData->setZipArchive($zipArchive)->setZipPath($zipPath)
         );
     }
 }

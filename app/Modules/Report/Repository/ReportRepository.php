@@ -9,6 +9,7 @@ use App\Modules\Report\Pipe\AddFilesToArchive;
 use App\Modules\Report\Pipe\AssertJobHasReports;
 use App\Modules\Report\Pipe\CreateJobReportBinaries;
 use App\Modules\Report\Pipe\JobReportData;
+use App\Modules\Report\Pipe\TakeOnlyReportsWithPathOrFail;
 use Exception;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Log;
@@ -65,22 +66,23 @@ class ReportRepository
     public function download(Job $job): ?string
     {
         $jobReportData = JobReportData::from([])->setJob($job);
-        try {
-            return PipelineFactory::create()
-                ->send($jobReportData)
-                ->through([
-                    AssertJobHasReports::class,
-                    CreateJobReportBinaries::class,
-                    AddFilesToArchive::class,
-                ])
-                ->then(fn (JobReportData $jobReportData) => $jobReportData->getZipPath());
 
-        } catch (Exception $exception) {
-            Log::error('1695906366: Failed to get report data', [
-                'exception' => $exception->getMessage(),
-            ]);
-        }
+        return PipelineFactory::create()
+            ->send($jobReportData)
+            ->through([
+                AssertJobHasReports::class,
+                TakeOnlyReportsWithPathOrFail::class,
+                CreateJobReportBinaries::class,
+                AddFilesToArchive::class,
+            ])
+            ->onFailure(function (JobReportData $jobReportData, Exception $exception): void {
+                Log::error('1698493053: Failed to download report', [
+                    'message' => $exception->getMessage(),
+                    'job' => $jobReportData->getJob()->id,
+                ]);
 
-        return null;
+                throw $exception;
+            })
+            ->then(fn (JobReportData $jobReportData) => $jobReportData->getZipPath());
     }
 }
