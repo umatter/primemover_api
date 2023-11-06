@@ -77,7 +77,7 @@ class ExperimentService
                     'error' => $throwable->getMessage(),
                 ]);
 
-                return \Illuminate\Support\Facades\Response::noContent(500);
+                throw $throwable;
             })
             ->then(function (DownloadData $passable) {
                 Log::info('1682672710: Experiment download pipeline done', [
