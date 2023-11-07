@@ -41,9 +41,12 @@ class CreateJobReportBinaries
 
         $zipArchive = ZipFactory::create();
         $zipPath = ReportService::getZipPath($job);
+        $zipPathPublic = Storage::disk('public')->path($zipPath);
 
         return $next(
-            $jobReportData->setZipArchive($zipArchive)->setZipPath($zipPath)
+            $jobReportData
+                ->setZipArchive($zipArchive)
+                ->setZipPath($zipPathPublic)
         );
     }
 }
