@@ -31,14 +31,13 @@ class AddFilesToArchive
 
             Log::debug('1699386187: Files added to archive', [
                 'job' => $job->id,
-                'files' => $publicDisk->files($path),
-                'zip' => $zip->count(),
-                'path' => $path,
+                'allFiles' => $publicDisk->files($path),
+                'zipArchive' => $zip,
+                'filePath' => $path,
                 'zipPath' => $zipPath,
+                'zipClose' => $zip->close(),
+                'dirDelete' => $publicDisk->deleteDirectory($path),
             ]);
-
-            $zip->close();
-            $publicDisk->deleteDirectory($path);
         } else {
             throw new Exception('Unable to create ZIP archive');
         }
