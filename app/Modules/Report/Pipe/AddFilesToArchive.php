@@ -2,8 +2,11 @@
 
 namespace App\Modules\Report\Pipe;
 
+use App\Modules\Report\Facade\Service\ReportService;
 use Closure;
 use Exception;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Storage;
 use ZipArchive;
 
 class AddFilesToArchive
@@ -16,22 +19,17 @@ class AddFilesToArchive
         $zip = $jobReportData->getZipArchive();
         $zipPath = $jobReportData->getZipPath();
         $job = $jobReportData->getJob();
+        $path = ReportService::getReplacedPath($job);
+        $publicDisk = Storage::disk('public');
 
         if ($zip->open($zipPath, ZipArchive::CREATE | ZipArchive::OVERWRITE)) {
-            $folderPath = storage_path('app/public/report-job-'.$job->id.'/');
-
-            $files = glob($folderPath.'*');
-            foreach ($files as $file) {
-                $filename = basename($file);
-                if (is_file($file)) {
-                    $zip->addFile($file, $filename);
-                }
-            }
+            Collection::make($publicDisk->files($path))
+                ->map(fn (string $file) => $publicDisk->path($file))
+                ->filter(fn (string $file) => ! $publicDisk->exists($file))
+                ->each(fn (string $file) => $zip->addFile($file, basename($file)));
 
             $zip->close();
-
-            array_map('unlink', glob("{$folderPath}*.*"));
-            rmdir($folderPath);
+            $publicDisk->deleteDirectory($path);
         } else {
             throw new Exception('Unable to create ZIP archive');
         }

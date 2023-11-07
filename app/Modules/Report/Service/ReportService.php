@@ -8,32 +8,16 @@ use App\Modules\Report\Model\Report;
 use Exception;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class ReportService
 {
     /**
      * @throws \App\Modules\Report\Exception\ReportDownloadException
      */
-    public function getRemotePath(Report $report): string
+    public function getFileByPath(Report $report): ?string
     {
-        try {
-            return Storage::disk('s3')->path($report->path);
-        } catch (Exception $exception) {
-            Log::error('1695907089: Failed to get remote path', [
-                'path' => $report->path,
-                'exception' => $exception->getMessage(),
-            ]);
-
-            throw new ReportDownloadException('Failed to get remote path');
-        }
-    }
-
-    /**
-     * @throws \App\Modules\Report\Exception\ReportDownloadException
-     */
-    public function getFileByPath(string $path): ?string
-    {
-        $file = Storage::disk('s3')->get($path);
+        $file = Storage::disk(Report::S3DISK)->get($this->getS3Path($report));
 
         if ( ! $file) {
             throw new ReportDownloadException('Path not found');
@@ -48,14 +32,44 @@ class ReportService
     public function getZipPath(Job $job): string
     {
         try {
-            return Storage::path('app/public/report-job-'.$job->id.'.zip');
+            return Storage::disk(Report::S3DISK)->path($this->getReplacedZipPath($job));
         } catch (Exception $exception) {
             Log::error('1695907099: Failed to get zip path', [
                 'job' => $job->id,
+                'disk' => Report::S3DISK,
                 'exception' => $exception->getMessage(),
             ]);
 
             throw new ReportDownloadException('Failed to get zip path');
         }
+    }
+
+    public function getS3Bucket(Report $report): ?string
+    {
+
+        if (Str::contains($report->path, Report::S3PREFIX)) {
+            return Str::before(Str::after($report->path, Report::S3PREFIX), '/');
+        }
+
+        return null;
+    }
+
+    public function getS3Path(Report $report): string
+    {
+        if (Str::contains($report->path, Report::S3PREFIX)) {
+            return Str::remove(Report::S3PREFIX, $report->path);
+        }
+
+        return $report->path;
+    }
+
+    public function getReplacedZipPath(Job $job): string
+    {
+        return Str::replace('%id%', $job->id, 'job_%id%_reports.zip');
+    }
+
+    public function getReplacedPath(Job $job): string
+    {
+        return Str::replace('%id%', $job->id, 'job_%id%_reports');
     }
 }

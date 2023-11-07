@@ -10,9 +10,9 @@ use App\Modules\Report\Pipe\AssertJobHasReports;
 use App\Modules\Report\Pipe\CreateJobReportBinaries;
 use App\Modules\Report\Pipe\JobReportData;
 use App\Modules\Report\Pipe\TakeOnlyReportsWithPathOrFail;
-use Exception;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Log;
+use Throwable;
 
 // TODO Refactor asap
 class ReportRepository
@@ -75,7 +75,7 @@ class ReportRepository
                 CreateJobReportBinaries::class,
                 AddFilesToArchive::class,
             ])
-            ->onFailure(function (JobReportData $jobReportData, Exception $exception): void {
+            ->onFailure(function (JobReportData $jobReportData, Throwable $exception): void {
                 Log::error('1698493053: Failed to download report', [
                     'message' => $exception->getMessage(),
                     'job' => $jobReportData->getJob()->id,

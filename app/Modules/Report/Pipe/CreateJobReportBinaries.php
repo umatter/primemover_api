@@ -24,11 +24,11 @@ class CreateJobReportBinaries
 
         foreach ($jobReportData->getReports() as $report) {
             try {
-                $path = ReportService::getRemotePath($report);
-                $file = ReportService::getFileByPath($path);
-                $filename = basename($path);
+                $filename = basename($report->path);
+                $file = ReportService::getFileByPath($report);
+                $path = ReportService::getReplacedPath($job)."/{$filename}";
 
-                Storage::disk('public')->put('report-job-'.$job->id."/{$filename}", $file);
+                Storage::disk('public')->put($path, $file);
             } catch (ReportDownloadException) {
                 Log::error('1695907101: Failed to download report', [
                     'job' => $job->id,

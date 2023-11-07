@@ -23,6 +23,10 @@ class Report extends BaseModel
 {
     use HasFactory;
 
+    public const S3PREFIX = 's3://primemoverrunner/';
+
+    public const S3DISK = 's3runner';
+
     protected $guarded = [];
 
     public function job(): BelongsTo
