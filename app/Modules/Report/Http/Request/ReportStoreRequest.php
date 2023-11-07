@@ -17,7 +17,12 @@ class ReportStoreRequest extends FormRequest
         return [
             'job_id' => ['required'],
             'mimetype' => ['required'],
+            'filename' => ['required'],
             'active' => ['required'],
+            'description' => ['nullable'],
+            'user_id' => ['required'],
+            'filecontent' => ['nullable'],
+            'path' => ['required'],
         ];
     }
 
