@@ -35,9 +35,10 @@ class AddFilesToArchive
                 'zipArchive' => $zip,
                 'filePath' => $path,
                 'zipPath' => $zipPath,
-                'zipClose' => $zip->close(),
-                'dirDelete' => $publicDisk->deleteDirectory($path),
             ]);
+
+            $zip->close();
+            $publicDisk->deleteDirectory($path);
         } else {
             throw new Exception('Unable to create ZIP archive');
         }
