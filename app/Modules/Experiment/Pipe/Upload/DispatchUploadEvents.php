@@ -6,6 +6,7 @@ use App\Events\ModelUpdateEvent;
 use App\Modules\Experiment\Model\DTO\CrawlerDto;
 use Closure;
 use Exception;
+use Illuminate\Support\Facades\Log;
 
 class DispatchUploadEvents
 {
@@ -14,7 +15,14 @@ class DispatchUploadEvents
      */
     public function handle(CrawlerDto $crawlerDto, Closure $next): mixed
     {
-        //ModelUpdateEvent::dispatch($crawlerDto->getExperiment());
+        try {
+            ModelUpdateEvent::dispatch($crawlerDto->getExperiment());
+        } catch (Exception $exception) {
+            Log::debug('1682672742: Failed to dispatch model update event', [
+                'crawler' => $crawlerDto->getName(),
+                'error' => $exception->getMessage(),
+            ]);
+        }
 
         return $next($crawlerDto);
     }
