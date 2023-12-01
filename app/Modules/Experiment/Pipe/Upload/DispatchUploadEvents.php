@@ -16,7 +16,7 @@ class DispatchUploadEvents
     public function handle(CrawlerDto $crawlerDto, Closure $next): mixed
     {
         try {
-            ModelUpdateEvent::dispatch($crawlerDto->getExperiment());
+            //ModelUpdateEvent::dispatch($crawlerDto->getExperiment());
         } catch (Exception $exception) {
             Log::debug('1682672742: Failed to dispatch model update event', [
                 'crawler' => $crawlerDto->getName(),
