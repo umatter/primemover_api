@@ -48,6 +48,6 @@ class Experiment extends BaseModel
 
     public static function bootedSaved(Model $model): void
     {
-        ModelUpdateEvent::dispatch($model);
+        //ModelUpdateEvent::dispatch($model);
     }
 }

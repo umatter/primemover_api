@@ -14,7 +14,7 @@ class DispatchUploadEvents
      */
     public function handle(CrawlerDto $crawlerDto, Closure $next): mixed
     {
-        ModelUpdateEvent::dispatch($crawlerDto->getExperiment());
+        //ModelUpdateEvent::dispatch($crawlerDto->getExperiment());
 
         return $next($crawlerDto);
     }
