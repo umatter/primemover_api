@@ -5,11 +5,12 @@ namespace App\Notifications;
 use App\Events\ModelUpdateEvent;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use Illuminate\Support\Facades\Log;
 
-class ModelUpdateNotification extends Notification
+class ModelUpdateNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 
