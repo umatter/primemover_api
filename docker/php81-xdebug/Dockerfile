@@ -36,8 +36,7 @@ RUN docker-php-ext-enable gd zip pcntl
 RUN pecl install -f xdebug && \
     docker-php-ext-enable xdebug
 
-RUN pecl install -f memcached && \
-    docker-php-ext-enable memcached
+#RUN pecl install -f memcached && \ docker-php-ext-enable memcached
 
 RUN echo ipv4 >> ~/.curlrc && \
     curl -v -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer && \

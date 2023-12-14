@@ -35,8 +35,7 @@ RUN docker-php-ext-install zip
 RUN docker-php-ext-enable gd zip pcntl
 
 #RUN docker-php-ext-install -j$(nproc) gd curl pdo_mysql opcache xml zip mbstring intl
-RUN pecl install -f memcached && \
-    docker-php-ext-enable memcached
+#RUN pecl install -f memcached && \docker-php-ext-enable memcached
 
 RUN echo ipv4 >> ~/.curlrc && \
     curl -v -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer && \
