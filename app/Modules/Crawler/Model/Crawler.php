@@ -165,7 +165,7 @@ class Crawler extends BaseModel
     public static function queryBuilder(): QueryBuilder
     {
         return QueryBuilder::for(self::class)
-            ->allowedSorts(['id', 'name', 'created_at', 'updated_at'])
+            ->allowedSorts(['id', 'name', 'experiment_id', 'created_at', 'updated_at'])
             ->defaultSort('-id')
             ->allowedFilters([
                 AllowedFilter::partial('name'),
