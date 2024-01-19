@@ -71,6 +71,9 @@
     "trim_array_spaces": true,
     "use_arrow_functions": true,
     "void_return": true,
-    "yoda_style": true
+    "yoda_style": true,
+    "no_superfluous_phpdoc_tags": false,
+    "phpdoc_align": true,
+    "octal_notation": false
   }
 }
