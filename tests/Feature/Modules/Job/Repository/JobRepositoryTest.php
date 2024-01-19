@@ -16,7 +16,7 @@ use Tests\TestCase;
 class JobRepositoryTest extends TestCase
 {
     /**
-     * @covers ::getData
+     * @covers ::all
      */
     public function testGetData(): void
     {
@@ -27,7 +27,7 @@ class JobRepositoryTest extends TestCase
         ]);
 
         $service = new JobRepository(new Job());
-        $result = $service->getData($queue->id);
+        $result = $service->all($queue->id);
 
         $this->assertInstanceOf(LengthAwarePaginator::class, $result);
 

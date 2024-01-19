@@ -11,7 +11,7 @@ class TermRepository
     {
     }
 
-    public function getData(): LengthAwarePaginator
+    public function all(): LengthAwarePaginator
     {
         return Term::query()
             ->paginate(10);

@@ -13,9 +13,11 @@ class ConfigurationRepository
     {
     }
 
-    public function getData(): QueryBuilder
+    public function all(): QueryBuilder
     {
         return QueryBuilder::for($this->configuration)
+            ->allowedSorts(['id', 'name', 'created_at', 'updated_at'])
+            ->defaultSort('-id')
             ->allowedFilters([
                 AllowedFilter::scope('search'),
                 AllowedFilter::scope('after'),

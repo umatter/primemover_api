@@ -16,9 +16,11 @@ class ProxyRepository
     {
     }
 
-    public function getData($data): ResourceCollection
+    public function all($data): ResourceCollection
     {
         $proxies = QueryBuilder::for(Proxy::class)
+            ->allowedSorts(['id', 'name', 'created_at', 'updated_at'])
+            ->defaultSort('-id')
             ->allowedFilters([
                 AllowedFilter::scope('search'),
                 AllowedFilter::scope('after'),

@@ -19,7 +19,7 @@ class AgentController extends Controller
 
     public function index(): ResourceCollection
     {
-        $agents = $this->repository->getData();
+        $agents = $this->repository->all();
 
         return ResourceCollection::make($agents->get())
             ->additional($this->repository->additional($agents));

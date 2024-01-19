@@ -17,7 +17,7 @@ class OutletController extends Controller
 
     public function index(): ResourceCollection
     {
-        $outlets = $this->repository->getData();
+        $outlets = $this->repository->all();
 
         return ResourceCollection::make($outlets);
     }

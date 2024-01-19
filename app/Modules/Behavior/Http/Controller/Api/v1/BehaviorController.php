@@ -18,7 +18,7 @@ class BehaviorController extends Controller
 
     public function index(): ResourceCollection
     {
-        $behaviors = $this->repository->getData();
+        $behaviors = $this->repository->all();
 
         return ResourceCollection::make($behaviors);
     }

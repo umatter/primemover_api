@@ -18,12 +18,12 @@ use Tests\TestCase;
 class ParamRepositoryTest extends TestCase
 {
     /**
-     * @covers ::getData
+     * @covers ::all
      */
     public function testGetData(): void
     {
         $service = new ParamRepository(new Param());
-        $result = $service->getData();
+        $result = $service->all();
 
         $this->assertInstanceOf(Collection::class, $result);
 

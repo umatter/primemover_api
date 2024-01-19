@@ -21,7 +21,7 @@ class JobController extends Controller
     public function index(Request $request): ResourceCollection
     {
         $queueId = $request->input('queue');
-        $jobs = $this->repository->getData($queueId);
+        $jobs = $this->repository->all($queueId);
 
         return ResourceCollection::make($jobs);
     }

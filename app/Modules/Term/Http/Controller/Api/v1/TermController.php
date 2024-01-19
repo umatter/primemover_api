@@ -14,7 +14,7 @@ class TermController extends Controller
 
     public function index(): ResourceCollection
     {
-        $terms = $this->repository->getData();
+        $terms = $this->repository->all();
 
         return ResourceCollection::make($terms);
     }

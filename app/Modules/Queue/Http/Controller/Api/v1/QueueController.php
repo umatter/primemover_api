@@ -23,7 +23,7 @@ class QueueController extends Controller
     {
         $crawlerId = $request->input('crawler');
         $sortBy = $request->input('sortBy');
-        $queues = $this->repository->getData($crawlerId, $sortBy);
+        $queues = $this->repository->all($crawlerId, $sortBy);
 
         return ResourceCollection::make($queues);
     }

@@ -17,7 +17,7 @@ class ParamController extends Controller
 
     public function index(): ResourceCollection
     {
-        $params = $this->repository->getData();
+        $params = $this->repository->all();
 
         return ResourceCollection::make($params);
     }

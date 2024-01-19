@@ -15,9 +15,11 @@ class BehaviorRepository
     {
     }
 
-    public function getData(): LengthAwarePaginator
+    public function all(): LengthAwarePaginator
     {
         return QueryBuilder::for($this->behavior)
+            ->allowedSorts(['id', 'name', 'created_at', 'updated_at'])
+            ->defaultSort('-id')
             ->allowedFilters([AllowedFilter::scope('job')])
             ->with(['job', 'user'])
             ->paginate(10);

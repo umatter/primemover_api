@@ -18,7 +18,7 @@ use Tests\TestCase;
 class ProxyRepositoryTest extends TestCase
 {
     /**
-     * @covers ::getData
+     * @covers ::all
      */
     public function testGetData(): void
     {
@@ -26,7 +26,7 @@ class ProxyRepositoryTest extends TestCase
         $data->allows('getPaged')->andReturns(1);
 
         $service = new ProxyRepository(new Proxy());
-        $result = $service->getData($data);
+        $result = $service->all($data);
 
         $this->assertInstanceOf(ResourceCollection::class, $result);
 

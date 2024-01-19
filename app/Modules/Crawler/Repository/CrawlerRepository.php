@@ -27,9 +27,11 @@ class CrawlerRepository
     {
     }
 
-    public function getData(): QueryBuilder
+    public function all(): QueryBuilder
     {
         return QueryBuilder::for($this->crawler)
+            ->allowedSorts(['id', 'name', 'created_at', 'updated_at'])
+            ->defaultSort('-id')
             ->allowedFilters([
                 AllowedFilter::partial('name'),
                 AllowedFilter::scope('after'),

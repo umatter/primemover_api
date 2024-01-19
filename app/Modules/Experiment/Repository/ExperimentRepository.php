@@ -26,6 +26,8 @@ class ExperimentRepository
     public function getData(): QueryBuilder
     {
         return QueryBuilder::for($this->experiment)
+            ->allowedSorts(['id', 'name', 'created_at', 'updated_at'])
+            ->defaultSort('-id')
             ->allowedFilters([
                 AllowedFilter::partial('name'),
                 AllowedFilter::scope('after'),

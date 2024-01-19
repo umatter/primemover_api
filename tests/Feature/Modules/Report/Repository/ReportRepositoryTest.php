@@ -16,12 +16,12 @@ use Tests\TestCase;
 class ReportRepositoryTest extends TestCase
 {
     /**
-     * @covers ::getData
+     * @covers ::all
      */
     public function testGetData(): void
     {
         $service = new ReportRepository(new Report());
-        $result = $service->getData();
+        $result = $service->all();
 
         $this->assertInstanceOf(LengthAwarePaginator::class, $result);
 

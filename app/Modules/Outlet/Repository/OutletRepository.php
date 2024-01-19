@@ -13,7 +13,7 @@ class OutletRepository
     {
     }
 
-    public function getData(): Collection
+    public function all(): Collection
     {
         return $this->outlet->with(['user'])->get();
     }

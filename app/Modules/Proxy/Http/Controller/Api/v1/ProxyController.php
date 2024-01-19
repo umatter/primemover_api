@@ -19,7 +19,7 @@ class ProxyController extends Controller
 
     public function index(ProxyIndexRequest $request): ResourceCollection
     {
-        return $this->repository->getData($request);
+        return $this->repository->all($request);
     }
 
     public function store(ProxyStoreRequest $request): JsonResource

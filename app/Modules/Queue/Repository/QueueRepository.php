@@ -17,9 +17,11 @@ class QueueRepository
     {
     }
 
-    public function getData($crawlerId, $sortBy): LengthAwarePaginator
+    public function all($crawlerId, $sortBy): LengthAwarePaginator
     {
         return QueryBuilder::for($this->queue)
+            ->allowedSorts(['id', 'name', 'created_at', 'updated_at'])
+            ->defaultSort('-id')
             ->allowedFilters([
                 AllowedFilter::partial('name'),
                 AllowedFilter::scope('after'),

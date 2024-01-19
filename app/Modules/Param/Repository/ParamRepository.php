@@ -13,7 +13,7 @@ class ParamRepository
     {
     }
 
-    public function getData(): Collection
+    public function all(): Collection
     {
         return Param::with(
             [

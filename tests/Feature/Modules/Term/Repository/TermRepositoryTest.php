@@ -15,12 +15,12 @@ use Tests\TestCase;
 class TermRepositoryTest extends TestCase
 {
     /**
-     * @covers ::getData
+     * @covers ::all
      */
     public function testGetData(): void
     {
         $service = new TermRepository(new Term());
-        $result = $service->getData();
+        $result = $service->all();
 
         $this->assertInstanceOf(LengthAwarePaginator::class, $result);
 

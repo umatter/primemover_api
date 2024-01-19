@@ -17,12 +17,12 @@ use Tests\TestCase;
 class OutletRepositoryTest extends TestCase
 {
     /**
-     * @covers ::getData
+     * @covers ::all
      */
     public function testGetData(): void
     {
         $service = new OutletRepository(new Outlet());
-        $result = $service->getData();
+        $result = $service->all();
 
         $this->assertInstanceOf(Collection::class, $result);
 

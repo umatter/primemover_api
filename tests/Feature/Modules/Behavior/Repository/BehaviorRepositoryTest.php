@@ -16,12 +16,12 @@ use Tests\TestCase;
 class BehaviorRepositoryTest extends TestCase
 {
     /**
-     * @covers ::getData
+     * @covers ::all
      */
     public function testGetData(): void
     {
         $service = new BehaviorRepository(new Behavior());
-        $result = $service->getData();
+        $result = $service->all();
 
         $this->assertInstanceOf(LengthAwarePaginator::class, $result);
 

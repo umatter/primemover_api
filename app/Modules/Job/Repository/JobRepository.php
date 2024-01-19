@@ -15,9 +15,11 @@ class JobRepository
     {
     }
 
-    public function getData($queueId): LengthAwarePaginator
+    public function all($queueId): LengthAwarePaginator
     {
         return QueryBuilder::for($this->job)
+            ->allowedSorts(['id', 'name', 'created_at', 'updated_at'])
+            ->defaultSort('-id')
             ->allowedFilters([
                 AllowedFilter::partial('name'),
                 AllowedFilter::scope('after'),

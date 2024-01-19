@@ -29,14 +29,14 @@ class CrawlerRepositoryTest extends TestCase
     }
 
     /**
-     * @covers ::getData
+     * @covers ::all
      */
     public function testGetData(): void
     {
         $experiment = Experiment::factory()->create();
 
         $service = new CrawlerRepository(new Crawler());
-        $result = $service->getData($experiment);
+        $result = $service->all($experiment);
 
         $this->assertInstanceOf(QueryBuilder::class, $result);
 

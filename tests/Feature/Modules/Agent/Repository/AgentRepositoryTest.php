@@ -15,12 +15,12 @@ use Tests\TestCase;
 class AgentRepositoryTest extends TestCase
 {
     /**
-     * @covers ::getData
+     * @covers ::all
      */
     public function testGetData(): void
     {
         $service = new AgentRepository(new Agent());
-        $result = $service->getData();
+        $result = $service->all();
 
         $this->assertInstanceOf(Collection::class, $result->get());
 
@@ -37,7 +37,7 @@ class AgentRepositoryTest extends TestCase
     public function testAdditional(): void
     {
         $service = new AgentRepository(new Agent());
-        $agentBuilder = $service->getData();
+        $agentBuilder = $service->all();
         $result = $service->additional($agentBuilder);
 
         $this->assertIsArray($result);

@@ -21,7 +21,7 @@ class ReportRepository
     {
     }
 
-    public function getData(): LengthAwarePaginator
+    public function all(): LengthAwarePaginator
     {
         return $this->report
             ->query()

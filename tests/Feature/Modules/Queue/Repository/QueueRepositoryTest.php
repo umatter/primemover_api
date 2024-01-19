@@ -23,7 +23,7 @@ use Tests\TestCase;
 class QueueRepositoryTest extends TestCase
 {
     /**
-     * @covers ::getData
+     * @covers ::all
      */
     public function testGetData(): void
     {
@@ -44,7 +44,7 @@ class QueueRepositoryTest extends TestCase
         Queue::factory(5)->create(['crawler_id' => $crawler->id]);
 
         $service = new QueueRepository(new Queue());
-        $result = $service->getData($crawler->id, $sortBy);
+        $result = $service->all($crawler->id, $sortBy);
 
         $this->assertInstanceOf(LengthAwarePaginator::class, $result);
 

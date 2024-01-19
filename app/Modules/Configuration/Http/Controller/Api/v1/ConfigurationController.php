@@ -18,7 +18,7 @@ class ConfigurationController extends Controller
 
     public function index(): ResourceCollection
     {
-        $configurations = $this->repository->getData();
+        $configurations = $this->repository->all();
 
         return ResourceCollection::make($configurations->paginate())
             ->additional($this->repository->additional($configurations));

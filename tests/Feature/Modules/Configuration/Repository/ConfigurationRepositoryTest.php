@@ -16,12 +16,12 @@ use Tests\TestCase;
 class ConfigurationRepositoryTest extends TestCase
 {
     /**
-     * @covers ::getData
+     * @covers ::all
      */
     public function testGetData(): void
     {
         $service = new ConfigurationRepository(new Configuration());
-        $result = $service->getData();
+        $result = $service->all();
 
         $this->assertInstanceOf(QueryBuilder::class, $result);
         $this->assertInstanceOf(Collection::class, $result->get());
@@ -40,7 +40,7 @@ class ConfigurationRepositoryTest extends TestCase
     public function testAdditional(): void
     {
         $service = new ConfigurationRepository(new Configuration());
-        $configurations = $service->getData()->get();
+        $configurations = $service->all()->get();
 
         $result = $service->additional($configurations);
 
