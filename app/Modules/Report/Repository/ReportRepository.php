@@ -25,7 +25,6 @@ class ReportRepository
     {
         return $this->report
             ->query()
-            ->latest()
             ->paginate(10);
     }
 

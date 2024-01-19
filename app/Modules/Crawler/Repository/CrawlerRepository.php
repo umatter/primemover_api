@@ -38,8 +38,7 @@ class CrawlerRepository
             ])
             ->where('testing', 0)
             ->where('active', 1)
-            ->with(['experiment'])
-            ->latest();
+            ->with(['experiment']);
     }
 
     public function getById(Crawler $crawler): Crawler
@@ -70,7 +69,7 @@ class CrawlerRepository
                     'proxy',
                     'configuration.preferences',
                 ]
-            )->latest()->get();
+            )->get();
     }
 
     public function processed(): Collection
@@ -91,7 +90,6 @@ class CrawlerRepository
             ->whereHas('queues', function ($q): void {
                 $q->where('processed', 1);
             })
-            ->latest()
             ->get();
     }
 
@@ -113,7 +111,6 @@ class CrawlerRepository
                     'configuration.preferences',
                 ]
             )
-            ->latest()
             ->get();
     }
 
@@ -135,7 +132,6 @@ class CrawlerRepository
             ->whereHas('queues', function ($q): void {
                 $q->where('reviewed', 1);
             })
-            ->latest()
             ->get();
     }
 
@@ -143,7 +139,7 @@ class CrawlerRepository
     {
         return $this->crawler->query()->where('testing', 1)
             ->where('active', 1)
-            ->with(['queues', 'agent.preferences', 'proxy', 'configuration.preferences'])->latest()
+            ->with(['queues', 'agent.preferences', 'proxy', 'configuration.preferences'])
             ->paginate(10);
     }
 
@@ -180,7 +176,7 @@ class CrawlerRepository
             'agent.preferences',
             'proxy',
             'configuration.preferences',
-        ])->latest()->get();
+        ])->get();
     }
 
     public function delete(Crawler $crawler): Collection
@@ -195,7 +191,7 @@ class CrawlerRepository
                 'proxy',
                 'configuration.preferences',
             ]
-        )->latest()->get();
+        )->get();
     }
 
     public function ip($ip)
@@ -228,7 +224,7 @@ class CrawlerRepository
                 'configuration.preferences',
                 'user',
             ]
-        )->latest()->get();
+        )->get();
     }
 
     public function cleanup(): Collection
@@ -244,7 +240,7 @@ class CrawlerRepository
                 'configuration.preferences',
                 'user',
             ]
-        )->latest()->get();
+        )->get();
     }
 
     /**

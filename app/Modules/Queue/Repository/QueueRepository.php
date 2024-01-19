@@ -29,7 +29,6 @@ class QueueRepository
             ->when($crawlerId, fn (Builder $query) => $query->where('crawler_id', $crawlerId))
             ->when($sortBy, fn (Builder $query) => $query->orderBy($sortBy))
             ->with(['crawler'])
-            ->latest()
             ->fastPaginate();
     }
 
@@ -49,7 +48,7 @@ class QueueRepository
     {
         $queue->delete();
 
-        return $this->queue->with(['crawler', 'jobs'])->latest()->get();
+        return $this->queue->with(['crawler', 'jobs'])->get();
     }
 
     public function job($id): Queue

@@ -58,7 +58,7 @@ class JobController extends Controller
         $this->repository->delete($job);
 
         return ResourceCollection::make(
-            Job::with(['behaviors', 'reports:id,job_id,path,filename'])->latest()->get()
+            Job::with(['behaviors', 'reports:id,job_id,path,filename'])->get()
         );
     }
 }

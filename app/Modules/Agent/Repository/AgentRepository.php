@@ -22,8 +22,7 @@ class AgentRepository
                 AllowedFilter::scope('recent'),
                 AllowedFilter::scope('crawler'),
             ])
-            ->with('preferences')
-            ->latest();
+            ->with('preferences');
     }
 
     public function additional($agents): array

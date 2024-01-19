@@ -15,7 +15,7 @@ class OutletRepository
 
     public function getData(): Collection
     {
-        return $this->outlet->with(['user'])->latest()->get();
+        return $this->outlet->with(['user'])->get();
     }
 
     public function getById($id): Outlet|Model
@@ -43,6 +43,6 @@ class OutletRepository
 
         return Outlet::with(
             ['user']
-        )->latest()->get();
+        )->get();
     }
 }

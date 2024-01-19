@@ -30,14 +30,12 @@ class ExperimentRepository
                 AllowedFilter::partial('name'),
                 AllowedFilter::scope('after'),
                 AllowedFilter::scope('recent'),
-            ])
-            ->latest();
+            ]);
     }
 
     public function all(): Collection
     {
         return $this->experiment->query()
-            ->latest()
             ->select(['id', 'name'])
             ->get();
     }

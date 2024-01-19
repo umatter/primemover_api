@@ -14,7 +14,6 @@ class TermRepository
     public function getData(): LengthAwarePaginator
     {
         return Term::query()
-            ->latest()
             ->paginate(10);
     }
 }

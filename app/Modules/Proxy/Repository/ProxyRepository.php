@@ -24,8 +24,7 @@ class ProxyRepository
                 AllowedFilter::scope('after'),
                 AllowedFilter::scope('recent'),
                 AllowedFilter::scope('crawler'),
-            ])
-            ->latest();
+            ]);
 
         return ResourceCollection::make($proxies->paginate())
             ->additional([
@@ -58,7 +57,6 @@ class ProxyRepository
         $proxy->delete();
 
         return Proxy::with(['user', 'crawler'])
-            ->latest()
             ->get();
     }
 }

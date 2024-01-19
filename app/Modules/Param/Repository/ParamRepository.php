@@ -20,7 +20,7 @@ class ParamRepository
                 'user',
                 'configuration',
             ]
-        )->latest()->get();
+        )->get();
     }
 
     public function getById($id): Param|Model
@@ -48,6 +48,6 @@ class ParamRepository
 
         return Param::with(
             ['user', 'configuration']
-        )->latest()->get();
+        )->get();
     }
 }

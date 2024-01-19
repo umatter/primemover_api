@@ -20,7 +20,6 @@ class BehaviorRepository
         return QueryBuilder::for($this->behavior)
             ->allowedFilters([AllowedFilter::scope('job')])
             ->with(['job', 'user'])
-            ->latest()
             ->paginate(10);
     }
 

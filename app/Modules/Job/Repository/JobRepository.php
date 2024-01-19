@@ -24,10 +24,8 @@ class JobRepository
                 AllowedFilter::scope('recent'),
                 AllowedFilter::scope('queue'),
             ])
-            ->latest()
             ->when($queueId, fn (Builder $query) => $query->where('queue_id', $queueId))
             ->with(['queue', 'reports'])
-            ->latest()
             ->fastPaginate();
     }
 

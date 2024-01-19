@@ -22,8 +22,7 @@ class ConfigurationRepository
                 AllowedFilter::scope('recent'),
                 AllowedFilter::scope('crawler'),
             ])
-            ->with(['params', 'preferences'])
-            ->latest();
+            ->with(['params', 'preferences']);
     }
 
     public function additional($configurations): array
