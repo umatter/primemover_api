@@ -4,7 +4,6 @@ namespace App\Modules\Configuration\Repository;
 
 use App\Modules\Configuration\Facade\Factory\ConfigurationFactory;
 use App\Modules\Configuration\Model\Configuration;
-use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 
 class ConfigurationRepository
@@ -15,16 +14,7 @@ class ConfigurationRepository
 
     public function all(): QueryBuilder
     {
-        return QueryBuilder::for($this->configuration)
-            ->allowedSorts(['id', 'name', 'created_at', 'updated_at'])
-            ->defaultSort('-id')
-            ->allowedFilters([
-                AllowedFilter::scope('search'),
-                AllowedFilter::scope('after'),
-                AllowedFilter::scope('recent'),
-                AllowedFilter::scope('crawler'),
-            ])
-            ->with(['params', 'preferences']);
+        return Configuration::queryBuilder()->with(['params', 'preferences']);
     }
 
     public function additional($configurations): array

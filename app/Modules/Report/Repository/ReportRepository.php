@@ -23,9 +23,7 @@ class ReportRepository
 
     public function all(): LengthAwarePaginator
     {
-        return $this->report
-            ->query()
-            ->paginate(10);
+        return Report::queryBuilder()->paginate(10);
     }
 
     public function save(array $data): Report

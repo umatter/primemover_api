@@ -14,6 +14,8 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Spatie\QueryBuilder\AllowedFilter;
+use Spatie\QueryBuilder\QueryBuilder;
 
 /**
  * @property int user_id
@@ -158,5 +160,18 @@ class Crawler extends BaseModel
     public function scopeExperiment(Builder $query, int $experimentId): Builder
     {
         return $query->where('experiment_id', $experimentId);
+    }
+
+    public static function queryBuilder(): QueryBuilder
+    {
+        return QueryBuilder::for(self::class)
+            ->allowedSorts(['id', 'name', 'created_at', 'updated_at'])
+            ->defaultSort('-id')
+            ->allowedFilters([
+                AllowedFilter::partial('name'),
+                AllowedFilter::scope('after'),
+                AllowedFilter::scope('recent'),
+                AllowedFilter::scope('experiment'),
+            ]);
     }
 }

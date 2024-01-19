@@ -11,6 +11,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Spatie\QueryBuilder\AllowedFilter;
+use Spatie\QueryBuilder\QueryBuilder;
 
 /**
  * @property int    $user_id
@@ -59,5 +61,18 @@ class Agent extends BaseModel
     public function scopeCrawler(Builder $query, int $crawlerId): Builder
     {
         return $query->whereHas('crawler', fn ($query) => $query->where('id', $crawlerId));
+    }
+
+    public static function queryBuilder(): QueryBuilder
+    {
+        return QueryBuilder::for(self::class)
+            ->allowedSorts(['id', 'name', 'created_at', 'updated_at'])
+            ->defaultSort('-id')
+            ->allowedFilters([
+                AllowedFilter::scope('search'),
+                AllowedFilter::scope('after'),
+                AllowedFilter::scope('recent'),
+                AllowedFilter::scope('crawler'),
+            ]);
     }
 }

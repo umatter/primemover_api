@@ -6,8 +6,6 @@ use App\Modules\Job\Model\Job;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Spatie\QueryBuilder\AllowedFilter;
-use Spatie\QueryBuilder\QueryBuilder;
 
 class JobRepository
 {
@@ -17,15 +15,7 @@ class JobRepository
 
     public function all($queueId): LengthAwarePaginator
     {
-        return QueryBuilder::for($this->job)
-            ->allowedSorts(['id', 'name', 'created_at', 'updated_at'])
-            ->defaultSort('-id')
-            ->allowedFilters([
-                AllowedFilter::partial('name'),
-                AllowedFilter::scope('after'),
-                AllowedFilter::scope('recent'),
-                AllowedFilter::scope('queue'),
-            ])
+        return Job::queryBuilder()
             ->when($queueId, fn (Builder $query) => $query->where('queue_id', $queueId))
             ->with(['queue', 'reports'])
             ->fastPaginate();

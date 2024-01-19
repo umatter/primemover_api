@@ -10,9 +10,9 @@ use App\Modules\Queue\Export\QueueExport;
 use Illuminate\Support\Facades\Facade;
 
 /**
- * @method static CrawlerExport forCrawler(Experiment $experiment)
- * @method static QueueExport forQueue(Experiment $experiment)
- * @method static JobExport forJob(Experiment $experiment)
+ * @method static CrawlerExport  forCrawler(Experiment $experiment)
+ * @method static QueueExport    forQueue(Experiment $experiment)
+ * @method static JobExport      forJob(Experiment $experiment)
  * @method static BehaviorExport forBehavior(Experiment $experiment)
  *
  * @see \App\Modules\Experiment\Factory\ExportFactory

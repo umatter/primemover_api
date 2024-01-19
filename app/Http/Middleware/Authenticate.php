@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Redirect;
 class Authenticate extends Middleware
 {
     /**
-     * @param  Request  $request
+     * @param Request $request
      */
     protected function redirectTo($request): RedirectResponse
     {

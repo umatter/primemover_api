@@ -4,7 +4,6 @@ namespace App\Modules\Agent\Repository;
 
 use App\Modules\Agent\Model\Agent;
 use Illuminate\Database\Eloquent\Model;
-use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 
 class AgentRepository
@@ -15,16 +14,7 @@ class AgentRepository
 
     public function all(): QueryBuilder
     {
-        return QueryBuilder::for($this->agent)
-            ->allowedSorts(['id', 'name', 'created_at', 'updated_at'])
-            ->defaultSort('-id')
-            ->allowedFilters([
-                AllowedFilter::scope('search'),
-                AllowedFilter::scope('after'),
-                AllowedFilter::scope('recent'),
-                AllowedFilter::scope('crawler'),
-            ])
-            ->with('preferences');
+        return Agent::queryBuilder()->with('preferences');
     }
 
     public function additional($agents): array

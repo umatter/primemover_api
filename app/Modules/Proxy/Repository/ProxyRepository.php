@@ -7,8 +7,6 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 use Illuminate\Support\Facades\Auth;
-use Spatie\QueryBuilder\AllowedFilter;
-use Spatie\QueryBuilder\QueryBuilder;
 
 class ProxyRepository
 {
@@ -18,15 +16,7 @@ class ProxyRepository
 
     public function all($data): ResourceCollection
     {
-        $proxies = QueryBuilder::for(Proxy::class)
-            ->allowedSorts(['id', 'name', 'created_at', 'updated_at'])
-            ->defaultSort('-id')
-            ->allowedFilters([
-                AllowedFilter::scope('search'),
-                AllowedFilter::scope('after'),
-                AllowedFilter::scope('recent'),
-                AllowedFilter::scope('crawler'),
-            ]);
+        $proxies = Proxy::queryBuilder();
 
         return ResourceCollection::make($proxies->paginate())
             ->additional([

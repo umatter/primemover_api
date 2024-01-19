@@ -13,7 +13,6 @@ use Exception;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 use Symfony\Component\HttpFoundation\Response as ResponseAlias;
 use Tests\Feature\Modules\Crawler\Repository\CrawlerRepositoryTest;
@@ -29,15 +28,7 @@ class CrawlerRepository
 
     public function all(): QueryBuilder
     {
-        return QueryBuilder::for($this->crawler)
-            ->allowedSorts(['id', 'name', 'created_at', 'updated_at'])
-            ->defaultSort('-id')
-            ->allowedFilters([
-                AllowedFilter::partial('name'),
-                AllowedFilter::scope('after'),
-                AllowedFilter::scope('recent'),
-                AllowedFilter::scope('experiment'),
-            ])
+        return Crawler::queryBuilder()
             ->where('testing', 0)
             ->where('active', 1)
             ->with(['experiment']);

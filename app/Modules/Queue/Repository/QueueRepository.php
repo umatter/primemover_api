@@ -8,8 +8,6 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Spatie\QueryBuilder\AllowedFilter;
-use Spatie\QueryBuilder\QueryBuilder;
 
 class QueueRepository
 {
@@ -19,15 +17,7 @@ class QueueRepository
 
     public function all($crawlerId, $sortBy): LengthAwarePaginator
     {
-        return QueryBuilder::for($this->queue)
-            ->allowedSorts(['id', 'name', 'created_at', 'updated_at'])
-            ->defaultSort('-id')
-            ->allowedFilters([
-                AllowedFilter::partial('name'),
-                AllowedFilter::scope('after'),
-                AllowedFilter::scope('recent'),
-                AllowedFilter::scope('crawler'),
-            ])
+        return Queue::queryBuilder()
             ->when($crawlerId, fn (Builder $query) => $query->where('crawler_id', $crawlerId))
             ->when($sortBy, fn (Builder $query) => $query->orderBy($sortBy))
             ->with(['crawler'])

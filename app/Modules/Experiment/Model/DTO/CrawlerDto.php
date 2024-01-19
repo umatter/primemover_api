@@ -188,7 +188,7 @@ class CrawlerDto extends Data
     }
 
     /**
-     * @param  QueueDto[]|null  $queues
+     * @param QueueDto[]|null $queues
      */
     public function setQueues(?array $queues): CrawlerDto
     {

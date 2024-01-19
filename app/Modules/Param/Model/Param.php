@@ -7,18 +7,19 @@ use App\Models\User;
 use App\Modules\Configuration\Model\Configuration;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Spatie\QueryBuilder\QueryBuilder;
 
 /**
- * @property int user_id
- * @property int configuration_id
- * @property string pi
- * @property string psi
- * @property string kappa
- * @property string tau
- * @property string beta
- * @property string alpha
- * @property array search_terms
- * @property array media_outlet_urls
+ * @property int    $user_id
+ * @property int    $configuration_id
+ * @property string $pi
+ * @property string $psi
+ * @property string $kappa
+ * @property string $tau
+ * @property string $beta
+ * @property string $alpha
+ * @property array  $search_terms
+ * @property array  $media_outlet_urls
  */
 class Param extends BaseModel
 {
@@ -38,5 +39,12 @@ class Param extends BaseModel
     public function configuration(): BelongsTo
     {
         return $this->belongsTo(Configuration::class);
+    }
+
+    public static function queryBuilder(): QueryBuilder
+    {
+        return QueryBuilder::for(self::class)
+            ->allowedSorts(['id', 'created_at', 'updated_at'])
+            ->defaultSort('-id');
     }
 }

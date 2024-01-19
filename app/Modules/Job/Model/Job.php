@@ -13,10 +13,12 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Spatie\QueryBuilder\AllowedFilter;
+use Spatie\QueryBuilder\QueryBuilder;
 
 /**
- * @property int $user_id
- * @property int $queue_id
+ * @property int    $user_id
+ * @property int    $queue_id
  * @property string $name
  * @property string $description
  * @property string $type
@@ -24,12 +26,12 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property string $status_message
  * @property string $captcha_found
  * @property string $captcha_solved
- * @property int $order
- * @property bool $active
+ * @property int    $order
+ * @property bool   $active
  * @property Carbon $started_at
  * @property Carbon $start_at
  * @property Carbon $finished_at
- * @property int $previous_job_id
+ * @property int    $previous_job_id
  * @property \App\Modules\Job\Model\Job previousJob
  *
  * @method static HasMany reportsWithRemotePath()
@@ -93,5 +95,18 @@ class Job extends BaseModel
     public function getReportZipFilename(): string
     {
         return 'report-job-'.$this->id.'.zip';
+    }
+
+    public static function queryBuilder(): QueryBuilder
+    {
+        return QueryBuilder::for(self::class)
+            ->allowedSorts(['id', 'name', 'created_at', 'updated_at'])
+            ->defaultSort('-id')
+            ->allowedFilters([
+                AllowedFilter::partial('name'),
+                AllowedFilter::scope('after'),
+                AllowedFilter::scope('recent'),
+                AllowedFilter::scope('queue'),
+            ]);
     }
 }

@@ -8,16 +8,17 @@ use App\Modules\Configuration\Model\Configuration;
 use App\Modules\Experiment\Model\Experiment;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Spatie\QueryBuilder\QueryBuilder;
 
 /**
- * @property int user_id
- * @property int configuration_id
- * @property string name
- * @property string description
- * @property string value
- * @property string preferencable_type
- * @property int preferencable_id
- * @property bool active
+ * @property int    $user_id
+ * @property int    $configuration_id
+ * @property string $name
+ * @property string $description
+ * @property string $value
+ * @property string $preferencable_type
+ * @property int    $preferencable_id
+ * @property bool   $active
  */
 class Preference extends BaseModel
 {
@@ -41,5 +42,12 @@ class Preference extends BaseModel
     public function preferencable(): MorphTo
     {
         return $this->morphTo();
+    }
+
+    public static function queryBuilder(): QueryBuilder
+    {
+        return QueryBuilder::for(self::class)
+            ->allowedSorts(['id', 'name', 'created_at', 'updated_at'])
+            ->defaultSort('-id');
     }
 }

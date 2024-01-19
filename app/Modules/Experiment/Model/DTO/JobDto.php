@@ -62,7 +62,7 @@ class JobDto
     }
 
     /**
-     * @param  BehaviorDto[]|null  $behaviors
+     * @param BehaviorDto[]|null $behaviors
      */
     public function setBehaviors(?array $behaviors): JobDto
     {

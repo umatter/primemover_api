@@ -15,12 +15,7 @@ class ParamRepository
 
     public function all(): Collection
     {
-        return Param::with(
-            [
-                'user',
-                'configuration',
-            ]
-        )->get();
+        return Param::queryBuilder()->with(['user', 'configuration'])->get();
     }
 
     public function getById($id): Param|Model

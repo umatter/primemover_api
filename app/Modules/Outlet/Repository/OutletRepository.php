@@ -3,6 +3,7 @@
 namespace App\Modules\Outlet\Repository;
 
 use App\Modules\Outlet\Model\Outlet;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
@@ -15,7 +16,7 @@ class OutletRepository
 
     public function all(): Collection
     {
-        return $this->outlet->with(['user'])->get();
+        return Outlet::queryBuilder()->with(['user'])->get();
     }
 
     public function getById($id): Outlet|Model
@@ -23,7 +24,7 @@ class OutletRepository
         return $this->outlet->with(['user'])->findOrFail($id);
     }
 
-    public function save(array $data)
+    public function save(array $data): Model|Builder
     {
         $data['user_id'] = Auth::id() ?? 1;
 

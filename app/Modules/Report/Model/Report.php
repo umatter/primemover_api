@@ -9,6 +9,7 @@ use App\Modules\Job\Model\Job;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Spatie\QueryBuilder\QueryBuilder;
 
 /**
  * @property int    $user_id
@@ -47,5 +48,12 @@ class Report extends BaseModel
     public static function bootedSaved(Model $model): void
     {
         //ModelUpdateEvent::dispatch($model);
+    }
+
+    public static function queryBuilder(): QueryBuilder
+    {
+        return QueryBuilder::for(self::class)
+            ->allowedSorts(['id', 'created_at', 'updated_at'])
+            ->defaultSort('-id');
     }
 }

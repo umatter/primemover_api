@@ -94,7 +94,7 @@ class QueueDto
     }
 
     /**
-     * @param  JobDto[]|null  $jobs
+     * @param JobDto[]|null $jobs
      */
     public function setJobs(?array $jobs): QueueDto
     {

@@ -8,14 +8,16 @@ use App\Modules\Job\Model\Job;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Spatie\QueryBuilder\AllowedFilter;
+use Spatie\QueryBuilder\QueryBuilder;
 
 /**
- * @property int user_id
- * @property int job_id
- * @property string name
- * @property string description
- * @property string value
- * @property bool active
+ * @property int    $user_id
+ * @property int    $job_id
+ * @property string $name
+ * @property string $description
+ * @property string $value
+ * @property bool   $active
  */
 class Behavior extends BaseModel
 {
@@ -36,5 +38,13 @@ class Behavior extends BaseModel
     public function scopeJob(Builder $query, int $jobId): Builder
     {
         return $query->where('job_id', $jobId);
+    }
+
+    public static function queryBuilder(): QueryBuilder
+    {
+        return QueryBuilder::for(self::class)
+            ->allowedSorts(['id', 'name', 'created_at', 'updated_at'])
+            ->defaultSort('-id')
+            ->allowedFilters([AllowedFilter::scope('job')]);
     }
 }

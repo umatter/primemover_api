@@ -12,13 +12,15 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Spatie\QueryBuilder\AllowedFilter;
+use Spatie\QueryBuilder\QueryBuilder;
 
 /**
- * @property int user_id
- * @property string name
- * @property string description
- * @property string contact
- * @property bool active
+ * @property int    $user_id
+ * @property string $name
+ * @property string $description
+ * @property string $contact
+ * @property bool   $active
  */
 class Experiment extends BaseModel
 {
@@ -49,5 +51,17 @@ class Experiment extends BaseModel
     public static function bootedSaved(Model $model): void
     {
         //ModelUpdateEvent::dispatch($model);
+    }
+
+    public static function queryBuilder(): QueryBuilder
+    {
+        return QueryBuilder::for(self::class)
+            ->allowedSorts(['id', 'name', 'created_at', 'updated_at'])
+            ->defaultSort('-id')
+            ->allowedFilters([
+                AllowedFilter::partial('name'),
+                AllowedFilter::scope('after'),
+                AllowedFilter::scope('recent'),
+            ]);
     }
 }

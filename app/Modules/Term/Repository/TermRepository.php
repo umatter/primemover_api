@@ -7,13 +7,8 @@ use Illuminate\Pagination\LengthAwarePaginator;
 
 class TermRepository
 {
-    public function __construct(protected Term $term)
-    {
-    }
-
     public function all(): LengthAwarePaginator
     {
-        return Term::query()
-            ->paginate(10);
+        return Term::queryBuilder()->paginate(10);
     }
 }

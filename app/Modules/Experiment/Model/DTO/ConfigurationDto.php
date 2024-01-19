@@ -76,7 +76,7 @@ class ConfigurationDto extends Data
     }
 
     /**
-     * @param  PreferenceDto[]|null  $preferences
+     * @param PreferenceDto[]|null $preferences
      */
     public function setPreferences(?array $preferences): ConfigurationDto
     {

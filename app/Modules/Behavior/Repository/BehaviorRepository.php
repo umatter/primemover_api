@@ -6,8 +6,6 @@ use App\Modules\Behavior\Model\Behavior;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Auth;
-use Spatie\QueryBuilder\AllowedFilter;
-use Spatie\QueryBuilder\QueryBuilder;
 
 class BehaviorRepository
 {
@@ -17,10 +15,7 @@ class BehaviorRepository
 
     public function all(): LengthAwarePaginator
     {
-        return QueryBuilder::for($this->behavior)
-            ->allowedSorts(['id', 'name', 'created_at', 'updated_at'])
-            ->defaultSort('-id')
-            ->allowedFilters([AllowedFilter::scope('job')])
+        return Behavior::queryBuilder()
             ->with(['job', 'user'])
             ->paginate(10);
     }

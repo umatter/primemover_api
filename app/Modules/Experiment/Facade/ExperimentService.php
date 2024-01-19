@@ -9,7 +9,7 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Facade;
 
 /**
- * @method static void upload(Experiment $experiment, CrawlerDto $crawlerDto)
+ * @method static void     upload(Experiment $experiment, CrawlerDto $crawlerDto)
  * @method static Response download(DownloadData $downloadData)
  *
  * @see \App\Modules\Experiment\Service\ExperimentService
