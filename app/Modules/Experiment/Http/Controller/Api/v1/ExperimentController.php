@@ -79,15 +79,18 @@ class ExperimentController extends Controller
 
     public function upload(ExperimentUploadRequest $request, Experiment $experiment): JsonResource
     {
-        ExperimentRepository::upload($request, $experiment);
+        $uploadResult = ExperimentRepository::upload($request, $experiment);
 
-        return JsonResource::make([
-            'crawlers' => Crawler::query()
-                ->where('updated', 1)
-                ->with(['proxy', 'agent.preferences', 'configuration.preferences', 'queuesNew'])
-                ->get(),
-        ]);
+        if ($request->isResponseEnabled()) {
+            return JsonResource::make([
+                'crawlers' => Crawler::query()
+                    ->where('updated', 1)
+                    ->with(['proxy', 'agent.preferences', 'configuration.preferences', 'queuesNew'])
+                    ->get(),
+            ]);
+        }
 
+        return JsonResource::make($uploadResult);
     }
 
     public function download(Experiment $experiment): Response

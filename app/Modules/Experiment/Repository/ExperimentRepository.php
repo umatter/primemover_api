@@ -89,9 +89,9 @@ class ExperimentRepository
      * @throws Throwable
      * @throws ValidationException
      */
-    public function upload(ExperimentUploadRequest $request, Experiment $experiment): void
+    public function upload(ExperimentUploadRequest $request, Experiment $experiment): \Illuminate\Support\Collection
     {
-        DataMapper::disableEnforceType()
+        return DataMapper::disableEnforceType()
             ->removeUndefinedAttributes()
             ->mapList($request->getJsonContent(), CrawlerDto::class)
             ->map(fn (CrawlerDto $crawlerDto) => ExperimentService::upload($experiment, $crawlerDto));

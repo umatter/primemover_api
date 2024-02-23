@@ -23,6 +23,8 @@ Route::prefix('v1')->group(function (): void {
     Route::post('load-test', [CrawlerController::class, 'load']);
 
     Route::group(['middleware' => 'auth:api'], function (): void {
+        Route::get('dev/truncate-data', [\App\Http\Controllers\API\v1\Controller::class, 'truncateData']);
+
         // Runner
         Route::prefix('runner')->group(function (): void {
             Route::put('agents/{agent}', [RunnerAgentController::class, 'update']);

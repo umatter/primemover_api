@@ -29,9 +29,9 @@ use Throwable;
 
 class ExperimentService
 {
-    public function upload(Experiment $experiment, CrawlerDto $crawlerDto): void
+    public function upload(Experiment $experiment, CrawlerDto $crawlerDto): mixed
     {
-        PipelineFactory::create()
+        return PipelineFactory::create()
             ->withTransaction()
             ->send($crawlerDto->setExperiment($experiment))
             ->through([
@@ -53,7 +53,11 @@ class ExperimentService
                 ]);
                 throw $throwable;
             })
-            ->then(fn () => Log::info('1682672742: Crawler upload done'));
+            ->then(function (CrawlerDto $crawlerDto) {
+                Log::info('1682672742: Crawler upload done');
+
+                return $crawlerDto;
+            });
     }
 
     public function download(DownloadData $downloadData): Response

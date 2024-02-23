@@ -65,4 +65,9 @@ class ExperimentUploadRequest extends FormRequest
     {
         return $this->input('json');
     }
+
+    public function isResponseEnabled(): bool
+    {
+        return $this->input('response', false);
+    }
 }

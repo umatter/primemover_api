@@ -6,6 +6,7 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
 
 class TruncateTablesSeeder extends Seeder
@@ -31,11 +32,15 @@ class TruncateTablesSeeder extends Seeder
             return;
         }
 
+        Log::debug('Truncating tables...');
+
         Schema::disableForeignKeyConstraints();
 
         Collection::make(self::TABLES)
             ->each(fn ($table) => DB::table($table)->truncate());
 
         Schema::enableForeignKeyConstraints();
+
+        Log::debug('Tables truncated.', ['tables' => self::TABLES]);
     }
 }
