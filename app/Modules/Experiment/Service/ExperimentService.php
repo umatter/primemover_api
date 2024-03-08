@@ -44,7 +44,7 @@ class ExperimentService
                 CreateCrawlerAgent::class,
                 CreateExperimentCrawlers::class,
                 CreateCrawlerQueues::class,
-                DispatchUploadEvents::class,
+                //DispatchUploadEvents::class,
             ])
             ->onFailure(function (CrawlerDto $crawlerDto, Throwable $throwable): void {
                 Log::error('1682672574: Crawler upload failed', [
