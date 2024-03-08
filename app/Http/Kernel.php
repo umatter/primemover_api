@@ -10,6 +10,7 @@ use App\Http\Middleware\HeaderMiddleware;
 use App\Http\Middleware\OauthRequestModifier;
 use App\Http\Middleware\RedirectIfAuthenticated;
 use App\Http\Middleware\SetLocale;
+use App\Http\Middleware\ThrottleRequestsWithIp;
 use App\Http\Middleware\TrimStrings;
 use App\Http\Middleware\TrustProxies;
 use App\Http\Middleware\VerifyCsrfToken;
@@ -64,7 +65,6 @@ class Kernel extends HttpKernel
         ],
 
         'api' => [
-            'throttle:1000,1',
             SubstituteBindings::class,
             HeaderMiddleware::class,
         ],
@@ -87,5 +87,6 @@ class Kernel extends HttpKernel
         'signed' => ValidateSignature::class,
         'throttle' => ThrottleRequests::class,
         'verified' => EnsureEmailIsVerified::class,
+        'throttleIp' => ThrottleRequestsWithIp::class,
     ];
 }
