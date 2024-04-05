@@ -23,7 +23,7 @@ class CreateConfigurationParams
                 ->getConfiguration()
                 ->getParams();
 
-            $param = Param::query()->create([
+            Param::query()->create([
                 'pi' => $dto->getPi(),
                 'psi' => $dto->getPsi(),
                 'alpha' => $dto->getAlpha(),

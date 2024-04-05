@@ -12,6 +12,7 @@ use App\Modules\Experiment\Model\Experiment;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 use Spatie\QueryBuilder\QueryBuilder;
 use Throwable;
@@ -91,10 +92,20 @@ class ExperimentRepository
      */
     public function upload(ExperimentUploadRequest $request, Experiment $experiment): \Illuminate\Support\Collection
     {
-        return DataMapper::disableEnforceType()
-            ->removeUndefinedAttributes()
-            ->mapList($request->getJsonContent(), CrawlerDto::class)
-            ->map(fn (CrawlerDto $crawlerDto) => ExperimentService::upload($experiment, $crawlerDto));
+        DB::beginTransaction();
+
+        try {
+            return DataMapper::disableEnforceType()
+                ->removeUndefinedAttributes()
+                ->mapList($request->getJsonContent(), CrawlerDto::class)
+                ->map(fn (CrawlerDto $crawlerDto) => ExperimentService::upload($experiment, $crawlerDto));
+        } catch (Throwable $exception) {
+            DB::rollBack();
+
+            throw ValidationException::withMessages([
+                'upload' => $exception->getMessage(),
+            ]);
+        }
     }
 
     public function download(Experiment $experiment): Response

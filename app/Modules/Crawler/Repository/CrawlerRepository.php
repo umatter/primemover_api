@@ -13,6 +13,8 @@ use Exception;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 use Spatie\QueryBuilder\QueryBuilder;
 use Symfony\Component\HttpFoundation\Response as ResponseAlias;
 use Tests\Feature\Modules\Crawler\Repository\CrawlerRepositoryTest;
@@ -241,16 +243,25 @@ class CrawlerRepository
      */
     public function upload(CrawlerUploadRequest $request, Crawler $crawler): \Illuminate\Support\Collection
     {
-        return DataMapper::disableEnforceType()
-            ->removeUndefinedAttributes()
-            ->mapList($request->getJsonFileContent(), QueueDto::class)
-            ->map(function (QueueDto $queueDto) use ($crawler) {
-                return PipelineFactory::create()
-                    ->send($queueDto->setCrawler($crawler))
-                    ->through([
-                        CreateQueue::class,
-                    ])
-                    ->thenReturn();
-            });
+        DB::beginTransaction();
+        try {
+            return DataMapper::disableEnforceType()
+                ->removeUndefinedAttributes()
+                ->mapList($request->getJsonFileContent(), QueueDto::class)
+                ->map(function (QueueDto $queueDto) use ($crawler) {
+                    return PipelineFactory::create()
+                        ->send($queueDto->setCrawler($crawler))
+                        ->through([
+                            CreateQueue::class,
+                        ])
+                        ->thenReturn();
+                });
+        } catch (Exception $exception) {
+            DB::rollBack();
+
+            throw ValidationException::withMessages([
+                'upload' => $exception->getMessage(),
+            ]);
+        }
     }
 }
