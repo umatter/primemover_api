@@ -55,4 +55,9 @@ class CrawlerUploadRequest extends FormRequest
 
         return Storage::get($this->getUploadedFile());
     }
+
+    public function isResponseEnabled(): bool
+    {
+        return $this->input('response', false);
+    }
 }

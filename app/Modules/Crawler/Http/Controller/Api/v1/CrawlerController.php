@@ -12,7 +12,6 @@ use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Resources\Json\ResourceCollection;
-use Illuminate\Support\Collection;
 use Tests\Feature\Modules\Crawler\Http\Controller\Api\v1\CrawlerControllerTest;
 
 /**
@@ -137,8 +136,17 @@ class CrawlerController extends Controller
     /**
      * @throws Exception
      */
-    public function upload(CrawlerUploadRequest $request, Crawler $crawler): Collection
+    public function upload(CrawlerUploadRequest $request, Crawler $crawler): JsonResource
     {
-        return $this->repository->upload($request, $crawler);
+        $response = $this->repository->upload($request, $crawler);
+
+        if ($request->isResponseEnabled()) {
+            return JsonResource::make($response);
+        }
+
+        return JsonResource::make([
+            'status' => 'success',
+            'request' => $request->all(),
+        ]);
     }
 }
