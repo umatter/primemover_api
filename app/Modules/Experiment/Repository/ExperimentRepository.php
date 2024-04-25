@@ -95,10 +95,11 @@ class ExperimentRepository
         DB::beginTransaction();
 
         try {
-            return DataMapper::disableEnforceType()
+            $result = DataMapper::disableEnforceType()
                 ->removeUndefinedAttributes()
                 ->mapList($request->getJsonContent(), CrawlerDto::class)
                 ->map(fn (CrawlerDto $crawlerDto) => ExperimentService::upload($experiment, $crawlerDto));
+            DB::commit();
         } catch (Throwable $exception) {
             DB::rollBack();
 
@@ -106,6 +107,8 @@ class ExperimentRepository
                 'upload' => $exception->getMessage(),
             ]);
         }
+
+        return $result;
     }
 
     public function download(Experiment $experiment): Response
