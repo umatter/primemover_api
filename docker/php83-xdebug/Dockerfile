@@ -1,41 +1,49 @@
-FROM php:7.4-fpm
+FROM php:8.3-fpm
 
 RUN apt-get update && apt-get install -y \
     libxml2-dev \
     libcurl4-gnutls-dev \
     libfreetype6-dev \
     libjpeg62-turbo-dev \
-    libpng-dev \
     libmemcached-dev \
-    libonig-dev
-
-RUN docker-php-ext-install pdo pdo_mysql opcache intl exif soap
-RUN apt-get update -y && apt-get install -y \
+    libonig-dev \
+    locales \
+    dialog \
+    apt-utils \
+    locales  \
+    locales-all \
     libwebp-dev \
-    libjpeg62-turbo-dev \
-    libpng-dev libxpm-dev \
-    libfreetype6-dev \
-    supervisor
+    libpng-dev  \
+    libxpm-dev \
+    supervisor \
+    libzip-dev \
+    zlib1g-dev  \
+    unzip
 
-RUN apt-get update && \
-    apt-get install -y zlib1g-dev unzip
-
+RUN docker-php-ext-install pdo pdo_mysql opcache intl exif
 RUN docker-php-ext-install mbstring
-RUN apt-get install -y libzip-dev
-RUN docker-php-ext-install zip xml
-
+RUN docker-php-ext-install xml
 RUN docker-php-ext-configure gd --with-jpeg=/usr/include/ --with-freetype=/usr/include/
+RUN docker-php-ext-configure gd --with-freetype --with-jpeg
 RUN docker-php-ext-install gd
+RUN docker-php-ext-install soap
+RUN docker-php-ext-install pcntl
+RUN docker-php-ext-install zip
 #RUN docker-php-ext-install -j$(nproc) gd curl pdo_mysql opcache xml zip mbstring intl
+
+RUN docker-php-ext-enable gd zip pcntl
 
 RUN pecl install -f xdebug && \
     docker-php-ext-enable xdebug
 
-RUN pecl install -f memcached && \
-    docker-php-ext-enable memcached
+#RUN pecl install -f memcached && \ docker-php-ext-enable memcached
 
 RUN echo ipv4 >> ~/.curlrc && \
     curl -v -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer && \
-    echo "Done"
+    echo "Done" \
+
+ENV LC_ALL de_CH.UTF-8
+ENV LANG de_CH.UTF-8
+ENV LANGUAGE de_CH.UTF-8
 
 COPY ./etc /usr/local/etc
