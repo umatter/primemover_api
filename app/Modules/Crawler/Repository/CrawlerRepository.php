@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 use Spatie\QueryBuilder\QueryBuilder;
 use Symfony\Component\HttpFoundation\Response as ResponseAlias;
@@ -262,6 +263,8 @@ class CrawlerRepository
             return $response;
         } catch (Exception $exception) {
             DB::rollBack();
+
+            Log::error('1725638225: Crawler upload failed', ['message' => $exception->getMessage(), 'trace' => $exception->getTraceAsString()]);
 
             throw ValidationException::withMessages([
                 'upload' => $exception->getMessage(),
