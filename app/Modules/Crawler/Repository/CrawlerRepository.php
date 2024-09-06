@@ -245,7 +245,7 @@ class CrawlerRepository
     {
         DB::beginTransaction();
         try {
-            return DataMapper::disableEnforceType()
+            $response = DataMapper::disableEnforceType()
                 ->removeUndefinedAttributes()
                 ->mapList($request->getJsonFileContent(), QueueDto::class)
                 ->map(function (QueueDto $queueDto) use ($crawler) {
@@ -256,6 +256,10 @@ class CrawlerRepository
                         ])
                         ->thenReturn();
                 });
+
+            DB::commit();
+
+            return $response;
         } catch (Exception $exception) {
             DB::rollBack();
 

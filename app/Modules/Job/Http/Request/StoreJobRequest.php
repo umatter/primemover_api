@@ -2,8 +2,10 @@
 
 namespace App\Modules\Job\Http\Request;
 
+use App\Modules\Job\Enum\JobType;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 
 class StoreJobRequest extends FormRequest
 {
@@ -12,7 +14,7 @@ class StoreJobRequest extends FormRequest
         return [
             'name' => ['required'],
             'user_id' => ['required'],
-            'type' => ['required', 'in:visitjob,waitjob,tryentertextfieldjob,entertextfieldjob,singleselecturljob,singleselectjob,tryswitchjob,switchjob,tryclickjob,clickjob,scrollbydurationjob,scrollbylengthjob,handlealertjob,tryhandlealertjob'],
+            'type' => ['required', Rule::in(JobType::values())],
             'description' => ['nullable'],
             'queue_id' => ['required'],
             'previous_job_id' => ['required', 'exists:App\Modules\Job\Model\Job,id'],

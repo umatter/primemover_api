@@ -6,6 +6,7 @@ use App\Models\BaseModel;
 use App\Models\User;
 use App\Modules\Behavior\Model\Behavior;
 use App\Modules\Crawler\Model\Crawler;
+use App\Modules\Job\Enum\JobType;
 use App\Modules\Queue\Model\Queue;
 use App\Modules\Report\Model\Report;
 use Carbon\Carbon;
@@ -17,22 +18,22 @@ use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 
 /**
- * @property int    $user_id
- * @property int    $queue_id
- * @property string $name
- * @property string $description
- * @property string $type
- * @property string $status_code
- * @property string $status_message
- * @property string $captcha_found
- * @property string $captcha_solved
- * @property int    $order
- * @property bool   $active
- * @property Carbon $started_at
- * @property Carbon $start_at
- * @property Carbon $finished_at
- * @property int    $previous_job_id
- * @property \App\Modules\Job\Model\Job previousJob
+ * @property int            $user_id
+ * @property int            $queue_id
+ * @property string         $name
+ * @property string         $description
+ * @property string         $status_code
+ * @property string         $status_message
+ * @property string         $captcha_found
+ * @property string         $captcha_solved
+ * @property int            $order
+ * @property bool           $active
+ * @property Carbon         $started_at
+ * @property Carbon         $start_at
+ * @property Carbon         $finished_at
+ * @property int            $previous_job_id
+ * @property Job            $previousJob
+ * @property JobType|string $type
  *
  * @method static HasMany reportsWithRemotePath()
  */
@@ -44,6 +45,10 @@ class Job extends BaseModel
 
     protected $appends = [
         'reports_with_path_count',
+    ];
+
+    protected $casts = [
+        'type' => JobType::class,
     ];
 
     public function crawler(): BelongsTo

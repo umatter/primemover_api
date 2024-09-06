@@ -2,7 +2,9 @@
 
 namespace App\Modules\Job\Http\Request;
 
+use App\Modules\Job\Enum\JobType;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateJobRequest extends FormRequest
 {
@@ -13,7 +15,7 @@ class UpdateJobRequest extends FormRequest
             'queue_id' => [],
             'previous_job_id' => ['required', 'exists:App\Modules\Job\Model\Job,id'],
             'description' => [],
-            'type' => [],
+            'type' => [Rule::in(JobType::values())],
             'status_code' => [],
             'status_message' => [],
             'order' => [],
