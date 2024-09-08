@@ -44,6 +44,7 @@ class Kernel extends HttpKernel
         TrimStrings::class,
         ConvertEmptyStringsToNull::class,
         SetLocale::class,
+        Middleware\HandleCors::class,
     ];
 
     /**
