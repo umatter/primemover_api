@@ -11,12 +11,11 @@ class TelescopeServiceProvider extends TelescopeApplicationServiceProvider
 {
     public function register(): void
     {
-        // Telescope::night();
 
-        // $this->hideSensitiveRequestDetails();
+        $this->hideSensitiveRequestDetails();
 
         Telescope::filter(function (IncomingEntry $entry) {
-            if ($this->app->environment('local', 'testing')) {
+            if ($this->app->environment('local', 'testing', 'production')) {
                 return true;
             }
 
@@ -30,7 +29,7 @@ class TelescopeServiceProvider extends TelescopeApplicationServiceProvider
 
     protected function hideSensitiveRequestDetails(): void
     {
-        if ($this->app->environment('local')) {
+        if ($this->app->environment('local', 'testing', 'production')) {
             return;
         }
 
