@@ -7,6 +7,7 @@ enum IdentificationEnum: string
     case CHROME = 'chrome';
     case FIREFOX = 'firefox';
     case MULTILOGIN = 'multilogin';
+    case MULTILOGINX = 'mlx';
 
     public function current(): string
     {
@@ -14,6 +15,7 @@ enum IdentificationEnum: string
             self::CHROME => 'chrome',
             self::FIREFOX => 'firefox',
             self::MULTILOGIN => 'multilogin',
+            self::MULTILOGINX => 'mlx',
         };
     }
 
@@ -34,7 +36,12 @@ enum IdentificationEnum: string
 
     public static function default(): string
     {
-        return self::MULTILOGIN->value;
+        return self::MULTILOGINX->value;
+    }
+
+    public static function multiloginx(): string
+    {
+        return self::MULTILOGINX->value;
     }
 
     public static function values(): array
@@ -43,6 +50,7 @@ enum IdentificationEnum: string
             self::CHROME->value,
             self::FIREFOX->value,
             self::MULTILOGIN->value,
+            self::MULTILOGINX->value,
         ];
     }
 

@@ -35,7 +35,7 @@ class AgentStoreRequest extends FormRequest
         $this->merge([
             'user_id' => Auth::id(),
             'active' => true,
-            'identification' => $this->input('identification') ?? IdentificationEnum::default(),
+            'identification' => $this->input('identification', IdentificationEnum::default()),
             'multilogin_profile' => $this->input('multiLoginProfile'),
             'multilogin_id' => $this->input('multiLoginId'),
         ]);

@@ -21,4 +21,11 @@ class RunnerAgentUpdateRequest extends AgentUpdateRequest
             'preferences' => ['nullable'],
         ];
     }
+
+    protected function prepareForValidation(): void
+    {
+        $this->merge([
+            'identification' => $this->input('identification', IdentificationEnum::default()),
+        ]);
+    }
 }
