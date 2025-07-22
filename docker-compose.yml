@@ -36,9 +36,8 @@ services:
     ports:
       - "${HOST_MACHINE_MYSQL_PORT}:3306"
     volumes:
-      - ${MYSQL_DATA_DIR}:/var/lib/mysql:cached
-      - ${MYSQL_LOG_DIR}:/var/log/mysql:cached
-      - ${DOCUMENT_ROOT}:/var/www/html:cached
+      - ${MYSQL_DATA_DIR}:/var/lib/mysql
+      - ${MYSQL_LOG_DIR}:/var/log/mysql
     environment:
       MYSQL_ROOT_PASSWORD: '${DB_PASSWORD}'
       MYSQL_DATABASE: '${DB_DATABASE}'
