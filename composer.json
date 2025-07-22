@@ -13,7 +13,7 @@
     "ext-gd": "*",
     "ext-json": "*",
     "ext-zip": "*",
-    "darkaonline/l5-swagger": "^8.5",
+    "darkaonline/l5-swagger": "^8.6",
     "guzzlehttp/guzzle": "^7.2",
     "hammerstone/fast-paginate": "^0.1.12",
     "laravel/framework": "^10.0",
