@@ -114,6 +114,31 @@ class CrawlerController extends Controller
         return ResourceCollection::make($this->repository->delete($crawler));
     }
 
+    /**
+     * @OA\Get(
+     *     path="/ip/{ip}",
+     *     summary="Check IP address",
+     *     description="Get information about an IP address or current request IP",
+     *     tags={"Utilities"},
+     *     @OA\Parameter(
+     *         name="ip",
+     *         in="path",
+     *         description="IP address to check (optional)",
+     *         required=false,
+     *         @OA\Schema(type="string", format="ipv4", example="192.168.1.1")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="IP information",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="ip", type="string", example="192.168.1.1"),
+     *             @OA\Property(property="country", type="string", example="US"),
+     *             @OA\Property(property="region", type="string", example="Colorado"),
+     *             @OA\Property(property="city", type="string", example="Denver")
+     *         )
+     *     )
+     * )
+     */
     public function ip($ip = null): JsonResponse
     {
         return $this->repository->ip($ip);

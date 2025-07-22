@@ -18,6 +18,32 @@ class AuthController extends Controller
 {
     public const OAUTH_TOKEN_ENDPOINT = 'oauth/token';
 
+    /**
+     * @OA\Post(
+     *     path="/auth/token",
+     *     summary="Get OAuth token",
+     *     description="Exchange credentials for OAuth token",
+     *     tags={"Authentication"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"grant_type","client_id","client_secret"},
+     *             @OA\Property(property="grant_type", type="string", example="client_credentials"),
+     *             @OA\Property(property="client_id", type="string"),
+     *             @OA\Property(property="client_secret", type="string")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Token generated successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="access_token", type="string"),
+     *             @OA\Property(property="token_type", type="string", example="Bearer"),
+     *             @OA\Property(property="expires_in", type="integer", example=3600)
+     *         )
+     *     )
+     * )
+     */
     public function token(Request $request): Response
     {
         $proxy = $request->create(self::OAUTH_TOKEN_ENDPOINT, 'POST', $request->all());
@@ -27,6 +53,30 @@ class AuthController extends Controller
         return App::handle($proxy);
     }
 
+    /**
+     * @OA\Get(
+     *     path="/auth/user",
+     *     summary="Get authenticated user",
+     *     description="Get current authenticated user information",
+     *     tags={"Authentication"},
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Response(
+     *         response=200,
+     *         description="User information",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="id", type="integer"),
+     *             @OA\Property(property="name", type="string"),
+     *             @OA\Property(property="email", type="string", format="email"),
+     *             @OA\Property(property="created_at", type="string", format="date-time"),
+     *             @OA\Property(property="updated_at", type="string", format="date-time")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthorized"
+     *     )
+     * )
+     */
     public function user(): ?Authenticatable
     {
         return Auth::user();
@@ -49,6 +99,45 @@ class AuthController extends Controller
         return response(['user' => $user, 'access_token' => $accessToken]);
     }
 
+    /**
+     * @OA\Post(
+     *     path="/login",
+     *     summary="User login",
+     *     description="Authenticate user and return access token",
+     *     tags={"Authentication"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"email","password"},
+     *             @OA\Property(property="email", type="string", format="email", example="user@example.com"),
+     *             @OA\Property(property="password", type="string", format="password", example="password123")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Login successful",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="user", type="object",
+     *                 @OA\Property(property="id", type="integer"),
+     *                 @OA\Property(property="name", type="string"),
+     *                 @OA\Property(property="email", type="string", format="email")
+     *             ),
+     *             @OA\Property(property="access_token", type="string")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Invalid credentials",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Invalid Credentials")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Validation error"
+     *     )
+     * )
+     */
     public function login(Request $request)
     {
         $loginData = $request->validate([
@@ -72,6 +161,41 @@ class AuthController extends Controller
         return response(['user' => $user, 'access_token' => $token]);
     }
 
+    /**
+     * @OA\Post(
+     *     path="/forgot-password",
+     *     summary="Request password reset",
+     *     description="Send password reset email to user",
+     *     tags={"Authentication"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"email"},
+     *             @OA\Property(property="email", type="string", format="email", example="user@example.com")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Password reset email sent",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Password reset email sent")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Failed to send reset email",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Validation error"
+     *     )
+     * )
+     */
     public function forgotPassword(Request $request)
     {
         $request->validate(['email' => 'required|email']);
@@ -94,6 +218,42 @@ class AuthController extends Controller
         ], 400);
     }
 
+    /**
+     * @OA\Post(
+     *     path="/reset-password",
+     *     summary="Reset user password",
+     *     description="Reset password using token from email",
+     *     tags={"Authentication"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"email","password","password_confirmation","token"},
+     *             @OA\Property(property="email", type="string", format="email"),
+     *             @OA\Property(property="password", type="string", format="password", description="Must contain uppercase, digit, and special character"),
+     *             @OA\Property(property="password_confirmation", type="string", format="password"),
+     *             @OA\Property(property="token", type="string")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Password reset successful",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Password reset failed",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Validation error"
+     *     )
+     * )
+     */
     public function resetPassword(Request $request): JsonResponse
     {
         $request->validate([
