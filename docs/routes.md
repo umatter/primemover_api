@@ -1,49 +1,124 @@
 # Routes
 
-## Regular resource routes
+All routes are prefixed with `api/v1/` and require throttling middleware (1000 requests per minute per IP).
 
-    Route::resource('configurations', 'API\v1\ConfigurationController');
-    Route::resource('agents', 'API\v1\AgentController');
-    Route::resource('proxies', 'API\v1\ProxyController');
-    Route::resource('jobs', 'API\v1\JobController');
-    Route::resource('queues', 'API\v1\QueueController');
-    Route::resource('crawlers', 'API\v1\CrawlerController');
-    Route::resource('experiments', 'API\v1\ExperimentController');
-    Route::resource('posts', 'API\v1\PostController');
-    Route::resource('behaviors', 'API\v1\BehaviorController');
-    Route::resource('reports', 'API\v1\ReportController');
-    Route::resource('terms', 'API\v1\TermController');
-    Route::resource('outlets', 'API\v1\OutletController');
-    Route::resource('params', 'API\v1\ParamController');
+## Authentication Routes
 
-## Extra routes
+| Method | Route | Controller@method | Middleware |
+|--------|-------|-------------------|------------|
+| POST | login | AuthController@login | - |
+| POST | forgot-password | AuthController@forgotPassword | - |
+| POST | reset-password | AuthController@resetPassword | - |
+| POST | auth/token | AuthController@token | oauth.token |
+| GET | auth/user | AuthController@user | auth:api |
 
-    Route::get('queues/job/{jobid}/', 'API\v1\QueueController@job');
-    Route::get('queues-processed', 'API\v1\QueueController@processed');
-    Route::get('queues-unprocessed', 'API\v1\QueueController@unprocessed');
-    Route::get('queues-reviewed', 'API\v1\QueueController@reviewed');
-    Route::get('queues-unreviewed', 'API\v1\QueueController@unreviewed');
-    Route::get('crawlers-processed', 'API\v1\CrawlerController@withProcessedQueues');
-    Route::get('crawlers-reviewed', 'API\v1\CrawlerController@withReviewedQueues');
-    Route::get('crawlers-unprocessed', 'API\v1\CrawlerController@withUnprocessedQueues');
-    Route::get('crawlers-inactive', 'API\v1\CrawlerController@inactive');
-    Route::get('crawlers-disable', 'API\v1\CrawlerController@disableProdCrawlers');
-    Route::get('ip/{ip?}', 'API\v1\CrawlerController@ip');
-    Route::get('file/{report}', 'API\v1\ReportController@getFile');
-    Route::get('crawlers-testing', 'API\v1\CrawlerController@testing');
-    Route::get('experiments/{experiment}/queues-unreviewed', 'API\v1\QueueController@experimentUnreviewed');
-    Route::get('experiments/{experiment}/queues-reviewed', 'API\v1\QueueController@experimentReviewed');
-    Route::get('experiments/{experiment}/queues-processed', 'API\v1\QueueController@experimentProcessed');
-    Route::get('experiments/{experiment}/queues-unprocessed', 'API\v1\QueueController@experimentUnprocessed');
+## Development Routes
 
-## Route methods based on Proxy example
+| Method | Route | Controller@method | Middleware |
+|--------|-------|-------------------|------------|
+| GET | dev/truncate-data | Controller@truncateData | auth:api |
 
-Method | Route | Controller@method
----|---|---
-POST | api/v1/proxies | App\Http\Controllers\API\v1\ProxyController@store                     
-GET/HEAD | api/v1/proxies | App\Http\Controllers\API\v1\ProxyController@index                     
-GET/HEAD | api/v1/proxies/create | App\Http\Controllers\API\v1\ProxyController@create                    
-GET/HEAD | api/v1/proxies/{proxy} | App\Http\Controllers\API\v1\ProxyController@show                      
-PUT/PATCH | api/v1/proxies/{proxy} | App\Http\Controllers\API\v1\ProxyController@update                    
-DELETE | api/v1/proxies/{proxy} | App\Http\Controllers\API\v1\ProxyController@destroy                   
-GET/HEAD | api/v1/proxies/{proxy}/edit | App\Http\Controllers\API\v1\ProxyController@edit                      
+## Load Testing Routes
+
+| Method | Route | Controller@method | Middleware |
+|--------|-------|-------------------|------------|
+| POST | load-test | CrawlerController@load | - |
+
+## Runner Routes (for automated systems)
+
+| Method | Route | Controller@method | Middleware |
+|--------|-------|-------------------|------------|
+| PUT | runner/agents/{agent} | RunnerAgentController@update | auth:api |
+| PUT | runner/jobs/{job} | RunnerJobController@update | auth:api |
+| PUT | runner/queues/{queue} | RunnerQueueController@update | auth:api |
+
+## Resource Routes (CRUD operations)
+
+All resource routes require `auth:api` middleware.
+
+| Resource | Controller |
+|----------|------------|
+| configurations | ConfigurationController |
+| agents | AgentController |
+| proxies | ProxyController |
+| jobs | JobController |
+| queues | QueueController |
+| crawlers | CrawlerController |
+| experiments | ExperimentController |
+| behaviors | BehaviorController |
+| reports | ReportController |
+| terms | TermController |
+| outlets | OutletController |
+| params | ParamController |
+
+### Standard Resource Methods
+
+Each resource supports these standard methods:
+
+| Method | Route Pattern | Action |
+|--------|---------------|--------|
+| GET | /{resource} | index |
+| POST | /{resource} | store |
+| GET | /{resource}/{id} | show |
+| PUT/PATCH | /{resource}/{id} | update |
+| DELETE | /{resource}/{id} | destroy |
+
+## Queue Routes
+
+| Method | Route | Controller@method | Middleware |
+|--------|-------|-------------------|------------|
+| GET | queues/job/{jobid} | QueueController@job | auth:api |
+| GET | queues-processed | QueueController@processed | auth:api |
+| GET | queues-unprocessed | QueueController@unprocessed | auth:api |
+| GET | queues-reviewed | QueueController@reviewed | auth:api |
+| GET | queues-unreviewed | QueueController@unreviewed | auth:api |
+
+## Experiment-specific Queue Routes
+
+| Method | Route | Controller@method | Middleware |
+|--------|-------|-------------------|------------|
+| GET | experiments/{experiment}/queues-unreviewed | QueueController@experimentUnreviewed | auth:api |
+| GET | experiments/{experiment}/queues-reviewed | QueueController@experimentReviewed | auth:api |
+| GET | experiments/{experiment}/queues-processed | QueueController@experimentProcessed | auth:api |
+| GET | experiments/{experiment}/queues-unprocessed | QueueController@experimentUnprocessed | auth:api |
+
+## Experiment Routes
+
+| Method | Route | Controller@method | Middleware |
+|--------|-------|-------------------|------------|
+| GET | experiments/experiments-list | ExperimentController@all | auth:api |
+| DELETE | experiments/{experiment}/destroy | ExperimentController@forceDelete | auth:api |
+| POST | experiments/upload | ExperimentController@upload | auth:api |
+| POST | experiments/{experiment}/upload | ExperimentController@upload | auth:api, formdata |
+| GET | experiments/{experiment}/download | ExperimentController@download | auth:api |
+
+## Crawler Routes
+
+| Method | Route | Controller@method | Middleware |
+|--------|-------|-------------------|------------|
+| GET | crawlers-processed | CrawlerController@withProcessedQueues | auth:api |
+| GET | crawlers-reviewed | CrawlerController@withReviewedQueues | auth:api |
+| GET | crawlers-unprocessed | CrawlerController@withUnprocessedQueues | auth:api |
+| GET | crawlers-inactive | CrawlerController@inactive | auth:api |
+| DELETE | crawlers/{crawler}/destroy | CrawlerController@forceDelete | auth:api |
+| GET | crawlers-disable | CrawlerController@disableProdCrawlers | auth:api |
+| GET | crawlers-testing | CrawlerController@testing | auth:api |
+| GET | crawlers-protected | CrawlerController@index | auth:api |
+| DELETE | undo | CrawlerController@undo | auth:api |
+| DELETE | cleanup | CrawlerController@cleanup | auth:api |
+| POST | crawlers/{crawler}/upload | CrawlerController@upload | auth:api |
+
+## File Handling Routes
+
+| Method | Route | Controller@method | Middleware |
+|--------|-------|-------------------|------------|
+| GET | file/{report} | ReportController@getFile | auth:api |
+| POST | upload | S3Controller@store | auth:api |
+| GET | download/{filename} | S3Controller@download | auth:api |
+| GET | download/report/{job} | ReportController@download | auth:api |
+
+## Utility Routes
+
+| Method | Route | Controller@method | Middleware |
+|--------|-------|-------------------|------------|
+| GET | ip/{ip?} | CrawlerController@ip | - |
