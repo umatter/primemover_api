@@ -1,799 +1,324 @@
-# Current load example
+# JSON Upload Examples
 
-````json
-[
-  {
-    "name": "Crawler_0/neutral_test",
-    "description": "Crawler created through py",
-    "active": 1,
-    "testing": 0,
-    "agent": [
-      {
-        "name": "Agent_0/neutral_test",
-        "preferences": [
-          {
-            "name": "asdf",
-            "value": "US-CO-COLORADO_SPRINGS"
-          },
-          {
-            "name": "asdf",
-            "value": null
-          }
-        ],
-        "description": "This is the agent",
-        "location": "US-CO-COLORADO_SPRINGS",
-        "identification": "MultiLogin",
-        "multilogin_id": "",
-        "multilogin_profile": {
-          "name": "%%AGENTID%%",
-          "os": "win",
-          "browser": "mimic",
-          "network": {
-            "proxy": {
-              "type": "%%PROXYTYPE%%",
-              "host": "%%PROXYHOST%%",
-              "port": "%%PROXYPORT%%",
-              "username": "%%PROXYUSERNAME%%",
-              "password": "%%PROXYPASSWORD%%"
-            },
-            "dns": []
-          },
-          "navigator": {
-            "language": "es-MX,es;q=0.8,en-US;q=0.5,en;q=0.3",
-            "doNotTrack": 0
-          },
-          "geolocation": {
-            "mode": "BLOCK"
-          },
-          "canvas": {
-            "mode": "BLOCK"
-          },
-          "storage": {
-            "local": true
-          }
-        }
-      }
-    ],
-    "configuration": [
-      {
-        "name": "Config/neutral",
-        "description": null,
+This document provides correct JSON examples for uploading data to the API endpoints. The examples are based on the actual validation rules in the codebase.
+
+## Experiment Upload
+
+**Endpoint:** `POST /api/v1/experiments/upload`  
+**Content-Type:** `application/json`
+
+### Required JSON Structure
+
+The JSON must be wrapped in a `json` field containing an array of experiment objects:
+
+```json
+{
+  "json": [
+    {
+      "name": "Experiment Name",
+      "description": "Experiment description",
+      "configuration": {
+        "name": "Configuration Name",
+        "description": "Configuration description",
+        "active": 1,
+        "params": {
+          "search_terms": ["term1", "term2"],
+          "media_outlet_urls": ["https://example.com"]
+        },
         "preferences": [
           {
             "name": "location",
             "value": "US-CO-COLORADO_SPRINGS"
-          },
-          {
-            "name": "history",
-            "value": null
-          }
-        ],
-        "params": [
-          {
-            "pi": 0.0,
-            "psi": 0.0033843000867772,
-            "alpha": 0.26080780865406,
-            "tau": 1.0,
-            "kappa": 2,
-            "beta": 0.084178134402416,
-            "search_terms": [],
-            "media_outlet_urls": []
-          }
-        ]
-      }
-    ],
-    "proxy": [
-      {
-        "name": "Proxy_0/neutral_test",
-        "description": "Proxy",
-        "type": "GEOSURF",
-        "hostname": "state.geosurf.io",
-        "port": 8000,
-        "username": "000000",
-        "password": "CHANGEME-password"
-      }
-    ],
-    "experiment_id": 1,
-    "id": 6,
-    "queues": [
-      {
-        "name": "Session_0",
-        "description": "A single browser session",
-        "start_at": "2021-03-26T09:30:12.057931-06:00",
-        "jobs": [
-          {
-            "name": "Wait",
-            "type": "waitjob",
-            "description": "Wait for 10 seconds",
-            "behaviors": [
-              {
-                "name": "seconds",
-                "description": "Wait for 10 seconds.",
-                "value": 10
-              }
-            ]
-          },
-          {
-            "name": "Visit",
-            "type": "visitjob",
-            "description": "Visit https://www.google.com",
-            "behaviors": [
-              {
-                "name": "url",
-                "description": "URL",
-                "value": "https://www.google.com"
-              }
-            ]
-          },
-          {
-            "name": "Enter Text",
-            "type": "entertextfieldjob",
-            "description": "Enter text into the defined field",
-            "behaviors": [
-              {
-                "name": "task",
-                "description": "This job is part of the task search_google_benign ",
-                "value": "search_google_benign"
-              },
-              {
-                "name": "flag",
-                "description": "",
-                "value": "benign"
-              },
-              {
-                "name": "text",
-                "description": "Text to enter",
-                "value": "restaurants near me"
-              },
-              {
-                "name": "selectionType",
-                "description": "Type of selection",
-                "value": "XPATH"
-              },
-              {
-                "name": "selector",
-                "description": " selector",
-                "value": "//input[@name='q']"
-              },
-              {
-                "name": "appendReturn",
-                "description": "Optional field: appends a return key after the text given if true.",
-                "value": true
-              },
-              {
-                "name": "typingMode",
-                "description": "Optional field: How the text is entered into the field",
-                "value": "SIMULATED_FIXINGTYPOS"
-              }
-            ]
-          },
-          {
-            "name": "Scroll by duration",
-            "type": "scrollbydurationjob",
-            "description": "Scroll down",
-            "behaviors": [
-              {
-                "name": "scrollDuration",
-                "description": "Scroll for 5 seconds.",
-                "value": 5
-              },
-              {
-                "name": "scrollDirection",
-                "description": "Scroll down",
-                "value": "DOWN"
-              }
-            ]
-          },
-          {
-            "name": "Scroll by length",
-            "type": "scrollbylengthjob",
-            "description": "Scroll up",
-            "behaviors": [
-              {
-                "name": "length",
-                "description": "Scroll 100.0 of window.",
-                "value": 100.0
-              },
-              {
-                "name": "scrollDirection",
-                "description": "Scroll up",
-                "value": "UP"
-              }
-            ]
-          },
-          {
-            "name": "Wait",
-            "type": "waitjob",
-            "description": "Wait for 6 seconds",
-            "behaviors": [
-              {
-                "name": "seconds",
-                "description": "Wait for 6 seconds.",
-                "value": 6
-              }
-            ]
-          },
-          {
-            "name": "Visit",
-            "type": "visitjob",
-            "description": "Visit https://www.ebay.com",
-            "behaviors": [
-              {
-                "name": "url",
-                "description": "URL",
-                "value": "https://www.ebay.com"
-              }
-            ]
-          },
-          {
-            "name": "Scroll by duration",
-            "type": "scrollbydurationjob",
-            "description": "Scroll down",
-            "behaviors": [
-              {
-                "name": "scrollDuration",
-                "description": "Scroll for 70 seconds.",
-                "value": 70
-              },
-              {
-                "name": "scrollDirection",
-                "description": "Scroll down",
-                "value": "DOWN"
-              }
-            ]
-          },
-          {
-            "name": "Wait",
-            "type": "waitjob",
-            "description": "Wait for 10 seconds",
-            "behaviors": [
-              {
-                "name": "seconds",
-                "description": "Wait for 10 seconds.",
-                "value": 10
-              }
-            ]
-          },
-          {
-            "name": "Visit",
-            "type": "visitjob",
-            "description": "Visit https://www.ca.gov",
-            "behaviors": [
-              {
-                "name": "url",
-                "description": "URL",
-                "value": "https://www.ca.gov"
-              }
-            ]
-          },
-          {
-            "name": "Scroll by duration",
-            "type": "scrollbydurationjob",
-            "description": "Scroll down",
-            "behaviors": [
-              {
-                "name": "scrollDuration",
-                "description": "Scroll for 70 seconds.",
-                "value": 70
-              },
-              {
-                "name": "scrollDirection",
-                "description": "Scroll down",
-                "value": "DOWN"
-              }
-            ]
-          },
-          {
-            "name": "Wait",
-            "type": "waitjob",
-            "description": "Wait for 3 seconds",
-            "behaviors": [
-              {
-                "name": "seconds",
-                "description": "Wait for 3 seconds.",
-                "value": 3
-              }
-            ]
-          },
-          {
-            "name": "Visit",
-            "type": "visitjob",
-            "description": "Visit https://www.google.com",
-            "behaviors": [
-              {
-                "name": "url",
-                "description": "URL",
-                "value": "https://www.google.com"
-              }
-            ]
-          },
-          {
-            "name": "Enter Text",
-            "type": "entertextfieldjob",
-            "description": "Enter text into the defined field",
-            "behaviors": [
-              {
-                "name": "task",
-                "description": "This job is part of the task search_google_neutral ",
-                "value": "search_google_neutral"
-              },
-              {
-                "name": "flag",
-                "description": "",
-                "value": "neutral"
-              },
-              {
-                "name": "text",
-                "description": "Text to enter",
-                "value": "Lakers"
-              },
-              {
-                "name": "selectionType",
-                "description": "Type of selection",
-                "value": "XPATH"
-              },
-              {
-                "name": "selector",
-                "description": " selector",
-                "value": "//input[@name='q']"
-              },
-              {
-                "name": "appendReturn",
-                "description": "Optional field: appends a return key after the text given if true.",
-                "value": true
-              },
-              {
-                "name": "typingMode",
-                "description": "Optional field: How the text is entered into the field",
-                "value": "SIMULATED_FIXINGTYPOS"
-              }
-            ]
-          },
-          {
-            "name": "Scroll by duration",
-            "type": "scrollbydurationjob",
-            "description": "Scroll down",
-            "behaviors": [
-              {
-                "name": "scrollDuration",
-                "description": "Scroll for 5 seconds.",
-                "value": 5
-              },
-              {
-                "name": "scrollDirection",
-                "description": "Scroll down",
-                "value": "DOWN"
-              }
-            ]
-          },
-          {
-            "name": "Scroll by length",
-            "type": "scrollbylengthjob",
-            "description": "Scroll up",
-            "behaviors": [
-              {
-                "name": "length",
-                "description": "Scroll 100.0 of window.",
-                "value": 100.0
-              },
-              {
-                "name": "scrollDirection",
-                "description": "Scroll up",
-                "value": "UP"
-              }
-            ]
-          },
-          {
-            "name": "Select",
-            "type": "singleselecturljob",
-            "description": "Select an item and click",
-            "behaviors": [
-              {
-                "name": "task",
-                "description": "This job is part of the task search_google_neutral ",
-                "value": "search_google_neutral"
-              },
-              {
-                "name": "flag",
-                "description": "",
-                "value": "neutral"
-              },
-              {
-                "name": "selectionType",
-                "description": "Type of selection",
-                "value": "XPATH"
-              },
-              {
-                "name": "selector",
-                "description": " selector",
-                "value": ".//div[@class=\"yuRUbf\"]/a"
-              },
-              {
-                "name": "decisionType",
-                "description": "Decision type for choosing an item out of the list given by the selector is CALCULATED",
-                "value": "CALCULATED"
-              },
-              {
-                "name": "flag",
-                "description": "",
-                "value": "CALCULATED/neutral"
-              },
-              {
-                "name": "task",
-                "description": "This job is part of the task CALCULATED/search_google_neutral ",
-                "value": "CALCULATED/search_google_neutral"
-              }
-            ]
-          },
-          {
-            "name": "Scroll by length",
-            "type": "scrollbylengthjob",
-            "description": "Scroll down",
-            "behaviors": [
-              {
-                "name": "length",
-                "description": "Scroll 80.0 of window.",
-                "value": 80.0
-              },
-              {
-                "name": "scrollDirection",
-                "description": "Scroll down",
-                "value": "DOWN"
-              }
-            ]
           }
         ]
       },
-      {
-        "name": "Session_0",
-        "description": "A single browser session",
-        "start_at": "2021-03-26T09:30:12.057931-06:00",
-        "jobs": [
-          {
-            "name": "Wait",
-            "type": "waitjob",
-            "description": "Wait for 10 seconds",
-            "behaviors": [
-              {
-                "name": "seconds",
-                "description": "Wait for 10 seconds.",
-                "value": 10
-              }
-            ]
-          },
-          {
-            "name": "Visit",
-            "type": "visitjob",
-            "description": "Visit https://www.google.com",
-            "behaviors": [
-              {
-                "name": "url",
-                "description": "URL",
-                "value": "https://www.google.com"
-              }
-            ]
-          },
-          {
-            "name": "Enter Text",
-            "type": "entertextfieldjob",
-            "description": "Enter text into the defined field",
-            "behaviors": [
-              {
-                "name": "task",
-                "description": "This job is part of the task search_google_benign ",
-                "value": "search_google_benign"
-              },
-              {
-                "name": "flag",
-                "description": "",
-                "value": "benign"
-              },
-              {
-                "name": "text",
-                "description": "Text to enter",
-                "value": "restaurants near me"
-              },
-              {
-                "name": "selectionType",
-                "description": "Type of selection",
-                "value": "XPATH"
-              },
-              {
-                "name": "selector",
-                "description": " selector",
-                "value": "//input[@name='q']"
-              },
-              {
-                "name": "appendReturn",
-                "description": "Optional field: appends a return key after the text given if true.",
-                "value": true
-              },
-              {
-                "name": "typingMode",
-                "description": "Optional field: How the text is entered into the field",
-                "value": "SIMULATED_FIXINGTYPOS"
-              }
-            ]
-          },
-          {
-            "name": "Scroll by duration",
-            "type": "scrollbydurationjob",
-            "description": "Scroll down",
-            "behaviors": [
-              {
-                "name": "scrollDuration",
-                "description": "Scroll for 5 seconds.",
-                "value": 5
-              },
-              {
-                "name": "scrollDirection",
-                "description": "Scroll down",
-                "value": "DOWN"
-              }
-            ]
-          },
-          {
-            "name": "Scroll by length",
-            "type": "scrollbylengthjob",
-            "description": "Scroll up",
-            "behaviors": [
-              {
-                "name": "length",
-                "description": "Scroll 100.0 of window.",
-                "value": 100.0
-              },
-              {
-                "name": "scrollDirection",
-                "description": "Scroll up",
-                "value": "UP"
-              }
-            ]
-          },
-          {
-            "name": "Wait",
-            "type": "waitjob",
-            "description": "Wait for 6 seconds",
-            "behaviors": [
-              {
-                "name": "seconds",
-                "description": "Wait for 6 seconds.",
-                "value": 6
-              }
-            ]
-          },
-          {
-            "name": "Visit",
-            "type": "visitjob",
-            "description": "Visit https://www.ebay.com",
-            "behaviors": [
-              {
-                "name": "url",
-                "description": "URL",
-                "value": "https://www.ebay.com"
-              }
-            ]
-          },
-          {
-            "name": "Scroll by duration",
-            "type": "scrollbydurationjob",
-            "description": "Scroll down",
-            "behaviors": [
-              {
-                "name": "scrollDuration",
-                "description": "Scroll for 70 seconds.",
-                "value": 70
-              },
-              {
-                "name": "scrollDirection",
-                "description": "Scroll down",
-                "value": "DOWN"
-              }
-            ]
-          },
-          {
-            "name": "Wait",
-            "type": "waitjob",
-            "description": "Wait for 10 seconds",
-            "behaviors": [
-              {
-                "name": "seconds",
-                "description": "Wait for 10 seconds.",
-                "value": 10
-              }
-            ]
-          },
-          {
-            "name": "Visit",
-            "type": "visitjob",
-            "description": "Visit https://www.ca.gov",
-            "behaviors": [
-              {
-                "name": "url",
-                "description": "URL",
-                "value": "https://www.ca.gov"
-              }
-            ]
-          },
-          {
-            "name": "Scroll by duration",
-            "type": "scrollbydurationjob",
-            "description": "Scroll down",
-            "behaviors": [
-              {
-                "name": "scrollDuration",
-                "description": "Scroll for 70 seconds.",
-                "value": 70
-              },
-              {
-                "name": "scrollDirection",
-                "description": "Scroll down",
-                "value": "DOWN"
-              }
-            ]
-          },
-          {
-            "name": "Wait",
-            "type": "waitjob",
-            "description": "Wait for 3 seconds",
-            "behaviors": [
-              {
-                "name": "seconds",
-                "description": "Wait for 3 seconds.",
-                "value": 3
-              }
-            ]
-          },
-          {
-            "name": "Visit",
-            "type": "visitjob",
-            "description": "Visit https://www.google.com",
-            "behaviors": [
-              {
-                "name": "url",
-                "description": "URL",
-                "value": "https://www.google.com"
-              }
-            ]
-          },
-          {
-            "name": "Enter Text",
-            "type": "entertextfieldjob",
-            "description": "Enter text into the defined field",
-            "behaviors": [
-              {
-                "name": "task",
-                "description": "This job is part of the task search_google_neutral ",
-                "value": "search_google_neutral"
-              },
-              {
-                "name": "flag",
-                "description": "",
-                "value": "neutral"
-              },
-              {
-                "name": "text",
-                "description": "Text to enter",
-                "value": "Lakers"
-              },
-              {
-                "name": "selectionType",
-                "description": "Type of selection",
-                "value": "XPATH"
-              },
-              {
-                "name": "selector",
-                "description": " selector",
-                "value": "//input[@name='q']"
-              },
-              {
-                "name": "appendReturn",
-                "description": "Optional field: appends a return key after the text given if true.",
-                "value": true
-              },
-              {
-                "name": "typingMode",
-                "description": "Optional field: How the text is entered into the field",
-                "value": "SIMULATED_FIXINGTYPOS"
-              }
-            ]
-          },
-          {
-            "name": "Scroll by duration",
-            "type": "scrollbydurationjob",
-            "description": "Scroll down",
-            "behaviors": [
-              {
-                "name": "scrollDuration",
-                "description": "Scroll for 5 seconds.",
-                "value": 5
-              },
-              {
-                "name": "scrollDirection",
-                "description": "Scroll down",
-                "value": "DOWN"
-              }
-            ]
-          },
-          {
-            "name": "Scroll by length",
-            "type": "scrollbylengthjob",
-            "description": "Scroll up",
-            "behaviors": [
-              {
-                "name": "length",
-                "description": "Scroll 100.0 of window.",
-                "value": 100.0
-              },
-              {
-                "name": "scrollDirection",
-                "description": "Scroll up",
-                "value": "UP"
-              }
-            ]
-          },
-          {
-            "name": "Select",
-            "type": "singleselecturljob",
-            "description": "Select an item and click",
-            "behaviors": [
-              {
-                "name": "task",
-                "description": "This job is part of the task search_google_neutral ",
-                "value": "search_google_neutral"
-              },
-              {
-                "name": "flag",
-                "description": "",
-                "value": "neutral"
-              },
-              {
-                "name": "selectionType",
-                "description": "Type of selection",
-                "value": "XPATH"
-              },
-              {
-                "name": "selector",
-                "description": " selector",
-                "value": ".//div[@class=\"yuRUbf\"]/a"
-              },
-              {
-                "name": "decisionType",
-                "description": "Decision type for choosing an item out of the list given by the selector is CALCULATED",
-                "value": "CALCULATED"
-              },
-              {
-                "name": "flag",
-                "description": "",
-                "value": "CALCULATED/neutral"
-              },
-              {
-                "name": "task",
-                "description": "This job is part of the task CALCULATED/search_google_neutral ",
-                "value": "CALCULATED/search_google_neutral"
-              }
-            ]
-          },
-          {
-            "name": "Scroll by length",
-            "type": "scrollbylengthjob",
-            "description": "Scroll down",
-            "behaviors": [
-              {
-                "name": "length",
-                "description": "Scroll 80.0 of window.",
-                "value": 80.0
-              },
-              {
-                "name": "scrollDirection",
-                "description": "Scroll down",
-                "value": "DOWN"
-              }
-            ]
-          }
-        ]
-      }
-    ]
-  }
-]
+      "proxy": {
+        "name": "Proxy Name",
+        "description": "Proxy description",
+        "hostname": "proxy.example.com",
+        "port": 8080,
+        "username": "proxy_user",
+        "password": "proxy_pass",
+        "active": true,
+        "type": "HTTP"
+      },
+      "agent": {
+        "name": "Agent Name",
+        "description": "Agent description",
+        "identification": "chrome",
+        "multilogin_id": "ml_id_123",
+        "multilogin_profile": {
+          "name": "Profile Name",
+          "os": "win",
+          "browser": "mimic"
+        },
+        "location": "US-CO-COLORADO_SPRINGS",
+        "active": true
+      },
+      "queues": [
+        {
+          "timezone": "America/Denver",
+          "timezone_utc_offset": "-06:00",
+          "name": "Queue Name",
+          "description": "Queue description",
+          "start_at": "2024-01-01T10:00:00-06:00",
+          "active": true,
+          "jobs": [
+            {
+              "name": "Job Name",
+              "type": "waitjob",
+              "description": "Job description",
+              "active": true,
+              "behaviors": [
+                {
+                  "name": "seconds",
+                  "description": "Wait duration",
+                  "active": true,
+                  "value": 10
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+```
 
-````
+### Minimal Example
+
+```json
+{
+  "json": [
+    {
+      "name": "Simple Experiment",
+      "description": "Basic experiment",
+      "configuration": {
+        "name": "Basic Config",
+        "description": "Basic configuration",
+        "active": 1
+      },
+      "agent": {
+        "name": "Basic Agent",
+        "description": "Basic agent",
+        "identification": "chrome",
+        "multilogin_profile": {},
+        "location": "US",
+        "active": true
+      },
+      "queues": [
+        {
+          "timezone": "UTC",
+          "timezone_utc_offset": "+00:00",
+          "name": "Basic Queue",
+          "description": "Basic queue",
+          "start_at": "2024-01-01T00:00:00Z",
+          "active": true,
+          "jobs": [
+            {
+              "name": "Wait Job",
+              "type": "waitjob",
+              "description": "Simple wait",
+              "behaviors": [
+                {
+                  "name": "seconds",
+                  "description": "Wait time",
+                  "value": 5
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+```
+
+## Crawler Upload
+
+**Endpoint:** `POST /api/v1/crawlers/{crawler}/upload`  
+**Content-Type:** `application/json` or file upload
+
+### For JSON Content
+
+```json
+{
+  "json": {
+    "crawler_data": "example",
+    "settings": {
+      "active": true,
+      "testing": false
+    }
+  },
+  "response": false
+}
+```
+
+### For File Upload
+
+Use multipart/form-data with a `json` file:
+
+```bash
+curl -X POST https://pm-api.test.primemover.example/api/v1/crawlers/1/upload \
+  -H "Authorization: Bearer your-token" \
+  -F "json=@crawler_config.json" \
+  -F "response=true"
+```
+
+## Field Requirements
+
+### Required Fields
+
+**Experiment Level:**
+- `name` (string, max 255)
+- `configuration` (object)
+- `agent` (object)
+- `queues` (array)
+
+**Configuration:**
+- `name` (string, max 255)
+- `description` (string, max 255)
+- `active` (integer)
+
+**Agent:**
+- `name` (string, max 255)
+- `description` (string, max 255)
+- `identification` (string, max 255)
+- `multilogin_profile` (object)
+- `location` (string)
+- `active` (boolean)
+
+**Proxy (if provided):**
+- `name` (string, max 255)
+- `active` (boolean)
+- `type` (string)
+- `username` (required unless type is 'http')
+- `password` (required unless type is 'http')
+
+**Queue:**
+- `timezone` (string, max 255)
+- `timezone_utc_offset` (string, max 6)
+- `name` (string, max 255)
+- `description` (string, max 255)
+- `start_at` (string, max 255)
+- `active` (boolean)
+- `jobs` (array)
+
+**Job:**
+- `name` (string, max 255)
+- `type` (string, max 255)
+- `description` (string, max 255)
+- `behaviors` (array)
+
+**Behavior:**
+- `name` (string, max 255)
+
+### Optional Fields
+
+- `description` (most objects)
+- `multilogin_id` (agent)
+- `hostname`, `port`, `username`, `password` (proxy)
+- `params`, `preferences` (configuration)
+- `active` (job, behavior)
+- `value` (behavior)
+
+## Common Job Types
+
+### Wait Job
+```json
+{
+  "name": "Wait",
+  "type": "waitjob",
+  "description": "Wait for specified seconds",
+  "behaviors": [
+    {
+      "name": "seconds",
+      "description": "Duration to wait",
+      "value": 10
+    }
+  ]
+}
+```
+
+### Visit Job
+```json
+{
+  "name": "Visit Website",
+  "type": "visitjob",
+  "description": "Navigate to URL",
+  "behaviors": [
+    {
+      "name": "url",
+      "description": "Target URL",
+      "value": "https://example.com"
+    }
+  ]
+}
+```
+
+### Text Entry Job
+```json
+{
+  "name": "Enter Text",
+  "type": "entertextfieldjob",
+  "description": "Enter text in field",
+  "behaviors": [
+    {
+      "name": "text",
+      "description": "Text to enter",
+      "value": "search query"
+    },
+    {
+      "name": "selectionType",
+      "description": "Selector type",
+      "value": "XPATH"
+    },
+    {
+      "name": "selector",
+      "description": "Element selector",
+      "value": "//input[@name='q']"
+    },
+    {
+      "name": "appendReturn",
+      "description": "Press Enter after text",
+      "value": true
+    }
+  ]
+}
+```
+
+### Scroll Job
+```json
+{
+  "name": "Scroll Page",
+  "type": "scrollbydurationjob",
+  "description": "Scroll for duration",
+  "behaviors": [
+    {
+      "name": "scrollDuration",
+      "description": "Scroll duration in seconds",
+      "value": 5
+    },
+    {
+      "name": "scrollDirection",
+      "description": "Scroll direction",
+      "value": "DOWN"
+    }
+  ]
+}
+```
+
+## Validation Notes
+
+1. **Boolean vs Integer:** Use `true`/`false` for boolean fields, except `configuration.active` which expects an integer
+2. **Required Arrays:** `search_terms` and `media_outlet_urls` in params must be arrays, even if empty
+3. **Timezone Format:** Use standard timezone names and ISO 8601 offset format
+4. **Port Numbers:** Must be integers between 1-65535
+5. **String Lengths:** Most name/description fields have 255 character limits
+6. **Nested Structure:** Follow the exact nesting structure shown in examples
+
+## Response Options
+
+Add `"response": true` to get detailed response data including created crawler information. Otherwise, you'll get a simple success status.
