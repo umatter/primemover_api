@@ -3,6 +3,10 @@
 
 define('LARAVEL_START', microtime(true));
 
+putenv('TELESCOPE_ENABLED=false');
+$_SERVER['TELESCOPE_ENABLED'] = 'false';
+$_ENV['TELESCOPE_ENABLED'] = 'false';
+
 /*
 |--------------------------------------------------------------------------
 | Register The Auto Loader
