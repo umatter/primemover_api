@@ -29,16 +29,6 @@ services:
     restart: on-failure
     #command: bash /var/www/docker/laravel/supervisor.sh
     tty: true
-  php_xdebug:
-    build:
-      context: ./docker/${PHPVERSION}-xdebug
-    container_name: ${COMPOSE_PROJECT_NAME}-xdebug-${PHPVERSION}
-    volumes:
-      - ${DOCUMENT_ROOT}:/var/www/html:delegated
-      - ${PHP_INI}:/usr/local/etc/php/php.ini
-      - ./docker/${PHPVERSION}-xdebug/etc/php/conf.d:/usr/local/etc/php/conf.d
-    environment:
-      XDEBUG_COOKIE_VALUE: ${XDEBUG_COOKIE_VALUE}
   mysql:
     image: mysql:8.0.25
     container_name: '${COMPOSE_PROJECT_NAME}-mysql'
