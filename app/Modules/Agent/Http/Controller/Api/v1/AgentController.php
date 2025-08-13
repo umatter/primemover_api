@@ -40,7 +40,30 @@ class AgentController extends Controller
      * @OA\Get(
      *     path="/agents",
      *     summary="List all agents",
-     *     description="Get paginated list of browser agents",
+     *     description="Get paginated list of browser agents
+
+**Curl Example:**
+```bash
+curl -X GET 'https://pm-api.test.primemover.example/api/v1/agents' \
+  -H 'Authorization: Bearer YOUR_TOKEN' \
+  -H 'Accept: application/json'
+```
+
+**R Example:**
+```r
+library(httr)
+
+response <- GET(
+  url = ""https://pm-api.test.primemover.example/api/v1/agents"",
+  add_headers(
+    ""Authorization"" = ""Bearer YOUR_TOKEN"",
+    ""Accept"" = ""application/json""
+  )
+)
+
+agents_data <- content(response, ""parsed"")
+print(agents_data)
+```",
      *     tags={"Agents"},
      *     security={{"bearerAuth":{}}},
      *     @OA\Parameter(
@@ -89,7 +112,47 @@ class AgentController extends Controller
      * @OA\Post(
      *     path="/agents",
      *     summary="Create new agent",
-     *     description="Create a new browser agent configuration",
+     *     description="Create a new browser agent configuration
+
+**Curl Example:**
+```bash
+curl -X POST 'https://pm-api.test.primemover.example/api/v1/agents' \
+  -H 'Authorization: Bearer YOUR_TOKEN' \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -d '{
+    ""name"": ""Chrome Agent"",
+    ""description"": ""Chrome browser agent"",
+    ""identification"": ""chrome"",
+    ""location"": ""US-CO-COLORADO_SPRINGS"",
+    ""active"": true
+  }'
+```
+
+**R Example:**
+```r
+library(httr)
+library(jsonlite)
+
+response <- POST(
+  url = ""https://pm-api.test.primemover.example/api/v1/agents"",
+  add_headers(
+    ""Authorization"" = ""Bearer YOUR_TOKEN"",
+    ""Content-Type"" = ""application/json"",
+    ""Accept"" = ""application/json""
+  ),
+  body = toJSON(list(
+    name = ""Chrome Agent"",
+    description = ""Chrome browser agent"",
+    identification = ""chrome"",
+    location = ""US-CO-COLORADO_SPRINGS"",
+    active = TRUE
+  ), auto_unbox = TRUE)
+)
+
+agent_data <- content(response, ""parsed"")
+print(agent_data)
+```",
      *     tags={"Agents"},
      *     security={{"bearerAuth":{}}},
      *     @OA\RequestBody(
