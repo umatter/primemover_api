@@ -187,7 +187,30 @@ print(queues_data)
      * @OA\Get(
      *     path="/api/v1/queues-unprocessed",
      *     summary="Get unprocessed queues",
-     *     description="Retrieve all queues that have not been processed",
+     *     description="Retrieve all queues that have not been processed
+
+**Curl Example:**
+```bash
+curl -X GET 'https://pm-api.test.primemover.example/api/v1/queues-unprocessed' \
+  -H 'Authorization: Bearer YOUR_TOKEN' \
+  -H 'Accept: application/json'
+```
+
+**R Example:**
+```r
+library(httr)
+
+response <- GET(
+  url = ""https://pm-api.test.primemover.example/api/v1/queues-unprocessed"",
+  add_headers(
+    ""Authorization"" = ""Bearer YOUR_TOKEN"",
+    ""Accept"" = ""application/json""
+  )
+)
+
+queues_data <- content(response, ""parsed"")
+print(queues_data)
+```",
      *     operationId="getUnprocessedQueues",
      *     tags={"Queues"},
      *     security={{"bearerAuth": {}}},
@@ -230,7 +253,30 @@ print(queues_data)
      * @OA\Get(
      *     path="/api/v1/queues-reviewed",
      *     summary="Get reviewed queues",
-     *     description="Retrieve all queues that have been reviewed",
+     *     description="Retrieve all queues that have been reviewed
+
+**Curl Example:**
+```bash
+curl -X GET 'https://pm-api.test.primemover.example/api/v1/queues-reviewed' \
+  -H 'Authorization: Bearer YOUR_TOKEN' \
+  -H 'Accept: application/json'
+```
+
+**R Example:**
+```r
+library(httr)
+
+response <- GET(
+  url = ""https://pm-api.test.primemover.example/api/v1/queues-reviewed"",
+  add_headers(
+    ""Authorization"" = ""Bearer YOUR_TOKEN"",
+    ""Accept"" = ""application/json""
+  )
+)
+
+queues_data <- content(response, ""parsed"")
+print(queues_data)
+```",
      *     operationId="getReviewedQueues",
      *     tags={"Queues"},
      *     security={{"bearerAuth": {}}},
@@ -273,7 +319,30 @@ print(queues_data)
      * @OA\Get(
      *     path="/api/v1/queues-unreviewed",
      *     summary="Get unreviewed queues",
-     *     description="Retrieve all queues that have not been reviewed",
+     *     description="Retrieve all queues that have not been reviewed
+
+**Curl Example:**
+```bash
+curl -X GET 'https://pm-api.test.primemover.example/api/v1/queues-unreviewed' \
+  -H 'Authorization: Bearer YOUR_TOKEN' \
+  -H 'Accept: application/json'
+```
+
+**R Example:**
+```r
+library(httr)
+
+response <- GET(
+  url = ""https://pm-api.test.primemover.example/api/v1/queues-unreviewed"",
+  add_headers(
+    ""Authorization"" = ""Bearer YOUR_TOKEN"",
+    ""Accept"" = ""application/json""
+  )
+)
+
+queues_data <- content(response, ""parsed"")
+print(queues_data)
+```",
      *     operationId="getUnreviewedQueues",
      *     tags={"Queues"},
      *     security={{"bearerAuth": {}}},
