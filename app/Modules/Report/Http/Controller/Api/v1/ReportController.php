@@ -23,7 +23,7 @@ class ReportController extends Controller
 {
     /**
      * @OA\Get(
-     *     path="/api/v1/reports",
+     *     path="/reports",
      *     summary="List all reports",
      *     description="Get paginated list of reports",
      *     operationId="getReports",
@@ -61,7 +61,7 @@ class ReportController extends Controller
 
     /**
      * @OA\Post(
-     *     path="/api/v1/reports",
+     *     path="/reports",
      *     summary="Create new report",
      *     description="Create a new report",
      *     operationId="createReport",
@@ -94,7 +94,7 @@ class ReportController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/api/v1/reports/{id}",
+     *     path="/reports/{id}",
      *     summary="Get specific report",
      *     description="Get details of a specific report",
      *     operationId="getReport",
@@ -123,7 +123,7 @@ class ReportController extends Controller
 
     /**
      * @OA\Delete(
-     *     path="/api/v1/reports/{id}",
+     *     path="/reports/{id}",
      *     summary="Delete report",
      *     description="Delete an existing report",
      *     operationId="deleteReport",
@@ -155,7 +155,7 @@ class ReportController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/api/v1/file/{report}",
+     *     path="/file/{report}",
      *     summary="Get report file",
      *     description="Retrieve a specific report file by report ID",
      *     operationId="getReportFile",
@@ -188,7 +188,7 @@ class ReportController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/api/v1/download/report/{job}",
+     *     path="/download/report/{job}",
      *     summary="Download job report",
      *     description="Download a ZIP archive containing the report data for a specific job",
      *     operationId="downloadJobReport",

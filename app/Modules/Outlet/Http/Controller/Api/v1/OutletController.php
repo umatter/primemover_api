@@ -23,7 +23,7 @@ class OutletController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/api/v1/outlets",
+     *     path="/outlets",
      *     summary="List all outlets",
      *     description="Get list of media outlets",
      *     operationId="getOutlets",
@@ -61,7 +61,7 @@ class OutletController extends Controller
 
     /**
      * @OA\Post(
-     *     path="/api/v1/outlets",
+     *     path="/outlets",
      *     summary="Create new outlet",
      *     description="Create a new media outlet",
      *     operationId="createOutlet",
@@ -95,7 +95,7 @@ class OutletController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/api/v1/outlets/{id}",
+     *     path="/outlets/{id}",
      *     summary="Get specific outlet",
      *     description="Get details of a specific outlet",
      *     operationId="getOutlet",
@@ -131,7 +131,7 @@ class OutletController extends Controller
 
     /**
      * @OA\Put(
-     *     path="/api/v1/outlets/{id}",
+     *     path="/outlets/{id}",
      *     summary="Update outlet",
      *     description="Update an existing outlet",
      *     operationId="updateOutlet",
@@ -170,7 +170,7 @@ class OutletController extends Controller
 
     /**
      * @OA\Delete(
-     *     path="/api/v1/outlets/{id}",
+     *     path="/outlets/{id}",
      *     summary="Delete outlet",
      *     description="Delete an existing outlet",
      *     operationId="deleteOutlet",

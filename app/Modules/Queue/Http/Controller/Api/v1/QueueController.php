@@ -48,7 +48,7 @@ class QueueController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/api/v1/queues/job/{jobid}",
+     *     path="/queues/job/{jobid}",
      *     summary="Get queue by job ID",
      *     description="Retrieve queue information for a specific job
 
@@ -119,7 +119,7 @@ print(queue_data)
 
     /**
      * @OA\Get(
-     *     path="/api/v1/queues-processed",
+     *     path="/queues-processed",
      *     summary="Get processed queues",
      *     description="Retrieve all queues that have been processed
 
@@ -185,7 +185,7 @@ print(queues_data)
 
     /**
      * @OA\Get(
-     *     path="/api/v1/queues-unprocessed",
+     *     path="/queues-unprocessed",
      *     summary="Get unprocessed queues",
      *     description="Retrieve all queues that have not been processed
 
@@ -251,7 +251,7 @@ print(queues_data)
 
     /**
      * @OA\Get(
-     *     path="/api/v1/queues-reviewed",
+     *     path="/queues-reviewed",
      *     summary="Get reviewed queues",
      *     description="Retrieve all queues that have been reviewed
 
@@ -317,7 +317,7 @@ print(queues_data)
 
     /**
      * @OA\Get(
-     *     path="/api/v1/queues-unreviewed",
+     *     path="/queues-unreviewed",
      *     summary="Get unreviewed queues",
      *     description="Retrieve all queues that have not been reviewed
 

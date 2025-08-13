@@ -30,7 +30,7 @@ class ExperimentController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/api/v1/experiments/experiments-list",
+     *     path="/experiments/experiments-list",
      *     summary="Get all experiments list",
      *     description="Retrieve a complete list of all experiments without pagination
 
@@ -131,7 +131,7 @@ print(experiments_data)
 
     /**
      * @OA\Delete(
-     *     path="/api/v1/experiments/{experiment}/destroy",
+     *     path="/experiments/{experiment}/destroy",
      *     summary="Force delete experiment",
      *     description="Permanently delete an experiment and all associated data",
      *     operationId="forceDeleteExperiment",
@@ -172,7 +172,7 @@ print(experiments_data)
 
     /**
      * @OA\Post(
-     *     path="/api/v1/experiments/{experiment}/upload",
+     *     path="/experiments/{experiment}/upload",
      *     summary="Upload experiment configuration",
      *     description="Upload configuration data or file to an experiment
 
@@ -294,7 +294,7 @@ print(config_result)
      */
     /**
      * @OA\Post(
-     *     path="/api/v1/experiments/upload",
+     *     path="/experiments/upload",
      *     summary="Upload experiment data",
      *     description="Upload experiment configuration data or file (general upload)
 
@@ -421,7 +421,7 @@ print(upload_result)
 
     /**
      * @OA\Get(
-     *     path="/api/v1/experiments/{experiment}/download",
+     *     path="/experiments/{experiment}/download",
      *     summary="Download experiment data",
      *     description="Download experiment data as a file (ZIP archive)
 

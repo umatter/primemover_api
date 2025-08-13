@@ -20,7 +20,7 @@ class TermController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/api/v1/terms",
+     *     path="/terms",
      *     summary="List all terms",
      *     description="Get paginated list of terms",
      *     operationId="getTerms",

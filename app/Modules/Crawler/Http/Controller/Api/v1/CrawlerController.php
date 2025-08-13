@@ -30,7 +30,7 @@ class CrawlerController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/api/v1/crawlers-protected",
+     *     path="/crawlers-protected",
      *     summary="Get protected crawlers",
      *     description="Retrieve all protected/active crawlers (same as main crawler index)",
      *     operationId="getProtectedCrawlers",
@@ -105,7 +105,7 @@ class CrawlerController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/api/v1/crawlers-inactive",
+     *     path="/crawlers-inactive",
      *     summary="Get inactive crawlers",
      *     description="Retrieve all crawlers that are currently inactive",
      *     operationId="getInactiveCrawlers",
@@ -145,7 +145,7 @@ class CrawlerController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/api/v1/crawlers-processed",
+     *     path="/crawlers-processed",
      *     summary="Get crawlers with processed queues",
      *     description="Retrieve all crawlers that have processed queues
 
@@ -210,7 +210,7 @@ print(crawlers_data)
 
     /**
      * @OA\Get(
-     *     path="/api/v1/crawlers-reviewed",
+     *     path="/crawlers-reviewed",
      *     summary="Get crawlers with reviewed queues",
      *     description="Retrieve all crawlers that have reviewed queues",
      *     operationId="getCrawlersWithReviewedQueues",
@@ -251,7 +251,7 @@ print(crawlers_data)
 
     /**
      * @OA\Get(
-     *     path="/api/v1/crawlers-unprocessed",
+     *     path="/crawlers-unprocessed",
      *     summary="Get crawlers with unprocessed queues",
      *     description="Retrieve all crawlers that have unprocessed queues
 
@@ -315,7 +315,7 @@ print(crawlers_data)
 
     /**
      * @OA\Get(
-     *     path="/api/v1/crawlers-testing",
+     *     path="/crawlers-testing",
      *     summary="Get testing crawlers",
      *     description="Retrieve all crawlers that are in testing mode",
      *     operationId="getTestingCrawlers",
@@ -384,7 +384,7 @@ print(crawlers_data)
 
     /**
      * @OA\Get(
-     *     path="/api/v1/crawlers-disable",
+     *     path="/crawlers-disable",
      *     summary="Disable production crawlers",
      *     description="Disable all production crawlers and return the updated list",
      *     operationId="disableProductionCrawlers",
@@ -424,7 +424,7 @@ print(crawlers_data)
 
     /**
      * @OA\Delete(
-     *     path="/api/v1/crawlers/{crawler}/destroy",
+     *     path="/crawlers/{crawler}/destroy",
      *     summary="Force delete crawler",
      *     description="Permanently delete a crawler and all associated data",
      *     operationId="forceDeleteCrawler",
@@ -478,7 +478,7 @@ print(crawlers_data)
 
     /**
      * @OA\Get(
-     *     path="/api/v1/ip/{ip}",
+     *     path="/ip/{ip}",
      *     summary="Check IP address",
      *     description="Get information about an IP address or current request IP",
      *     operationId="checkIpAddress",
@@ -511,7 +511,7 @@ print(crawlers_data)
 
     /**
      * @OA\Delete(
-     *     path="/api/v1/undo",
+     *     path="/undo",
      *     summary="Undo crawler operations",
      *     description="Undo recent crawler operations and return updated crawler list",
      *     operationId="undoCrawlerOperations",
@@ -553,7 +553,7 @@ print(crawlers_data)
 
     /**
      * @OA\Delete(
-     *     path="/api/v1/cleanup",
+     *     path="/cleanup",
      *     summary="Cleanup crawlers",
      *     description="Clean up crawler data and return updated crawler list",
      *     operationId="cleanupCrawlers",
@@ -594,7 +594,7 @@ print(crawlers_data)
 
     /**
      * @OA\Post(
-     *     path="/api/v1/crawlers/{crawler}/upload",
+     *     path="/crawlers/{crawler}/upload",
      *     summary="Upload crawler configuration",
      *     description="Upload configuration data or file to a crawler
 
@@ -732,7 +732,7 @@ print(upload_result)
 
     /**
      * @OA\Post(
-     *     path="/api/v1/load-test",
+     *     path="/load-test",
      *     summary="Load test data",
      *     description="Load test data for crawler testing purposes",
      *     operationId="loadTestData",

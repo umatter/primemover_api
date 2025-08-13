@@ -26,7 +26,7 @@ class JobController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/api/v1/jobs",
+     *     path="/jobs",
      *     summary="List all jobs",
      *     description="Get paginated list of jobs",
      *     operationId="getJobs",
@@ -81,7 +81,7 @@ class JobController extends Controller
 
     /**
      * @OA\Post(
-     *     path="/api/v1/jobs",
+     *     path="/jobs",
      *     summary="Create new job",
      *     description="Create a new job",
      *     operationId="createJob",
@@ -115,7 +115,7 @@ class JobController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/api/v1/jobs/{id}",
+     *     path="/jobs/{id}",
      *     summary="Get specific job",
      *     description="Get details of a specific job",
      *     operationId="getJob",
@@ -151,7 +151,7 @@ class JobController extends Controller
 
     /**
      * @OA\Put(
-     *     path="/api/v1/jobs/{id}",
+     *     path="/jobs/{id}",
      *     summary="Update job",
      *     description="Update an existing job",
      *     operationId="updateJob",
@@ -190,7 +190,7 @@ class JobController extends Controller
 
     /**
      * @OA\Delete(
-     *     path="/api/v1/jobs/{id}",
+     *     path="/jobs/{id}",
      *     summary="Delete job",
      *     description="Delete an existing job",
      *     operationId="deleteJob",

@@ -25,7 +25,7 @@ class ProxyController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/api/v1/proxies",
+     *     path="/proxies",
      *     summary="List all proxies",
      *     description="Get list of proxies",
      *     operationId="getProxies",
@@ -83,7 +83,7 @@ class ProxyController extends Controller
 
     /**
      * @OA\Post(
-     *     path="/api/v1/proxies",
+     *     path="/proxies",
      *     summary="Create new proxy",
      *     description="Create a new proxy",
      *     operationId="createProxy",
@@ -121,7 +121,7 @@ class ProxyController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/api/v1/proxies/{id}",
+     *     path="/proxies/{id}",
      *     summary="Get specific proxy",
      *     description="Get details of a specific proxy",
      *     operationId="getProxy",
@@ -155,7 +155,7 @@ class ProxyController extends Controller
 
     /**
      * @OA\Put(
-     *     path="/api/v1/proxies/{id}",
+     *     path="/proxies/{id}",
      *     summary="Update proxy",
      *     description="Update an existing proxy",
      *     operationId="updateProxy",
@@ -198,7 +198,7 @@ class ProxyController extends Controller
 
     /**
      * @OA\Delete(
-     *     path="/api/v1/proxies/{id}",
+     *     path="/proxies/{id}",
      *     summary="Delete proxy",
      *     description="Delete an existing proxy",
      *     operationId="deleteProxy",

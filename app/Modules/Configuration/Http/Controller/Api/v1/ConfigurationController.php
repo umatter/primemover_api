@@ -24,7 +24,7 @@ class ConfigurationController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/api/v1/configurations",
+     *     path="/configurations",
      *     summary="List all configurations",
      *     description="Get paginated list of configurations",
      *     operationId="getConfigurations",
@@ -69,7 +69,7 @@ class ConfigurationController extends Controller
 
     /**
      * @OA\Post(
-     *     path="/api/v1/configurations",
+     *     path="/configurations",
      *     summary="Create new configuration",
      *     description="Create a new configuration",
      *     operationId="createConfiguration",
@@ -106,7 +106,7 @@ class ConfigurationController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/api/v1/configurations/{id}",
+     *     path="/configurations/{id}",
      *     summary="Get specific configuration",
      *     description="Get details of a specific configuration",
      *     operationId="getConfiguration",
@@ -140,7 +140,7 @@ class ConfigurationController extends Controller
 
     /**
      * @OA\Put(
-     *     path="/api/v1/configurations/{id}",
+     *     path="/configurations/{id}",
      *     summary="Update configuration",
      *     description="Update an existing configuration",
      *     operationId="updateConfiguration",
@@ -178,7 +178,7 @@ class ConfigurationController extends Controller
 
     /**
      * @OA\Delete(
-     *     path="/api/v1/configurations/{id}",
+     *     path="/configurations/{id}",
      *     summary="Delete configuration",
      *     description="Delete an existing configuration",
      *     operationId="deleteConfiguration",

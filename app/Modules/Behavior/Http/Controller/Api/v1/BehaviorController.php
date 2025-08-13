@@ -24,7 +24,7 @@ class BehaviorController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/api/v1/behaviors",
+     *     path="/behaviors",
      *     summary="List all behaviors",
      *     description="Get paginated list of behaviors",
      *     operationId="getBehaviors",
@@ -63,7 +63,7 @@ class BehaviorController extends Controller
 
     /**
      * @OA\Post(
-     *     path="/api/v1/behaviors",
+     *     path="/behaviors",
      *     summary="Create new behavior",
      *     description="Create a new behavior",
      *     operationId="createBehavior",
@@ -99,7 +99,7 @@ class BehaviorController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/api/v1/behaviors/{id}",
+     *     path="/behaviors/{id}",
      *     summary="Get specific behavior",
      *     description="Get details of a specific behavior",
      *     operationId="getBehavior",
@@ -135,7 +135,7 @@ class BehaviorController extends Controller
 
     /**
      * @OA\Put(
-     *     path="/api/v1/behaviors/{id}",
+     *     path="/behaviors/{id}",
      *     summary="Update behavior",
      *     description="Update an existing behavior",
      *     operationId="updateBehavior",
@@ -176,7 +176,7 @@ class BehaviorController extends Controller
 
     /**
      * @OA\Delete(
-     *     path="/api/v1/behaviors/{id}",
+     *     path="/behaviors/{id}",
      *     summary="Delete behavior",
      *     description="Delete an existing behavior",
      *     operationId="deleteBehavior",

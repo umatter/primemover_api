@@ -23,7 +23,7 @@ class ParamController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/api/v1/params",
+     *     path="/params",
      *     summary="List all parameters",
      *     description="Get list of parameters",
      *     operationId="getParams",
@@ -64,7 +64,7 @@ class ParamController extends Controller
 
     /**
      * @OA\Post(
-     *     path="/api/v1/params",
+     *     path="/params",
      *     summary="Create new parameter",
      *     description="Create a new parameter",
      *     operationId="createParam",
@@ -100,7 +100,7 @@ class ParamController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/api/v1/params/{id}",
+     *     path="/params/{id}",
      *     summary="Get specific parameter",
      *     description="Get details of a specific parameter",
      *     operationId="getParam",
@@ -136,7 +136,7 @@ class ParamController extends Controller
 
     /**
      * @OA\Put(
-     *     path="/api/v1/params/{id}",
+     *     path="/params/{id}",
      *     summary="Update parameter",
      *     description="Update an existing parameter",
      *     operationId="updateParam",
@@ -177,7 +177,7 @@ class ParamController extends Controller
 
     /**
      * @OA\Delete(
-     *     path="/api/v1/params/{id}",
+     *     path="/params/{id}",
      *     summary="Delete parameter",
      *     description="Delete an existing parameter",
      *     operationId="deleteParam",
