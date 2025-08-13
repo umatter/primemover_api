@@ -149,6 +149,32 @@ return [
         ],
 
         /*
+         * OpenAPI info section
+         */
+        'info' => [
+            'title' => env('L5_SWAGGER_CONST_TITLE', 'Primemover API'),
+            'description' => 'Web automation platform API for managing browser automation experiments',
+            'version' => '1.0.0',
+            'contact' => [
+                'email' => 'support@primemover.example'
+            ]
+        ],
+
+        /*
+         * OpenAPI servers configuration
+         */
+        'servers' => [
+            [
+                'url' => env('L5_SWAGGER_CONST_HOST', 'https://pm-api.test.primemover.example'),
+                'description' => 'Production API Server'
+            ],
+            [
+                'url' => 'http://localhost:8080',
+                'description' => 'Local Development Server'
+            ]
+        ],
+
+        /*
          * API security definitions. Will be generated into documentation file.
         */
         'securityDefinitions' => [
