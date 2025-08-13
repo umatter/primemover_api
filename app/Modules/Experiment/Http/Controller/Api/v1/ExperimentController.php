@@ -423,7 +423,32 @@ print(upload_result)
      * @OA\Get(
      *     path="/api/v1/experiments/{experiment}/download",
      *     summary="Download experiment data",
-     *     description="Download experiment data as a file (ZIP archive)",
+     *     description="Download experiment data as a file (ZIP archive)
+
+**Curl Example:**
+```bash
+curl -X GET 'https://pm-api.test.primemover.example/api/v1/experiments/1/download' \
+  -H 'Authorization: Bearer YOUR_TOKEN' \
+  -H 'Accept: application/zip' \
+  -o experiment_1_data.zip
+```
+
+**R Example:**
+```r
+library(httr)
+
+response <- GET(
+  url = ""https://pm-api.test.primemover.example/api/v1/experiments/1/download"",
+  add_headers(
+    ""Authorization"" = ""Bearer YOUR_TOKEN"",
+    ""Accept"" = ""application/zip""
+  )
+)
+
+# Save the file
+writeBin(content(response, ""raw""), ""experiment_1_data.zip"")
+print(""File downloaded successfully"")
+```",
      *     operationId="downloadExperimentData",
      *     tags={"Experiments"},
      *     security={{"bearerAuth": {}}},
