@@ -50,7 +50,30 @@ class QueueController extends Controller
      * @OA\Get(
      *     path="/api/v1/queues/job/{jobid}",
      *     summary="Get queue by job ID",
-     *     description="Retrieve queue information for a specific job",
+     *     description="Retrieve queue information for a specific job
+
+**Curl Example:**
+```bash
+curl -X GET 'https://pm-api.test.primemover.example/api/v1/queues/job/1' \
+  -H 'Authorization: Bearer YOUR_TOKEN' \
+  -H 'Accept: application/json'
+```
+
+**R Example:**
+```r
+library(httr)
+
+response <- GET(
+  url = ""https://pm-api.test.primemover.example/api/v1/queues/job/1"",
+  add_headers(
+    ""Authorization"" = ""Bearer YOUR_TOKEN"",
+    ""Accept"" = ""application/json""
+  )
+)
+
+queue_data <- content(response, ""parsed"")
+print(queue_data)
+```",
      *     operationId="getQueueByJobId",
      *     tags={"Queues"},
      *     security={{"bearerAuth": {}}},
