@@ -13,6 +13,12 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
+/**
+ * @OA\Tag(
+ *     name="Queues",
+ *     description="Queue management and status endpoints"
+ * )
+ */
 class QueueController extends Controller
 {
     public function __construct(protected QueueRepository $repository)
@@ -40,6 +46,47 @@ class QueueController extends Controller
         return JsonResource::make($queue->load(['jobs']));
     }
 
+    /**
+     * @OA\Get(
+     *     path="/api/v1/queues/job/{jobid}",
+     *     summary="Get queue by job ID",
+     *     description="Retrieve queue information for a specific job",
+     *     operationId="getQueueByJobId",
+     *     tags={"Queues"},
+     *     security={{"bearerAuth": {}}},
+     *     @OA\Parameter(
+     *         name="jobid",
+     *         in="path",
+     *         description="Job ID",
+     *         required=true,
+     *         @OA\Schema(type="integer", example=1)
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Queue information for the job",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="object",
+     *                 @OA\Property(property="id", type="integer", example=1),
+     *                 @OA\Property(property="name", type="string", example="Data Collection Queue"),
+     *                 @OA\Property(property="description", type="string", example="Queue for collecting data"),
+     *                 @OA\Property(property="active", type="integer", example=1),
+     *                 @OA\Property(property="processed", type="integer", example=0),
+     *                 @OA\Property(property="processing", type="integer", example=1),
+     *                 @OA\Property(property="reviewed", type="integer", example=0),
+     *                 @OA\Property(property="status_code", type="string", example="running"),
+     *                 @OA\Property(property="crawler_id", type="integer", example=1),
+     *                 @OA\Property(property="created_at", type="string", format="date-time"),
+     *                 @OA\Property(property="updated_at", type="string", format="date-time")
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(response=401, description="Unauthorized"),
+     *     @OA\Response(response=404, description="Job not found")
+     * )
+     */
     public function job($id): JsonResource
     {
         $queue = $this->repository->job($id);
@@ -47,6 +94,42 @@ class QueueController extends Controller
         return JsonResource::make($queue);
     }
 
+    /**
+     * @OA\Get(
+     *     path="/api/v1/queues-processed",
+     *     summary="Get processed queues",
+     *     description="Retrieve all queues that have been processed",
+     *     operationId="getProcessedQueues",
+     *     tags={"Queues"},
+     *     security={{"bearerAuth": {}}},
+     *     @OA\Response(
+     *         response=200,
+     *         description="List of processed queues",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="array",
+     *                 @OA\Items(
+     *                     type="object",
+     *                     @OA\Property(property="id", type="integer", example=1),
+     *                     @OA\Property(property="name", type="string", example="Processed Queue"),
+     *                     @OA\Property(property="description", type="string", example="Queue that has been processed"),
+     *                     @OA\Property(property="active", type="integer", example=1),
+     *                     @OA\Property(property="processed", type="integer", example=1),
+     *                     @OA\Property(property="processing", type="integer", example=0),
+     *                     @OA\Property(property="reviewed", type="integer", example=0),
+     *                     @OA\Property(property="status_code", type="string", example="completed"),
+     *                     @OA\Property(property="crawler_id", type="integer", example=1),
+     *                     @OA\Property(property="created_at", type="string", format="date-time"),
+     *                     @OA\Property(property="updated_at", type="string", format="date-time")
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(response=401, description="Unauthorized")
+     * )
+     */
     public function processed(): ResourceCollection
     {
         $queue = $this->repository->processed();
@@ -54,6 +137,42 @@ class QueueController extends Controller
         return ResourceCollection::make($queue);
     }
 
+    /**
+     * @OA\Get(
+     *     path="/api/v1/queues-unprocessed",
+     *     summary="Get unprocessed queues",
+     *     description="Retrieve all queues that have not been processed",
+     *     operationId="getUnprocessedQueues",
+     *     tags={"Queues"},
+     *     security={{"bearerAuth": {}}},
+     *     @OA\Response(
+     *         response=200,
+     *         description="List of unprocessed queues",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="array",
+     *                 @OA\Items(
+     *                     type="object",
+     *                     @OA\Property(property="id", type="integer", example=1),
+     *                     @OA\Property(property="name", type="string", example="Unprocessed Queue"),
+     *                     @OA\Property(property="description", type="string", example="Queue waiting to be processed"),
+     *                     @OA\Property(property="active", type="integer", example=1),
+     *                     @OA\Property(property="processed", type="integer", example=0),
+     *                     @OA\Property(property="processing", type="integer", example=0),
+     *                     @OA\Property(property="reviewed", type="integer", example=0),
+     *                     @OA\Property(property="status_code", type="string", example="pending"),
+     *                     @OA\Property(property="crawler_id", type="integer", example=1),
+     *                     @OA\Property(property="created_at", type="string", format="date-time"),
+     *                     @OA\Property(property="updated_at", type="string", format="date-time")
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(response=401, description="Unauthorized")
+     * )
+     */
     public function unprocessed(): ResourceCollection
     {
         $queue = $this->repository->unprocessed();
@@ -61,6 +180,42 @@ class QueueController extends Controller
         return ResourceCollection::make($queue);
     }
 
+    /**
+     * @OA\Get(
+     *     path="/api/v1/queues-reviewed",
+     *     summary="Get reviewed queues",
+     *     description="Retrieve all queues that have been reviewed",
+     *     operationId="getReviewedQueues",
+     *     tags={"Queues"},
+     *     security={{"bearerAuth": {}}},
+     *     @OA\Response(
+     *         response=200,
+     *         description="List of reviewed queues",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="array",
+     *                 @OA\Items(
+     *                     type="object",
+     *                     @OA\Property(property="id", type="integer", example=1),
+     *                     @OA\Property(property="name", type="string", example="Reviewed Queue"),
+     *                     @OA\Property(property="description", type="string", example="Queue that has been reviewed"),
+     *                     @OA\Property(property="active", type="integer", example=1),
+     *                     @OA\Property(property="processed", type="integer", example=1),
+     *                     @OA\Property(property="processing", type="integer", example=0),
+     *                     @OA\Property(property="reviewed", type="integer", example=1),
+     *                     @OA\Property(property="status_code", type="string", example="completed"),
+     *                     @OA\Property(property="crawler_id", type="integer", example=1),
+     *                     @OA\Property(property="created_at", type="string", format="date-time"),
+     *                     @OA\Property(property="updated_at", type="string", format="date-time")
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(response=401, description="Unauthorized")
+     * )
+     */
     public function reviewed(): ResourceCollection
     {
         $queue = $this->repository->reviewed();
@@ -68,6 +223,42 @@ class QueueController extends Controller
         return ResourceCollection::make($queue);
     }
 
+    /**
+     * @OA\Get(
+     *     path="/api/v1/queues-unreviewed",
+     *     summary="Get unreviewed queues",
+     *     description="Retrieve all queues that have not been reviewed",
+     *     operationId="getUnreviewedQueues",
+     *     tags={"Queues"},
+     *     security={{"bearerAuth": {}}},
+     *     @OA\Response(
+     *         response=200,
+     *         description="List of unreviewed queues",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="array",
+     *                 @OA\Items(
+     *                     type="object",
+     *                     @OA\Property(property="id", type="integer", example=1),
+     *                     @OA\Property(property="name", type="string", example="Unreviewed Queue"),
+     *                     @OA\Property(property="description", type="string", example="Queue waiting for review"),
+     *                     @OA\Property(property="active", type="integer", example=1),
+     *                     @OA\Property(property="processed", type="integer", example=1),
+     *                     @OA\Property(property="processing", type="integer", example=0),
+     *                     @OA\Property(property="reviewed", type="integer", example=0),
+     *                     @OA\Property(property="status_code", type="string", example="completed"),
+     *                     @OA\Property(property="crawler_id", type="integer", example=1),
+     *                     @OA\Property(property="created_at", type="string", format="date-time"),
+     *                     @OA\Property(property="updated_at", type="string", format="date-time")
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(response=401, description="Unauthorized")
+     * )
+     */
     public function unreviewed(): ResourceCollection
     {
         $queue = $this->repository->unreviewed();
