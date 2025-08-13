@@ -645,5 +645,44 @@ class CrawlerController extends Controller
             'status' => 'success',
             'request' => $request->all(),
         ]);
+    /**
+     * @OA\Post(
+     *     path="/api/v1/load-test",
+     *     summary="Load test data",
+     *     description="Load test data for crawler testing purposes",
+     *     operationId="loadTestData",
+     *     tags={"Development"},
+     *     security={{"bearerAuth": {}}},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         description="Test data to load",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="array",
+     *                 description="Array of test data objects",
+     *                 @OA\Items(type="object")
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Test data loaded successfully",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="message", type="string", example="Test data loaded successfully"),
+     *             @OA\Property(property="loaded_count", type="integer", example=10)
+     *         )
+     *     ),
+     *     @OA\Response(response=401, description="Unauthorized"),
+     *     @OA\Response(response=422, description="Validation error"),
+     *     @OA\Response(response=500, description="Internal server error")
+     * )
+     */
+    public function load(\Illuminate\Http\Request $request): JsonResponse
+    {
+        return $this->repository->load($request);
     }
 }
