@@ -21,6 +21,37 @@ use Illuminate\Support\Facades\Response;
  */
 class ReportController extends Controller
 {
+    /**
+     * @OA\Get(
+     *     path="/api/v1/reports",
+     *     summary="List all reports",
+     *     description="Get paginated list of reports",
+     *     operationId="getReports",
+     *     tags={"Reports"},
+     *     security={{"bearerAuth": {}}},
+     *     @OA\Response(
+     *         response=200,
+     *         description="List of reports",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="array",
+     *                 @OA\Items(
+     *                     type="object",
+     *                     @OA\Property(property="id", type="integer", example=1),
+     *                     @OA\Property(property="filename", type="string", example="report.zip"),
+     *                     @OA\Property(property="path", type="string", example="/reports/report.zip"),
+     *                     @OA\Property(property="job_id", type="integer", example=1),
+     *                     @OA\Property(property="created_at", type="string", format="date-time"),
+     *                     @OA\Property(property="updated_at", type="string", format="date-time")
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(response=401, description="Unauthorized")
+     * )
+     */
     public function index(): ResourceCollection
     {
         $reports = ReportRepository::getData();
@@ -28,6 +59,32 @@ class ReportController extends Controller
         return ResourceCollection::make($reports);
     }
 
+    /**
+     * @OA\Post(
+     *     path="/api/v1/reports",
+     *     summary="Create new report",
+     *     description="Create a new report",
+     *     operationId="createReport",
+     *     tags={"Reports"},
+     *     security={{"bearerAuth": {}}},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"filename", "job_id"},
+     *             @OA\Property(property="filename", type="string", example="report.zip"),
+     *             @OA\Property(property="path", type="string", example="/reports/report.zip"),
+     *             @OA\Property(property="job_id", type="integer", example=1)
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="Report created successfully",
+     *         @OA\JsonContent(type="object")
+     *     ),
+     *     @OA\Response(response=401, description="Unauthorized"),
+     *     @OA\Response(response=422, description="Validation error")
+     * )
+     */
     public function store(ReportStoreRequest $request): JsonResource
     {
         $report = ReportRepository::save($request->validated());
@@ -35,11 +92,62 @@ class ReportController extends Controller
         return JsonResource::make($report);
     }
 
+    /**
+     * @OA\Get(
+     *     path="/api/v1/reports/{id}",
+     *     summary="Get specific report",
+     *     description="Get details of a specific report",
+     *     operationId="getReport",
+     *     tags={"Reports"},
+     *     security={{"bearerAuth": {}}},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="Report ID",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Report details",
+     *         @OA\JsonContent(type="object")
+     *     ),
+     *     @OA\Response(response=401, description="Unauthorized"),
+     *     @OA\Response(response=404, description="Report not found")
+     * )
+     */
     public function show(Report $report): JsonResource
     {
         return JsonResource::make($report);
     }
 
+    /**
+     * @OA\Delete(
+     *     path="/api/v1/reports/{id}",
+     *     summary="Delete report",
+     *     description="Delete an existing report",
+     *     operationId="deleteReport",
+     *     tags={"Reports"},
+     *     security={{"bearerAuth": {}}},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="Report ID",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Report deleted successfully",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="success", type="boolean", example=true)
+     *         )
+     *     ),
+     *     @OA\Response(response=401, description="Unauthorized"),
+     *     @OA\Response(response=404, description="Report not found")
+     * )
+     */
     public function destroy(Report $report): bool
     {
         return ReportRepository::delete($report);
