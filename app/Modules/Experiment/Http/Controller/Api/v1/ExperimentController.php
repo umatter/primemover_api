@@ -13,6 +13,12 @@ use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 use Illuminate\Http\Response;
 
+/**
+ * @OA\Tag(
+ *     name="Experiments",
+ *     description="Experiment management and data handling endpoints"
+ * )
+ */
 class ExperimentController extends Controller
 {
     public function index(): ResourceCollection
@@ -22,6 +28,39 @@ class ExperimentController extends Controller
         return ResourceCollection::make($experiments->paginate());
     }
 
+    /**
+     * @OA\Get(
+     *     path="/api/v1/experiments/experiments-list",
+     *     summary="Get all experiments list",
+     *     description="Retrieve a complete list of all experiments without pagination",
+     *     operationId="getAllExperimentsList",
+     *     tags={"Experiments"},
+     *     security={{"bearerAuth": {}}},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Complete list of experiments",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="array",
+     *                 @OA\Items(
+     *                     type="object",
+     *                     @OA\Property(property="id", type="integer", example=1),
+     *                     @OA\Property(property="name", type="string", example="Test-Experiment 1"),
+     *                     @OA\Property(property="description", type="string", example="Lorem ipsum dolor sit amet"),
+     *                     @OA\Property(property="contact", type="string", example="Nobody"),
+     *                     @OA\Property(property="active", type="integer", example=1),
+     *                     @OA\Property(property="updated_at", type="string", format="date-time"),
+     *                     @OA\Property(property="created_at", type="string", format="date-time"),
+     *                     @OA\Property(property="user_id", type="integer", example=2)
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(response=401, description="Unauthorized")
+     * )
+     */
     public function all(): ResourceCollection
     {
         $experiments = ExperimentRepository::all();
@@ -68,6 +107,37 @@ class ExperimentController extends Controller
     }
 
     /**
+     * @OA\Delete(
+     *     path="/api/v1/experiments/{experiment}/destroy",
+     *     summary="Force delete experiment",
+     *     description="Permanently delete an experiment and all associated data",
+     *     operationId="forceDeleteExperiment",
+     *     tags={"Experiments"},
+     *     security={{"bearerAuth": {}}},
+     *     @OA\Parameter(
+     *         name="experiment",
+     *         in="path",
+     *         description="Experiment ID",
+     *         required=true,
+     *         @OA\Schema(type="integer", example=1)
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Experiment force deleted successfully",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="object",
+     *                 @OA\Property(property="status", type="boolean", example=true)
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(response=401, description="Unauthorized"),
+     *     @OA\Response(response=404, description="Experiment not found"),
+     *     @OA\Response(response=500, description="Internal server error")
+     * )
+     * 
      * @throws Exception
      */
     public function forceDelete(Experiment $experiment): JsonResource
@@ -77,7 +147,166 @@ class ExperimentController extends Controller
         ]);
     }
 
-    public function upload(ExperimentUploadRequest $request, Experiment $experiment): JsonResource
+    /**
+     * @OA\Post(
+     *     path="/api/v1/experiments/{experiment}/upload",
+     *     summary="Upload experiment configuration",
+     *     description="Upload configuration data or file to an experiment",
+     *     operationId="uploadExperimentConfig",
+     *     tags={"Experiments"},
+     *     security={{"bearerAuth": {}}},
+     *     @OA\Parameter(
+     *         name="experiment",
+     *         in="path",
+     *         description="Experiment ID",
+     *         required=true,
+     *         @OA\Schema(type="integer", example=1)
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         description="Upload experiment configuration data or file",
+     *         @OA\MediaType(
+     *             mediaType="multipart/form-data",
+     *             @OA\Schema(
+     *                 type="object",
+     *                 @OA\Property(
+     *                     property="file",
+     *                     type="string",
+     *                     format="binary",
+     *                     description="Configuration file to upload"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="content",
+     *                     type="string",
+     *                     description="JSON configuration content as string"
+     *                 )
+     *             )
+     *         ),
+     *         @OA\MediaType(
+     *             mediaType="application/json",
+     *             @OA\Schema(
+     *                 type="object",
+     *                 @OA\Property(
+     *                     property="content",
+     *                     type="string",
+     *                     description="JSON configuration content"
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Configuration uploaded successfully",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="object",
+     *                 @OA\Property(
+     *                     property="crawlers",
+     *                     type="array",
+     *                     description="Updated crawlers with configuration",
+     *                     @OA\Items(type="object")
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(response=401, description="Unauthorized"),
+     *     @OA\Response(response=404, description="Experiment not found"),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Validation error",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="The given data was invalid."),
+     *             @OA\Property(
+     *                 property="errors",
+     *                 type="object",
+     *                 @OA\Property(
+     *                     property="file",
+     *                     type="array",
+     *                     @OA\Items(type="string", example="The file field is required when content is not present.")
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(response=500, description="Internal server error")
+     * )
+     */
+    /**
+     * @OA\Post(
+     *     path="/api/v1/experiments/upload",
+     *     summary="Upload experiment data",
+     *     description="Upload experiment configuration data or file (general upload)",
+     *     operationId="uploadExperimentData",
+     *     tags={"Experiments"},
+     *     security={{"bearerAuth": {}}},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         description="Upload experiment data or file",
+     *         @OA\MediaType(
+     *             mediaType="multipart/form-data",
+     *             @OA\Schema(
+     *                 type="object",
+     *                 @OA\Property(
+     *                     property="file",
+     *                     type="string",
+     *                     format="binary",
+     *                     description="Experiment data file to upload"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="content",
+     *                     type="string",
+     *                     description="JSON experiment data as string"
+     *                 )
+     *             )
+     *         ),
+     *         @OA\MediaType(
+     *             mediaType="application/json",
+     *             @OA\Schema(
+     *                 type="object",
+     *                 @OA\Property(
+     *                     property="content",
+     *                     type="string",
+     *                     description="JSON experiment data"
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Experiment data uploaded successfully",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="object",
+     *                 @OA\Property(property="status", type="string", example="success"),
+     *                 @OA\Property(property="message", type="string", example="Experiment data uploaded successfully"),
+     *                 @OA\Property(property="uploaded_at", type="string", format="date-time")
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(response=401, description="Unauthorized"),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Validation error",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="The given data was invalid."),
+     *             @OA\Property(
+     *                 property="errors",
+     *                 type="object",
+     *                 @OA\Property(
+     *                     property="file",
+     *                     type="array",
+     *                     @OA\Items(type="string", example="The file field is required when content is not present.")
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(response=500, description="Internal server error")
+     * )
+     */
+    public function upload(ExperimentUploadRequest $request, Experiment $experiment = null): JsonResource
     {
         $uploadResult = ExperimentRepository::upload($request, $experiment);
 
@@ -93,6 +322,34 @@ class ExperimentController extends Controller
         return JsonResource::make($uploadResult);
     }
 
+    /**
+     * @OA\Get(
+     *     path="/api/v1/experiments/{experiment}/download",
+     *     summary="Download experiment data",
+     *     description="Download experiment data as a file (ZIP archive)",
+     *     operationId="downloadExperimentData",
+     *     tags={"Experiments"},
+     *     security={{"bearerAuth": {}}},
+     *     @OA\Parameter(
+     *         name="experiment",
+     *         in="path",
+     *         description="Experiment ID",
+     *         required=true,
+     *         @OA\Schema(type="integer", example=1)
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="File download initiated",
+     *         @OA\MediaType(
+     *             mediaType="application/zip",
+     *             @OA\Schema(type="string", format="binary")
+     *         )
+     *     ),
+     *     @OA\Response(response=401, description="Unauthorized"),
+     *     @OA\Response(response=404, description="Experiment not found or no data available"),
+     *     @OA\Response(response=500, description="Error generating download file")
+     * )
+     */
     public function download(Experiment $experiment): Response
     {
         return ExperimentRepository::download($experiment);
