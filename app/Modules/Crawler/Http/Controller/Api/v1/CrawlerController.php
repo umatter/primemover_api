@@ -377,6 +377,47 @@ class CrawlerController extends Controller
     }
 
     /**
+     * @OA\Delete(
+     *     path="/api/v1/crawlers/{crawler}/destroy",
+     *     summary="Force delete crawler",
+     *     description="Permanently delete a crawler and all associated data",
+     *     operationId="forceDeleteCrawler",
+     *     tags={"Crawlers"},
+     *     security={{"bearerAuth": {}}},
+     *     @OA\Parameter(
+     *         name="crawler",
+     *         in="path",
+     *         description="Crawler ID",
+     *         required=true,
+     *         @OA\Schema(type="integer", example=1)
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Crawler force deleted successfully",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="array",
+     *                 @OA\Items(
+     *                     type="object",
+     *                     @OA\Property(property="id", type="integer", example=2),
+     *                     @OA\Property(property="name", type="string", example="Remaining Crawler"),
+     *                     @OA\Property(property="description", type="string", example="Crawler that remains after deletion"),
+     *                     @OA\Property(property="active", type="integer", example=1),
+     *                     @OA\Property(property="testing", type="integer", example=0),
+     *                     @OA\Property(property="experiment_id", type="integer", example=1),
+     *                     @OA\Property(property="created_at", type="string", format="date-time"),
+     *                     @OA\Property(property="updated_at", type="string", format="date-time")
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(response=401, description="Unauthorized"),
+     *     @OA\Response(response=404, description="Crawler not found"),
+     *     @OA\Response(response=500, description="Internal server error")
+     * )
+     * 
      * @throws Exception
      */
     public function forceDelete(Crawler $crawler): ResourceCollection
@@ -419,6 +460,41 @@ class CrawlerController extends Controller
         return $this->repository->ip($ip);
     }
 
+    /**
+     * @OA\Delete(
+     *     path="/api/v1/undo",
+     *     summary="Undo crawler operations",
+     *     description="Undo recent crawler operations and return updated crawler list",
+     *     operationId="undoCrawlerOperations",
+     *     tags={"Crawlers"},
+     *     security={{"bearerAuth": {}}},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Crawler operations undone successfully",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="array",
+     *                 @OA\Items(
+     *                     type="object",
+     *                     @OA\Property(property="id", type="integer", example=1),
+     *                     @OA\Property(property="name", type="string", example="Restored Crawler"),
+     *                     @OA\Property(property="description", type="string", example="Crawler after undo operation"),
+     *                     @OA\Property(property="active", type="integer", example=1),
+     *                     @OA\Property(property="testing", type="integer", example=0),
+     *                     @OA\Property(property="experiment_id", type="integer", example=1),
+     *                     @OA\Property(property="created_at", type="string", format="date-time"),
+     *                     @OA\Property(property="updated_at", type="string", format="date-time")
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(response=401, description="Unauthorized"),
+     *     @OA\Response(response=400, description="No operations to undo"),
+     *     @OA\Response(response=500, description="Internal server error")
+     * )
+     */
     public function undo(): ResourceCollection
     {
         $crawlers = $this->repository->undo();
@@ -426,6 +502,40 @@ class CrawlerController extends Controller
         return ResourceCollection::make($crawlers);
     }
 
+    /**
+     * @OA\Delete(
+     *     path="/api/v1/cleanup",
+     *     summary="Cleanup crawlers",
+     *     description="Clean up crawler data and return updated crawler list",
+     *     operationId="cleanupCrawlers",
+     *     tags={"Crawlers"},
+     *     security={{"bearerAuth": {}}},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Crawlers cleaned up successfully",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="array",
+     *                 @OA\Items(
+     *                     type="object",
+     *                     @OA\Property(property="id", type="integer", example=1),
+     *                     @OA\Property(property="name", type="string", example="Cleaned Crawler"),
+     *                     @OA\Property(property="description", type="string", example="Crawler after cleanup"),
+     *                     @OA\Property(property="active", type="integer", example=1),
+     *                     @OA\Property(property="testing", type="integer", example=0),
+     *                     @OA\Property(property="experiment_id", type="integer", example=1),
+     *                     @OA\Property(property="created_at", type="string", format="date-time"),
+     *                     @OA\Property(property="updated_at", type="string", format="date-time")
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(response=401, description="Unauthorized"),
+     *     @OA\Response(response=500, description="Internal server error")
+     * )
+     */
     public function cleanup(): ResourceCollection
     {
         $crawlers = $this->repository->cleanup();
@@ -434,6 +544,89 @@ class CrawlerController extends Controller
     }
 
     /**
+     * @OA\Post(
+     *     path="/api/v1/crawlers/{crawler}/upload",
+     *     summary="Upload crawler configuration",
+     *     description="Upload configuration data or file to a crawler",
+     *     operationId="uploadCrawlerConfig",
+     *     tags={"Crawlers"},
+     *     security={{"bearerAuth": {}}},
+     *     @OA\Parameter(
+     *         name="crawler",
+     *         in="path",
+     *         description="Crawler ID",
+     *         required=true,
+     *         @OA\Schema(type="integer", example=1)
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         description="Upload configuration data or file",
+     *         @OA\MediaType(
+     *             mediaType="multipart/form-data",
+     *             @OA\Schema(
+     *                 type="object",
+     *                 @OA\Property(
+     *                     property="file",
+     *                     type="string",
+     *                     format="binary",
+     *                     description="Configuration file to upload"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="content",
+     *                     type="string",
+     *                     description="JSON configuration content as string"
+     *                 )
+     *             )
+     *         ),
+     *         @OA\MediaType(
+     *             mediaType="application/json",
+     *             @OA\Schema(
+     *                 type="object",
+     *                 @OA\Property(
+     *                     property="content",
+     *                     type="string",
+     *                     description="JSON configuration content",
+     *                     example='{"name": "Test Crawler", "active": 1, "configuration": {...}}'
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Configuration uploaded successfully",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="object",
+     *                 @OA\Property(property="status", type="string", example="success"),
+     *                 @OA\Property(property="message", type="string", example="Configuration uploaded successfully"),
+     *                 @OA\Property(property="crawler_id", type="integer", example=1),
+     *                 @OA\Property(property="uploaded_at", type="string", format="date-time")
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(response=401, description="Unauthorized"),
+     *     @OA\Response(response=404, description="Crawler not found"),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Validation error",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="The given data was invalid."),
+     *             @OA\Property(
+     *                 property="errors",
+     *                 type="object",
+     *                 @OA\Property(
+     *                     property="file",
+     *                     type="array",
+     *                     @OA\Items(type="string", example="The file field is required when content is not present.")
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(response=500, description="Internal server error")
+     * )
+     * 
      * @throws Exception
      */
     public function upload(CrawlerUploadRequest $request, Crawler $crawler): JsonResource
