@@ -585,8 +585,9 @@ class CrawlerController extends Controller
      *                 @OA\Property(
      *                     property="content",
      *                     type="string",
+     *                     format="json",
      *                     description="JSON configuration content",
-     *                     example='{"name": "Test Crawler", "active": 1, "configuration": {...}}'
+     *                     example="{\"name\":\"Test Crawler\",\"active\":1,\"configuration\":{}}"
      *                 )
      *             )
      *         )
