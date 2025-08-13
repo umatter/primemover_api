@@ -147,7 +147,30 @@ class CrawlerController extends Controller
      * @OA\Get(
      *     path="/api/v1/crawlers-processed",
      *     summary="Get crawlers with processed queues",
-     *     description="Retrieve all crawlers that have processed queues",
+     *     description="Retrieve all crawlers that have processed queues
+
+**Curl Example:**
+```bash
+curl -X GET 'https://pm-api.test.primemover.example/api/v1/crawlers-processed' \
+  -H 'Authorization: Bearer YOUR_TOKEN' \
+  -H 'Accept: application/json'
+```
+
+**R Example:**
+```r
+library(httr)
+
+response <- GET(
+  url = ""https://pm-api.test.primemover.example/api/v1/crawlers-processed"",
+  add_headers(
+    ""Authorization"" = ""Bearer YOUR_TOKEN"",
+    ""Accept"" = ""application/json""
+  )
+)
+
+crawlers_data <- content(response, ""parsed"")
+print(crawlers_data)
+```",
      *     operationId="getCrawlersWithProcessedQueues",
      *     tags={"Crawlers"},
      *     security={{"bearerAuth": {}}},
