@@ -137,7 +137,39 @@ print(token_data)
      * @OA\Post(
      *     path="/login",
      *     summary="User login",
-     *     description="Authenticate user and return access token",
+     *     description="Authenticate user and return access token
+
+**Curl Example:**
+```bash
+curl -X POST 'https://pm-api.test.primemover.example/api/v1/login' \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -d '{
+    ""email"": ""user@example.com"",
+    ""password"": ""password123""
+  }'
+```
+
+**R Example:**
+```r
+library(httr)
+library(jsonlite)
+
+response <- POST(
+  url = ""https://pm-api.test.primemover.example/api/v1/login"",
+  add_headers(
+    ""Content-Type"" = ""application/json"",
+    ""Accept"" = ""application/json""
+  ),
+  body = toJSON(list(
+    email = ""user@example.com"",
+    password = ""password123""
+  ), auto_unbox = TRUE)
+)
+
+login_data <- content(response, ""parsed"")
+print(login_data)
+```",
      *     tags={"Authentication"},
      *     @OA\RequestBody(
      *         required=true,
