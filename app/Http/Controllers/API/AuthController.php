@@ -22,41 +22,7 @@ class AuthController extends Controller
      * @OA\Post(
      *     path="/auth/token",
      *     summary="Get OAuth token",
-     *     description="Exchange credentials for OAuth token
-     * 
-     * **Curl Example:**
-     * ```bash
-     * curl -X POST 'https://pm-api.test.primemover.example/api/v1/auth/token' \
-     *   -H 'Content-Type: application/json' \
-     *   -H 'Accept: application/json' \
-     *   -d '{
-     *     \"grant_type\": \"client_credentials\",
-     *     \"client_id\": \"your_client_id\",
-     *     \"client_secret\": \"your_client_secret\"
-     *   }'
-     * ```
-     * 
-     * **R Example:**
-     * ```r
-     * library(httr)
-     * library(jsonlite)
-     * 
-     * response <- POST(
-     *   url = \"https://pm-api.test.primemover.example/api/v1/auth/token\",
-     *   add_headers(
-     *     \"Content-Type\" = \"application/json\",
-     *     \"Accept\" = \"application/json\"
-     *   ),
-     *   body = toJSON(list(
-     *     grant_type = \"client_credentials\",
-     *     client_id = \"your_client_id\",
-     *     client_secret = \"your_client_secret\"
-     *   ), auto_unbox = TRUE)
-     * )
-     * 
-     * token_data <- content(response, \"parsed\")
-     * print(token_data)
-     * ```",
+     *     description="Exchange credentials for OAuth token",
      *     tags={"Authentication"},
      *     @OA\RequestBody(
      *         required=true,
