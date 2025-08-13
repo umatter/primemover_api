@@ -128,6 +128,45 @@ docker-compose exec php php artisan migrate
 docker-compose down
 ```
 
+## API Documentation
+
+### Viewing Swagger Documentation
+
+The API documentation is automatically generated using Swagger/OpenAPI and can be viewed in several ways:
+
+**Local Development:**
+```bash
+# 1. Start your Laravel server
+php artisan serve
+
+# 2. Generate/update documentation
+php artisan l5-swagger:generate
+
+# 3. View documentation at:
+# http://localhost:8000/api/documentation
+```
+
+**Auto-regeneration during development:**
+Add this to your `.env` file to automatically regenerate docs on each request:
+```
+L5_SWAGGER_GENERATE_ALWAYS=true
+```
+
+**Production Documentation:**
+- Main UI: `https://your-domain/api/documentation`
+- Raw JSON: `https://your-domain/docs`
+
+**Alternative Viewers:**
+- [Swagger Editor](https://editor.swagger.io/) - Copy/paste JSON from `storage/api-docs/`
+- [Redoc](https://redocly.github.io/redoc/) - Upload JSON for clean documentation view
+- Postman - Import JSON to create API collection
+
+### Updating Documentation
+Documentation is generated from PHPDoc annotations in your controllers. After making changes:
+```bash
+php artisan l5-swagger:generate
+```
+
 ## Documentation
 
 * [Infrastructure (Servers, Versions, Access)](docs/infrastructure.md)
