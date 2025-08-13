@@ -573,7 +573,44 @@ print(crawlers_data)
      * @OA\Post(
      *     path="/api/v1/crawlers/{crawler}/upload",
      *     summary="Upload crawler configuration",
-     *     description="Upload configuration data or file to a crawler",
+     *     description="Upload configuration data or file to a crawler
+
+**Curl Example (with file):**
+```bash
+curl -X POST 'https://pm-api.test.primemover.example/api/v1/crawlers/1/upload' \
+  -H 'Authorization: Bearer YOUR_TOKEN' \
+  -H 'Accept: application/json' \
+  -F 'file=@crawler_config.json'
+```
+
+**Curl Example (with JSON content):**
+```bash
+curl -X POST 'https://pm-api.test.primemover.example/api/v1/crawlers/1/upload' \
+  -H 'Authorization: Bearer YOUR_TOKEN' \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -d '{
+    ""content"": ""{\\""name\\"":\\""Test Crawler\\"",\\""active\\""1}""
+  }'
+```
+
+**R Example (with file):**
+```r
+library(httr)
+
+response <- POST(
+  url = ""https://pm-api.test.primemover.example/api/v1/crawlers/1/upload"",
+  add_headers(
+    ""Authorization"" = ""Bearer YOUR_TOKEN"",
+    ""Accept"" = ""application/json""
+  ),
+  body = list(file = upload_file(""crawler_config.json"")),
+  encode = ""multipart""
+)
+
+upload_result <- content(response, ""parsed"")
+print(upload_result)
+```",
      *     operationId="uploadCrawlerConfig",
      *     tags={"Crawlers"},
      *     security={{"bearerAuth": {}}},
