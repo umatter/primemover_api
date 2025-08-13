@@ -230,7 +230,30 @@ class CrawlerController extends Controller
      * @OA\Get(
      *     path="/api/v1/crawlers-unprocessed",
      *     summary="Get crawlers with unprocessed queues",
-     *     description="Retrieve all crawlers that have unprocessed queues",
+     *     description="Retrieve all crawlers that have unprocessed queues
+
+**Curl Example:**
+```bash
+curl -X GET 'https://pm-api.test.primemover.example/api/v1/crawlers-unprocessed' \
+  -H 'Authorization: Bearer YOUR_TOKEN' \
+  -H 'Accept: application/json'
+```
+
+**R Example:**
+```r
+library(httr)
+
+response <- GET(
+  url = ""https://pm-api.test.primemover.example/api/v1/crawlers-unprocessed"",
+  add_headers(
+    ""Authorization"" = ""Bearer YOUR_TOKEN"",
+    ""Accept"" = ""application/json""
+  )
+)
+
+crawlers_data <- content(response, ""parsed"")
+print(crawlers_data)
+```",
      *     operationId="getCrawlersWithUnprocessedQueues",
      *     tags={"Crawlers"},
      *     security={{"bearerAuth": {}}},
