@@ -121,7 +121,30 @@ print(queue_data)
      * @OA\Get(
      *     path="/api/v1/queues-processed",
      *     summary="Get processed queues",
-     *     description="Retrieve all queues that have been processed",
+     *     description="Retrieve all queues that have been processed
+
+**Curl Example:**
+```bash
+curl -X GET 'https://pm-api.test.primemover.example/api/v1/queues-processed' \
+  -H 'Authorization: Bearer YOUR_TOKEN' \
+  -H 'Accept: application/json'
+```
+
+**R Example:**
+```r
+library(httr)
+
+response <- GET(
+  url = ""https://pm-api.test.primemover.example/api/v1/queues-processed"",
+  add_headers(
+    ""Authorization"" = ""Bearer YOUR_TOKEN"",
+    ""Accept"" = ""application/json""
+  )
+)
+
+queues_data <- content(response, ""parsed"")
+print(queues_data)
+```",
      *     operationId="getProcessedQueues",
      *     tags={"Queues"},
      *     security={{"bearerAuth": {}}},
