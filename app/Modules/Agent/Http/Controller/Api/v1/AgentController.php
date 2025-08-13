@@ -188,7 +188,30 @@ print(agent_data)
      * @OA\Get(
      *     path="/agents/{id}",
      *     summary="Get specific agent",
-     *     description="Get details of a specific agent",
+     *     description="Get details of a specific agent
+
+**Curl Example:**
+```bash
+curl -X GET 'https://pm-api.test.primemover.example/api/v1/agents/1' \
+  -H 'Authorization: Bearer YOUR_TOKEN' \
+  -H 'Accept: application/json'
+```
+
+**R Example:**
+```r
+library(httr)
+
+response <- GET(
+  url = ""https://pm-api.test.primemover.example/api/v1/agents/1"",
+  add_headers(
+    ""Authorization"" = ""Bearer YOUR_TOKEN"",
+    ""Accept"" = ""application/json""
+  )
+)
+
+agent_data <- content(response, ""parsed"")
+print(agent_data)
+```",
      *     tags={"Agents"},
      *     security={{"bearerAuth":{}}},
      *     @OA\Parameter(
