@@ -432,9 +432,10 @@ class CrawlerController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/ip/{ip}",
+     *     path="/api/v1/ip/{ip}",
      *     summary="Check IP address",
      *     description="Get information about an IP address or current request IP",
+     *     operationId="checkIpAddress",
      *     tags={"Utilities"},
      *     @OA\Parameter(
      *         name="ip",
@@ -452,7 +453,9 @@ class CrawlerController extends Controller
      *             @OA\Property(property="region", type="string", example="Colorado"),
      *             @OA\Property(property="city", type="string", example="Denver")
      *         )
-     *     )
+     *     ),
+     *     @OA\Response(response=404, description="IP not found"),
+     *     @OA\Response(response=500, description="Error retrieving IP information")
      * )
      */
     public function ip($ip = null): JsonResponse
