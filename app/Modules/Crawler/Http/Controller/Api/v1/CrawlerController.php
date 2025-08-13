@@ -587,7 +587,7 @@ class CrawlerController extends Controller
      *                     type="string",
      *                     format="json",
      *                     description="JSON configuration content",
-     *                     example="{\"name\":\"Test Crawler\",\"active\":1,\"configuration\":{}}"
+     *                     example="{""name"":""Test Crawler"",""active"":1,""configuration"":{}}" 
      *                 )
      *             )
      *         )
