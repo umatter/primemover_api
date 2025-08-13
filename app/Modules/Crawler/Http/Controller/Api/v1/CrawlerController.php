@@ -645,6 +645,8 @@ class CrawlerController extends Controller
             'status' => 'success',
             'request' => $request->all(),
         ]);
+    }
+
     /**
      * @OA\Post(
      *     path="/api/v1/load-test",
