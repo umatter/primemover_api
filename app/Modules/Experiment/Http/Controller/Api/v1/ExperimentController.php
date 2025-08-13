@@ -32,7 +32,30 @@ class ExperimentController extends Controller
      * @OA\Get(
      *     path="/api/v1/experiments/experiments-list",
      *     summary="Get all experiments list",
-     *     description="Retrieve a complete list of all experiments without pagination",
+     *     description="Retrieve a complete list of all experiments without pagination
+
+**Curl Example:**
+```bash
+curl -X GET 'https://pm-api.test.primemover.example/api/v1/experiments/experiments-list' \
+  -H 'Authorization: Bearer YOUR_TOKEN' \
+  -H 'Accept: application/json'
+```
+
+**R Example:**
+```r
+library(httr)
+
+response <- GET(
+  url = ""https://pm-api.test.primemover.example/api/v1/experiments/experiments-list"",
+  add_headers(
+    ""Authorization"" = ""Bearer YOUR_TOKEN"",
+    ""Accept"" = ""application/json""
+  )
+)
+
+experiments_data <- content(response, ""parsed"")
+print(experiments_data)
+```",
      *     operationId="getAllExperimentsList",
      *     tags={"Experiments"},
      *     security={{"bearerAuth": {}}},
@@ -151,7 +174,44 @@ class ExperimentController extends Controller
      * @OA\Post(
      *     path="/api/v1/experiments/{experiment}/upload",
      *     summary="Upload experiment configuration",
-     *     description="Upload configuration data or file to an experiment",
+     *     description="Upload configuration data or file to an experiment
+
+**Curl Example (with file):**
+```bash
+curl -X POST 'https://pm-api.test.primemover.example/api/v1/experiments/1/upload' \
+  -H 'Authorization: Bearer YOUR_TOKEN' \
+  -H 'Accept: application/json' \
+  -F 'file=@config.json'
+```
+
+**Curl Example (with JSON content):**
+```bash
+curl -X POST 'https://pm-api.test.primemover.example/api/v1/experiments/1/upload' \
+  -H 'Authorization: Bearer YOUR_TOKEN' \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -d '{
+    ""content"": ""{\\""name\\"":\\""Test Config\\"",\\""active\\""1}""
+  }'
+```
+
+**R Example (with file):**
+```r
+library(httr)
+
+response <- POST(
+  url = ""https://pm-api.test.primemover.example/api/v1/experiments/1/upload"",
+  add_headers(
+    ""Authorization"" = ""Bearer YOUR_TOKEN"",
+    ""Accept"" = ""application/json""
+  ),
+  body = list(file = upload_file(""config.json"")),
+  encode = ""multipart""
+)
+
+config_result <- content(response, ""parsed"")
+print(config_result)
+```",
      *     operationId="uploadExperimentConfig",
      *     tags={"Experiments"},
      *     security={{"bearerAuth": {}}},
@@ -236,7 +296,44 @@ class ExperimentController extends Controller
      * @OA\Post(
      *     path="/api/v1/experiments/upload",
      *     summary="Upload experiment data",
-     *     description="Upload experiment configuration data or file (general upload)",
+     *     description="Upload experiment configuration data or file (general upload)
+
+**Curl Example (with file):**
+```bash
+curl -X POST 'https://pm-api.test.primemover.example/api/v1/experiments/upload' \
+  -H 'Authorization: Bearer YOUR_TOKEN' \
+  -H 'Accept: application/json' \
+  -F 'file=@experiment_data.json'
+```
+
+**Curl Example (with JSON content):**
+```bash
+curl -X POST 'https://pm-api.test.primemover.example/api/v1/experiments/upload' \
+  -H 'Authorization: Bearer YOUR_TOKEN' \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -d '{
+    ""content"": ""{\\""name\\"":\\""Test Experiment\\"",\\""active\\""1}""
+  }'
+```
+
+**R Example (with file):**
+```r
+library(httr)
+
+response <- POST(
+  url = ""https://pm-api.test.primemover.example/api/v1/experiments/upload"",
+  add_headers(
+    ""Authorization"" = ""Bearer YOUR_TOKEN"",
+    ""Accept"" = ""application/json""
+  ),
+  body = list(file = upload_file(""experiment_data.json"")),
+  encode = ""multipart""
+)
+
+upload_result <- content(response, ""parsed"")
+print(upload_result)
+```",
      *     operationId="uploadExperimentData",
      *     tags={"Experiments"},
      *     security={{"bearerAuth": {}}},
