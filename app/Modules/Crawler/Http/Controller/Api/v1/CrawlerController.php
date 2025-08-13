@@ -15,6 +15,11 @@ use Illuminate\Http\Resources\Json\ResourceCollection;
 use Tests\Feature\Modules\Crawler\Http\Controller\Api\v1\CrawlerControllerTest;
 
 /**
+ * @OA\Tag(
+ *     name="Crawlers",
+ *     description="Web crawler management and status endpoints"
+ * )
+ * 
  * @see CrawlerControllerTest
  */
 class CrawlerController extends Controller
@@ -23,6 +28,74 @@ class CrawlerController extends Controller
     {
     }
 
+    /**
+     * @OA\Get(
+     *     path="/api/v1/crawlers-protected",
+     *     summary="Get protected crawlers",
+     *     description="Retrieve all protected/active crawlers (same as main crawler index)",
+     *     operationId="getProtectedCrawlers",
+     *     tags={"Crawlers"},
+     *     security={{"bearerAuth": {}}},
+     *     @OA\Parameter(
+     *         name="page",
+     *         in="query",
+     *         description="Page number for pagination",
+     *         required=false,
+     *         @OA\Schema(type="integer", default=1, minimum=1)
+     *     ),
+     *     @OA\Parameter(
+     *         name="per_page",
+     *         in="query",
+     *         description="Items per page",
+     *         required=false,
+     *         @OA\Schema(type="integer", default=15, minimum=1, maximum=100)
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Paginated list of protected crawlers",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="array",
+     *                 @OA\Items(
+     *                     type="object",
+     *                     @OA\Property(property="id", type="integer", example=1),
+     *                     @OA\Property(property="name", type="string", example="Protected Crawler"),
+     *                     @OA\Property(property="description", type="string", example="Protected crawler description"),
+     *                     @OA\Property(property="active", type="integer", example=1),
+     *                     @OA\Property(property="testing", type="integer", example=0),
+     *                     @OA\Property(property="experiment_id", type="integer", example=1),
+     *                     @OA\Property(property="latest_queues_succeeded", type="integer", example=10),
+     *                     @OA\Property(property="latest_queues_failed", type="integer", example=1),
+     *                     @OA\Property(property="latest_queues_count", type="integer", example=11),
+     *                     @OA\Property(property="created_at", type="string", format="date-time"),
+     *                     @OA\Property(property="updated_at", type="string", format="date-time")
+     *                 )
+     *             ),
+     *             @OA\Property(
+     *                 property="links",
+     *                 type="object",
+     *                 @OA\Property(property="first", type="string", example="http://localhost:8000/api/v1/crawlers-protected?page=1"),
+     *                 @OA\Property(property="last", type="string", example="http://localhost:8000/api/v1/crawlers-protected?page=3"),
+     *                 @OA\Property(property="prev", type="string", nullable=true),
+     *                 @OA\Property(property="next", type="string", example="http://localhost:8000/api/v1/crawlers-protected?page=2")
+     *             ),
+     *             @OA\Property(
+     *                 property="meta",
+     *                 type="object",
+     *                 @OA\Property(property="current_page", type="integer", example=1),
+     *                 @OA\Property(property="from", type="integer", example=1),
+     *                 @OA\Property(property="last_page", type="integer", example=3),
+     *                 @OA\Property(property="per_page", type="integer", example=15),
+     *                 @OA\Property(property="to", type="integer", example=15),
+     *                 @OA\Property(property="total", type="integer", example=45)
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(response=401, description="Unauthorized")
+     * )
+     */
     public function index(): ResourceCollection
     {
         $crawlers = $this->repository->all();
@@ -30,6 +103,39 @@ class CrawlerController extends Controller
         return ResourceCollection::make($crawlers->paginate());
     }
 
+    /**
+     * @OA\Get(
+     *     path="/api/v1/crawlers-inactive",
+     *     summary="Get inactive crawlers",
+     *     description="Retrieve all crawlers that are currently inactive",
+     *     operationId="getInactiveCrawlers",
+     *     tags={"Crawlers"},
+     *     security={{"bearerAuth": {}}},
+     *     @OA\Response(
+     *         response=200,
+     *         description="List of inactive crawlers",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="array",
+     *                 @OA\Items(
+     *                     type="object",
+     *                     @OA\Property(property="id", type="integer", example=1),
+     *                     @OA\Property(property="name", type="string", example="Inactive Crawler"),
+     *                     @OA\Property(property="description", type="string", example="Crawler description"),
+     *                     @OA\Property(property="active", type="integer", example=0),
+     *                     @OA\Property(property="testing", type="integer", example=0),
+     *                     @OA\Property(property="experiment_id", type="integer", example=1),
+     *                     @OA\Property(property="created_at", type="string", format="date-time"),
+     *                     @OA\Property(property="updated_at", type="string", format="date-time")
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(response=401, description="Unauthorized")
+     * )
+     */
     public function inactive(): ResourceCollection
     {
         $crawlers = $this->repository->inactive();
@@ -37,6 +143,41 @@ class CrawlerController extends Controller
         return ResourceCollection::make($crawlers);
     }
 
+    /**
+     * @OA\Get(
+     *     path="/api/v1/crawlers-processed",
+     *     summary="Get crawlers with processed queues",
+     *     description="Retrieve all crawlers that have processed queues",
+     *     operationId="getCrawlersWithProcessedQueues",
+     *     tags={"Crawlers"},
+     *     security={{"bearerAuth": {}}},
+     *     @OA\Response(
+     *         response=200,
+     *         description="List of crawlers with processed queues",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="array",
+     *                 @OA\Items(
+     *                     type="object",
+     *                     @OA\Property(property="id", type="integer", example=1),
+     *                     @OA\Property(property="name", type="string", example="Processed Crawler"),
+     *                     @OA\Property(property="description", type="string", example="Crawler with processed queues"),
+     *                     @OA\Property(property="active", type="integer", example=1),
+     *                     @OA\Property(property="processed", type="integer", example=1),
+     *                     @OA\Property(property="latest_queues_succeeded", type="integer", example=5),
+     *                     @OA\Property(property="latest_queues_failed", type="integer", example=0),
+     *                     @OA\Property(property="experiment_id", type="integer", example=1),
+     *                     @OA\Property(property="created_at", type="string", format="date-time"),
+     *                     @OA\Property(property="updated_at", type="string", format="date-time")
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(response=401, description="Unauthorized")
+     * )
+     */
     public function withProcessedQueues(): ResourceCollection
     {
         $crawlers = $this->repository->processed();
@@ -44,6 +185,40 @@ class CrawlerController extends Controller
         return ResourceCollection::make($crawlers);
     }
 
+    /**
+     * @OA\Get(
+     *     path="/api/v1/crawlers-reviewed",
+     *     summary="Get crawlers with reviewed queues",
+     *     description="Retrieve all crawlers that have reviewed queues",
+     *     operationId="getCrawlersWithReviewedQueues",
+     *     tags={"Crawlers"},
+     *     security={{"bearerAuth": {}}},
+     *     @OA\Response(
+     *         response=200,
+     *         description="List of crawlers with reviewed queues",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="array",
+     *                 @OA\Items(
+     *                     type="object",
+     *                     @OA\Property(property="id", type="integer", example=1),
+     *                     @OA\Property(property="name", type="string", example="Reviewed Crawler"),
+     *                     @OA\Property(property="description", type="string", example="Crawler with reviewed queues"),
+     *                     @OA\Property(property="active", type="integer", example=1),
+     *                     @OA\Property(property="reviewed", type="integer", example=1),
+     *                     @OA\Property(property="latest_queues_count", type="integer", example=3),
+     *                     @OA\Property(property="experiment_id", type="integer", example=1),
+     *                     @OA\Property(property="created_at", type="string", format="date-time"),
+     *                     @OA\Property(property="updated_at", type="string", format="date-time")
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(response=401, description="Unauthorized")
+     * )
+     */
     public function withReviewedQueues(): ResourceCollection
     {
         $crawlers = $this->repository->reviewed();
@@ -51,6 +226,40 @@ class CrawlerController extends Controller
         return ResourceCollection::make($crawlers);
     }
 
+    /**
+     * @OA\Get(
+     *     path="/api/v1/crawlers-unprocessed",
+     *     summary="Get crawlers with unprocessed queues",
+     *     description="Retrieve all crawlers that have unprocessed queues",
+     *     operationId="getCrawlersWithUnprocessedQueues",
+     *     tags={"Crawlers"},
+     *     security={{"bearerAuth": {}}},
+     *     @OA\Response(
+     *         response=200,
+     *         description="List of crawlers with unprocessed queues",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="array",
+     *                 @OA\Items(
+     *                     type="object",
+     *                     @OA\Property(property="id", type="integer", example=1),
+     *                     @OA\Property(property="name", type="string", example="Unprocessed Crawler"),
+     *                     @OA\Property(property="description", type="string", example="Crawler with unprocessed queues"),
+     *                     @OA\Property(property="active", type="integer", example=1),
+     *                     @OA\Property(property="processed", type="integer", example=0),
+     *                     @OA\Property(property="latest_queues_count", type="integer", example=2),
+     *                     @OA\Property(property="experiment_id", type="integer", example=1),
+     *                     @OA\Property(property="created_at", type="string", format="date-time"),
+     *                     @OA\Property(property="updated_at", type="string", format="date-time")
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(response=401, description="Unauthorized")
+     * )
+     */
     public function withUnprocessedQueues(): ResourceCollection
     {
         $crawlers = $this->repository->unprocessed();
@@ -58,6 +267,39 @@ class CrawlerController extends Controller
         return ResourceCollection::make($crawlers);
     }
 
+    /**
+     * @OA\Get(
+     *     path="/api/v1/crawlers-testing",
+     *     summary="Get testing crawlers",
+     *     description="Retrieve all crawlers that are in testing mode",
+     *     operationId="getTestingCrawlers",
+     *     tags={"Crawlers"},
+     *     security={{"bearerAuth": {}}},
+     *     @OA\Response(
+     *         response=200,
+     *         description="List of testing crawlers",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="array",
+     *                 @OA\Items(
+     *                     type="object",
+     *                     @OA\Property(property="id", type="integer", example=1),
+     *                     @OA\Property(property="name", type="string", example="Testing Crawler"),
+     *                     @OA\Property(property="description", type="string", example="Crawler in testing mode"),
+     *                     @OA\Property(property="active", type="integer", example=1),
+     *                     @OA\Property(property="testing", type="integer", example=1),
+     *                     @OA\Property(property="experiment_id", type="integer", example=1),
+     *                     @OA\Property(property="created_at", type="string", format="date-time"),
+     *                     @OA\Property(property="updated_at", type="string", format="date-time")
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(response=401, description="Unauthorized")
+     * )
+     */
     public function testing(): ResourceCollection
     {
         $crawlers = $this->repository->testing();
@@ -94,6 +336,39 @@ class CrawlerController extends Controller
         return JsonResource::make($crawler);
     }
 
+    /**
+     * @OA\Get(
+     *     path="/api/v1/crawlers-disable",
+     *     summary="Disable production crawlers",
+     *     description="Disable all production crawlers and return the updated list",
+     *     operationId="disableProductionCrawlers",
+     *     tags={"Crawlers"},
+     *     security={{"bearerAuth": {}}},
+     *     @OA\Response(
+     *         response=200,
+     *         description="List of disabled production crawlers",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="array",
+     *                 @OA\Items(
+     *                     type="object",
+     *                     @OA\Property(property="id", type="integer", example=1),
+     *                     @OA\Property(property="name", type="string", example="Production Crawler"),
+     *                     @OA\Property(property="description", type="string", example="Disabled production crawler"),
+     *                     @OA\Property(property="active", type="integer", example=0),
+     *                     @OA\Property(property="testing", type="integer", example=0),
+     *                     @OA\Property(property="experiment_id", type="integer", example=1),
+     *                     @OA\Property(property="created_at", type="string", format="date-time"),
+     *                     @OA\Property(property="updated_at", type="string", format="date-time")
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(response=401, description="Unauthorized")
+     * )
+     */
     public function disableProdCrawlers(): ResourceCollection
     {
         $crawler = $this->repository->disableProdCrawlers();
