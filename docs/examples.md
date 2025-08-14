@@ -289,7 +289,7 @@ curl -X POST https://pm-api.test.primemover.example/api/v1/crawlers/1/upload \
 }
 ```
 
-### Scroll Job
+### Scroll Job (Duration)
 ```json
 {
   "name": "Scroll Page",
@@ -310,6 +310,323 @@ curl -X POST https://pm-api.test.primemover.example/api/v1/crawlers/1/upload \
 }
 ```
 
+### Scroll Job (Length)
+```json
+{
+  "name": "Scroll Distance",
+  "type": "scrollbylengthjob",
+  "description": "Scroll by pixel distance",
+  "behaviors": [
+    {
+      "name": "length",
+      "description": "Pixels to scroll",
+      "value": 500
+    },
+    {
+      "name": "scrollDirection",
+      "description": "Scroll direction",
+      "value": "DOWN"
+    }
+  ]
+}
+```
+
+### Click Job
+```json
+{
+  "name": "Click Button",
+  "type": "clickjob",
+  "description": "Click on HTML element",
+  "behaviors": [
+    {
+      "name": "selectionType",
+      "description": "Selector type",
+      "value": "CSS"
+    },
+    {
+      "name": "selector",
+      "description": "Element selector",
+      "value": "#submit-button"
+    },
+    {
+      "name": "expectsPageReload",
+      "description": "Whether click triggers page reload",
+      "value": false
+    }
+  ]
+}
+```
+
+### Try Click Job (Failsafe)
+```json
+{
+  "name": "Try Click Link",
+  "type": "tryclickjob",
+  "description": "Click element (continue if fails)",
+  "behaviors": [
+    {
+      "name": "selectionType",
+      "description": "Selector type",
+      "value": "XPATH"
+    },
+    {
+      "name": "selector",
+      "description": "Element selector",
+      "value": "//a[contains(text(), 'Next')]"
+    },
+    {
+      "name": "expectsPageReload",
+      "description": "Whether click triggers page reload",
+      "value": true
+    }
+  ]
+}
+```
+
+### Switch Window/Tab Job
+```json
+{
+  "name": "Switch to Popup",
+  "type": "switchjob",
+  "description": "Switch to window or frame",
+  "behaviors": [
+    {
+      "name": "selectionType",
+      "description": "Selector type",
+      "value": "CSS"
+    },
+    {
+      "name": "selector",
+      "description": "Window/frame selector",
+      "value": "iframe[name='popup']"
+    }
+  ]
+}
+```
+
+### Try Switch Job (Failsafe)
+```json
+{
+  "name": "Try Switch Frame",
+  "type": "tryswitchjob",
+  "description": "Switch to frame (continue if fails)",
+  "behaviors": [
+    {
+      "name": "selectionType",
+      "description": "Selector type",
+      "value": "XPATH"
+    },
+    {
+      "name": "selector",
+      "description": "Frame selector",
+      "value": "//iframe[@id='content-frame']"
+    }
+  ]
+}
+```
+
+### Single Select Job
+```json
+{
+  "name": "Select Product",
+  "type": "singleselectjob",
+  "description": "Select element based on criteria",
+  "behaviors": [
+    {
+      "name": "selectionType",
+      "description": "Selector type for clicking",
+      "value": "CSS"
+    },
+    {
+      "name": "selector",
+      "description": "Element to click",
+      "value": ".product-item"
+    },
+    {
+      "name": "criterionExtractor",
+      "description": "Decision criteria logic",
+      "value": "RANDOM"
+    },
+    {
+      "name": "decisionType",
+      "description": "How to make selection",
+      "value": "FIRST"
+    }
+  ]
+}
+```
+
+### Single Select Job (Extended)
+```json
+{
+  "name": "Select by Price",
+  "type": "singleselectjob",
+  "description": "Select element using separate criteria",
+  "behaviors": [
+    {
+      "name": "clickSelectionType",
+      "description": "Selector type for clicking",
+      "value": "CSS"
+    },
+    {
+      "name": "clickSelector",
+      "description": "Element to click",
+      "value": ".product-buy-button"
+    },
+    {
+      "name": "criteriaSelectionType",
+      "description": "Selector type for criteria",
+      "value": "CSS"
+    },
+    {
+      "name": "criteriaSelector",
+      "description": "Element to evaluate",
+      "value": ".product-price"
+    },
+    {
+      "name": "criteriaExtractor",
+      "description": "Extraction logic",
+      "value": "TEXT_CONTENT"
+    },
+    {
+      "name": "decisionType",
+      "description": "Selection strategy",
+      "value": "LOWEST_VALUE"
+    }
+  ]
+}
+```
+
+### Handle Alert Job
+```json
+{
+  "name": "Accept Alert",
+  "type": "handlealertjob",
+  "description": "Handle browser alert dialog",
+  "behaviors": [
+    {
+      "name": "action",
+      "description": "Alert action",
+      "value": "ACCEPT"
+    }
+  ]
+}
+```
+
+### Try Handle Alert Job (Failsafe)
+```json
+{
+  "name": "Try Dismiss Alert",
+  "type": "tryhandlealertjob",
+  "description": "Handle alert (continue if none)",
+  "behaviors": [
+    {
+      "name": "action",
+      "description": "Alert action",
+      "value": "DISMISS"
+    }
+  ]
+}
+```
+
+### Assert Scrolled Max Job
+```json
+{
+  "name": "Check Max Scroll",
+  "type": "assertscrolledmaxjob",
+  "description": "Assert page scrolled to maximum",
+  "behaviors": [
+    {
+      "name": "direction",
+      "description": "Scroll direction to check",
+      "value": "DOWN"
+    }
+  ]
+}
+```
+
+### Lambda Select Job
+```json
+{
+  "name": "Lambda Selection",
+  "type": "lambdaselectjob",
+  "description": "Use AWS Lambda for selection logic",
+  "behaviors": [
+    {
+      "name": "linkValue",
+      "description": "Lambda function identifier",
+      "value": "my-selection-function"
+    },
+    {
+      "name": "linkType",
+      "description": "Lambda link type",
+      "value": "FUNCTION_NAME"
+    },
+    {
+      "name": "username",
+      "description": "Optional auth username",
+      "value": "lambda_user"
+    },
+    {
+      "name": "password",
+      "description": "Optional auth password",
+      "value": "lambda_pass"
+    }
+  ]
+}
+```
+
+## Job Type Reference
+
+### Navigation Jobs
+- `visitjob` - Navigate to URL
+- `switchjob` / `tryswitchjob` - Switch windows/tabs/frames
+
+### Element Interaction Jobs  
+- `clickjob` / `tryclickjob` - Click HTML elements
+- `entertextfieldjob` / `tryentertextfieldjob` - Enter text in fields
+- `singleselectjob` / `singleselecturljob` - Select elements with criteria
+
+### Scrolling Jobs
+- `scrollbydurationjob` - Scroll for time duration
+- `scrollbylengthjob` - Scroll by pixel distance
+- `assertscrolledmaxjob` - Assert maximum scroll reached
+
+### Dialog Handling
+- `handlealertjob` / `tryhandlealertjob` - Handle browser alerts/confirms
+
+### Timing Jobs
+- `waitjob` - Pause execution
+
+### Advanced Jobs
+- `lambdaselectjob` / `lambdasingleselectjob` - AWS Lambda integration
+
+### Common Behavior Parameters
+
+**Selector Parameters:**
+- `selectionType` / `clickSelectionType` / `criteriaSelectionType`: CSS, XPATH, ID, CLASS_NAME
+- `selector` / `clickSelector` / `criteriaSelector`: Element selector string
+
+**Scroll Parameters:**
+- `scrollDirection`: UP, DOWN, LEFT, RIGHT
+- `scrollDuration` / `duration`: Time in seconds
+- `length`: Pixel distance
+
+**Decision Parameters:**
+- `decisionType`: FIRST, LAST, RANDOM, LOWEST_VALUE, HIGHEST_VALUE
+- `criterionExtractor` / `criteriaExtractor`: TEXT_CONTENT, ATTRIBUTE_VALUE, RANDOM
+
+**Alert Parameters:**
+- `action`: ACCEPT, DISMISS
+
+**Text Entry Parameters:**
+- `text`: Text to enter
+- `appendReturn`: Whether to press Enter (true/false)
+- `typingMode`: SIMULATED_NOTYPOS (default)
+
+**Click Parameters:**
+- `expectsPageReload`: Whether click triggers page reload (true/false)
+
 ## Validation Notes
 
 1. **Boolean vs Integer:** Use `true`/`false` for boolean fields, except `configuration.active` which expects an integer
@@ -318,6 +635,8 @@ curl -X POST https://pm-api.test.primemover.example/api/v1/crawlers/1/upload \
 4. **Port Numbers:** Must be integers between 1-65535
 5. **String Lengths:** Most name/description fields have 255 character limits
 6. **Nested Structure:** Follow the exact nesting structure shown in examples
+7. **Failsafe Jobs:** Jobs prefixed with `try` continue execution even if they fail
+8. **Selector Types:** Use consistent selector types (CSS recommended for performance)
 
 ## Response Options
 
