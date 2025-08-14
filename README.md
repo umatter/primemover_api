@@ -126,14 +126,65 @@ Frontend (Angular) ↔ API (Laravel) ↔ Database (MySQL)
 **Frontend:**
 - Angular (separate repository)
 
+## User Management
+
+### User Registration Policy
+
+**Public registration is disabled** for security reasons. Users must be added manually by administrators with database access.
+
+### How to Add Users
+
+Since the `/register` endpoint is disabled, new users must be created directly in the database. You'll need:
+- Database access (MySQL credentials or Docker container access)
+- User's name, email, and desired password
+
+**Method 1: Using Laravel Tinker (Recommended)**
+```bash
+# Access the application container (Docker setup)
+docker-compose exec php php artisan tinker
+
+# Or for native setup
+php artisan tinker
+
+# Create a new user
+User::create([
+    'name' => 'John Doe',
+    'email' => 'john@example.com', 
+    'password' => bcrypt('SecurePassword123!')
+]);
+```
+
+**Method 2: Direct Database Access**
+```sql
+-- Connect to MySQL database
+INSERT INTO users (name, email, password, created_at, updated_at) 
+VALUES (
+    'John Doe',
+    'john@example.com',
+    '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', -- bcrypt hash
+    NOW(),
+    NOW()
+);
+```
+
+**Method 3: Using Database Seeder**
+Add users to `database/seeders/DatabaseSeeder.php` and run:
+```bash
+php artisan db:seed
+```
+
+### User Authentication
+
+Once users are created, they can authenticate normally:
+
 ## API Usage Examples
 
 ### Authentication
 ```bash
-# Login
+# Login with manually created user
 curl -X POST https://pm-api.test.primemover.example/api/v1/login \
   -H "Content-Type: application/json" \
-  -d '{"email": "user@example.com", "password": "password"}'
+  -d '{"email": "john@example.com", "password": "SecurePassword123!"}'
 
 # Use token in subsequent requests
 curl -H "Authorization: Bearer YOUR_TOKEN" \
