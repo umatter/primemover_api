@@ -18,6 +18,19 @@ Content-Type: application/json
 - `oauth.token` - OAuth token validation
 - `formdata` - For file upload endpoints
 
+## API Documentation Routes
+
+| Method | Route | Controller@method | Middleware |
+|--------|-------|-------------------|------------|
+| GET | documentation | L5Swagger (auto-generated) | - |
+| GET | oauth2-callback | L5Swagger (auto-generated) | - |
+
+### Example: Access API Documentation
+```bash
+# View interactive API documentation
+curl -X GET https://pm-api.test.primemover.example/api/documentation
+```
+
 ## Authentication Routes
 
 | Method | Route | Controller@method | Middleware |
