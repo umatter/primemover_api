@@ -118,6 +118,11 @@ print(token_data)
 
     public function register(Request $request)
     {
+        // Registration is currently disabled
+        return response(['message' => 'Registration is currently disabled. Please contact an administrator.'], 403);
+
+        // Original registration code (disabled):
+        /*
         $validatedData = $request->validate([
             'name' => 'required|max:55',
             'email' => 'email|required|unique:users',
@@ -131,6 +136,7 @@ print(token_data)
         $accessToken = $user->createToken('authToken')->accessToken;
 
         return response(['user' => $user, 'access_token' => $accessToken]);
+        */
     }
 
     /**
