@@ -16,14 +16,19 @@ Primemover is a web automation platform that allows users to create and manage b
 - Docker & Docker Compose (recommended)
 - Basic knowledge of Laravel and REST APIs
 
-### Get Running in 5 Minutes
+### Setup Options
+
+Choose your preferred setup method:
+
+#### Option 1: Docker Setup (Recommended)
 ```bash
 # 1. Clone the repository
 git clone <repository-url> primemover-api
 cd primemover-api
 
-# 2. Copy environment file
-cp .env.example .env
+# 2. Copy environment files
+cp .env.docker .env
+# This sets up both Laravel app config and Docker Compose variables
 
 # 3. Start with Docker
 docker-compose up -d
@@ -38,6 +43,54 @@ docker-compose exec php php artisan passport:install --force
 # 5. Test the API
 curl http://localhost:8080/api/v1/ip
 ```
+
+**Docker Services:**
+- **Apache**: Web server (ports 8080/8443)
+- **PHP 8.1**: Application runtime with FPM
+- **MySQL 8.0**: Database (port 3307)
+- **Redis**: Cache and queues (port 8889)
+- **Memcached**: Additional caching layer
+
+#### Option 2: Native Setup
+**Prerequisites:** PHP 8.1+, MySQL 8.0+, Composer, Redis (optional)
+
+```bash
+# 1. Clone the repository
+git clone <repository-url> primemover-api
+cd primemover-api
+
+# 2. Install dependencies
+composer install
+
+# 3. Setup environment
+cp .env.example .env
+# Edit .env file with your database credentials
+
+# 4. Generate keys and setup
+php artisan key:generate
+php artisan jwt:secret --force
+
+# 5. Setup database (ensure MySQL is running)
+php artisan migrate --seed
+php artisan passport:install --force
+
+# 6. Start development server
+php artisan serve
+
+# 7. Test the API
+curl http://localhost:8000/api/v1/ip
+```
+
+**Native Setup Requirements:**
+- MySQL server running on localhost:3306
+- Database named `primemover` with user `primemover`/password `secret`
+- Redis server (optional, for queues and caching)
+- AWS S3 credentials (for file storage)
+
+**Docker Setup Requirements:**
+- Docker and Docker Compose installed
+- Ports 8080, 8443, 3307, 8889 available
+- At least 2GB RAM for all containers
 
 For detailed setup instructions, see the [Setup Guide](docs/setup.md).
 
@@ -113,7 +166,9 @@ For complete JSON examples, see [examples.md](docs/examples.md).
 - Add tests for new features
 - Update documentation when needed
 
-### Docker Development Commands
+### Development Commands
+
+#### Docker Commands
 ```bash
 # View logs
 docker-compose logs -f
@@ -124,8 +179,36 @@ docker-compose exec php bash
 # Run artisan commands
 docker-compose exec php php artisan migrate
 
+# Access MySQL
+docker-compose exec mysql mysql -u primemover -p primemover
+
+# Access Redis
+docker-compose exec redis redis-cli -a secret
+
 # Stop services
 docker-compose down
+
+# Rebuild containers
+docker-compose up -d --build
+```
+
+#### Native Development Commands
+```bash
+# Start development server
+php artisan serve
+
+# Run migrations
+php artisan migrate
+
+# Generate Swagger documentation
+php artisan l5-swagger:generate
+
+# Run tests
+php artisan test
+
+# Clear caches
+php artisan cache:clear
+php artisan config:clear
 ```
 
 ## API Documentation
@@ -178,19 +261,26 @@ php artisan l5-swagger:generate
 
 ## Common Issues
 
-### Docker Issues
+#### Docker Issues
 - **Port conflicts**: Change ports in `docker-compose.yml`
 - **Permission errors**: Run `sudo chown -R $USER:$USER .`
 - **Container won't start**: Check logs with `docker-compose logs`
 
-### API Issues
+#### Native Setup Issues
+- **Database connection errors**: Ensure MySQL is running and credentials in `.env` are correct
+- **Permission denied**: Check file permissions with `chmod -R 755 storage bootstrap/cache`
+- **Missing extensions**: Install required PHP extensions: `php-mysql`, `php-redis`, `php-curl`
+- **Composer errors**: Run `composer install --no-dev` for production
+
+#### API Issues
 - **401 Unauthorized**: Check your Bearer token is valid
 - **422 Validation Error**: Check required fields in [examples.md](docs/examples.md)
 - **429 Too Many Requests**: You've hit the rate limit (1000/min)
 
-### Database Issues
-- **Connection refused**: Ensure MySQL container is running
+#### Database Issues
+- **Connection refused**: Ensure MySQL server is running (Docker or native)
 - **Migration errors**: Check database credentials in `.env`
+- **Access denied**: Verify database user has proper permissions
 
 ### Need Help?
 - Check the [Setup Guide](docs/setup.md) for installation issues
