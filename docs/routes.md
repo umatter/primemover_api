@@ -237,10 +237,89 @@ curl -X GET https://pm-api.test.primemover.example/api/v1/ip/192.168.1.1
 }
 ```
 
+## Query Parameters
+
+Many endpoints support query parameters for filtering and pagination:
+
+### Common Query Parameters
+- `page` - Page number for pagination (default: 1)
+- `per_page` - Items per page (default: 15, max: 100)
+- `search` - Search keyword for filtering results
+- `sort` - Sort field (varies by resource)
+- `order` - Sort direction (`asc` or `desc`)
+
+### Resource-Specific Parameters
+- **Agents/Proxies/Configurations**: `crawler_id` - Filter by crawler ID
+- **Queues**: `job_id` - Filter by job ID
+- **Behaviors**: `job_id` - Filter by job ID
+
+### Example: Paginated Search
+```bash
+curl -X GET "https://pm-api.test.primemover.example/api/v1/agents?search=chrome&page=2&per_page=20" \
+  -H "Authorization: Bearer your-token-here"
+```
+
+## Advanced Examples
+
+### Working with Experiments
+```bash
+# Upload experiment data with JSON file
+curl -X POST https://pm-api.test.primemover.example/api/v1/experiments/upload \
+  -H "Authorization: Bearer your-token-here" \
+  -F "json=@experiment-config.json;type=application/json"
+
+# Download experiment results
+curl -X GET https://pm-api.test.primemover.example/api/v1/experiments/123/download \
+  -H "Authorization: Bearer your-token-here" \
+  --output experiment-results.zip
+```
+
+### Working with Crawlers
+```bash
+# Get crawlers with processed queues
+curl -X GET https://pm-api.test.primemover.example/api/v1/crawlers-processed \
+  -H "Authorization: Bearer your-token-here"
+
+# Upload crawler configuration
+curl -X POST https://pm-api.test.primemover.example/api/v1/crawlers/456/upload \
+  -H "Authorization: Bearer your-token-here" \
+  -F "file=@crawler-config.json"
+```
+
+### Working with Queues
+```bash
+# Get queues for specific job
+curl -X GET https://pm-api.test.primemover.example/api/v1/queues/job/789 \
+  -H "Authorization: Bearer your-token-here"
+
+# Get unprocessed queues for experiment
+curl -X GET https://pm-api.test.primemover.example/api/v1/experiments/123/queues-unprocessed \
+  -H "Authorization: Bearer your-token-here"
+```
+
+## Password Requirements
+
+For password reset and user management:
+- Minimum 8 characters
+- Must contain at least one uppercase letter
+- Must contain at least one digit
+- Must contain at least one special character
+
+## File Upload Requirements
+
+### Supported File Types
+- **JSON files**: `application/json` MIME type required
+- **General uploads**: Various file types supported for S3 storage
+
+### Upload Limits
+- File size limits depend on server configuration
+- JSON files are processed through the `formdata` middleware
+
 ## Common HTTP Status Codes
 
 - `200 OK` - Request successful
 - `201 Created` - Resource created successfully
+- `204 No Content` - Request successful with no response body
 - `400 Bad Request` - Invalid request data
 - `401 Unauthorized` - Missing or invalid authentication
 - `403 Forbidden` - Insufficient permissions
@@ -272,3 +351,72 @@ The API enforces a rate limit of 1000 requests per minute per IP address. When y
 - `{filename}` - File name (string)
 - `{ip?}` - IP address (optional string)
 - `{jobid}` - Job ID for queue filtering (integer)
+
+## Middleware Details
+
+### `auth:api` - API Authentication
+Uses Laravel Passport for OAuth2 authentication. Requires valid Bearer token in Authorization header.
+
+### `oauth.token` - OAuth Token Processing
+Automatically adds OAuth client credentials to requests. Used for token generation endpoints.
+
+### `formdata` - Form Data Handler
+Processes JSON files uploaded as form data. Supports `application/json` MIME type files and converts them to request data.
+
+### `throttleIp` - IP-based Rate Limiting
+- Default: 1000 requests per minute per IP
+- Supports IP whitelisting via configuration
+- Whitelisted IPs bypass rate limiting entirely
+
+## Error Response Examples
+
+### Validation Error (422)
+```json
+{
+  "message": "The given data was invalid.",
+  "errors": {
+    "email": ["The email field is required."],
+    "password": ["The password must be at least 8 characters."]
+  }
+}
+```
+
+### Authentication Error (401)
+```json
+{
+  "message": "Unauthenticated."
+}
+```
+
+### Rate Limit Error (429)
+```json
+{
+  "message": "Too Many Attempts."
+}
+```
+
+### Not Found Error (404)
+```json
+{
+  "message": "No query results for model [App\\Modules\\Agent\\Model\\Agent] 999"
+}
+```
+
+## Development Features
+
+### Registration Status
+User registration is currently **disabled**. New users must be created by administrators.
+
+### Load Testing
+The `POST /load-test` endpoint is available for performance testing and does not require authentication.
+
+### Data Truncation
+The `GET /dev/truncate-data` endpoint clears development data and should only be used in development environments.
+
+## API Documentation Access
+
+Interactive API documentation is available at:
+- **Swagger UI**: `GET /api/documentation`
+- **OAuth2 Callback**: `GET /api/oauth2-callback`
+
+These endpoints provide a web interface for exploring and testing the API.
