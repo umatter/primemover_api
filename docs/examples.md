@@ -17,6 +17,8 @@ The JSON must be wrapped in a `json` field containing an array of experiment obj
     {
       "name": "Experiment Name",
       "description": "Experiment description",
+      "active": 1,
+      "testing": 0,
       "configuration": {
         "name": "Configuration Name",
         "description": "Configuration description",
@@ -105,6 +107,8 @@ The JSON must be wrapped in a `json` field containing an array of experiment obj
     {
       "name": "Simple Experiment",
       "description": "Basic experiment",
+      "active": 1,
+      "testing": 0,
       "configuration": {
         "name": "Basic Config",
         "description": "Basic configuration",

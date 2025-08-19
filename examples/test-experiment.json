@@ -3,6 +3,8 @@
     {
       "name": "Test Web Automation Experiment",
       "description": "A comprehensive test experiment demonstrating various automation capabilities",
+      "active": 1,
+      "testing": 0,
       "configuration": {
         "name": "Test Configuration",
         "description": "Configuration for testing web automation features",
