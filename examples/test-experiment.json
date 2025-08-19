@@ -8,8 +8,8 @@
         "description": "Configuration for testing web automation features",
         "active": 1,
         "params": {
-          "search_terms": "automation,testing,web scraping",
-          "media_outlet_urls": "https://example.com,https://test-site.com"
+          "search_terms": ["automation", "testing", "web scraping"],
+          "media_outlet_urls": ["https://example.com", "https://test-site.com"]
         },
         "preferences": [
           {
