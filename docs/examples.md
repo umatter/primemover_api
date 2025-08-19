@@ -828,7 +828,7 @@ token <- token_data$access_token
 # Step 2: Upload test experiment
 # Method 1: Upload from file (ensure working directory is correct)
 upload_response <- POST(
-  url = "https://pm-api.test.primemover.example/api/v1/experiments/upload",
+  url = "https://pm-api.test.primemover.example/api/v1/experiments/1/upload",
   add_headers(
     "Authorization" = paste("Bearer", token),
     "Accept" = "application/json"
@@ -885,7 +885,7 @@ test_experiment <- list(
 )
 
 upload_response <- POST(
-  url = "https://pm-api.test.primemover.example/api/v1/experiments/upload",
+  url = "https://pm-api.test.primemover.example/api/v1/experiments/1/upload",
   add_headers(
     "Authorization" = paste("Bearer", token),
     "Content-Type" = "application/json",

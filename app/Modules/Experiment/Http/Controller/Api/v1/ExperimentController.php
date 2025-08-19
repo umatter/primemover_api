@@ -404,6 +404,48 @@ print(upload_result)
      *     @OA\Response(response=500, description="Internal server error")
      * )
      */
+    /**
+     * @OA\Post(
+     *     path="/experiments/{experiment}/upload",
+     *     summary="Upload experiment data",
+     *     operationId="uploadExperimentDataById",
+     *     tags={"Experiments"},
+     *     security={{"bearerAuth": {}}},
+     *
+     *     @OA\Parameter(
+     *         name="experiment",
+     *         in="path",
+     *         description="Experiment ID",
+     *         required=true,
+     *         @OA\Schema(type="integer", example=1)
+     *     ),
+     *
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\MediaType(
+     *             mediaType="multipart/form-data",
+     *             @OA\Schema(
+     *                 type="object",
+     *                 @OA\Property(property="file", type="string", format="binary"),
+     *                 @OA\Property(property="content", type="string")
+     *             )
+     *         ),
+     *         @OA\MediaType(
+     *             mediaType="application/json",
+     *             @OA\Schema(
+     *                 type="object",
+     *                 @OA\Property(property="content", type="string")
+     *             )
+     *         )
+     *     ),
+     *
+     *     @OA\Response(response=200, description="Upload successful"),
+     *     @OA\Response(response=401, description="Unauthorized"),
+     *     @OA\Response(response=404, description="Experiment not found"),
+     *     @OA\Response(response=422, description="Validation error"),
+     *     @OA\Response(response=500, description="Internal server error")
+     * )
+     */
     public function upload(ExperimentUploadRequest $request, Experiment $experiment = null): JsonResource
     {
         $uploadResult = ExperimentRepository::upload($request, $experiment);
