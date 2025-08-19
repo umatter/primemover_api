@@ -638,6 +638,108 @@ curl -X POST https://pm-api.test.primemover.example/api/v1/crawlers/1/upload \
 7. **Failsafe Jobs:** Jobs prefixed with `try` continue execution even if they fail
 8. **Selector Types:** Use consistent selector types (CSS recommended for performance)
 
+## Practical Upload Example
+
+### Using the Test Experiment File
+
+The repository includes a complete test experiment file at `examples/test-experiment.json`. Here's how to upload it:
+
+**Step 1: Authenticate and get token**
+```bash
+curl -X POST 'https://pm-api.test.primemover.example/api/v1/login' \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -d '{
+    "email": "your-email@example.com",
+    "password": "your-password"
+  }'
+```
+
+**Step 2: Upload the test experiment**
+```bash
+# Method 1: Upload JSON file directly
+curl -X POST 'https://pm-api.test.primemover.example/api/v1/experiments/upload' \
+  -H 'Authorization: Bearer YOUR_TOKEN_FROM_STEP_1' \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -d @examples/test-experiment.json
+
+# Method 2: Upload as form data
+curl -X POST 'https://pm-api.test.primemover.example/api/v1/experiments/upload' \
+  -H 'Authorization: Bearer YOUR_TOKEN_FROM_STEP_1' \
+  -H 'Accept: application/json' \
+  -F 'json=@examples/test-experiment.json;type=application/json'
+```
+
+**Step 3: Verify the upload**
+```bash
+curl -X GET 'https://pm-api.test.primemover.example/api/v1/experiments/experiments-list' \
+  -H 'Authorization: Bearer YOUR_TOKEN' \
+  -H 'Accept: application/json'
+```
+
+**Expected Success Response:**
+```json
+{
+  "status": true,
+  "message": "Experiment uploaded successfully",
+  "data": {
+    "experiment_id": 123,
+    "crawler_id": 456,
+    "created_at": "2024-01-01T10:00:00Z"
+  }
+}
+```
+
+### R Example for Test File Upload
+
+```r
+library(httr)
+library(jsonlite)
+
+# Step 1: Login
+login_response <- POST(
+  url = "https://pm-api.test.primemover.example/api/v1/login",
+  add_headers(
+    "Content-Type" = "application/json",
+    "Accept" = "application/json"
+  ),
+  body = toJSON(list(
+    email = "your-email@example.com",
+    password = "your-password"
+  ), auto_unbox = TRUE)
+)
+
+token_data <- content(login_response, "parsed")
+token <- token_data$access_token
+
+# Step 2: Upload test experiment
+upload_response <- POST(
+  url = "https://pm-api.test.primemover.example/api/v1/experiments/upload",
+  add_headers(
+    "Authorization" = paste("Bearer", token),
+    "Accept" = "application/json"
+  ),
+  body = list(json = upload_file("examples/test-experiment.json")),
+  encode = "multipart"
+)
+
+upload_result <- content(upload_response, "parsed")
+print(upload_result)
+
+# Step 3: Verify upload
+experiments_response <- GET(
+  url = "https://pm-api.test.primemover.example/api/v1/experiments/experiments-list",
+  add_headers(
+    "Authorization" = paste("Bearer", token),
+    "Accept" = "application/json"
+  )
+)
+
+experiments_data <- content(experiments_response, "parsed")
+print(experiments_data)
+```
+
 ## Response Options
 
 Add `"response": true` to get detailed response data including created crawler information. Otherwise, you'll get a simple success status.
