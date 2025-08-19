@@ -27,7 +27,14 @@ The JSON must be wrapped in a `json` field containing an array of experiment obj
           "alpha": 0.36,
           "tau": 1,
           "kappa": 1,
-          "beta": 0.003
+          "beta": 0.003,
+          "active": true,
+          "search_terms": [
+            { "term": "automation testing", "pi": -0.4241 }
+          ],
+          "media_outlet_urls": [
+            { "domain": "example.com", "url": "https://www.example.com/", "pi": -0.05 }
+          ]
         },
         "preferences": [
           {
@@ -108,7 +115,14 @@ The JSON must be wrapped in a `json` field containing an array of experiment obj
           "alpha": 0.36,
           "tau": 1,
           "kappa": 1,
-          "beta": 0.003
+          "beta": 0.003,
+          "active": true,
+          "search_terms": [
+            { "term": "automation testing", "pi": -0.4241 }
+          ],
+          "media_outlet_urls": [
+            { "domain": "example.com", "url": "https://www.example.com/", "pi": -0.05 }
+          ]
         }
       },
       "agent": {
@@ -692,7 +706,14 @@ curl -X POST 'https://pm-api.test.primemover.example/api/v1/experiments/upload' 
             "alpha": 0.36,
             "tau": 1,
             "kappa": 1,
-            "beta": 0.003
+            "beta": 0.003,
+            "active": true,
+            "search_terms": [
+              { "term": "automation testing", "pi": -0.4241 }
+            ],
+            "media_outlet_urls": [
+              { "domain": "example.com", "url": "https://www.example.com/", "pi": -0.05 }
+            ]
           }
         },
         "agent": {
