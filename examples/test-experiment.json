@@ -1,18 +1,47 @@
 {
   "json": [
     {
-      "name": "My Test Experiment",
-      "description": "Testing the upload",
+      "name": "Test Web Automation Experiment",
+      "description": "A comprehensive test experiment demonstrating various automation capabilities",
       "configuration": {
-        "name": "Basic Config",
-        "description": "Basic configuration",
-        "active": 1
+        "name": "Test Configuration",
+        "description": "Configuration for testing web automation features",
+        "active": 1,
+        "params": {
+          "search_terms": ["automation", "testing", "web scraping"],
+          "media_outlet_urls": ["https://example.com", "https://test-site.com"]
+        },
+        "preferences": [
+          {
+            "name": "location",
+            "value": "US-CO-COLORADO_SPRINGS"
+          },
+          {
+            "name": "user_agent_rotation",
+            "value": "true"
+          }
+        ]
+      },
+      "proxy": {
+        "name": "Test Proxy",
+        "description": "HTTP proxy for testing",
+        "hostname": "proxy.example.com",
+        "port": 8080,
+        "username": "test_user",
+        "password": "test_pass",
+        "type": "HTTP",
+        "active": true
       },
       "agent": {
         "name": "Chrome Test Agent",
-        "description": "Chrome browser for testing",
+        "description": "Chrome browser agent for automated testing",
         "identification": "chrome",
-        "multilogin_profile": {},
+        "multilogin_id": "test_profile_123",
+        "multilogin_profile": {
+          "name": "Test Profile",
+          "os": "win",
+          "browser": "mimic"
+        },
         "location": "US-CO-COLORADO_SPRINGS",
         "active": true
       },
@@ -20,20 +49,128 @@
         {
           "timezone": "America/Denver",
           "timezone_utc_offset": "-06:00",
-          "name": "Test Queue",
-          "description": "Simple test queue",
-          "start_at": "2024-01-01T10:00:00-06:00",
+          "name": "Web Navigation Test Queue",
+          "description": "Queue demonstrating various web automation tasks",
+          "start_at": "2024-12-01T10:00:00-06:00",
           "active": true,
           "jobs": [
             {
-              "name": "Wait 10 Seconds",
+              "name": "Visit Test Website",
+              "type": "visitjob",
+              "description": "Navigate to the test website",
+              "active": true,
+              "behaviors": [
+                {
+                  "name": "url",
+                  "description": "Target URL to visit",
+                  "value": "https://example.com",
+                  "active": true
+                }
+              ]
+            },
+            {
+              "name": "Wait for Page Load",
               "type": "waitjob",
-              "description": "Wait for 10 seconds",
+              "description": "Wait for page to fully load",
+              "active": true,
+              "behaviors": [
+                {
+                  "name": "seconds",
+                  "description": "Duration to wait in seconds",
+                  "value": 3,
+                  "active": true
+                }
+              ]
+            },
+            {
+              "name": "Enter Search Term",
+              "type": "entertextfieldjob",
+              "description": "Enter text in search field",
+              "active": true,
+              "behaviors": [
+                {
+                  "name": "text",
+                  "description": "Text to enter",
+                  "value": "automation testing",
+                  "active": true
+                },
+                {
+                  "name": "selectionType",
+                  "description": "Selector type",
+                  "value": "CSS",
+                  "active": true
+                },
+                {
+                  "name": "selector",
+                  "description": "Element selector",
+                  "value": "input[name='search']",
+                  "active": true
+                },
+                {
+                  "name": "appendReturn",
+                  "description": "Press Enter after text entry",
+                  "value": true,
+                  "active": true
+                }
+              ]
+            },
+            {
+              "name": "Scroll Page Down",
+              "type": "scrollbydurationjob",
+              "description": "Scroll down the page for 5 seconds",
+              "active": true,
+              "behaviors": [
+                {
+                  "name": "scrollDuration",
+                  "description": "Duration to scroll in seconds",
+                  "value": 5,
+                  "active": true
+                },
+                {
+                  "name": "scrollDirection",
+                  "description": "Direction to scroll",
+                  "value": "DOWN",
+                  "active": true
+                }
+              ]
+            },
+            {
+              "name": "Try Click Next Button",
+              "type": "tryclickjob",
+              "description": "Attempt to click next button (continue if not found)",
+              "active": true,
+              "behaviors": [
+                {
+                  "name": "selectionType",
+                  "description": "Selector type",
+                  "value": "XPATH",
+                  "active": true
+                },
+                {
+                  "name": "selector",
+                  "description": "Element selector",
+                  "value": "//button[contains(text(), 'Next')]",
+                  "active": true
+                },
+                {
+                  "name": "expectsPageReload",
+                  "description": "Whether click triggers page reload",
+                  "value": true,
+                  "active": true
+                }
+              ]
+            },
+            {
+              "name": "Final Wait",
+              "type": "waitjob",
+              "description": "Final wait before completing",
+              "active": true,
               "behaviors": [
                 {
                   "name": "seconds",
                   "description": "Duration to wait",
-                  "value": 10
+                  "value": 2,
+                  "active": true
                 }
               ]
             }
