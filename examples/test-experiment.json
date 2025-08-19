@@ -1,0 +1,45 @@
+{
+  "json": [
+    {
+      "name": "My Test Experiment",
+      "description": "Testing the upload",
+      "configuration": {
+        "name": "Basic Config",
+        "description": "Basic configuration",
+        "active": 1
+      },
+      "agent": {
+        "name": "Chrome Test Agent",
+        "description": "Chrome browser for testing",
+        "identification": "chrome",
+        "multilogin_profile": {},
+        "location": "US-CO-COLORADO_SPRINGS",
+        "active": true
+      },
+      "queues": [
+        {
+          "timezone": "America/Denver",
+          "timezone_utc_offset": "-06:00",
+          "name": "Test Queue",
+          "description": "Simple test queue",
+          "start_at": "2024-01-01T10:00:00-06:00",
+          "active": true,
+          "jobs": [
+            {
+              "name": "Wait 10 Seconds",
+              "type": "waitjob",
+              "description": "Wait for 10 seconds",
+              "behaviors": [
+                {
+                  "name": "seconds",
+                  "description": "Duration to wait",
+                  "value": 10
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
