@@ -105,7 +105,7 @@ The JSON must be wrapped in a `json` field containing an array of experiment obj
 {
   "json": [
     {
-      "name": "Simple Experiment",
+      "name": "Simple Experiment {{timestamp}}",
       "description": "Basic experiment",
       "active": 1,
       "testing": 0,

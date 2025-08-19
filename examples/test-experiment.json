@@ -1,7 +1,7 @@
 {
   "json": [
     {
-      "name": "Test Web Automation Experiment",
+      "name": "Test Web Automation Experiment {{timestamp}}",
       "description": "A comprehensive test experiment demonstrating various automation capabilities",
       "active": 1,
       "testing": 0,
