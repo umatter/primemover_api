@@ -47,10 +47,8 @@
         "description": "HTTP proxy for testing",
         "hostname": "proxy.example.com",
         "port": 8080,
-        "username": "test_user",
-        "password": "test_pass",
-        "type": "HTTP",
-        "active": true
+        "type": "http",
+        "active": 1
       },
       "agent": {
         "name": "Chrome Test Agent",

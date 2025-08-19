@@ -53,7 +53,7 @@ The JSON must be wrapped in a `json` field containing an array of experiment obj
         "username": "proxy_user",
         "password": "proxy_pass",
         "active": true,
-        "type": "HTTP"
+        "type": "http"
       },
       "agent": {
         "name": "Agent Name",
