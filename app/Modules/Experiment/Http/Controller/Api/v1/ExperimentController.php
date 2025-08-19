@@ -295,6 +295,7 @@ print(config_result)
     /**
      * @OA\Post(
      *     path="/experiments/upload",
+     *     deprecated=true,
      *     summary="Upload experiment data",
      *     description="Upload experiment configuration data or file (general upload)
 
