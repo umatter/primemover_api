@@ -656,20 +656,87 @@ curl -X POST 'https://pm-api.test.primemover.example/api/v1/login' \
 ```
 
 **Step 2: Upload the test experiment**
+
+**Important:** Make sure you're in the repository root directory where the `examples/` folder exists, or use the full path to the file.
+
 ```bash
-# Method 1: Upload JSON file directly
+# Method 1: Upload JSON content directly (recommended)
+curl -X POST 'https://pm-api.test.primemover.example/api/v1/experiments/upload' \
+  -H 'Authorization: Bearer YOUR_TOKEN_FROM_STEP_1' \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -d '{
+    "json": [
+      {
+        "name": "My Test Experiment",
+        "description": "Testing the upload",
+        "configuration": {
+          "name": "Basic Config",
+          "description": "Basic configuration",
+          "active": 1
+        },
+        "agent": {
+          "name": "Chrome Test Agent",
+          "description": "Chrome browser for testing",
+          "identification": "chrome",
+          "multilogin_profile": {},
+          "location": "US-CO-COLORADO_SPRINGS",
+          "active": true
+        },
+        "queues": [
+          {
+            "timezone": "America/Denver",
+            "timezone_utc_offset": "-06:00",
+            "name": "Test Queue",
+            "description": "Simple test queue",
+            "start_at": "2024-01-01T10:00:00-06:00",
+            "active": true,
+            "jobs": [
+              {
+                "name": "Wait 10 Seconds",
+                "type": "waitjob",
+                "description": "Wait for 10 seconds",
+                "behaviors": [
+                  {
+                    "name": "seconds",
+                    "description": "Duration to wait",
+                    "value": 10
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }'
+
+# Method 2: Upload from file (run from repository root directory)
 curl -X POST 'https://pm-api.test.primemover.example/api/v1/experiments/upload' \
   -H 'Authorization: Bearer YOUR_TOKEN_FROM_STEP_1' \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
   -d @examples/test-experiment.json
 
-# Method 2: Upload as form data
+# Method 3: Upload as form data (run from repository root directory)
 curl -X POST 'https://pm-api.test.primemover.example/api/v1/experiments/upload' \
   -H 'Authorization: Bearer YOUR_TOKEN_FROM_STEP_1' \
   -H 'Accept: application/json' \
   -F 'json=@examples/test-experiment.json;type=application/json'
+
+# Method 4: Upload with full file path (adjust path as needed)
+curl -X POST 'https://pm-api.test.primemover.example/api/v1/experiments/upload' \
+  -H 'Authorization: Bearer YOUR_TOKEN_FROM_STEP_1' \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -d @/full/path/to/primemover-api/examples/test-experiment.json
 ```
+
+**Troubleshooting File Upload:**
+- If you get "Couldn't read data from file", check that you're in the correct directory
+- Use `ls examples/` to verify the file exists
+- Use `pwd` to check your current directory
+- Try Method 1 (inline JSON) if file path issues persist
 
 **Step 3: Verify the upload**
 ```bash
@@ -714,6 +781,7 @@ token_data <- content(login_response, "parsed")
 token <- token_data$access_token
 
 # Step 2: Upload test experiment
+# Method 1: Upload from file (ensure working directory is correct)
 upload_response <- POST(
   url = "https://pm-api.test.primemover.example/api/v1/experiments/upload",
   add_headers(
@@ -722,6 +790,63 @@ upload_response <- POST(
   ),
   body = list(json = upload_file("examples/test-experiment.json")),
   encode = "multipart"
+)
+
+# Method 2: Upload JSON content directly (more reliable)
+test_experiment <- list(
+  json = list(
+    list(
+      name = "My Test Experiment",
+      description = "Testing the upload",
+      configuration = list(
+        name = "Basic Config",
+        description = "Basic configuration",
+        active = 1
+      ),
+      agent = list(
+        name = "Chrome Test Agent",
+        description = "Chrome browser for testing",
+        identification = "chrome",
+        multilogin_profile = list(),
+        location = "US-CO-COLORADO_SPRINGS",
+        active = TRUE
+      ),
+      queues = list(
+        list(
+          timezone = "America/Denver",
+          timezone_utc_offset = "-06:00",
+          name = "Test Queue",
+          description = "Simple test queue",
+          start_at = "2024-01-01T10:00:00-06:00",
+          active = TRUE,
+          jobs = list(
+            list(
+              name = "Wait 10 Seconds",
+              type = "waitjob",
+              description = "Wait for 10 seconds",
+              behaviors = list(
+                list(
+                  name = "seconds",
+                  description = "Duration to wait",
+                  value = 10
+                )
+              )
+            )
+          )
+        )
+      )
+    )
+  )
+)
+
+upload_response <- POST(
+  url = "https://pm-api.test.primemover.example/api/v1/experiments/upload",
+  add_headers(
+    "Authorization" = paste("Bearer", token),
+    "Content-Type" = "application/json",
+    "Accept" = "application/json"
+  ),
+  body = toJSON(test_experiment, auto_unbox = TRUE)
 )
 
 upload_result <- content(upload_response, "parsed")

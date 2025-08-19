@@ -208,8 +208,66 @@ Expected response:
 ```
 
 ### Step 3: Upload Test Experiment
+
+**Option A: Upload JSON content directly (recommended)**
 ```bash
-# Upload the test experiment JSON file
+curl -X POST https://pm-api.test.primemover.example/api/v1/experiments/upload \
+  -H "Authorization: Bearer YOUR_TOKEN_FROM_STEP_2" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "json": [
+      {
+        "name": "My Test Experiment",
+        "description": "Testing the upload",
+        "configuration": {
+          "name": "Basic Config",
+          "description": "Basic configuration",
+          "active": 1
+        },
+        "agent": {
+          "name": "Chrome Test Agent",
+          "description": "Chrome browser for testing",
+          "identification": "chrome",
+          "multilogin_profile": {},
+          "location": "US-CO-COLORADO_SPRINGS",
+          "active": true
+        },
+        "queues": [
+          {
+            "timezone": "America/Denver",
+            "timezone_utc_offset": "-06:00",
+            "name": "Test Queue",
+            "description": "Simple test queue",
+            "start_at": "2024-01-01T10:00:00-06:00",
+            "active": true,
+            "jobs": [
+              {
+                "name": "Wait 10 Seconds",
+                "type": "waitjob",
+                "description": "Wait for 10 seconds",
+                "behaviors": [
+                  {
+                    "name": "seconds",
+                    "description": "Duration to wait",
+                    "value": 10
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }'
+```
+
+**Option B: Upload from file (ensure you're in the repository root directory)**
+```bash
+# First, make sure you're in the correct directory
+cd /path/to/primemover-api
+ls examples/test-experiment.json  # Should show the file exists
+
+# Then upload
 curl -X POST https://pm-api.test.primemover.example/api/v1/experiments/upload \
   -H "Authorization: Bearer YOUR_TOKEN_FROM_STEP_2" \
   -H "Content-Type: application/json" \
