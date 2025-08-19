@@ -21,10 +21,6 @@ The JSON must be wrapped in a `json` field containing an array of experiment obj
         "name": "Configuration Name",
         "description": "Configuration description",
         "active": 1,
-        "params": {
-          "search_terms": ["term1", "term2"],
-          "media_outlet_urls": ["https://example.com"]
-        },
         "preferences": [
           {
             "name": "location",
