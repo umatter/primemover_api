@@ -4,7 +4,7 @@ This document provides correct JSON examples for uploading data to the API endpo
 
 ## Experiment Upload
 
-**Endpoint:** `POST /api/v1/experiments/upload`  
+**Endpoint:** `POST /api/v1/experiments/{experiment}/upload`  
 **Content-Type:** `application/json`
 
 ### Required JSON Structure
@@ -691,7 +691,7 @@ curl -X POST 'https://pm-api.test.primemover.example/api/v1/login' \
 
 ```bash
 # Method 1: Upload JSON content directly (recommended)
-curl -X POST 'https://pm-api.test.primemover.example/api/v1/experiments/upload' \
+curl -X POST 'https://pm-api.test.primemover.example/api/v1/experiments/1/upload' \
   -H 'Authorization: Bearer YOUR_TOKEN_FROM_STEP_1' \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
@@ -757,20 +757,20 @@ curl -X POST 'https://pm-api.test.primemover.example/api/v1/experiments/upload' 
   }'
 
 # Method 2: Upload from file (run from repository root directory)
-curl -X POST 'https://pm-api.test.primemover.example/api/v1/experiments/upload' \
+curl -X POST 'https://pm-api.test.primemover.example/api/v1/experiments/1/upload' \
   -H 'Authorization: Bearer YOUR_TOKEN_FROM_STEP_1' \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
   -d @examples/test-experiment.json
 
 # Method 3: Upload as form data (run from repository root directory)
-curl -X POST 'https://pm-api.test.primemover.example/api/v1/experiments/upload' \
+curl -X POST 'https://pm-api.test.primemover.example/api/v1/experiments/1/upload' \
   -H 'Authorization: Bearer YOUR_TOKEN_FROM_STEP_1' \
   -H 'Accept: application/json' \
   -F 'json=@examples/test-experiment.json;type=application/json'
 
 # Method 4: Upload with full file path (adjust path as needed)
-curl -X POST 'https://pm-api.test.primemover.example/api/v1/experiments/upload' \
+curl -X POST 'https://pm-api.test.primemover.example/api/v1/experiments/1/upload' \
   -H 'Authorization: Bearer YOUR_TOKEN_FROM_STEP_1' \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
