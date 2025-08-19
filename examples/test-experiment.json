@@ -7,6 +7,14 @@
         "name": "Test Configuration",
         "description": "Configuration for testing web automation features",
         "active": 1,
+        "params": {
+          "pi": -0.5,
+          "psi": 0.08,
+          "alpha": 0.36,
+          "tau": 1,
+          "kappa": 1,
+          "beta": 0.003
+        },
         "preferences": [
           {
             "name": "location",

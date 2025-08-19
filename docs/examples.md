@@ -21,6 +21,14 @@ The JSON must be wrapped in a `json` field containing an array of experiment obj
         "name": "Configuration Name",
         "description": "Configuration description",
         "active": 1,
+        "params": {
+          "pi": -0.5,
+          "psi": 0.08,
+          "alpha": 0.36,
+          "tau": 1,
+          "kappa": 1,
+          "beta": 0.003
+        },
         "preferences": [
           {
             "name": "location",
@@ -93,7 +101,15 @@ The JSON must be wrapped in a `json` field containing an array of experiment obj
       "configuration": {
         "name": "Basic Config",
         "description": "Basic configuration",
-        "active": 1
+        "active": 1,
+        "params": {
+          "pi": -0.5,
+          "psi": 0.08,
+          "alpha": 0.36,
+          "tau": 1,
+          "kappa": 1,
+          "beta": 0.003
+        }
       },
       "agent": {
         "name": "Basic Agent",
@@ -669,7 +685,15 @@ curl -X POST 'https://pm-api.test.primemover.example/api/v1/experiments/upload' 
         "configuration": {
           "name": "Basic Config",
           "description": "Basic configuration",
-          "active": 1
+          "active": 1,
+          "params": {
+            "pi": -0.5,
+            "psi": 0.08,
+            "alpha": 0.36,
+            "tau": 1,
+            "kappa": 1,
+            "beta": 0.003
+          }
         },
         "agent": {
           "name": "Chrome Test Agent",
