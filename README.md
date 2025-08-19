@@ -177,14 +177,61 @@ php artisan db:seed
 
 Once users are created, they can authenticate normally:
 
+## Testing with the Deployed API
+
+### Step 1: Test API Connectivity
+```bash
+# Test if the API is accessible
+curl -X GET https://pm-api.test.primemover.example/api/v1/ip
+```
+
+### Step 2: Authentication
+You'll need valid credentials for the test environment. Contact your administrator for test user credentials.
+
+```bash
+# Login to get authentication token
+curl -X POST https://pm-api.test.primemover.example/api/v1/login \
+  -H "Content-Type: application/json" \
+  -d '{"email": "your-test-email@example.com", "password": "your-test-password"}'
+```
+
+Expected response:
+```json
+{
+  "user": {
+    "id": 1,
+    "name": "Test User",
+    "email": "your-test-email@example.com"
+  },
+  "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9..."
+}
+```
+
+### Step 3: Upload Test Experiment
+```bash
+# Upload the test experiment JSON file
+curl -X POST https://pm-api.test.primemover.example/api/v1/experiments/upload \
+  -H "Authorization: Bearer YOUR_TOKEN_FROM_STEP_2" \
+  -H "Content-Type: application/json" \
+  -d @examples/test-experiment.json
+```
+
+### Step 4: Verify Upload Success
+```bash
+# List all experiments to see your uploaded experiment
+curl -X GET https://pm-api.test.primemover.example/api/v1/experiments/experiments-list \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Accept: application/json"
+```
+
 ## API Usage Examples
 
 ### Authentication
 ```bash
-# Login with manually created user
+# Login with test environment credentials
 curl -X POST https://pm-api.test.primemover.example/api/v1/login \
   -H "Content-Type: application/json" \
-  -d '{"email": "john@example.com", "password": "SecurePassword123!"}'
+  -d '{"email": "your-test-email@example.com", "password": "your-test-password"}'
 
 # Use token in subsequent requests
 curl -H "Authorization: Bearer YOUR_TOKEN" \
