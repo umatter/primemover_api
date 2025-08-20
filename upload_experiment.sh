@@ -34,7 +34,7 @@ echo "JSON File: $JSON_FILE"
 
 # Step 1: Authenticate and get JWT token
 echo "Authenticating..."
-AUTH_RESPONSE=$(curl -s -X POST "$API_BASE_URL/auth/login" \
+AUTH_RESPONSE=$(curl -s -X POST "$API_BASE_URL/login" \
     -H "Content-Type: application/json" \
     -H "Accept: application/json" \
     -d "{
@@ -42,8 +42,8 @@ AUTH_RESPONSE=$(curl -s -X POST "$API_BASE_URL/auth/login" \
         \"password\": \"$PM_API_PASSWORD\"
     }")
 
-# Extract token from response (adjust this based on your API's response format)
-JWT_TOKEN=$(echo "$AUTH_RESPONSE" | jq -r '.access_token // .token // .data.token // empty')
+# Extract token from response
+JWT_TOKEN=$(echo "$AUTH_RESPONSE" | jq -r '.access_token // empty')
 
 if [[ -z "$JWT_TOKEN" || "$JWT_TOKEN" == "null" ]]; then
     echo "Error: Failed to authenticate. Response:"
