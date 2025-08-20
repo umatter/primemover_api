@@ -76,15 +76,15 @@ fi
 success "Authentication successful!"
 info "Uploading experiment data to experiment $EXPERIMENT_ID..."
 
-# Read JSON content and escape it properly for the API
-JSON_CONTENT=$(cat "$JSON_FILE" | jq -c .)
+# Read JSON content and send it as the content field value (as a JSON string)
+JSON_CONTENT=$(cat "$JSON_FILE" | jq -c . | jq -R .)
 
 # Upload experiment data
 UPLOAD_RESPONSE=$(curl -s -w "\n%{http_code}" -X POST "$API_BASE_URL/experiments/$EXPERIMENT_ID/upload" \
     -H "Authorization: Bearer $ACCESS_TOKEN" \
     -H "Content-Type: application/json" \
     -H "Accept: application/json" \
-    -d "{\"content\":$(echo "$JSON_CONTENT" | jq -R .)}")
+    -d "{\"content\":$JSON_CONTENT}")
 
 # Extract HTTP status code and response body
 HTTP_STATUS=$(echo "$UPLOAD_RESPONSE" | tail -n1)
