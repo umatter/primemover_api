@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Upload test experiment data to the API
-# Requires API_USERNAME and API_PASSWORD environment variables
+# Requires API_USERNAME and PM_API_PASSWORD environment variables
 
 set -e  # Exit on any error
 
@@ -9,7 +9,7 @@ set -e  # Exit on any error
 API_BASE_URL=${API_BASE_URL:-"https://pm-api.test.primemover.example/api/v1"}
 EXPERIMENT_ID=174
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-JSON_FILE="$SCRIPT_DIR/test-experiment.json"
+JSON_FILE="$SCRIPT_DIR/test-experiment_CLI_UPLOAD.json"
 
 # Colors for output
 RED='\033[0;31m'
@@ -32,12 +32,12 @@ info() {
 }
 
 # Check environment variables
-if [ -z "$API_USERNAME" ]; then
-    error "API_USERNAME environment variable must be set"
+if [ -z "$PM_API_USERNAME" ]; then
+    error "PM_API_USERNAME environment variable must be set"
 fi
 
-if [ -z "$API_PASSWORD" ]; then
-    error "API_PASSWORD environment variable must be set"
+if [ -z "$PM_API_PASSWORD" ]; then
+    error "PM_API_PASSWORD environment variable must be set"
 fi
 
 # Check if JSON file exists
@@ -56,7 +56,7 @@ info "Authenticating with API at $API_BASE_URL..."
 AUTH_RESPONSE=$(curl -s -w "\n%{http_code}" -X POST "$API_BASE_URL/login" \
     -H "Content-Type: application/json" \
     -H "Accept: application/json" \
-    -d "{\"email\":\"$PM_API_USERNAME\",\"password\":\"$API_PASSWORD\"}")
+    -d "{\"email\":\"$PM_API_USERNAME\",\"password\":\"$PM_API_PASSWORD\"}")
 
 # Extract HTTP status code and response body
 HTTP_STATUS=$(echo "$AUTH_RESPONSE" | tail -n1)
