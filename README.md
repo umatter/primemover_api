@@ -209,7 +209,25 @@ Expected response:
 
 ### Step 3: Upload Test Experiment
 
-**Option A: Upload JSON content directly (recommended)**
+**Option A: Using the Upload Script (Recommended)**
+
+The repository includes a convenient shell script for uploading experiment configurations:
+
+```bash
+# Set your credentials (if not already set)
+export PM_API_USERNAME="your-email@example.com"
+export PM_API_PASSWORD="your-password"
+
+# Upload to an existing experiment (replace 174 with your experiment ID)
+./upload_experiment.sh 174 examples/test-experiment_GUI_UPLOAD.json
+```
+
+The script will:
+1. Authenticate with your credentials
+2. Upload the JSON configuration to the specified experiment
+3. Display the upload results
+
+**Option B: Upload JSON content directly**
 ```bash
 curl -X POST https://pm-api.test.primemover.example/api/v1/experiments/upload \
   -H "Authorization: Bearer YOUR_TOKEN_FROM_STEP_2" \
@@ -276,7 +294,7 @@ curl -X POST https://pm-api.test.primemover.example/api/v1/experiments/upload \
   }'
 ```
 
-**Option B: Upload from file (ensure you're in the repository root directory)**
+**Option C: Upload from file (ensure you're in the repository root directory)**
 ```bash
 # First, make sure you're in the correct directory
 cd /path/to/primemover-api
