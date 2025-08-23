@@ -12,9 +12,13 @@ RUN apt-get update && apt-get install -y \
     libxml2-dev \
     libzip-dev \
     libsodium-dev \
+    libfreetype6-dev \
+    libjpeg62-turbo-dev \
     zip \
     unzip \
-    && docker-php-ext-install pdo pdo_mysql mysqli mbstring exif pcntl bcmath gd zip sodium
+    && docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install pdo pdo_mysql mysqli mbstring exif pcntl bcmath gd zip sodium \
+    && docker-php-ext-enable gd zip sodium
 
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
