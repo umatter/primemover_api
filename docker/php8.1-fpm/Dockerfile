@@ -14,14 +14,13 @@ RUN apt-get update && apt-get install -y \
     libsodium-dev \
     zip \
     unzip \
-    && docker-php-ext-install pdo pdo_mysql mysqli mbstring exif pcntl bcmath gd zip
+    && docker-php-ext-install pdo pdo_mysql mysqli mbstring exif pcntl bcmath gd zip sodium
 
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Install Redis and Sodium extensions
+# Install Redis extension
 RUN pecl install redis && docker-php-ext-enable redis
-RUN docker-php-ext-install sodium
 
 # Create system user to run Composer and Artisan Commands
 RUN groupadd -g 1000 www
