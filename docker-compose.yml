@@ -28,7 +28,6 @@ services:
     volumes:
       - ${DOCUMENT_ROOT:-.}:/var/www/html:cached
       - ${PHP_INI:-./docker/php8.1-fpm/php.ini}:/usr/local/etc/php/php.ini
-      - ./docker/${PHPVERSION:-php8.1}-fpm/etc/php/conf.d:/usr/local/etc/php/conf.d
     restart: unless-stopped
     tty: true
     depends_on:
