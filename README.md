@@ -47,8 +47,17 @@ docker-compose exec php php artisan passport:install --force
 # 5. Generate API documentation
 docker-compose exec php php artisan l5-swagger:generate
 
-# 6. Test the API
+# 5.1. Verify configuration is loaded properly
+docker-compose exec php php artisan config:clear
+
+# 6. Test the API and authentication
 curl http://localhost:8080/api/v1/ip
+
+# Test login with default admin user
+curl -X POST 'http://localhost:8080/api/v1/login' \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -d '{"email": "admin@primemover.example", "password": "password"}'
 
 # 7. View API documentation
 # Open http://localhost:8080/api/documentation in your browser
@@ -64,6 +73,14 @@ docker-compose exec php php artisan config:clear
 - **MySQL 8.0**: Database (port 3307)
 - **Redis**: Cache and queues (port 8889)
 - **Memcached**: Additional caching layer
+
+**Default Test Users:**
+The database seeder creates these test users:
+- **Administrator**: `admin@primemover.example` / `password`
+- **Primemover PY**: `researcher@primemover.example` / `password` 
+- **Primemover Runner**: `runner@primemover.example` / `password`
+
+Note: Use the plain text password `"password"`, not the hash shown in the database.
 
 #### Option 2: Native Setup
 **Prerequisites:** PHP 8.1+, MySQL 8.0+, Composer, Redis (optional)
@@ -496,6 +513,18 @@ php artisan l5-swagger:generate
 - **Missing extensions**: Install required PHP extensions: `php-mysql`, `php-redis`, `php-curl`
 - **Composer errors**: Run `composer install --no-dev` for production
 
+#### Configuration Issues
+- **"Config is not set or empty" error**: 
+  • Ensure `THROTTLE_WHITELIST=127.0.0.1,localhost` is in your `.env` file
+  • Run `docker-compose exec php php artisan config:clear`
+  • Restart containers: `docker-compose down && docker-compose up -d`
+
+#### Authentication Issues  
+- **"Invalid Credentials" error**:
+  • Use plain text passwords (e.g., `"password"`), not the bcrypt hashes from database
+  • Verify user exists: `docker-compose exec php php artisan tinker` then `User::all()`
+  • Check you're using `http://localhost:8080` not `https://`
+
 #### API Issues
 - **401 Unauthorized**: Check your Bearer token is valid
 - **422 Validation Error**: Check required fields in [examples.md](docs/examples.md)
@@ -504,7 +533,7 @@ php artisan l5-swagger:generate
 #### Database Issues
 - **Connection refused**: Ensure MySQL server is running (Docker or native)
 - **Migration errors**: Check database credentials in `.env`
--**Access denied**: Verify database user has proper permissions
+- **Access denied**: Verify database user has proper permissions
 
 ### Need Help?
 - Check the [Setup Guide](docs/setup.md) for installation issues
