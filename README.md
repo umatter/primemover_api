@@ -31,6 +31,7 @@ cp .env.docker .env
 # This sets up both Laravel app config and Docker Compose variables
 
 # 3. Build & start containers
+# Run this **without** a service name so that MySQL, Redis, etc. start too.
 docker-compose up -d --build
 
 # 4. Install dependencies and setup
