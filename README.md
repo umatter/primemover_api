@@ -30,8 +30,11 @@ cd primemover-api
 cp .env.docker .env
 # This sets up both Laravel app config and Docker Compose variables
 
-# 3. Build & start containers
-# Run this **without** a service name so that MySQL, Redis, etc. start too.
+# 3. Build & start all containers
+# IMPORTANT: run the command **without specifying a single service**.
+# Using `docker-compose up -d --build apache` will rebuild only Apache and
+# can leave the stack in a half-configured state. Always start the whole
+# compose file unless you really know what you are doing.
 docker-compose up -d --build
 
 # 4. Install dependencies and setup
@@ -454,6 +457,9 @@ php artisan l5-swagger:generate
 #### Docker Issues
 - **Port conflicts**: Change ports in `docker-compose.yml`
 - **Permission errors**: Run `sudo chown -R $USER:$USER .`
+- **Apache keeps restarting**:  
+  • Ensure you started *all* services (`docker-compose up -d --build`, no service name).  
+  • Inspect logs `docker-compose logs -f apache`
 - **Container won't start**: Check logs with `docker-compose logs`
 
 #### Native Setup Issues
