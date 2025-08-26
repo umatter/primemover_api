@@ -11,9 +11,10 @@ RUN apt-get update && apt-get install -y \
     libonig-dev \
     libxml2-dev \
     libzip-dev \
+    libsodium-dev \
     zip \
     unzip \
-    && docker-php-ext-install pdo pdo_mysql mysqli mbstring exif pcntl bcmath gd zip
+    && docker-php-ext-install pdo pdo_mysql mysqli mbstring exif pcntl bcmath gd zip sodium
 
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
