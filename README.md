@@ -30,8 +30,8 @@ cd primemover-api
 cp .env.docker .env
 # This sets up both Laravel app config and Docker Compose variables
 
-# 3. Start with Docker
-docker-compose up -d
+# 3. Build & start containers
+docker-compose up -d --build
 
 # 4. Install dependencies and setup
 docker-compose exec php composer install
