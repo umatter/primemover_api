@@ -46,6 +46,11 @@ docker-compose exec php php artisan passport:install --force
 
 # 5. Test the API
 curl http://localhost:8080/api/v1/ip
+
+# 6. (Optional) Enable Laravel Telescope dashboard  
+# Adds a powerful debugging UI at http://localhost:8080/telescope
+echo "TELESCOPE_ENABLED=true" >> .env
+docker-compose exec php php artisan config:clear
 ```
 
 **Docker Services:**
@@ -460,6 +465,9 @@ php artisan l5-swagger:generate
 - **Apache keeps restarting**:  
   • Ensure you started *all* services (`docker-compose up -d --build`, no service name).  
   • Inspect logs `docker-compose logs -f apache`
+- **Telescope shows 404**:  
+  • Make sure `TELESCOPE_ENABLED=true` is set in your `.env`, then run  
+    `docker-compose exec php php artisan config:clear`
 - **Container won't start**: Check logs with `docker-compose logs`
 
 #### Native Setup Issues
