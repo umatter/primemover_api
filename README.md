@@ -44,10 +44,16 @@ docker-compose exec php php artisan jwt:secret --force
 docker-compose exec php php artisan migrate --seed
 docker-compose exec php php artisan passport:install --force
 
-# 5. Test the API
+# 5. Generate API documentation
+docker-compose exec php php artisan l5-swagger:generate
+
+# 6. Test the API
 curl http://localhost:8080/api/v1/ip
 
-# 6. Laravel Telescope dashboard  
+# 7. View API documentation
+# Open http://localhost:8080/api/documentation in your browser
+
+# 8. Laravel Telescope dashboard  
 # Telescope is already enabled in `.env.docker`. Rebuild the config cache:
 docker-compose exec php php artisan config:clear
 ```
@@ -82,11 +88,17 @@ php artisan jwt:secret --force
 php artisan migrate --seed
 php artisan passport:install --force
 
-# 6. Start development server
+# 6. Generate API documentation
+php artisan l5-swagger:generate
+
+# 7. Start development server
 php artisan serve
 
-# 7. Test the API
+# 8. Test the API
 curl http://localhost:8000/api/v1/ip
+
+# 9. View API documentation
+# Open http://localhost:8000/api/documentation in your browser
 ```
 
 **Native Setup Requirements:**
@@ -426,6 +438,15 @@ php artisan l5-swagger:generate
 # http://localhost:8000/api/documentation
 ```
 
+**Docker Development:**
+```bash
+# 1. Generate/update documentation
+docker-compose exec php php artisan l5-swagger:generate
+
+# 2. View documentation at:
+# http://localhost:8080/api/documentation
+```
+
 **Auto-regeneration during development:**
 Add this to your `.env` file to automatically regenerate docs on each request:
 ```
@@ -483,7 +504,7 @@ php artisan l5-swagger:generate
 #### Database Issues
 - **Connection refused**: Ensure MySQL server is running (Docker or native)
 - **Migration errors**: Check database credentials in `.env`
-- **Access denied**: Verify database user has proper permissions
+-**Access denied**: Verify database user has proper permissions
 
 ### Need Help?
 - Check the [Setup Guide](docs/setup.md) for installation issues
