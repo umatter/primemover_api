@@ -118,7 +118,7 @@ echo "Uploading experiment configuration to experiment $EXPERIMENT_ID..."
 UPLOAD_RESPONSE=$(curl -s -X POST "$API_BASE_URL/experiments/$EXPERIMENT_ID/upload" \
     -H "Authorization: Bearer $JWT_TOKEN" \
     -H "Accept: application/json" \
-    -F "file=@$JSON_FILE;type=application/json")
+    -F "json=@$JSON_FILE;type=application/json")
 
 # Check if upload was successful
 if echo "$UPLOAD_RESPONSE" | jq -e '.data' > /dev/null 2>&1; then
