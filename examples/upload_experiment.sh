@@ -58,8 +58,8 @@ fi
 echo "Starting experiment upload process..."
 echo "JSON File: $JSON_FILE"
 
-# Generate current timestamp in ISO 8601 format (UTC, no timezone offset)
-CURRENT_TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")
+# Generate current timestamp in ISO 8601 format (local time with Z suffix)
+CURRENT_TIMESTAMP=$(date +"%Y-%m-%dT%H:%M:%S.%3NZ")
 
 # Create a temporary file with updated timestamp
 TEMP_JSON_FILE=$(mktemp)
