@@ -1,8 +1,9 @@
 #!/bin/bash
 
 # Upload Experiment Configuration Script
-# Usage: ./upload_experiment.sh [experiment_id] <json_file_path>
+# Usage: ./upload_experiment.sh [experiment_id] [json_file_path]
 # If experiment_id is not provided, a new experiment will be created
+# If json_file_path is not provided, uses examples/test-experiment_GUI_UPLOAD.json
 
 set -e  # Exit on any error
 
@@ -12,20 +13,36 @@ if [[ -z "$PM_API_USERNAME" || -z "$PM_API_PASSWORD" ]]; then
     exit 1
 fi
 
+# Default JSON file
+DEFAULT_JSON_FILE="examples/test-experiment_GUI_UPLOAD.json"
+
 # Parse command line arguments
-if [[ $# -eq 1 ]]; then
-    # Only one argument provided - treat as JSON file path, create new experiment
+if [[ $# -eq 0 ]]; then
+    # No arguments provided - create new experiment with default JSON file
     EXPERIMENT_ID=""
-    JSON_FILE="$1"
+    JSON_FILE="$DEFAULT_JSON_FILE"
+elif [[ $# -eq 1 ]]; then
+    # One argument provided - could be experiment ID or JSON file path
+    if [[ "$1" =~ ^[0-9]+$ ]]; then
+        # Argument is numeric - treat as experiment ID, use default JSON file
+        EXPERIMENT_ID="$1"
+        JSON_FILE="$DEFAULT_JSON_FILE"
+    else
+        # Argument is not numeric - treat as JSON file path, create new experiment
+        EXPERIMENT_ID=""
+        JSON_FILE="$1"
+    fi
 elif [[ $# -eq 2 ]]; then
     # Two arguments provided - experiment ID and JSON file path
     EXPERIMENT_ID="$1"
     JSON_FILE="$2"
 else
-    echo "Usage: $0 [experiment_id] <json_file_path>"
+    echo "Usage: $0 [experiment_id] [json_file_path]"
     echo "Examples:"
-    echo "  $0 ./experiment_config.json                    # Creates new experiment"
-    echo "  $0 174 ./experiment_config.json                # Uses existing experiment"
+    echo "  $0                                              # Creates new experiment with default JSON"
+    echo "  $0 174                                          # Uses experiment 174 with default JSON"
+    echo "  $0 ./experiment_config.json                     # Creates new experiment with custom JSON"
+    echo "  $0 174 ./experiment_config.json                 # Uses experiment 174 with custom JSON"
     exit 1
 fi
 
