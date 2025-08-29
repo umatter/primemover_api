@@ -58,6 +58,18 @@ fi
 echo "Starting experiment upload process..."
 echo "JSON File: $JSON_FILE"
 
+# Generate current timestamp in ISO 8601 format (UTC, no timezone offset)
+CURRENT_TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")
+
+# Create a temporary file with updated timestamp
+TEMP_JSON_FILE=$(mktemp)
+trap "rm -f $TEMP_JSON_FILE" EXIT
+
+# Update the start_at timestamp in the JSON file
+sed "s/\"start_at\": \"[^\"]*\"/\"start_at\": \"$CURRENT_TIMESTAMP\"/g" "$JSON_FILE" > "$TEMP_JSON_FILE"
+
+echo "Updated start_at timestamp to: $CURRENT_TIMESTAMP"
+
 # Step 1: Authenticate and get JWT token
 echo "Authenticating..."
 AUTH_RESPONSE=$(curl -s -X POST "$API_BASE_URL/login" \
@@ -118,7 +130,7 @@ echo "Uploading experiment configuration to experiment $EXPERIMENT_ID..."
 UPLOAD_RESPONSE=$(curl -s -X POST "$API_BASE_URL/experiments/$EXPERIMENT_ID/upload" \
     -H "Authorization: Bearer $JWT_TOKEN" \
     -H "Accept: application/json" \
-    -F "json=@$JSON_FILE;type=application/json")
+    -F "json=@$TEMP_JSON_FILE;type=application/json")
 
 # Check if upload was successful
 if echo "$UPLOAD_RESPONSE" | jq -e '.data' > /dev/null 2>&1; then
