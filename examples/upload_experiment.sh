@@ -8,7 +8,7 @@
 set -e  # Exit on any error
 
 # Check if required environment variables are set
-if [[ -z "$PM_API_USERNAME" || -z "$PM_API_PASSWORD" ]]; then
+if [ -z "$PM_API_USERNAME" ] || [ -z "$PM_API_PASSWORD" ]; then
     echo "Error: PM_API_USERNAME and PM_API_PASSWORD environment variables must be set"
     exit 1
 fi
@@ -17,13 +17,13 @@ fi
 DEFAULT_JSON_FILE="examples/test-experiment_GUI_UPLOAD.json"
 
 # Parse command line arguments
-if [[ $# -eq 0 ]]; then
+if [ $# -eq 0 ]; then
     # No arguments provided - create new experiment with default JSON file
     EXPERIMENT_ID=""
     JSON_FILE="$DEFAULT_JSON_FILE"
-elif [[ $# -eq 1 ]]; then
+elif [ $# -eq 1 ]; then
     # One argument provided - could be experiment ID or JSON file path
-    if [[ "$1" =~ ^[0-9]+$ ]]; then
+    if echo "$1" | grep -q '^[0-9]\+$'; then
         # Argument is numeric - treat as experiment ID, use default JSON file
         EXPERIMENT_ID="$1"
         JSON_FILE="$DEFAULT_JSON_FILE"
@@ -32,7 +32,7 @@ elif [[ $# -eq 1 ]]; then
         EXPERIMENT_ID=""
         JSON_FILE="$1"
     fi
-elif [[ $# -eq 2 ]]; then
+elif [ $# -eq 2 ]; then
     # Two arguments provided - experiment ID and JSON file path
     EXPERIMENT_ID="$1"
     JSON_FILE="$2"
@@ -50,7 +50,7 @@ fi
 API_BASE_URL="http://localhost:8090/api/v1" # local tests
 
 # Check if JSON file exists
-if [[ ! -f "$JSON_FILE" ]]; then
+if [ ! -f "$JSON_FILE" ]; then
     echo "Error: JSON file '$JSON_FILE' not found"
     exit 1
 fi
@@ -71,7 +71,7 @@ AUTH_RESPONSE=$(curl -s -X POST "$API_BASE_URL/login" \
 # Extract token from response
 JWT_TOKEN=$(echo "$AUTH_RESPONSE" | jq -r '.access_token // empty')
 
-if [[ -z "$JWT_TOKEN" || "$JWT_TOKEN" == "null" ]]; then
+if [ -z "$JWT_TOKEN" ] || [ "$JWT_TOKEN" = "null" ]; then
     echo "Error: Failed to authenticate. Response:"
     echo "$AUTH_RESPONSE"
     exit 1
@@ -80,7 +80,7 @@ fi
 echo "Authentication successful"
 
 # Step 2: Create new experiment if no experiment ID was provided
-if [[ -z "$EXPERIMENT_ID" ]]; then
+if [ -z "$EXPERIMENT_ID" ]; then
     echo "Creating new experiment..."
     
     # Generate a timestamp-based experiment name
@@ -101,7 +101,7 @@ if [[ -z "$EXPERIMENT_ID" ]]; then
     # Extract experiment ID from response
     EXPERIMENT_ID=$(echo "$CREATE_RESPONSE" | jq -r '.data.id // .id // empty')
     
-    if [[ -z "$EXPERIMENT_ID" || "$EXPERIMENT_ID" == "null" ]]; then
+    if [ -z "$EXPERIMENT_ID" ] || [ "$EXPERIMENT_ID" = "null" ]; then
         echo "Error: Failed to create experiment. Response:"
         echo "$CREATE_RESPONSE"
         exit 1
