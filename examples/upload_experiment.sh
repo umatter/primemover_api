@@ -20,7 +20,8 @@ fi
 
 EXPERIMENT_ID="$1"
 JSON_FILE="$2"
-API_BASE_URL="https://pm-api.test.primemover.example/api/v1"
+# API_BASE_URL="https://pm-api.test.primemover.example/api/v1" # deployed switch engine "test" API
+API_BASE_URL="http://localhost:8090/api/v1" # local tests
 
 # Check if JSON file exists
 if [[ ! -f "$JSON_FILE" ]]; then
