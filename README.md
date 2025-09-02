@@ -51,10 +51,10 @@ docker-compose exec php php artisan l5-swagger:generate
 docker-compose exec php php artisan config:clear
 
 # 6. Test the API and authentication
-curl http://localhost:8080/api/v1/ip
+curl http://localhost:8090/api/v1/ip
 
 # Test login with default admin user
-curl -X POST 'http://localhost:8080/api/v1/login' \
+curl -X POST 'http://localhost:8090/api/v1/login' \
   -H 'Content-Type: application/json' \
   -H 'Accept: application/json' \
   -d '{"email": "admin@primemover.example", "password": "password"}'
