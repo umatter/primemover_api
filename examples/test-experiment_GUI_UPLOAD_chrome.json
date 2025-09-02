@@ -41,6 +41,42 @@
                     "description": "usage_type",
                     "value": "only_search",
                     "active": true
+                },
+                {
+                    "name": "aversion_mainstream_media_channels",
+                    "description": "Level of aversion to mainstream media channels",
+                    "value": "1",
+                    "active": true
+                },
+                {
+                    "name": "aversion_entertainment_videos",
+                    "description": "Level of aversion to entertainment videos",
+                    "value": "1",
+                    "active": true
+                },
+                {
+                    "name": "preference_similar_videos",
+                    "description": "Preference for similar videos",
+                    "value": "1",
+                    "active": true
+                },
+                {
+                    "name": "preference_political_videos",
+                    "description": "Preference for political videos",
+                    "value": "1",
+                    "active": true
+                },
+                {
+                    "name": "preference_fringe_videos",
+                    "description": "Preference for fringe videos",
+                    "value": "1",
+                    "active": true
+                },
+                {
+                    "name": "order",
+                    "description": "Order preference setting",
+                    "value": "1",
+                    "active": true
                 }
             ]
         },
