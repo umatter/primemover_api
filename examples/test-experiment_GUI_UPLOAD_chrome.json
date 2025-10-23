@@ -1,0 +1,342 @@
+[
+    {
+        "name": "Crawler upload TEST",
+        "description": "Created via GUI upload",
+        "active": 1,
+        "testing": 0,
+        "configuration": {
+            "name": "Configuration upload TEST",
+            "description": "Created via GUI upload",
+            "active": true,
+            "params": {
+                "pi": -0.50049837032537,
+                "psi": 0.086705270313224,
+                "alpha": 0.36951623165984,
+                "tau": 1.0,
+                "kappa": 1,
+                "beta": 0.0034437549399552,
+                "active": true,
+                "search_terms": [
+                
+                ],
+                "media_outlet_urls": [
+                   
+                ]
+            },
+            "preferences": [
+                {
+                    "name": "location",
+                    "description": "location",
+                    "value": "US-CO-DENVER",
+                    "active": true
+                },
+                {
+                    "name": "cookie_pref",
+                    "description": "cookie_pref",
+                    "value": "{\"accept_all\": true}",
+                    "active": true
+                },
+                {
+                    "name": "usage_type",
+                    "description": "usage_type",
+                    "value": "only_search",
+                    "active": true
+                },
+                {
+                    "name": "aversion_mainstream_media_channels",
+                    "description": "Level of aversion to mainstream media channels",
+                    "value": "1",
+                    "active": true
+                },
+                {
+                    "name": "aversion_entertainment_videos",
+                    "description": "Level of aversion to entertainment videos",
+                    "value": "1",
+                    "active": true
+                },
+                {
+                    "name": "preference_similar_videos",
+                    "description": "Preference for similar videos",
+                    "value": "1",
+                    "active": true
+                },
+                {
+                    "name": "preference_political_videos",
+                    "description": "Preference for political videos",
+                    "value": "1",
+                    "active": true
+                },
+                {
+                    "name": "preference_fringe_videos",
+                    "description": "Preference for fringe videos",
+                    "value": "1",
+                    "active": true
+                },
+                {
+                    "name": "order",
+                    "description": "Order preference setting",
+                    "value": "1",
+                    "active": true
+                }
+            ]
+        },
+        "proxy": {
+            "name": "Proxy upload TEST",
+            "description": "Created via GUI upload",
+            "hostname": "46.3.205.59",
+            "port": 5432,
+            "username": "proxyuser",
+            "password": "proxy-password",
+            "active": true,
+            "type": "http"
+        },
+        "agent": {
+            "name": "Agent upload with privateproxy TEST",
+            "description": "Created via postman upload",
+            "identification": "chrome",
+            "multilogin_id": null,
+            "multilogin_profile": {
+    "name": "%%AGENTID%%",
+    "browser_type": "mimic",
+    "folder_id": "%%FOLDERID%%",
+    "core_version": 136,
+    "auto_update_core": false,
+    "os_type": "windows",
+    "times": 1,
+    "notes": "alsdkjfldsajöfkldsajöl",
+    "parameters": {
+        "flags": {
+            "audio_masking": "mask",
+            "fonts_masking": "mask",
+            "geolocation_masking": "mask",
+            "geolocation_popup": "prompt",
+            "graphics_masking": "mask",
+            "graphics_noise": "mask",
+            "localization_masking": "mask",
+            "media_devices_masking": "mask",
+            "navigator_masking": "mask",
+            "ports_masking": "mask",
+            "proxy_masking": "custom",
+            "quic_mode": "natural",
+            "screen_masking": "mask",
+            "timezone_masking": "mask",
+            "webrtc_masking": "mask",
+            "canvas_noise": "mask",
+            "startup_behavior": "custom"
+        },
+        "storage": {
+            "is_local": false,
+            "save_service_worker": false
+        },
+        "fingerprint": {
+            "proxy": {
+                "host": "%%PROXYHOST%%",
+                "type": "%%PROXYTYPE%%",
+                "port": "%%PROXYPORT%%",
+                "username": "%%PROXYUSERNAME%%",
+                "password": "%%PROXYPASSWORD%%"
+            }
+        },
+        "custom_start_urls": [
+            "https://jsonformatter.org/",
+            "https://python.org/"
+        ]
+    }
+},
+            "location": "US-IL-CHICAGO",
+            "active": 1
+        },
+        "queues": [
+            {
+                "name": "Session upload TEST",
+                "description": "Created via GUI upload",
+                "start_at": "2025-08-29T14:25:12.221000Z",
+                "timezone": "Europe/Berlin",
+                "timezone_utc_offset": "+01:00",
+                "active": true,
+                "jobs": [
+                    {
+                        "name": "Wait",
+                        "type": "waitjob",
+                        "description": "Wait for 1 seconds",
+                        "active": true,
+                        "behaviors": [
+                            {
+                                "name": "captchaMode",
+                                "description": "",
+                                "active": true,
+                                "value": "never"
+                            },
+                            {
+                                "name": "seconds",
+                                "description": "Wait for 1 seconds.",
+                                "active": true,
+                                "value": 1
+                            }
+                        ]
+                    },
+                    {
+                        "name": "Visit",
+                        "type": "visitjob",
+                        "description": "visit browserleaks ip check",
+                        "active": true,
+                        "behaviors": [
+                            {
+                                "name": "captchaMode",
+                                "description": "",
+                                "active": true,
+                                "value": "never"
+                            },
+                            {
+                                "name": "url",
+                                "description": "URL",
+                                "active": true,
+                                "value": "https://www.amazon.com"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "Wait",
+                        "type": "waitjob",
+                        "description": "Wait for 1 seconds",
+                        "active": true,
+                        "behaviors": [
+                            {
+                                "name": "captchaMode",
+                                "description": "",
+                                "active": true,
+                                "value": "never"
+                            },
+                            {
+                                "name": "seconds",
+                                "description": "Wait for 1 seconds.",
+                                "active": true,
+                                "value": 5
+                            }
+                        ]
+                    },
+                    {
+                        "name": "Visit",
+                        "type": "visitjob",
+                        "description": "visit browserleaks canvas check",
+                        "active": true,
+                        "behaviors": [
+                            {
+                                "name": "captchaMode",
+                                "description": "",
+                                "active": true,
+                                "value": "never"
+                            },
+                            {
+                                "name": "url",
+                                "description": "URL",
+                                "active": true,
+                                "value": "https://browserleaks.com/canvas"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "Wait",
+                        "type": "waitjob",
+                        "description": "Wait for 1 seconds",
+                        "active": true,
+                        "behaviors": [
+                            {
+                                "name": "captchaMode",
+                                "description": "",
+                                "active": true,
+                                "value": "never"
+                            },
+                            {
+                                "name": "seconds",
+                                "description": "Wait for 1 seconds.",
+                                "active": true,
+                                "value": 5
+                            }
+                        ]
+                    },
+                    {
+                        "name": "Visit",
+                        "type": "visitjob",
+                        "description": "visit browserleaks geo check",
+                        "active": true,
+                        "behaviors": [
+                            {
+                                "name": "captchaMode",
+                                "description": "",
+                                "active": true,
+                                "value": "never"
+                            },
+                            {
+                                "name": "url",
+                                "description": "URL",
+                                "active": true,
+                                "value": "https://browserleaks.com/geo"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "Wait",
+                        "type": "waitjob",
+                        "description": "Wait for 1 seconds",
+                        "active": true,
+                        "behaviors": [
+                            {
+                                "name": "captchaMode",
+                                "description": "",
+                                "active": true,
+                                "value": "never"
+                            },
+                            {
+                                "name": "seconds",
+                                "description": "Wait for 1 seconds.",
+                                "active": true,
+                                "value": 5
+                            }
+                        ]
+                    },
+                    {
+                        "name": "Visit",
+                        "type": "visitjob",
+                        "description": "visit browserleaks javascript check",
+                        "active": true,
+                        "behaviors": [
+                            {
+                                "name": "captchaMode",
+                                "description": "",
+                                "active": true,
+                                "value": "never"
+                            },
+                            {
+                                "name": "url",
+                                "description": "URL",
+                                "active": true,
+                                "value": "https://browserleaks.com/javascript"
+                            }
+                        ]
+                    },
+                    {
+                        "name": "Wait",
+                        "type": "waitjob",
+                        "description": "Wait for 1 seconds",
+                        "active": true,
+                        "behaviors": [
+                            {
+                                "name": "captchaMode",
+                                "description": "",
+                                "active": true,
+                                "value": "never"
+                            },
+                            {
+                                "name": "seconds",
+                                "description": "Wait for 1 seconds.",
+                                "active": true,
+                                "value": 5
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

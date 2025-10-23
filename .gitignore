@@ -9,6 +9,7 @@
 #/public/build
 #/public/mix-manifest.json
 .env
+.env.docker
 .phpunit.result.cache
 Homestead.json
 Homestead.yaml
@@ -18,3 +19,4 @@ phpunit.dusk.xml
 *.code-workspace
 /docker/mysql/
 /.phpunit.cache/
+.aider*

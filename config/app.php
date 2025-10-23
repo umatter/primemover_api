@@ -170,6 +170,7 @@ return [
          */
         L5Swagger\L5SwaggerServiceProvider::class,
         Maatwebsite\Excel\ExcelServiceProvider::class,
+        Arimolzer\IPStackFinder\IPStackFinderServiceProvider::class,
 
         /*
          * Application Service Providers...
@@ -246,5 +247,6 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
         'GeoIP' => \Torann\GeoIP\Facades\GeoIP::class,
         'Excel' => Maatwebsite\Excel\Facades\Excel::class,
+        'IPFinder' => Arimolzer\IPStackFinder\Facade\IPStackFinderFacade::class,
     ],
 ];
