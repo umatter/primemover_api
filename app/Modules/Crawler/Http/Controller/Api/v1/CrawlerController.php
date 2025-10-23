@@ -358,6 +358,34 @@ print(crawlers_data)
         return JsonResource::make(new Crawler());
     }
 
+    /**
+     * @OA\Post(
+     *     path="/crawlers",
+     *     summary="Create new crawler",
+     *     description="Create a new crawler instance",
+     *     operationId="createCrawler",
+     *     tags={"Crawlers"},
+     *     security={{"bearerAuth": {}}},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"name", "experiment_id"},
+     *             @OA\Property(property="name", type="string", example="Test Crawler"),
+     *             @OA\Property(property="description", type="string", example="Crawler description"),
+     *             @OA\Property(property="experiment_id", type="integer", example=1),
+     *             @OA\Property(property="active", type="integer", example=1),
+     *             @OA\Property(property="testing", type="integer", example=0)
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="Crawler created successfully",
+     *         @OA\JsonContent(type="object")
+     *     ),
+     *     @OA\Response(response=401, description="Unauthorized"),
+     *     @OA\Response(response=422, description="Validation error")
+     * )
+     */
     public function store(StoreCrawlerRequest $request): JsonResource
     {
         $crawler = $this->repository->save($request->validated());
@@ -365,6 +393,30 @@ print(crawlers_data)
         return JsonResource::make($crawler);
     }
 
+    /**
+     * @OA\Get(
+     *     path="/crawlers/{id}",
+     *     summary="Get single crawler",
+     *     description="Retrieve details of a specific crawler",
+     *     operationId="getCrawler",
+     *     tags={"Crawlers"},
+     *     security={{"bearerAuth": {}}},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="Crawler ID",
+     *         required=true,
+     *         @OA\Schema(type="integer", example=1)
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Crawler details",
+     *         @OA\JsonContent(type="object")
+     *     ),
+     *     @OA\Response(response=401, description="Unauthorized"),
+     *     @OA\Response(response=404, description="Crawler not found")
+     * )
+     */
     public function show(Crawler $crawler): JsonResource
     {
         return JsonResource::make($this->repository->getById($crawler));
@@ -375,6 +427,40 @@ print(crawlers_data)
         return JsonResource::make($crawler);
     }
 
+    /**
+     * @OA\Put(
+     *     path="/crawlers/{id}",
+     *     summary="Update crawler",
+     *     description="Update an existing crawler",
+     *     operationId="updateCrawler",
+     *     tags={"Crawlers"},
+     *     security={{"bearerAuth": {}}},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="Crawler ID",
+     *         required=true,
+     *         @OA\Schema(type="integer", example=1)
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             @OA\Property(property="name", type="string", example="Updated Crawler"),
+     *             @OA\Property(property="description", type="string", example="Updated description"),
+     *             @OA\Property(property="active", type="integer", example=1),
+     *             @OA\Property(property="testing", type="integer", example=0)
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Crawler updated successfully",
+     *         @OA\JsonContent(type="object")
+     *     ),
+     *     @OA\Response(response=401, description="Unauthorized"),
+     *     @OA\Response(response=404, description="Crawler not found"),
+     *     @OA\Response(response=422, description="Validation error")
+     * )
+     */
     public function update(UpdateCrawlerRequest $request, Crawler $crawler): JsonResource
     {
         $crawler = $this->repository->update($request->validated(), $crawler);
@@ -471,6 +557,30 @@ print(crawlers_data)
         return ResourceCollection::make($this->repository->forceDelete($crawler));
     }
 
+    /**
+     * @OA\Delete(
+     *     path="/crawlers/{id}",
+     *     summary="Delete crawler (soft delete)",
+     *     description="Soft delete a crawler (can be restored)",
+     *     operationId="deleteCrawler",
+     *     tags={"Crawlers"},
+     *     security={{"bearerAuth": {}}},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="Crawler ID",
+     *         required=true,
+     *         @OA\Schema(type="integer", example=1)
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Crawler deleted successfully",
+     *         @OA\JsonContent(type="object")
+     *     ),
+     *     @OA\Response(response=401, description="Unauthorized"),
+     *     @OA\Response(response=404, description="Crawler not found")
+     * )
+     */
     public function destroy(Crawler $crawler): ResourceCollection
     {
         return ResourceCollection::make($this->repository->delete($crawler));

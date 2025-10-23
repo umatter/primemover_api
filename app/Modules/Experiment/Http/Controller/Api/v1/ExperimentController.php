@@ -21,6 +21,71 @@ use Illuminate\Http\Response;
  */
 class ExperimentController extends Controller
 {
+    /**
+     * @OA\Get(
+     *     path="/experiments",
+     *     summary="List experiments (paginated)",
+     *     description="Retrieve a paginated list of experiments with pagination support",
+     *     operationId="getExperiments",
+     *     tags={"Experiments"},
+     *     security={{"bearerAuth": {}}},
+     *     @OA\Parameter(
+     *         name="page",
+     *         in="query",
+     *         description="Page number for pagination",
+     *         required=false,
+     *         @OA\Schema(type="integer", default=1, minimum=1)
+     *     ),
+     *     @OA\Parameter(
+     *         name="per_page",
+     *         in="query",
+     *         description="Items per page",
+     *         required=false,
+     *         @OA\Schema(type="integer", default=15, minimum=1, maximum=100)
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Paginated list of experiments",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="array",
+     *                 @OA\Items(
+     *                     type="object",
+     *                     @OA\Property(property="id", type="integer", example=1),
+     *                     @OA\Property(property="name", type="string", example="Test Experiment"),
+     *                     @OA\Property(property="description", type="string", example="Experiment description"),
+     *                     @OA\Property(property="contact", type="string", example="researcher@example.com"),
+     *                     @OA\Property(property="active", type="integer", example=1),
+     *                     @OA\Property(property="user_id", type="integer", example=1),
+     *                     @OA\Property(property="created_at", type="string", format="date-time"),
+     *                     @OA\Property(property="updated_at", type="string", format="date-time")
+     *                 )
+     *             ),
+     *             @OA\Property(
+     *                 property="links",
+     *                 type="object",
+     *                 @OA\Property(property="first", type="string"),
+     *                 @OA\Property(property="last", type="string"),
+     *                 @OA\Property(property="prev", type="string", nullable=true),
+     *                 @OA\Property(property="next", type="string", nullable=true)
+     *             ),
+     *             @OA\Property(
+     *                 property="meta",
+     *                 type="object",
+     *                 @OA\Property(property="current_page", type="integer"),
+     *                 @OA\Property(property="from", type="integer"),
+     *                 @OA\Property(property="last_page", type="integer"),
+     *                 @OA\Property(property="per_page", type="integer"),
+     *                 @OA\Property(property="to", type="integer"),
+     *                 @OA\Property(property="total", type="integer")
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(response=401, description="Unauthorized")
+     * )
+     */
     public function index(): ResourceCollection
     {
         $experiments = ExperimentRepository::getData();
@@ -92,6 +157,61 @@ print(experiments_data)
     }
 
     /**
+     * @OA\Post(
+     *     path="/experiments",
+     *     summary="Create new experiment",
+     *     description="Create a new experiment with name, description, and contact information",
+     *     operationId="createExperiment",
+     *     tags={"Experiments"},
+     *     security={{"bearerAuth": {}}},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"name"},
+     *             @OA\Property(property="name", type="string", example="My New Experiment", description="Experiment name"),
+     *             @OA\Property(property="description", type="string", example="Research project description", description="Experiment description"),
+     *             @OA\Property(property="contact", type="string", example="researcher@example.com", description="Contact information"),
+     *             @OA\Property(property="active", type="integer", example=1, description="Active status (0 or 1)")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="Experiment created successfully",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="object",
+     *                 @OA\Property(property="id", type="integer", example=1),
+     *                 @OA\Property(property="name", type="string", example="My New Experiment"),
+     *                 @OA\Property(property="description", type="string", example="Research project description"),
+     *                 @OA\Property(property="contact", type="string", example="researcher@example.com"),
+     *                 @OA\Property(property="active", type="integer", example=1),
+     *                 @OA\Property(property="user_id", type="integer", example=1),
+     *                 @OA\Property(property="created_at", type="string", format="date-time"),
+     *                 @OA\Property(property="updated_at", type="string", format="date-time")
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(response=401, description="Unauthorized"),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Validation error",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="The given data was invalid."),
+     *             @OA\Property(
+     *                 property="errors",
+     *                 type="object",
+     *                 @OA\Property(
+     *                     property="name",
+     *                     type="array",
+     *                     @OA\Items(type="string", example="The name field is required.")
+     *                 )
+     *             )
+     *         )
+     *     )
+     * )
+     *
      * @throws Exception
      */
     public function store(ExperimentStoreRequest $request): JsonResource
@@ -101,6 +221,50 @@ print(experiments_data)
         return JsonResource::make($experiment);
     }
 
+    /**
+     * @OA\Get(
+     *     path="/experiments/{id}",
+     *     summary="Get single experiment",
+     *     description="Retrieve details of a specific experiment including associated crawlers",
+     *     operationId="getExperiment",
+     *     tags={"Experiments"},
+     *     security={{"bearerAuth": {}}},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="Experiment ID",
+     *         required=true,
+     *         @OA\Schema(type="integer", example=1)
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Experiment details",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="object",
+     *                 @OA\Property(property="id", type="integer", example=1),
+     *                 @OA\Property(property="name", type="string", example="Test Experiment"),
+     *                 @OA\Property(property="description", type="string", example="Experiment description"),
+     *                 @OA\Property(property="contact", type="string", example="researcher@example.com"),
+     *                 @OA\Property(property="active", type="integer", example=1),
+     *                 @OA\Property(property="user_id", type="integer", example=1),
+     *                 @OA\Property(property="created_at", type="string", format="date-time"),
+     *                 @OA\Property(property="updated_at", type="string", format="date-time"),
+     *                 @OA\Property(
+     *                     property="crawlers",
+     *                     type="array",
+     *                     description="Associated crawlers",
+     *                     @OA\Items(type="object")
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(response=401, description="Unauthorized"),
+     *     @OA\Response(response=404, description="Experiment not found")
+     * )
+     */
     public function show(Experiment $experiment): JsonResource
     {
         return JsonResource::make(ExperimentRepository::getById($experiment));
@@ -112,6 +276,69 @@ print(experiments_data)
     }
 
     /**
+     * @OA\Put(
+     *     path="/experiments/{id}",
+     *     summary="Update experiment",
+     *     description="Update an existing experiment with new information",
+     *     operationId="updateExperiment",
+     *     tags={"Experiments"},
+     *     security={{"bearerAuth": {}}},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="Experiment ID",
+     *         required=true,
+     *         @OA\Schema(type="integer", example=1)
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"name"},
+     *             @OA\Property(property="name", type="string", example="Updated Experiment Name"),
+     *             @OA\Property(property="description", type="string", example="Updated description"),
+     *             @OA\Property(property="contact", type="string", example="newemail@example.com"),
+     *             @OA\Property(property="active", type="integer", example=1)
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Experiment updated successfully",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="object",
+     *                 @OA\Property(property="id", type="integer", example=1),
+     *                 @OA\Property(property="name", type="string", example="Updated Experiment Name"),
+     *                 @OA\Property(property="description", type="string", example="Updated description"),
+     *                 @OA\Property(property="contact", type="string", example="newemail@example.com"),
+     *                 @OA\Property(property="active", type="integer", example=1),
+     *                 @OA\Property(property="user_id", type="integer", example=1),
+     *                 @OA\Property(property="created_at", type="string", format="date-time"),
+     *                 @OA\Property(property="updated_at", type="string", format="date-time")
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(response=401, description="Unauthorized"),
+     *     @OA\Response(response=404, description="Experiment not found"),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Validation error",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="The given data was invalid."),
+     *             @OA\Property(
+     *                 property="errors",
+     *                 type="object",
+     *                 @OA\Property(
+     *                     property="name",
+     *                     type="array",
+     *                     @OA\Items(type="string", example="The name field is required.")
+     *                 )
+     *             )
+     *         )
+     *     )
+     * )
+     *
      * @throws Exception
      */
     public function update(ExperimentStoreRequest $request, Experiment $experiment): JsonResource
@@ -120,6 +347,37 @@ print(experiments_data)
     }
 
     /**
+     * @OA\Delete(
+     *     path="/experiments/{id}",
+     *     summary="Delete experiment (soft delete)",
+     *     description="Soft delete an experiment which can be restored later",
+     *     operationId="deleteExperiment",
+     *     tags={"Experiments"},
+     *     security={{"bearerAuth": {}}},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="Experiment ID",
+     *         required=true,
+     *         @OA\Schema(type="integer", example=1)
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Experiment deleted successfully",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="object",
+     *                 @OA\Property(property="status", type="boolean", example=true)
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(response=401, description="Unauthorized"),
+     *     @OA\Response(response=404, description="Experiment not found"),
+     *     @OA\Response(response=500, description="Internal server error")
+     * )
+     *
      * @throws Exception
      */
     public function destroy(Experiment $experiment): JsonResource
