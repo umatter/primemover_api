@@ -27,7 +27,7 @@
                 {
                     "name": "location",
                     "description": "location",
-                    "value": "US-CO-DENVER",
+                    "value": "US-IL-CHICAGO",
                     "active": true
                 },
                 {
@@ -82,7 +82,7 @@
             "ports_masking": "mask",
             "proxy_masking": "custom",
             "quic_mode": "natural",
-            "screen_masking": "mask",
+            "screen_masking": "custom",
             "timezone_masking": "mask",
             "webrtc_masking": "mask",
             "canvas_noise": "mask",
@@ -99,6 +99,11 @@
                 "port": "%%PROXYPORT%%",
                 "username": "%%PROXYUSERNAME%%",
                 "password": "%%PROXYPASSWORD%%"
+            },
+             "screen": {
+                "height": 1440,
+                "pixel_ratio": 1,
+                "width": 2560
             }
         },
         "custom_start_urls": [
