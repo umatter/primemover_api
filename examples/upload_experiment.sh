@@ -14,7 +14,7 @@ if [ -z "$PM_API_USERNAME" ] || [ -z "$PM_API_PASSWORD" ]; then
 fi
 
 # Default JSON file
-DEFAULT_JSON_FILE="examples/test-experiment_GUI_UPLOAD.json"
+DEFAULT_JSON_FILE="examples/lamda_testjob_experiment_upload.json"
 
 # Parse command line arguments
 if [ $# -eq 0 ]; then
@@ -146,3 +146,21 @@ fi
 
 echo "Experiment upload completed successfully"
 echo "Final Experiment ID: $EXPERIMENT_ID"
+
+# Step 4: Query for unprocessed crawlers (what the runner sees)
+echo ""
+echo "=========================================="
+echo "Fetching unprocessed crawlers (runner view)..."
+echo "=========================================="
+CRAWLERS_RESPONSE=$(curl -s -X GET "$API_BASE_URL/crawlers-unprocessed" \
+    -H "Authorization: Bearer $JWT_TOKEN" \
+    -H "Accept: application/json")
+
+# Save response to file
+OUTPUT_FILE="examples/crawler_response_$(date +%Y%m%d_%H%M%S).json"
+echo "$CRAWLERS_RESPONSE" | jq '.' > "$OUTPUT_FILE"
+
+echo "Unprocessed Crawlers Response:"
+echo "$CRAWLERS_RESPONSE" | jq '.'
+echo ""
+echo "Response saved to: $OUTPUT_FILE"
