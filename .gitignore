@@ -20,3 +20,32 @@ phpunit.dusk.xml
 /docker/mysql/
 /.phpunit.cache/
 .aider*
+
+# Python (MCP Server)
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+.venv
+venv/
+ENV/
+env/
+
+# Generated API response files from testing
+examples/crawler_response_*.json
