@@ -76,6 +76,33 @@ services:
     networks:
       - primemover-network
 
+  mcp-server:
+    build:
+      context: .
+      dockerfile: ./mcp_server/Dockerfile
+    container_name: '${COMPOSE_PROJECT_NAME:-primemover}-mcp'
+    volumes:
+      # Mount documentation and examples as read-only
+      - ./storage/api-docs:/app/storage/api-docs:ro
+      - ./examples:/app/examples:ro
+      - ./docs:/app/docs:ro
+      - ./README.md:/app/README.md:ro
+      - ./CLAUDE.md:/app/CLAUDE.md:ro
+    environment:
+      PM_API_EMAIL: ${PM_API_EMAIL:-admin@primemover.example}
+      PM_API_PASSWORD: ${PM_API_PASSWORD:-password}
+      PM_API_BASE_URL: ${PM_API_BASE_URL:-http://apache:80/api/v1}
+    depends_on:
+      - apache
+    networks:
+      - primemover-network
+    # Use profiles so this service doesn't start by default
+    # Start with: docker-compose --profile mcp up -d
+    profiles:
+      - mcp
+    stdin_open: true
+    tty: true
+
 networks:
   primemover-network:
     driver: bridge
