@@ -1,0 +1,56 @@
+# Exclude large data directories and files that shouldn't be in Docker build context
+
+# Database and cache data
+storage/app/data/mysql/
+storage/app/data/redis/
+storage/logs/
+*.log
+
+# Laravel/PHP
+vendor/
+.env
+.env.*
+!.env.example
+storage/*.key
+bootstrap/cache/*
+
+# Node/Frontend
+node_modules/
+public/hot
+public/storage
+public/build
+public/mix-manifest.json
+
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# IDE
+.idea/
+.vscode/
+*.code-workspace
+
+# Docker
+docker/mysql/
+Dockerfile
+docker-compose.yml
+
+# Testing
+.phpunit.cache/
+phpunit.xml
+
+# Python (MCP Server - these are handled separately)
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Build artifacts
+*.swp
+*.swo
+*~
