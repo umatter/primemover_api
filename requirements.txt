@@ -1,0 +1,10 @@
+# PrimeMover API MCP Server Dependencies
+
+# Model Context Protocol SDK
+mcp>=1.21.0
+
+# HTTP client for API requests
+requests>=2.31.0
+
+# Environment variable management
+python-dotenv>=1.0.0
