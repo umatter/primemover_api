@@ -41,6 +41,32 @@ curl -X POST 'http://localhost:8090/api/v1/login' \
 
 **Default credentials:** `admin@primemover.example` / `password`
 
+## 🤖 AI Assistant Integration (MCP Server)
+
+The API includes a **Model Context Protocol (MCP) server** that lets AI assistants like Claude interact with the API through documentation and read-only operations.
+
+**Quick Setup for Claude Code:**
+
+```bash
+# Docker (recommended)
+claude mcp add --transport stdio primemover \
+  --env PM_API_EMAIL=admin@primemover.example \
+  --env PM_API_PASSWORD=password \
+  -- /absolute/path/to/primemover_api/mcp-server-docker.sh
+
+# Verify
+claude mcp list
+/mcp  # within Claude Code
+```
+
+**What it provides:**
+- 📚 Full OpenAPI specification and documentation
+- 🔍 List and query experiments, crawlers, queues, jobs
+- 📥 Download experiment data and reports
+- 🔒 Read-only access (safe for exploration)
+
+See **[MCP_SERVER_SETUP.md](MCP_SERVER_SETUP.md)** for complete instructions and Claude Desktop setup.
+
 ## Technology Stack
 
 - **Backend**: Laravel 10, PHP 8.1+, MySQL 8.0, Redis
