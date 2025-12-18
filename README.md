@@ -17,16 +17,16 @@ git clone <repository-url> primemover-api
 cd primemover-api
 cp .env.docker .env
 
-# Start all containers
-docker-compose up -d --build
+# Start all containers (use 'docker-compose' if docker compose v2 not available)
+docker compose up -d --build
 
 # Install dependencies and initialize
-docker-compose exec php composer install
-docker-compose exec php php artisan key:generate
-docker-compose exec php php artisan jwt:secret --force
-docker-compose exec php php artisan migrate --seed
-docker-compose exec php php artisan passport:install --force
-docker-compose exec php php artisan l5-swagger:generate
+docker compose exec php composer install
+docker compose exec php php artisan key:generate
+docker compose exec php php artisan jwt:secret --force
+docker compose exec php php artisan migrate --seed
+docker compose exec php php artisan passport:install --force
+docker compose exec php php artisan l5-swagger:generate
 
 # Test the API
 curl -X POST 'http://localhost:8090/api/v1/login' \

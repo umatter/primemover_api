@@ -26,8 +26,8 @@ services:
       context: ./docker/${PHPVERSION:-php8.1}-fpm
     container_name: '${COMPOSE_PROJECT_NAME:-primemover}-${PHPVERSION:-php8.1}'
     volumes:
-      - ${DOCUMENT_ROOT}:/var/www/html:cached
-      - ${PHP_INI}:/usr/local/etc/php/php.ini
+      - ${DOCUMENT_ROOT:-.}:/var/www/html:cached
+      - ${PHP_INI:-./docker/php/php.ini}:/usr/local/etc/php/php.ini
       # Mount one custom INI file instead of overshadowing the whole conf.d dir
       # - ./docker/${PHPVERSION}-fpm/etc/php/conf.d/custom.ini:/usr/local/etc/php/conf.d/99-custom.ini
     restart: on-failure
