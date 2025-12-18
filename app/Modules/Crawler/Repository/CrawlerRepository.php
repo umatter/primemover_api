@@ -27,12 +27,13 @@ class CrawlerRepository
 {
     public function __construct(protected Crawler $crawler) {}
 
-    public function all(): QueryBuilder
+    public function all(?int $perPage = null): LengthAwarePaginator
     {
         return Crawler::queryBuilder()
             ->where('testing', 0)
             ->where('active', 1)
-            ->with(['experiment']);
+            ->with(['experiment'])
+            ->fastPaginate($perPage ?? request()->input('per_page', 15));
     }
 
     public function getById(Crawler $crawler): Crawler

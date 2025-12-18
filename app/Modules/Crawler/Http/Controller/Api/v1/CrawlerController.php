@@ -98,9 +98,7 @@ class CrawlerController extends Controller
      */
     public function index(): ResourceCollection
     {
-        $crawlers = $this->repository->all();
-
-        return ResourceCollection::make($crawlers->paginate());
+        return ResourceCollection::make($this->repository->all());
     }
 
     /**

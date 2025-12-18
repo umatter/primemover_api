@@ -97,10 +97,7 @@ print(agents_data)
      */
     public function index(): ResourceCollection
     {
-        $agents = $this->repository->all();
-
-        return ResourceCollection::make($agents->get())
-            ->additional($this->repository->additional($agents));
+        return ResourceCollection::make($this->repository->all());
     }
 
     public function create(): ResourceCollection

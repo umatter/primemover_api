@@ -13,12 +13,12 @@ class JobRepository
     {
     }
 
-    public function all($queueId): LengthAwarePaginator
+    public function all($queueId, ?int $perPage = null): LengthAwarePaginator
     {
         return Job::queryBuilder()
             ->when($queueId, fn (Builder $query) => $query->where('queue_id', $queueId))
-            ->with(['queue', 'reports'])
-            ->fastPaginate();
+            ->with(['queue:id,name,crawler_id'])
+            ->fastPaginate($perPage ?? request()->input('per_page', 15));
     }
 
     public function getById($id): Job|Model
