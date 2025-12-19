@@ -9,7 +9,6 @@
 #/public/build
 #/public/mix-manifest.json
 .env
-.env.docker
 .phpunit.result.cache
 Homestead.json
 Homestead.yaml
