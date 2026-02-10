@@ -4,6 +4,7 @@ namespace App\Http;
 
 use App\Http\Middleware\Authenticate;
 use App\Http\Middleware\CheckForMaintenanceMode;
+use App\Http\Middleware\CorrelationIdMiddleware;
 use App\Http\Middleware\EncryptCookies;
 use App\Http\Middleware\FormDataHandler;
 use App\Http\Middleware\HeaderMiddleware;
@@ -66,6 +67,7 @@ class Kernel extends HttpKernel
         ],
 
         'api' => [
+            CorrelationIdMiddleware::class,
             SubstituteBindings::class,
             HeaderMiddleware::class,
         ],
