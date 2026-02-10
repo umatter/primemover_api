@@ -4,7 +4,7 @@ namespace Tests\Feature\Modules\Agent\Repository;
 
 use App\Modules\Agent\Model\Agent;
 use App\Modules\Agent\Repository\AgentRepository;
-use Illuminate\Support\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Tests\TestCase;
 
 /**
@@ -22,25 +22,13 @@ class AgentRepositoryTest extends TestCase
         $service = new AgentRepository(new Agent());
         $result = $service->all();
 
-        $this->assertInstanceOf(Collection::class, $result->get());
+        $this->assertInstanceOf(LengthAwarePaginator::class, $result);
 
-        foreach ($result->get() as $agent) {
+        foreach ($result->getCollection() as $agent) {
             unset($agent->preferences);
             $this->assertDatabaseHas('agents', $agent->toArray());
             $this->assertInstanceOf(Agent::class, $agent);
         }
-    }
-
-    /**
-     * @covers ::additional
-     */
-    public function testAdditional(): void
-    {
-        $service = new AgentRepository(new Agent());
-        $agentBuilder = $service->all();
-        $result = $service->additional($agentBuilder);
-
-        $this->assertIsArray($result);
     }
 
     /**
