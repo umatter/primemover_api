@@ -3,11 +3,12 @@
 namespace Tests\Feature\Modules\Report\Http\Controller\Api\v1;
 
 use App\Modules\Report\Http\Controller\Api\v1\ReportController;
+use App\Modules\Report\Http\Request\ReportStoreRequest;
 use App\Modules\Report\Model\Report;
 use App\Modules\Report\Repository\ReportRepository;
-use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Resources\Json\ResourceCollection;
+use Mockery as m;
 use Tests\TestCase;
 
 /**
@@ -37,15 +38,24 @@ class ReportControllerTest extends TestCase
      */
     public function testStore(): void
     {
-        $data = new Request([
-            'job_id' => 1,
-            'mimetype' => 'jpg',
-        ]);
+        $job = \App\Modules\Job\Model\Job::factory()->create();
+
+        $data = [
+            'job_id' => $job->id,
+            'mimetype' => 'application/zip',
+            'filename' => 'Testarchiv',
+            'path' => 'https://example.com/api/v1/file/1',
+            'user_id' => $this->user->id,
+            'active' => 1,
+        ];
+
+        $request = m::mock(ReportStoreRequest::class)->makePartial();
+        $request->allows('validated')->andReturns($data);
 
         $controller = new ReportController(new ReportRepository(new Report()));
-        $result = $controller->store($data);
+        $result = $controller->store($request);
 
-        $this->assertDatabaseHas('reports', $data->all());
+        $this->assertDatabaseHas('reports', ['job_id' => $job->id, 'filename' => 'Testarchiv']);
         $this->assertInstanceOf(JsonResource::class, $result);
     }
 

@@ -13,7 +13,6 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Collection;
 use Mockery as m;
-use Spatie\QueryBuilder\QueryBuilder;
 use Tests\TestCase;
 
 /**
@@ -33,14 +32,12 @@ class CrawlerRepositoryTest extends TestCase
      */
     public function testGetData(): void
     {
-        $experiment = Experiment::factory()->create();
-
         $service = new CrawlerRepository(new Crawler());
-        $result = $service->all($experiment);
+        $result = $service->all();
 
-        $this->assertInstanceOf(QueryBuilder::class, $result);
+        $this->assertInstanceOf(LengthAwarePaginator::class, $result);
 
-        foreach ($result as $crawler) {
+        foreach ($result->getCollection() as $crawler) {
             $this->assertInstanceOf(Crawler::class, $crawler);
         }
     }

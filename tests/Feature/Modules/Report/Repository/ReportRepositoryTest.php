@@ -42,6 +42,7 @@ class ReportRepositoryTest extends TestCase
 
         $data = [
             'job_id' => $job->id,
+            'user_id' => $this->user->id,
             'filecontent' => '123',
             'description' => '234',
             'mimetype' => 'application/zip',

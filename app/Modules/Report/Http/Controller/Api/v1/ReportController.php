@@ -54,7 +54,7 @@ class ReportController extends Controller
      */
     public function index(): ResourceCollection
     {
-        $reports = ReportRepository::getData();
+        $reports = ReportRepository::all();
 
         return ResourceCollection::make($reports);
     }
