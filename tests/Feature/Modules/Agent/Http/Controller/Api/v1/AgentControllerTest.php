@@ -40,7 +40,7 @@ class AgentControllerTest extends TestCase
         $this->actingAs($this->user)
             ->getJson('/api/v1/agents')
             ->assertStatus(200)
-            ->assertJsonStructure(['data', 'values', 'count']);
+            ->assertJsonStructure(['data', 'links', 'meta']);
 
         $this->assertInstanceOf(ResourceCollection::class, $result);
 

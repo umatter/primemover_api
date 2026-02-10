@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 /**
  * @method static Response|BinaryFileResponse|null download(Job $job)
- * @method static LengthAwarePaginator             getData()
+ * @method static LengthAwarePaginator             all()
  * @method static Report                           save(array $data)
  * @method static bool                             delete(Report $report)
  *

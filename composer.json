@@ -29,7 +29,7 @@
     "michael-rubel/laravel-enhanced-pipeline": "^3.2",
     "nelkasovic/ipstack-finder": "^1.0",
     "netresearch/jsonmapper": "^v4.4",
-    "phpoffice/phpspreadsheet": "*",
+    "phpoffice/phpspreadsheet": "^1.29",
     "predis/predis": "^2.1.2",
     "psr/http-factory-implementation": "^1.0.1",
     "spatie/laravel-data": "^4.5",
