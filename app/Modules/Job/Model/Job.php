@@ -43,9 +43,7 @@ class Job extends BaseModel
 
     protected $guarded = [];
 
-    protected $appends = [
-        'reports_with_path_count',
-    ];
+    protected $appends = [];
 
     protected $casts = [
         'type' => JobType::class,
@@ -73,8 +71,7 @@ class Job extends BaseModel
 
     public function queue(): BelongsTo
     {
-        return $this->belongsTo(Queue::class)
-            ->with('jobs');
+        return $this->belongsTo(Queue::class);
     }
 
     public function behaviors(): HasMany
@@ -112,6 +109,9 @@ class Job extends BaseModel
                 AllowedFilter::scope('after'),
                 AllowedFilter::scope('recent'),
                 AllowedFilter::scope('queue'),
-            ]);
+            ])
+            ->withCount(['reports as reports_with_path_count' => function ($query) {
+                $query->whereNotNull('path');
+            }]);
     }
 }

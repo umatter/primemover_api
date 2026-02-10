@@ -4,7 +4,7 @@ namespace App\Modules\Agent\Repository;
 
 use App\Modules\Agent\Model\Agent;
 use Illuminate\Database\Eloquent\Model;
-use Spatie\QueryBuilder\QueryBuilder;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class AgentRepository
 {
@@ -12,23 +12,11 @@ class AgentRepository
     {
     }
 
-    public function all(): QueryBuilder
+    public function all(?int $perPage = null): LengthAwarePaginator
     {
-        return Agent::queryBuilder()->with('preferences');
-    }
-
-    public function additional($agents): array
-    {
-        return [
-            'values' => [
-                'name' => $agents->pluck('name')->unique(),
-                'identification' => $agents->pluck('identification')->unique(),
-                'multilogin_id' => $agents->pluck('multilogin_id')->unique(),
-                'multilogin_profile' => $agents->pluck('multilogin_profile')->unique(),
-                'location' => $agents->pluck('location')->unique(),
-            ],
-            'count' => $agents->count(),
-        ];
+        return Agent::queryBuilder()
+            ->with('preferences')
+            ->fastPaginate($perPage ?? request()->input('per_page', 15));
     }
 
     public function getById(int $id): Agent|Model
