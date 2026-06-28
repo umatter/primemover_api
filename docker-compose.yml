@@ -30,7 +30,11 @@ services:
       - ${PHP_INI:-./docker/php/php.ini}:/usr/local/etc/php/php.ini
       # Mount one custom INI file instead of overshadowing the whole conf.d dir
       # - ./docker/${PHPVERSION}-fpm/etc/php/conf.d/custom.ini:/usr/local/etc/php/conf.d/99-custom.ini
-    restart: on-failure
+    # unless-stopped (was on-failure): php-fpm occasionally exits cleanly (code 0,
+    # "exiting, bye-bye") which on-failure does NOT restart, leaving Apache up but
+    # every DB request 500ing with "DNS lookup failure for: php". Match the rest
+    # of the stack so PHP self-heals.
+    restart: unless-stopped
     #command: bash /var/www/docker/laravel/supervisor.sh
     tty: true
     depends_on:
