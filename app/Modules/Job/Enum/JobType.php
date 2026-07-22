@@ -17,7 +17,9 @@ enum JobType: string
     case tryClick = 'tryclickjob';
     case click = 'clickjob';
     case scrollByDuration = 'scrollbydurationjob';
+    case tryScrollByDuration = 'tryscrollbydurationjob';
     case scrollByLength = 'scrollbylengthjob';
+    case tryScrollByLength = 'tryscrollbylengthjob';
     case handleAlert = 'handlealertjob';
     case tryHandleAlert = 'tryhandlealertjob';
     case lambdaSingleSelect = 'lambdasingleselectjob';
