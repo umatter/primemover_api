@@ -11,6 +11,12 @@ Primemover is a web automation platform that allows users to create and manage b
 
 ## Quick Start (Docker)
 
+> **Run `docker compose` from this repository's root.** The compose file uses relative
+> bind mounts for MySQL/Redis data and logs (`./storage/app/data/mysql`,
+> `./storage/app/data/redis`, `./storage/logs/*`). If launched from the wrong directory,
+> Docker silently creates those paths as empty dirs in your CWD and spins up a fresh,
+> empty database there instead of using this repo's `storage/`.
+
 ```bash
 # Clone and setup
 git clone <repository-url> primemover-api

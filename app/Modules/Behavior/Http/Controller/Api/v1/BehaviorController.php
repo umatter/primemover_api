@@ -7,6 +7,7 @@ use App\Modules\Behavior\Model\Behavior;
 use App\Modules\Behavior\Repository\BehaviorRepository;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
@@ -91,6 +92,11 @@ class BehaviorController extends Controller
     public function store(Request $request): JsonResource
     {
         $data = $request->all();
+
+        // The behaviors table requires user_id (NOT NULL FK) and description (NOT NULL). Unlike the
+        // other modules this controller never injected them, so a client POST without them 500s.
+        $data['user_id'] = $data['user_id'] ?? (Auth::id() ?? 1);
+        $data['description'] = $data['description'] ?? '';
 
         $behavior = $this->repository->save($data);
 
