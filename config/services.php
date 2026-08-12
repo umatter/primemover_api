@@ -47,4 +47,11 @@ return [
         'client_id' => env('GITHUB_CLIENT_ID'),
         'client_secret' => env('GITHUB_CLIENT_SECRET'),
     ],
+
+    // Password-grant client credentials injected server-side by
+    // AuthController@token so the SPA never has to hold the client secret.
+    'passport_proxy' => [
+        'client_id' => env('PASSPORT_PASSWORD_CLIENT_ID'),
+        'client_secret' => env('PASSPORT_PASSWORD_CLIENT_SECRET'),
+    ],
 ];

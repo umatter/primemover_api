@@ -80,7 +80,18 @@ print(token_data)
      */
     public function token(Request $request): Response
     {
-        $proxy = $request->create(self::OAUTH_TOKEN_ENDPOINT, 'POST', $request->all());
+        // The SPA sends only { username, password }. Inject the password-grant
+        // parameters server-side so the client secret never leaves the backend,
+        // then proxy to Passport's oauth/token. Without this, Passport rejects
+        // the request with "missing required parameter (client_id)".
+        $params = array_merge($request->all(), [
+            'grant_type' => 'password',
+            'client_id' => config('services.passport_proxy.client_id'),
+            'client_secret' => config('services.passport_proxy.client_secret'),
+            'scope' => $request->input('scope', ''),
+        ]);
+
+        $proxy = $request->create(self::OAUTH_TOKEN_ENDPOINT, 'POST', $params);
 
         Log::debug('1696930633: Handling oauth token request');
 
