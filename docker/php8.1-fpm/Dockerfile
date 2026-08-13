@@ -25,9 +25,15 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Install Redis extension
 RUN pecl install redis && docker-php-ext-enable redis
 
-# Create system user to run Composer and Artisan Commands
-RUN groupadd -g 1000 www
-RUN useradd -u 1000 -ms /bin/bash -g www www
+# Create system user to run Composer and Artisan Commands.
+# WWW_UID/WWW_GID must match the host user owning the bind-mounted repo,
+# or php-fpm cannot write vendor/ and storage/. Default 1000 keeps the
+# historical behaviour; override via compose build args where the host
+# uid differs (e.g. WWW_UID=1001 on ex63).
+ARG WWW_UID=1000
+ARG WWW_GID=1000
+RUN groupadd -g ${WWW_GID} www
+RUN useradd -u ${WWW_UID} -ms /bin/bash -g www www
 
 # Copy existing application directory contents with proper ownership
 COPY --chown=www:www . /var/www/html
