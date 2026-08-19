@@ -24,6 +24,11 @@ services:
   php:
     build:
       context: ./docker/${PHPVERSION:-php8.1}-fpm
+      args:
+        # Must match the host user owning the bind-mounted repo (default 1000).
+        # Set in .env where it differs (e.g. WWW_UID=1001 on ex63).
+        WWW_UID: '${WWW_UID:-1000}'
+        WWW_GID: '${WWW_GID:-1000}'
     container_name: '${COMPOSE_PROJECT_NAME:-primemover}-${PHPVERSION:-php8.1}'
     volumes:
       - ${DOCUMENT_ROOT:-.}:/var/www/html:cached

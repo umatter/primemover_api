@@ -13,7 +13,10 @@ class UpdateJobRequest extends FormRequest
         return [
             'name' => [],
             'queue_id' => [],
-            'previous_job_id' => ['required', 'exists:App\Modules\Job\Model\Job,id'],
+            // Nullable: the first job in a queue has no predecessor, and reordering must be able
+            // to update it. The runner sequences by `order` and rebuilds the chain at runtime, so a
+            // null previous_job_id is fine. Mirrors StoreJobRequest.
+            'previous_job_id' => ['nullable', 'exists:App\Modules\Job\Model\Job,id'],
             'description' => [],
             'type' => [Rule::in(JobType::values())],
             'status_code' => [],

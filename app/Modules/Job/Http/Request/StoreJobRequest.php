@@ -17,7 +17,10 @@ class StoreJobRequest extends FormRequest
             'type' => ['required', Rule::in(JobType::values())],
             'description' => ['nullable'],
             'queue_id' => ['required'],
-            'previous_job_id' => ['required', 'exists:App\Modules\Job\Model\Job,id'],
+            // Nullable so the first job in a queue can be created (it has no predecessor).
+            // The runner sequences jobs by list/`order`, reconstructing previousJob at runtime
+            // (TaskOperator), so a null stored previous_job_id does not affect execution.
+            'previous_job_id' => ['nullable', 'exists:App\Modules\Job\Model\Job,id'],
             'status_code' => [],
             'status_message' => [],
             'order' => [],
