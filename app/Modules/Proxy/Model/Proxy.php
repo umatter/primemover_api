@@ -27,7 +27,7 @@ class Proxy extends BaseModel
 {
     use HasFactory;
 
-    public const TYPES = ['http', 'geosurf', 'brightdata', 'oxylabs'];
+    public const TYPES = ['http', 'brightdata', 'oxylabs'];
 
     protected $guarded = [];
 
