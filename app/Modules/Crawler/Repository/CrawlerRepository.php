@@ -30,6 +30,7 @@ class CrawlerRepository
     public function all(?int $perPage = null): LengthAwarePaginator
     {
         return Crawler::queryBuilder()
+            ->visibleTo()
             ->where('testing', 0)
             ->where('active', 1)
             ->with(['experiment'])
@@ -54,7 +55,7 @@ class CrawlerRepository
 
     public function inactive(): Collection
     {
-        return $this->crawler->query()
+        return $this->crawler->query()->visibleTo()
             ->where('testing', 0)
             ->where('active', 0)
             ->with(
@@ -69,7 +70,7 @@ class CrawlerRepository
 
     public function processed(): Collection
     {
-        return $this->crawler->query()->where('testing', 0)
+        return $this->crawler->query()->visibleTo()->where('testing', 0)
             ->where('active', 1)
             ->with(['queues' => function ($q): void {
                 $q->where('queues.processed', 1);
@@ -90,7 +91,7 @@ class CrawlerRepository
 
     public function unprocessed(): Collection
     {
-        return $this->crawler->query()->where('testing', 0)
+        return $this->crawler->query()->visibleTo()->where('testing', 0)
             ->where('active', 1)
             ->whereHas('queues', function ($q): void {
                 $q->where('processed', 0);
@@ -111,7 +112,7 @@ class CrawlerRepository
 
     public function reviewed(): Collection
     {
-        return $this->crawler->query()->where('testing', 1)
+        return $this->crawler->query()->visibleTo()->where('testing', 1)
             ->where('active', 1)
             ->with(['queues' => function ($q): void {
                 $q->where('queues.reviewed', 1);
@@ -132,7 +133,7 @@ class CrawlerRepository
 
     public function testing(): LengthAwarePaginator
     {
-        return $this->crawler->query()->where('testing', 1)
+        return $this->crawler->query()->visibleTo()->where('testing', 1)
             ->where('active', 1)
             ->with(['queues', 'agent.preferences', 'proxy', 'configuration.preferences'])
             ->paginate(10);
@@ -150,6 +151,16 @@ class CrawlerRepository
         return $crawler->fresh();
     }
 
+    /**
+     * Disable every production crawler on the platform.
+     *
+     * Deliberately unscoped, in BOTH statements. This is a platform-wide
+     * operation whose route is gated to service accounts via
+     * can:administer-platform. Scoping only the SELECT would be worse than
+     * leaving it alone: the UPDATE would still disable every user's crawlers
+     * while the response showed the caller only their own, hiding the blast
+     * radius of what they had just done.
+     */
     public function disableProdCrawlers(): Collection
     {
         $this->crawler->query()->where('testing', 0)->update(['active' => 0]);
@@ -165,7 +176,7 @@ class CrawlerRepository
         $crawler->queues()->delete();
         $crawler->delete();
 
-        return $this->crawler->with([
+        return $this->crawler->query()->visibleTo()->with([
             'experiment',
             'queues',
             'agent.preferences',
@@ -178,7 +189,7 @@ class CrawlerRepository
     {
         $crawler->delete();
 
-        return $this->crawler->with(
+        return $this->crawler->query()->visibleTo()->with(
             [
                 'experiment',
                 'queues',
@@ -210,7 +221,7 @@ class CrawlerRepository
     {
         $this->crawler->query()->where('updated', 1)->delete();
 
-        return $this->crawler->with(
+        return $this->crawler->query()->visibleTo()->with(
             [
                 'experiment',
                 'queues',
@@ -226,7 +237,7 @@ class CrawlerRepository
     {
         $this->crawler->query()->where('testing', 0)->delete();
 
-        return $this->crawler->with(
+        return $this->crawler->query()->visibleTo()->with(
             [
                 'experiment',
                 'queues',

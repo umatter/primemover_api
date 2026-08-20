@@ -417,11 +417,15 @@ print(crawlers_data)
      */
     public function show(Crawler $crawler): JsonResource
     {
+        $this->authorize('view', $crawler);
+
         return JsonResource::make($this->repository->getById($crawler));
     }
 
     public function edit(Crawler $crawler): JsonResource
     {
+        $this->authorize('view', $crawler);
+
         return JsonResource::make($crawler);
     }
 
@@ -461,6 +465,8 @@ print(crawlers_data)
      */
     public function update(UpdateCrawlerRequest $request, Crawler $crawler): JsonResource
     {
+        $this->authorize('update', $crawler);
+
         $crawler = $this->repository->update($request->validated(), $crawler);
 
         return JsonResource::make($crawler);
@@ -552,6 +558,8 @@ print(crawlers_data)
      */
     public function forceDelete(Crawler $crawler): ResourceCollection
     {
+        $this->authorize('delete', $crawler);
+
         return ResourceCollection::make($this->repository->forceDelete($crawler));
     }
 
@@ -581,6 +589,8 @@ print(crawlers_data)
      */
     public function destroy(Crawler $crawler): ResourceCollection
     {
+        $this->authorize('delete', $crawler);
+
         return ResourceCollection::make($this->repository->delete($crawler));
     }
 
@@ -826,6 +836,8 @@ print(upload_result)
      */
     public function upload(CrawlerUploadRequest $request, Crawler $crawler): JsonResource
     {
+        $this->authorize('update', $crawler);
+
         $response = $this->repository->upload($request, $crawler);
 
         if ($request->isResponseEnabled()) {

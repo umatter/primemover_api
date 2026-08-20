@@ -18,6 +18,7 @@ class QueueRepository
     public function all($crawlerId, $sortBy): LengthAwarePaginator
     {
         return Queue::queryBuilder()
+            ->visibleTo()
             ->when($crawlerId, fn (Builder $query) => $query->where('crawler_id', $crawlerId))
             ->when($sortBy, fn (Builder $query) => $query->orderBy($sortBy))
             ->with(['crawler'])
@@ -40,39 +41,41 @@ class QueueRepository
     {
         $queue->delete();
 
-        return $this->queue->with(['crawler', 'jobs'])->get();
+        return $this->queue->query()->visibleTo()->with(['crawler', 'jobs'])->get();
     }
 
     public function job($id): Queue
     {
-        $job = Job::query()->findOrFail($id);
+        // Scoped: this resolves a job id straight from the URL
+        // (GET queues/job/{jobid}) with no policy behind it.
+        $job = Job::query()->visibleTo()->findOrFail($id);
 
         return $job->queue()->first();
     }
 
     public function processed(): Collection
     {
-        return $this->queue->with(['jobs'])->where('processed', 1)->get();
+        return $this->queue->query()->visibleTo()->with(['jobs'])->where('processed', 1)->get();
     }
 
     public function unprocessed(): Collection
     {
-        return $this->queue->with(['jobs'])->where('processed', 0)->get();
+        return $this->queue->query()->visibleTo()->with(['jobs'])->where('processed', 0)->get();
     }
 
     public function reviewed(): Collection
     {
-        return $this->queue->with(['jobs'])->where('reviewed', 1)->get();
+        return $this->queue->query()->visibleTo()->with(['jobs'])->where('reviewed', 1)->get();
     }
 
     public function unreviewed(): Collection
     {
-        return $this->queue->with(['jobs'])->where('reviewed', 0)->where('processed', 1)->get();
+        return $this->queue->query()->visibleTo()->with(['jobs'])->where('reviewed', 0)->where('processed', 1)->get();
     }
 
     public function experimentUnreviewed($experiment): Collection
     {
-        return $this->queue->with(['jobs'])
+        return $this->queue->query()->visibleTo()->with(['jobs'])
             ->whereHas('crawler', function ($crawler) use ($experiment): void {
                 $crawler->where('experiment_id', $experiment->id);
             })
@@ -83,7 +86,7 @@ class QueueRepository
 
     public function experimentReviewed($experiment): Collection
     {
-        return $this->queue->with(['jobs'])
+        return $this->queue->query()->visibleTo()->with(['jobs'])
             ->whereHas('crawler', function ($crawler) use ($experiment): void {
                 $crawler->where('experiment_id', $experiment->id);
             })
@@ -93,7 +96,7 @@ class QueueRepository
 
     public function experimentUnprocessed($experiment): Collection
     {
-        return $this->queue->with(['jobs'])
+        return $this->queue->query()->visibleTo()->with(['jobs'])
             ->whereHas('crawler', function ($crawler) use ($experiment): void {
                 $crawler->where('experiment_id', $experiment->id);
             })
@@ -103,7 +106,7 @@ class QueueRepository
 
     public function experimentProcessed($experiment): Collection
     {
-        return $this->queue->with(['jobs'])
+        return $this->queue->query()->visibleTo()->with(['jobs'])
             ->whereHas('crawler', function ($crawler) use ($experiment): void {
                 $crawler->where('experiment_id', $experiment->id);
             })

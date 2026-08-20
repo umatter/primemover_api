@@ -16,6 +16,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
+use App\Models\Concerns\ScopesToOwner;
 
 /**
  * @property int            $user_id
@@ -39,6 +40,17 @@ use Spatie\QueryBuilder\QueryBuilder;
  */
 class Job extends BaseModel
 {
+    use ScopesToOwner;
+
+    /**
+     * Relation path from this model to the owning experiment.
+     *
+     * Via the QUEUE, not the crawler: the jobs table has no crawler_id, so
+     * Job::crawler() resolves to null and a chain through it would silently
+     * match nothing.
+     */
+    public const OWNERSHIP_PATH = 'queue.crawler.experiment';
+
     use HasFactory;
 
     protected $guarded = [];

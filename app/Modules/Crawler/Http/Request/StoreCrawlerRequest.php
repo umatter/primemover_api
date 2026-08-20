@@ -4,6 +4,8 @@ namespace App\Modules\Crawler\Http\Request;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
+use App\Rules\OwnedParent;
+use App\Modules\Experiment\Model\Experiment;
 
 class StoreCrawlerRequest extends FormRequest
 {
@@ -11,7 +13,7 @@ class StoreCrawlerRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string'],
-            'experiment_id' => ['required'],
+            'experiment_id' => ['required', new OwnedParent(Experiment::class)],
             'user_id' => ['required'],
             // A bot is composed from Library building blocks. These are nullable columns on the
             // crawlers table; without them here, $request->validated() silently strips them and

@@ -24,7 +24,9 @@ Route::prefix('v1')->middleware('throttleIp:1000,1')
         Route::post('load-test', [CrawlerController::class, 'load']);
 
         Route::group(['middleware' => 'auth:api'], function (): void {
-            Route::get('dev/truncate-data', [\App\Http\Controllers\API\v1\Controller::class, 'truncateData']);
+            // Truncates the database. Service accounts only.
+            Route::middleware('can:administer-platform')
+                ->get('dev/truncate-data', [\App\Http\Controllers\API\v1\Controller::class, 'truncateData']);
 
             // Runner
             Route::prefix('runner')->group(function (): void {
@@ -71,11 +73,16 @@ Route::prefix('v1')->middleware('throttleIp:1000,1')
                     Route::get('crawlers-unprocessed', 'withUnprocessedQueues');
                     Route::get('crawlers-inactive', 'inactive');
                     Route::delete('crawlers/{crawler}/destroy', 'forceDelete');
-                    Route::get('crawlers-disable', 'disableProdCrawlers');
+                    // Platform-wide destructive operations: service accounts only.
+                    // disableProdCrawlers() deactivates EVERY user's production
+                    // crawlers; undo/cleanup are equally global.
+                    Route::middleware('can:administer-platform')->group(function (): void {
+                        Route::get('crawlers-disable', 'disableProdCrawlers');
+                        Route::delete('undo', 'undo');
+                        Route::delete('cleanup', 'cleanup');
+                    });
                     Route::get('crawlers-testing', 'testing');
                     Route::get('crawlers-protected', 'index');
-                    Route::delete('undo', 'undo');
-                    Route::delete('cleanup', 'cleanup');
                     Route::post('crawlers/{crawler}/upload', 'upload');
                 });
 

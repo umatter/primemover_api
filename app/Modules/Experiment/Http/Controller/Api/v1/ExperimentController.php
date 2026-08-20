@@ -267,11 +267,15 @@ print(experiments_data)
      */
     public function show(Experiment $experiment): JsonResource
     {
+        $this->authorize('view', $experiment);
+
         return JsonResource::make(ExperimentRepository::getById($experiment));
     }
 
     public function edit(Experiment $experiment): JsonResource
     {
+        $this->authorize('view', $experiment);
+
         return JsonResource::make($experiment);
     }
 
@@ -343,6 +347,8 @@ print(experiments_data)
      */
     public function update(ExperimentStoreRequest $request, Experiment $experiment): JsonResource
     {
+        $this->authorize('update', $experiment);
+
         return JsonResource::make(ExperimentRepository::update($request, $experiment));
     }
 
@@ -382,6 +388,8 @@ print(experiments_data)
      */
     public function destroy(Experiment $experiment): JsonResource
     {
+        $this->authorize('delete', $experiment);
+
         return JsonResource::make([
             'status' => ExperimentRepository::delete($experiment),
         ]);
@@ -423,6 +431,8 @@ print(experiments_data)
      */
     public function forceDelete(Experiment $experiment): JsonResource
     {
+        $this->authorize('delete', $experiment);
+
         return JsonResource::make([
             'status' => ExperimentRepository::forceDelete($experiment),
         ]);
@@ -775,6 +785,8 @@ print(""File downloaded successfully"")
      */
     public function download(Experiment $experiment): Response
     {
+        $this->authorize('view', $experiment);
+
         return ExperimentRepository::download($experiment);
     }
 }

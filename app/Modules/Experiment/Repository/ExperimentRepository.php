@@ -25,12 +25,13 @@ class ExperimentRepository
 
     public function getData(): QueryBuilder
     {
-        return Experiment::queryBuilder();
+        return Experiment::queryBuilder()->visibleTo();
     }
 
     public function all(): Collection
     {
         return $this->experiment->query()
+            ->visibleTo()
             ->select(['id', 'name'])
             ->get();
     }

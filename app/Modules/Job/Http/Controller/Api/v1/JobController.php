@@ -146,6 +146,8 @@ class JobController extends Controller
 
     public function edit(Job $job): JsonResource
     {
+        $this->authorize('view', $job);
+
         return JsonResource::make($job);
     }
 
@@ -185,6 +187,8 @@ class JobController extends Controller
      */
     public function update(UpdateJobRequest $request, Job $job): JsonResource
     {
+        $this->authorize('update', $job);
+
         return JsonResource::make($this->repository->update($request->validated(), $job));
     }
 
@@ -219,6 +223,8 @@ class JobController extends Controller
      */
     public function destroy(Job $job): ResourceCollection
     {
+        $this->authorize('delete', $job);
+
         $this->repository->delete($job);
 
         return ResourceCollection::make(

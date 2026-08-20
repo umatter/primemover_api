@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
+use App\Models\Concerns\ScopesToOwner;
 
 /**
  * @property int    $user_id
@@ -35,6 +36,15 @@ use Spatie\QueryBuilder\QueryBuilder;
  */
 class Queue extends BaseModel
 {
+    use ScopesToOwner;
+
+    /**
+     * Relation path from this model to the owning experiment.
+     *
+     * A run hangs off a crawler (queues.crawler_id).
+     */
+    public const OWNERSHIP_PATH = 'crawler.experiment';
+
     use HasFactory;
 
     protected $guarded = [];
