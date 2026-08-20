@@ -4,6 +4,8 @@ namespace App\Modules\Queue\Http\Request;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
+use App\Rules\OwnedParent;
+use App\Modules\Crawler\Model\Crawler;
 
 class StoreQueueRequest extends FormRequest
 {
@@ -13,7 +15,7 @@ class StoreQueueRequest extends FormRequest
             'name' => ['required'],
             'description' => ['required'],
             'user_id' => ['required'],
-            'crawler_id' => ['required'],
+            'crawler_id' => ['required', new OwnedParent(Crawler::class)],
             'timezone' => ['required'],
             'timezone_utc_offset' => ['required'],
             'active' => [],

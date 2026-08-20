@@ -70,6 +70,13 @@ class Kernel extends HttpKernel
             CorrelationIdMiddleware::class,
             SubstituteBindings::class,
             HeaderMiddleware::class,
+            // Runs before a FormRequest's prepareForValidation(), which is what
+            // re-supplies user_id from Auth::id(), so stripping a client-sent
+            // user_id here cannot break the requests that require the field.
+            // Kept AFTER SubstituteBindings so route-model binding is untouched
+            // -- see the warning in config/primemover.php. Inert while
+            // isolation is off.
+            \App\Http\Middleware\StripClientOwnership::class,
         ],
     ];
 

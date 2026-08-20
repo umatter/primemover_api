@@ -6,6 +6,8 @@ use App\Modules\Job\Enum\JobType;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
+use App\Rules\OwnedParent;
+use App\Modules\Queue\Model\Queue;
 
 class StoreJobRequest extends FormRequest
 {
@@ -16,7 +18,7 @@ class StoreJobRequest extends FormRequest
             'user_id' => ['required'],
             'type' => ['required', Rule::in(JobType::values())],
             'description' => ['nullable'],
-            'queue_id' => ['required'],
+            'queue_id' => ['required', new OwnedParent(Queue::class)],
             // Nullable so the first job in a queue can be created (it has no predecessor).
             // The runner sequences jobs by list/`order`, reconstructing previousJob at runtime
             // (TaskOperator), so a null stored previous_job_id does not affect execution.
