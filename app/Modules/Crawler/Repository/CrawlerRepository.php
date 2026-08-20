@@ -30,6 +30,7 @@ class CrawlerRepository
     public function all(?int $perPage = null): LengthAwarePaginator
     {
         return Crawler::queryBuilder()
+            ->visibleTo()
             ->where('testing', 0)
             ->where('active', 1)
             ->with(['experiment'])
@@ -54,7 +55,7 @@ class CrawlerRepository
 
     public function inactive(): Collection
     {
-        return $this->crawler->query()
+        return $this->crawler->query()->visibleTo()
             ->where('testing', 0)
             ->where('active', 0)
             ->with(
@@ -69,7 +70,7 @@ class CrawlerRepository
 
     public function processed(): Collection
     {
-        return $this->crawler->query()->where('testing', 0)
+        return $this->crawler->query()->visibleTo()->where('testing', 0)
             ->where('active', 1)
             ->with(['queues' => function ($q): void {
                 $q->where('queues.processed', 1);
@@ -90,7 +91,7 @@ class CrawlerRepository
 
     public function unprocessed(): Collection
     {
-        return $this->crawler->query()->where('testing', 0)
+        return $this->crawler->query()->visibleTo()->where('testing', 0)
             ->where('active', 1)
             ->whereHas('queues', function ($q): void {
                 $q->where('processed', 0);
@@ -111,7 +112,7 @@ class CrawlerRepository
 
     public function reviewed(): Collection
     {
-        return $this->crawler->query()->where('testing', 1)
+        return $this->crawler->query()->visibleTo()->where('testing', 1)
             ->where('active', 1)
             ->with(['queues' => function ($q): void {
                 $q->where('queues.reviewed', 1);
@@ -132,7 +133,7 @@ class CrawlerRepository
 
     public function testing(): LengthAwarePaginator
     {
-        return $this->crawler->query()->where('testing', 1)
+        return $this->crawler->query()->visibleTo()->where('testing', 1)
             ->where('active', 1)
             ->with(['queues', 'agent.preferences', 'proxy', 'configuration.preferences'])
             ->paginate(10);
@@ -154,7 +155,7 @@ class CrawlerRepository
     {
         $this->crawler->query()->where('testing', 0)->update(['active' => 0]);
 
-        return $this->crawler->query()->where('active', 0)->get();
+        return $this->crawler->query()->visibleTo()->where('active', 0)->get();
     }
 
     public function forceDelete(Crawler $crawler): Collection

@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
+use App\Models\Concerns\ScopesToOwner;
 
 /**
  * @property int    $user_id
@@ -24,6 +25,15 @@ use Spatie\QueryBuilder\QueryBuilder;
  */
 class Experiment extends BaseModel
 {
+    use ScopesToOwner;
+
+    /**
+     * Relation path from this model to the owning experiment.
+     *
+     * The experiment IS the ownership root.
+     */
+    public const OWNERSHIP_PATH = '';
+
     use HasFactory;
 
     protected $guarded = [];

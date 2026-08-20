@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Spatie\QueryBuilder\QueryBuilder;
+use App\Models\Concerns\ScopesToOwner;
 
 /**
  * @property int    $user_id
@@ -22,6 +23,15 @@ use Spatie\QueryBuilder\QueryBuilder;
  */
 class Report extends BaseModel
 {
+    use ScopesToOwner;
+
+    /**
+     * Relation path from this model to the owning experiment.
+     *
+     * Reports hang off a job (reports.job_id), so the chain is the job's.
+     */
+    public const OWNERSHIP_PATH = 'job.queue.crawler.experiment';
+
     use HasFactory;
 
     public const S3PREFIX = 's3://primemoverrunner/';

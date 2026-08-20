@@ -18,6 +18,7 @@ class QueueRepository
     public function all($crawlerId, $sortBy): LengthAwarePaginator
     {
         return Queue::queryBuilder()
+            ->visibleTo()
             ->when($crawlerId, fn (Builder $query) => $query->where('crawler_id', $crawlerId))
             ->when($sortBy, fn (Builder $query) => $query->orderBy($sortBy))
             ->with(['crawler'])
