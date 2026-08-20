@@ -46,7 +46,9 @@ class QueueRepository
 
     public function job($id): Queue
     {
-        $job = Job::query()->findOrFail($id);
+        // Scoped: this resolves a job id straight from the URL
+        // (GET queues/job/{jobid}) with no policy behind it.
+        $job = Job::query()->visibleTo()->findOrFail($id);
 
         return $job->queue()->first();
     }

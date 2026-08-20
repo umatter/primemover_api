@@ -118,6 +118,8 @@ class ReportController extends Controller
      */
     public function show(Report $report): JsonResource
     {
+        $this->authorize('view', $report);
+
         return JsonResource::make($report);
     }
 
@@ -150,6 +152,8 @@ class ReportController extends Controller
      */
     public function destroy(Report $report): bool
     {
+        $this->authorize('delete', $report);
+
         return ReportRepository::delete($report);
     }
 
@@ -183,6 +187,8 @@ class ReportController extends Controller
      */
     public function getFile(Report $report): \Symfony\Component\HttpFoundation\Response
     {
+        $this->authorize('view', $report);
+
         return ReportRepository::getFile($report);
     }
 
@@ -228,6 +234,8 @@ class ReportController extends Controller
      */
     public function download(Job $job): \Symfony\Component\HttpFoundation\Response
     {
+        $this->authorize('view', $job);
+
         $response = ReportRepository::download($job);
         $filename = $job->getReportZipFilename();
 

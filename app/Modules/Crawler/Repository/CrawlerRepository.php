@@ -151,11 +151,21 @@ class CrawlerRepository
         return $crawler->fresh();
     }
 
+    /**
+     * Disable every production crawler on the platform.
+     *
+     * Deliberately unscoped, in BOTH statements. This is a platform-wide
+     * operation whose route is gated to service accounts via
+     * can:administer-platform. Scoping only the SELECT would be worse than
+     * leaving it alone: the UPDATE would still disable every user's crawlers
+     * while the response showed the caller only their own, hiding the blast
+     * radius of what they had just done.
+     */
     public function disableProdCrawlers(): Collection
     {
         $this->crawler->query()->where('testing', 0)->update(['active' => 0]);
 
-        return $this->crawler->query()->visibleTo()->where('active', 0)->get();
+        return $this->crawler->query()->where('active', 0)->get();
     }
 
     public function forceDelete(Crawler $crawler): Collection

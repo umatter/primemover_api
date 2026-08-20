@@ -2,7 +2,6 @@
 
 namespace App\Policies;
 
-use App\Access\Isolation;
 use App\Models\User;
 use App\Modules\Experiment\Model\Experiment;
 use App\Modules\Job\Model\Job;

@@ -85,6 +85,8 @@ class QueueController extends Controller
      */
     public function show(Queue $queue): JsonResource
     {
+        $this->authorize('view', $queue);
+
         return JsonResource::make($queue->load(['jobs']));
     }
 
@@ -614,6 +616,8 @@ print(queues_data)
 
     public function edit(Queue $queue): JsonResource
     {
+        $this->authorize('view', $queue);
+
         return JsonResource::make($queue);
     }
 
@@ -634,6 +638,8 @@ print(queues_data)
      */
     public function update(UpdateQueueRequest $request, Queue $queue): JsonResource
     {
+        $this->authorize('update', $queue);
+
         return JsonResource::make($this->repository->update($request->validated(), $queue));
     }
 
@@ -655,6 +661,8 @@ print(queues_data)
      */
     public function destroy(Queue $queue): ResourceCollection
     {
+        $this->authorize('delete', $queue);
+
         return ResourceCollection::make($this->repository->delete($queue));
     }
 }
