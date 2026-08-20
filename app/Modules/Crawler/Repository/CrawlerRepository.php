@@ -176,7 +176,7 @@ class CrawlerRepository
         $crawler->queues()->delete();
         $crawler->delete();
 
-        return $this->crawler->with([
+        return $this->crawler->query()->visibleTo()->with([
             'experiment',
             'queues',
             'agent.preferences',
@@ -189,7 +189,7 @@ class CrawlerRepository
     {
         $crawler->delete();
 
-        return $this->crawler->with(
+        return $this->crawler->query()->visibleTo()->with(
             [
                 'experiment',
                 'queues',
@@ -221,7 +221,7 @@ class CrawlerRepository
     {
         $this->crawler->query()->where('updated', 1)->delete();
 
-        return $this->crawler->with(
+        return $this->crawler->query()->visibleTo()->with(
             [
                 'experiment',
                 'queues',
@@ -237,7 +237,7 @@ class CrawlerRepository
     {
         $this->crawler->query()->where('testing', 0)->delete();
 
-        return $this->crawler->with(
+        return $this->crawler->query()->visibleTo()->with(
             [
                 'experiment',
                 'queues',
