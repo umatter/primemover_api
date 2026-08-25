@@ -1,0 +1,51 @@
+# ex63 edge integration -- OPT-IN overlay, NOT auto-loaded.
+#
+# The base docker-compose.yml (and the auto-loaded docker-compose.override.yml)
+# stay portable for local dev and CI: they know nothing about traefik or the
+# shared edge network. This file joins the API's apache container to the shared
+# `ex63_internal` network so the edge traefik can reach it, and declares a
+# SAME-ORIGIN route:
+#
+#     https://primemover.${DOMAIN}/api   -> this API (apache:80)
+#     https://primemover.${DOMAIN}/      -> the GUI    (ex63-infra apps.yml)
+#
+# The GUI's production bundle calls `/api/v1` on its own origin, so with this in
+# place its API_ENDPOINT is left unset -- no second hostname, no CORS.
+#
+# Use on ex63 ONLY, and explicitly (it is not part of the default up):
+#
+#     docker compose \
+#       -f docker-compose.yml \
+#       -f docker-compose.override.yml \
+#       -f docker-compose.ex63.yml \
+#       up -d apache
+#
+# Requires DOMAIN in .env (e.g. `DOMAIN=qamelab.org`) and the `ex63_internal`
+# network to already exist (the ex63-infra edge stack creates it).
+#
+# This does NOT change the 127.0.0.1:8090 host binding or the mysql/redis
+# hardening: traefik reaches apache over the internal docker network, never a
+# published port. The `tailnet-only@file` middleware keeps it reachable from the
+# tailnet only, exactly like the GUI and operator routers.
+services:
+  apache:
+    networks:
+      - primemover-network
+      - ex63_internal
+    labels:
+      traefik.enable: "true"
+      # apache is on two networks; tell traefik which one to dial so it does not
+      # pick the primemover-network address the edge cannot route to.
+      traefik.docker.network: ex63_internal
+      # Same-origin: only /api reaches the API. Host+PathPrefix already outranks
+      # the GUI's Host-only rule by length; the explicit priority keeps that true
+      # if either rule changes.
+      traefik.http.routers.pm-api.rule: Host(`primemover.${DOMAIN}`) && PathPrefix(`/api`)
+      traefik.http.routers.pm-api.priority: "20"
+      traefik.http.routers.pm-api.tls.certresolver: letsencrypt
+      traefik.http.routers.pm-api.middlewares: tailnet-only@file
+      traefik.http.services.pm-api.loadbalancer.server.port: "80"
+
+networks:
+  ex63_internal:
+    external: true
