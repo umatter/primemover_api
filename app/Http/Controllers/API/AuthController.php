@@ -309,7 +309,7 @@ print(login_data)
             ]);
         }
 
-        Log::alert(now(), ['email' => $email]);
+        Log::notice('Password reset requested for unknown or throttled address', ['email' => $email, 'status' => $response]);
 
         return response()->json([
             'status' => false,
