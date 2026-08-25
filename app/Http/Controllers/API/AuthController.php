@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Password;
 use Symfony\Component\HttpFoundation\Response;
@@ -315,6 +316,61 @@ print(login_data)
             'status' => false,
             'message' => trans($response),
         ], 400);
+    }
+
+    /**
+     * @OA\Post(
+     *     path="/auth/change-password",
+     *     summary="Change the authenticated user's password",
+     *     tags={"Authentication"},
+     *     security={{"bearerAuth":{}}},
+     *
+     *     @OA\RequestBody(
+     *         required=true,
+     *
+     *         @OA\JsonContent(
+     *             required={"current_password","password","password_confirmation"},
+     *
+     *             @OA\Property(property="current_password", type="string", format="password"),
+     *             @OA\Property(property="password", type="string", format="password", description="Min 8 chars, one uppercase, one digit, one special char"),
+     *             @OA\Property(property="password_confirmation", type="string", format="password")
+     *         )
+     *     ),
+     *
+     *     @OA\Response(response=200, description="Password changed; other sessions' tokens revoked"),
+     *     @OA\Response(response=401, description="Unauthorized"),
+     *     @OA\Response(response=422, description="Wrong current password or new password too weak")
+     * )
+     */
+    public function changePassword(Request $request): JsonResponse
+    {
+        $request->validate([
+            'current_password' => ['required', 'current_password:api'],
+            'password' => [
+                'required',
+                'confirmed',
+                'string',
+                'min:8',
+                'different:current_password',
+                'regex:/^(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).+$/',
+            ],
+        ]);
+
+        /** @var User $user */
+        $user = $request->user();
+        $user->password = Hash::make($request->input('password'));
+        $user->save();
+
+        // A changed password should end every other session. Keep the token
+        // that made this request so the caller stays signed in.
+        $current = $user->token();
+        $user->tokens()
+            ->when($current, fn ($q) => $q->where('id', '!=', $current->id))
+            ->update(['revoked' => true]);
+
+        Log::info('Password changed', ['user_id' => $user->id]);
+
+        return response()->json(['message' => 'Password changed.']);
     }
 
     /**
