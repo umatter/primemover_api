@@ -119,6 +119,7 @@ Route::prefix('v1')->middleware('throttleIp:1000,1')
 
             Route::middleware(['auth:api'])->group(function (): void {
                 Route::get('auth/user', 'user');
+                Route::post('auth/change-password', 'changePassword');
             });
         });
 
