@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Password;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
+use Symfony\Component\Mailer\Exception\UnexpectedResponseException;
 
 class AuthController extends Controller
 {
@@ -284,7 +286,21 @@ print(login_data)
         $request->validate(['email' => 'required|email']);
 
         $email = $request->email;
-        $response = Password::broker()->sendResetLink($request->only('email'));
+
+        try {
+            $response = Password::broker()->sendResetLink($request->only('email'));
+        } catch (TransportExceptionInterface|UnexpectedResponseException $e) {
+            // The mailer is misconfigured or the relay is down. Without this the
+            // user gets a stack trace (with APP_DEBUG) or a bare 500, and either
+            // way believes their address is unknown. The token was created, but
+            // the broker throttles re-requests, so tell them to wait.
+            Log::error('Password reset email could not be sent', ['email' => $email, 'error' => $e->getMessage()]);
+
+            return response()->json([
+                'status' => false,
+                'message' => 'The password reset email could not be sent. Please contact an administrator.',
+            ], Response::HTTP_SERVICE_UNAVAILABLE);
+        }
 
         if (Password::RESET_LINK_SENT === $response) {
             return response()->json([
