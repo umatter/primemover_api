@@ -37,11 +37,12 @@ services:
       # apache is on two networks; tell traefik which one to dial so it does not
       # pick the primemover-network address the edge cannot route to.
       traefik.docker.network: ex63_internal
-      # Same-origin: only /api reaches the API. Host+PathPrefix already outranks
-      # the GUI's Host-only rule by length; the explicit priority keeps that true
-      # if either rule changes.
+      # Same-origin: only /api reaches the API. A router's default priority is
+      # its rule LENGTH, so the GUI's Host-only rule already scores ~30; any
+      # explicit value here must beat that, not merely be non-zero. "20" was
+      # tried first and silently routed /api to the GUI.
       traefik.http.routers.pm-api.rule: Host(`primemover.${DOMAIN}`) && PathPrefix(`/api`)
-      traefik.http.routers.pm-api.priority: "20"
+      traefik.http.routers.pm-api.priority: "100"
       traefik.http.routers.pm-api.tls.certresolver: letsencrypt
       traefik.http.routers.pm-api.middlewares: tailnet-only@file
       traefik.http.services.pm-api.loadbalancer.server.port: "80"
