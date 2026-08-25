@@ -32,7 +32,16 @@ class FormDataHandler
 
     protected function getDataFromContent(Request $request): ?array
     {
-        return [self::DATA_KEY => JsonHelper::jsonToArray($request->getContent())];
+        $content = $request->getContent();
+
+        // A multipart upload has an empty raw body (the JSON is in the file).
+        // Decoding '' throws, and JsonHelper logs that at ALERT -- one false
+        // alert per experiment upload.
+        if ('' === trim((string) $content)) {
+            return null;
+        }
+
+        return [self::DATA_KEY => JsonHelper::jsonToArray($content)];
     }
 
     protected function getDataFromUploadedFile(Request $request): ?array

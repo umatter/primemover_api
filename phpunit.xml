@@ -18,6 +18,9 @@
     <server name="BCRYPT_ROUNDS" value="4"/>
     <server name="CACHE_DRIVER" value="array"/>
     <server name="MAIL_MAILER" value="array"/>
+    <!-- Tests run inside the same container as the live API and would otherwise
+         write testing.ERROR lines into storage/logs/laravel.log, which Loki ingests. -->
+    <server name="LOG_CHANNEL" value="null"/>
     <server name="QUEUE_CONNECTION" value="sync"/>
     <server name="SESSION_DRIVER" value="array"/>
     <server name="TELESCOPE_ENABLED" value="false"/>

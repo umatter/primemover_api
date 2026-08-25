@@ -1,5 +1,6 @@
 <?php
 
+use Monolog\Handler\NullHandler;
 use Monolog\Handler\StreamHandler;
 use Monolog\Handler\SyslogUdpHandler;
 
@@ -87,6 +88,15 @@ return [
         'errorlog' => [
             'driver' => 'errorlog',
             'level' => 'debug',
+        ],
+
+        // Laravel's stock channel; phpunit.xml selects it so tests do not write
+        // to the live log. Referencing an undefined channel is worse than any
+        // channel: Laravel falls back to the emergency logger, which writes
+        // EVERY call to laravel.log at EMERGENCY.
+        'null' => [
+            'driver' => 'monolog',
+            'handler' => NullHandler::class,
         ],
     ],
 ];
