@@ -53,6 +53,12 @@ return [
 
     'url' => env('APP_URL', 'http://localhost'),
 
+    /*
+    | Where the GUI is served. Links that land in a browser (the password reset
+    | email) are built on this, not on APP_URL, which is the API's own origin.
+    */
+    'frontend_url' => rtrim(env('URL_FRONTEND', env('APP_URL', 'http://localhost')), '/'),
+
     'asset_url' => env('ASSET_URL', null),
 
     /*
