@@ -19,7 +19,9 @@ class FormDataHandler
     {
         $formData = $this->getData($request);
 
-        return $next($request->merge($formData));
+        // Empty body and no JSON file: nothing to merge. merge() is array-typed,
+        // so passing the null through would be a TypeError (500), not a 422.
+        return $next($formData ? $request->merge($formData) : $request);
     }
 
     protected function getData(Request $request): ?array
