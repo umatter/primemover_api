@@ -73,6 +73,39 @@ claude mcp list
 
 See **[MCP_SERVER_SETUP.md](MCP_SERVER_SETUP.md)** for complete instructions and Claude Desktop setup.
 
+## Accounts and passwords
+
+| what | how |
+|---|---|
+| sign in (GUI, scripts) | `POST /api/v1/auth/token` with `username` + `password` (Passport password grant; the client secret is injected server-side). A wrong password is **400 `invalid_grant`**, not 401. |
+| change own password | `POST /api/v1/auth/change-password` (bearer auth) with `current_password`, `password`, `password_confirmation`. Revokes the user's other tokens. |
+| forgot password | `POST /api/v1/forgot-password` emails a link to `URL_FRONTEND/password/reset/<token>?email=…`; `POST /api/v1/reset-password` completes it. A dead mail relay is a clean 503, not a stack trace. |
+| admin fallback | `php artisan user:set-password <email>` prompts for the password (never pass it as an argument or inside a tinker one-liner — `$` in a double-quoted PHP string has already stored the wrong value once). |
+
+Password rule everywhere: at least 8 characters, one uppercase, one digit, one
+special character.
+
+Reset mail needs two things in `.env`: `URL_FRONTEND` (where the GUI is served
+— the link is built on it, via `config('app.frontend_url')`) and a working
+`MAIL_*` relay (`MAIL_MAILER=smtp`, host/port/encryption/credentials,
+`MAIL_FROM_ADDRESS` matching the relay's sender). Mailtrap is a sandbox and
+delivers nothing.
+
+## Deployment notes
+
+- **Debug off in any deployment**: `APP_ENV=production`, `APP_DEBUG=false`.
+  With debug on, every unhandled exception returns its full stack trace to the
+  browser. Error detail still lands in `storage/logs/laravel.log`.
+- **ex63 edge**: `docker-compose.ex63.yml` is an opt-in overlay that joins
+  `apache` to the shared `ex63_internal` network and routes
+  `https://primemover.${DOMAIN}/api` to it (same origin as the GUI — no CORS,
+  no second hostname). Apply with
+  `docker compose -f docker-compose.yml -f docker-compose.override.yml -f docker-compose.ex63.yml up -d apache`;
+  needs `DOMAIN` in `.env`. The base compose stays portable and untouched.
+- **Tests log nowhere**: `phpunit.xml` sets `LOG_CHANNEL=null` (a channel
+  defined in `config/logging.php`). Tests run in the same container as the live
+  API and used to write `testing.ERROR` lines into the production log.
+
 ## Technology Stack
 
 - **Backend**: Laravel 10, PHP 8.1+, MySQL 8.0, Redis
