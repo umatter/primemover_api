@@ -50,4 +50,20 @@ class FormDataHandlerTest extends TestCase
         $this->assertSame(['a' => 1], $merged->input(FormDataHandler::DATA_KEY));
         Log::shouldNotHaveReceived('alert');
     }
+
+    /**
+     * @covers ::handle
+     */
+    public function test_empty_body_without_a_file_passes_the_request_through(): void
+    {
+        Log::spy();
+
+        $request = Request::create('/upload', 'POST', [], [], [], ['CONTENT_TYPE' => 'multipart/form-data']);
+
+        $merged = (new FormDataHandler())->handle($request, fn (Request $r) => $r);
+
+        $this->assertSame($request, $merged);
+        $this->assertNull($merged->input(FormDataHandler::DATA_KEY));
+        Log::shouldNotHaveReceived('alert');
+    }
 }
