@@ -16,6 +16,9 @@ jobs:
       with:
         php-version: '8.1'
     - uses: actions/checkout@v7
+      with:
+        # Pint's --diff needs the base branch to compare against.
+        fetch-depth: 0
     - name: Copy .env
       run: php -r "file_exists('.env') || copy('.env.example', '.env');"
     - name: Copy public key
@@ -35,5 +38,14 @@ jobs:
         DB_CONNECTION: sqlite
         DB_DATABASE: database/database.sqlite
       run: vendor/bin/phpunit
-    - name: Execute laravel pint (code format standards)
-      run: composer lint
+    # `composer lint` used to run Pint in WRITE mode, so this step could never
+    # fail: it rewrote ~100 source files on every run and exited 0 whatever it
+    # found. `lint` now checks (--test) and `format` writes; the two are no
+    # longer the same command.
+    #
+    # CI checks only what the change touched. A full-tree `composer lint` still
+    # reports 96 pre-existing style issues across app/, database/, config/ and
+    # tests/, and gating on those would mean landing a ~100-file reformat before
+    # any of this could be enforced. --diff enforces it from here forward.
+    - name: Check code style (Laravel Pint)
+      run: vendor/bin/pint --test --diff=origin/${{ github.base_ref || github.event.repository.default_branch }}

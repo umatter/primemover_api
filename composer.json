@@ -89,13 +89,28 @@
     "post-install-cmd": [
       "@php artisan cache:clear"
     ],
-    "lint": [
+    "format": [
       "./vendor/bin/pint app",
       "./vendor/bin/pint database",
       "./vendor/bin/pint config",
       "./vendor/bin/pint routes",
       "./vendor/bin/pint tests"
+    ],
+    "lint": [
+      "./vendor/bin/pint --test app",
+      "./vendor/bin/pint --test database",
+      "./vendor/bin/pint --test config",
+      "./vendor/bin/pint --test routes",
+      "./vendor/bin/pint --test tests"
+    ],
+    "lint-changed": [
+      "./vendor/bin/pint --test --diff=origin/master"
     ]
+  },
+  "scripts-descriptions": {
+    "format": "Rewrite app/database/config/routes/tests with Laravel Pint. Local use only -- it edits files.",
+    "lint": "Check the whole tree against Pint without writing anything. Reports the pre-existing style debt too.",
+    "lint-changed": "Check only what this branch changed since origin/master. This is what CI runs."
   },
   "extra": {
     "laravel": {
