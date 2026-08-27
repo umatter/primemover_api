@@ -7,6 +7,8 @@ use App\Modules\Queue\Http\Request\RunnerQueueUpdateRequest;
 use App\Modules\Queue\Model\Queue;
 use App\Modules\Queue\Repository\QueueRepository;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 /**
  * @OA\Tag(
@@ -16,9 +18,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
  */
 class RunnerQueueController extends Controller
 {
-    public function __construct(protected QueueRepository $repository)
-    {
-    }
+    public function __construct(protected QueueRepository $repository) {}
 
     /**
      * @OA\Put(
@@ -28,23 +28,28 @@ class RunnerQueueController extends Controller
      *     operationId="runnerUpdateQueue",
      *     tags={"Runner - Queues"},
      *     security={{"bearerAuth": {}}},
+     *
      *     @OA\Parameter(
      *         name="queue",
      *         in="path",
      *         description="Queue ID",
      *         required=true,
+     *
      *         @OA\Schema(type="integer", example=1)
      *     ),
+     *
      *     @OA\RequestBody(
      *         required=true,
      *         description="Queue update data from runner",
+     *
      *         @OA\JsonContent(
      *             type="object",
+     *
      *             @OA\Property(
      *                 property="status_code",
      *                 type="string",
-     *                 enum={"pending", "running", "completed", "failed", "cancelled"},
-     *                 description="Current queue status",
+     *                 enum={"running", "success", "failure", "skipped"},
+     *                 description="Current run status. A queue has no 'warning' state -- that one is job-only. Not validated against this list: an unknown code is stored as sent rather than rejected, so a new runner state can never leave a run stuck mid-flight.",
      *                 example="running"
      *             ),
      *             @OA\Property(
@@ -110,11 +115,14 @@ class RunnerQueueController extends Controller
      *             )
      *         )
      *     ),
+     *
      *     @OA\Response(
      *         response=200,
      *         description="Queue updated successfully",
+     *
      *         @OA\JsonContent(
      *             type="object",
+     *
      *             @OA\Property(
      *                 property="data",
      *                 type="object",
@@ -132,24 +140,33 @@ class RunnerQueueController extends Controller
      *             )
      *         )
      *     ),
+     *
      *     @OA\Response(
      *         response=401,
      *         description="Unauthorized",
+     *
      *         @OA\JsonContent(
+     *
      *             @OA\Property(property="message", type="string", example="Unauthenticated")
      *         )
      *     ),
+     *
      *     @OA\Response(
      *         response=404,
      *         description="Queue not found",
+     *
      *         @OA\JsonContent(
+     *
      *             @OA\Property(property="message", type="string", example="Queue not found")
      *         )
      *     ),
+     *
      *     @OA\Response(
      *         response=422,
      *         description="Validation error",
+     *
      *         @OA\JsonContent(
+     *
      *             @OA\Property(property="message", type="string", example="The given data was invalid."),
      *             @OA\Property(
      *                 property="errors",
@@ -157,6 +174,7 @@ class RunnerQueueController extends Controller
      *                 @OA\Property(
      *                     property="status_code",
      *                     type="array",
+     *
      *                     @OA\Items(type="string", example="The status code field is required.")
      *                 )
      *             )
@@ -166,6 +184,85 @@ class RunnerQueueController extends Controller
      */
     public function update(RunnerQueueUpdateRequest $request, Queue $queue): JsonResource
     {
-        return JsonResource::make($this->repository->update($request->validated(), $queue));
+        $data = $request->validated();
+
+        // Read before the write: afterwards the row *is* the report, so there
+        // is nothing left to compare it against.
+        $repeat = $this->isRepeatReport($queue, $data);
+
+        $updated = $this->repository->update($data, $queue);
+
+        if ( ! $repeat) {
+            $this->logBadOutcome($updated);
+        }
+
+        return JsonResource::make($updated);
+    }
+
+    /**
+     * True when this report says exactly what the row already says.
+     *
+     * The runner retries a failed PUT, so the same failed run arrives more than
+     * once and two identical log lines read as two failed runs. A run that
+     * moves running -> failure, or fails a second time with a different
+     * diagnostic, is not a repeat and is logged.
+     *
+     * @param array<string, mixed> $data
+     */
+    private function isRepeatReport(Queue $queue, array $data): bool
+    {
+        if (Queue::normalizeStatus($queue->status_code) !== Queue::normalizeStatus($data['status_code'] ?? null)) {
+            return false;
+        }
+
+        if ( ! array_key_exists('status_message', $data)) {
+            return true;
+        }
+
+        return (string) $queue->status_message === (string) $data['status_message'];
+    }
+
+    /**
+     * Record a failed run that has actually been persisted.
+     *
+     * Nothing in the API used to notice: a queue could come back
+     * 'failure - initialisation failed' and leave no log line anywhere. Runs on
+     * every queue update, so it costs a normalise and two comparisons unless
+     * the news is actually bad.
+     *
+     * Called *after* the repository write, and reads the persisted row rather
+     * than the request body, so a write that throws no longer leaves a log line
+     * announcing a failure the database never recorded.
+     *
+     * A queue is never 'warning' under the current contract (that state is
+     * job-only), but it is handled here so a future runner that reports one
+     * does not go silently unlogged.
+     *
+     * Warning, not error: a bot session failing is not a fault in this API, and
+     * logging it at error level makes the API's error rate track the fleet's
+     * failure rate -- one alert firing twice, once under the wrong name. error
+     * stays for faults in this service.
+     */
+    private function logBadOutcome(Queue $queue): void
+    {
+        $status = Queue::normalizeStatus($queue->status_code);
+
+        if (Queue::STATUS_FAILURE !== $status && Queue::STATUS_WARNING !== $status) {
+            return;
+        }
+
+        $context = [
+            'queue_id' => $queue->id,
+            'crawler_id' => $queue->crawler_id,
+            'status_code' => $queue->status_code,
+            'status_message' => Str::limit((string) $queue->status_message, 500),
+        ];
+
+        Log::warning(
+            Queue::STATUS_FAILURE === $status
+                ? 'runner reported queue failure'
+                : 'runner reported degraded queue',
+            $context
+        );
     }
 }

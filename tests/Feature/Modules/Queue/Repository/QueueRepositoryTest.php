@@ -25,7 +25,7 @@ class QueueRepositoryTest extends TestCase
     /**
      * @covers ::all
      */
-    public function testGetData(): void
+    public function test_get_data(): void
     {
         $sortBy = 'created_at';
 
@@ -49,7 +49,19 @@ class QueueRepositoryTest extends TestCase
         $this->assertInstanceOf(LengthAwarePaginator::class, $result);
 
         foreach ($result as $queue) {
-            unset($queue->crawler, $queue->created_at, $queue->updated_at);
+            // The list query carries the job-outcome rollup (withJobOutcomeCounts),
+            // and those are count subselects, not columns -- assertDatabaseHas
+            // would look for a jobs_warning_count column and never find one.
+            unset(
+                $queue->crawler,
+                $queue->created_at,
+                $queue->updated_at,
+                $queue->jobs_count,
+                $queue->jobs_succeeded_count,
+                $queue->jobs_warning_count,
+                $queue->jobs_failed_count,
+                $queue->jobs_skipped_count,
+            );
 
             $this->assertInstanceOf(Queue::class, $queue);
             $this->assertDatabaseHas('queues', $queue->toArray());
@@ -59,7 +71,7 @@ class QueueRepositoryTest extends TestCase
     /**
      * @covers ::save
      */
-    public function testSave(): void
+    public function test_save(): void
     {
         $proxy = Proxy::factory()->create();
         $agent = Agent::factory()->create();
@@ -90,7 +102,7 @@ class QueueRepositoryTest extends TestCase
     /**
      * @covers ::update
      */
-    public function testUpdate(): void
+    public function test_update(): void
     {
         $data = [
             'name' => 'Session update',
@@ -126,7 +138,7 @@ class QueueRepositoryTest extends TestCase
     /**
      * @covers ::delete
      */
-    public function testDelete(): void
+    public function test_delete(): void
     {
         $proxy = Proxy::factory()->create();
         $agent = Agent::factory()->create();
@@ -156,7 +168,7 @@ class QueueRepositoryTest extends TestCase
     /**
      * @covers ::job
      */
-    public function testJob(): void
+    public function test_job(): void
     {
         $proxy = Proxy::factory()->create();
         $agent = Agent::factory()->create();
@@ -182,7 +194,7 @@ class QueueRepositoryTest extends TestCase
     /**
      * @covers ::processed
      */
-    public function testProcessed(): void
+    public function test_processed(): void
     {
         $service = new QueueRepository(new Queue());
         $result = $service->processed();
@@ -198,7 +210,7 @@ class QueueRepositoryTest extends TestCase
     /**
      * @covers ::unprocessed
      */
-    public function testUnprocessed(): void
+    public function test_unprocessed(): void
     {
         $service = new QueueRepository(new Queue());
         $result = $service->unprocessed();
@@ -214,7 +226,7 @@ class QueueRepositoryTest extends TestCase
     /**
      * @covers ::reviewed
      */
-    public function testReviewed(): void
+    public function test_reviewed(): void
     {
         $service = new QueueRepository(new Queue());
         $result = $service->reviewed();
@@ -230,7 +242,7 @@ class QueueRepositoryTest extends TestCase
     /**
      * @covers ::unreviewed
      */
-    public function testUnreviewed(): void
+    public function test_unreviewed(): void
     {
         $service = new QueueRepository(new Queue());
         $result = $service->unreviewed();
@@ -246,7 +258,7 @@ class QueueRepositoryTest extends TestCase
     /**
      * @covers ::experimentUnreviewed
      */
-    public function testExperimentUnreviewed(): void
+    public function test_experiment_unreviewed(): void
     {
         $experiment = Experiment::factory()->create();
 
@@ -265,7 +277,7 @@ class QueueRepositoryTest extends TestCase
     /**
      * @covers ::experimentReviewed
      */
-    public function testExperimentReviewed(): void
+    public function test_experiment_reviewed(): void
     {
         $experiment = Experiment::factory()->create();
 
@@ -283,7 +295,7 @@ class QueueRepositoryTest extends TestCase
     /**
      * @covers ::experimentUnprocessed
      */
-    public function testExperimentUnprocessed(): void
+    public function test_experiment_unprocessed(): void
     {
         $experiment = Experiment::factory()->create();
 
@@ -301,7 +313,7 @@ class QueueRepositoryTest extends TestCase
     /**
      * @covers ::experimentProcessed
      */
-    public function testExperimentProcessed(): void
+    public function test_experiment_processed(): void
     {
         $experiment = Experiment::factory()->create();
 
