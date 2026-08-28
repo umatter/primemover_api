@@ -31,8 +31,8 @@ class CorrelationIdMiddleware
     /**
      * Handle an incoming request.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure  $next
+     * @param  \Illuminate\Http\Request $request
+     * @param  Closure                  $next
      * @return mixed
      */
     public function handle(Request $request, Closure $next)
@@ -43,7 +43,7 @@ class CorrelationIdMiddleware
         // Extract correlation ID from header or build from request
         $correlationId = $request->header('X-Correlation-Id');
 
-        if (!$correlationId) {
+        if ( ! $correlationId) {
             $correlationId = $this->buildCorrelationId($request);
         }
 
@@ -85,7 +85,7 @@ class CorrelationIdMiddleware
     /**
      * Build correlation ID from request parameters.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\Request $request
      * @return string|null
      */
     protected function buildCorrelationId(Request $request): ?string
@@ -133,7 +133,7 @@ class CorrelationIdMiddleware
     /**
      * Parse correlation ID into components.
      *
-     * @param  string|null  $correlationId
+     * @param  string|null $correlationId
      * @return array
      */
     protected function parseCorrelationId(?string $correlationId): array
@@ -145,7 +145,7 @@ class CorrelationIdMiddleware
             'job_id' => null,
         ];
 
-        if (!$correlationId) {
+        if ( ! $correlationId) {
             return $context;
         }
 
@@ -175,8 +175,8 @@ class CorrelationIdMiddleware
     /**
      * Enrich context from route parameters.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  array  $context
+     * @param  \Illuminate\Http\Request $request
+     * @param  array                    $context
      * @return array
      */
     protected function enrichFromRoute(Request $request, array $context): array
@@ -189,24 +189,24 @@ class CorrelationIdMiddleware
             if (is_object($value) && method_exists($value, 'getKey')) {
                 $id = $value->getKey();
 
-                if (str_contains(strtolower($key), 'experiment')) {
+                if (str_contains(mb_strtolower($key), 'experiment')) {
                     $context['experiment_id'] = $context['experiment_id'] ?? $id;
-                } elseif (str_contains(strtolower($key), 'crawler')) {
+                } elseif (str_contains(mb_strtolower($key), 'crawler')) {
                     $context['crawler_id'] = $context['crawler_id'] ?? $id;
-                } elseif (str_contains(strtolower($key), 'queue') || str_contains(strtolower($key), 'joblist')) {
+                } elseif (str_contains(mb_strtolower($key), 'queue') || str_contains(mb_strtolower($key), 'joblist')) {
                     $context['queue_id'] = $context['queue_id'] ?? $id;
-                } elseif (str_contains(strtolower($key), 'job')) {
+                } elseif (str_contains(mb_strtolower($key), 'job')) {
                     $context['job_id'] = $context['job_id'] ?? $id;
                 }
             } elseif (is_numeric($value)) {
                 // Handle raw IDs
-                if (str_contains(strtolower($key), 'experiment')) {
+                if (str_contains(mb_strtolower($key), 'experiment')) {
                     $context['experiment_id'] = $context['experiment_id'] ?? (int) $value;
-                } elseif (str_contains(strtolower($key), 'crawler')) {
+                } elseif (str_contains(mb_strtolower($key), 'crawler')) {
                     $context['crawler_id'] = $context['crawler_id'] ?? (int) $value;
-                } elseif (str_contains(strtolower($key), 'queue') || str_contains(strtolower($key), 'joblist')) {
+                } elseif (str_contains(mb_strtolower($key), 'queue') || str_contains(mb_strtolower($key), 'joblist')) {
                     $context['queue_id'] = $context['queue_id'] ?? (int) $value;
-                } elseif (str_contains(strtolower($key), 'job')) {
+                } elseif (str_contains(mb_strtolower($key), 'job')) {
                     $context['job_id'] = $context['job_id'] ?? (int) $value;
                 }
             }
@@ -218,23 +218,23 @@ class CorrelationIdMiddleware
     /**
      * Build final correlation ID from context.
      *
-     * @param  array  $context
+     * @param  array       $context
      * @return string|null
      */
     protected function buildFinalCorrelationId(array $context): ?string
     {
         $parts = [];
 
-        if (!empty($context['experiment_id'])) {
+        if ( ! empty($context['experiment_id'])) {
             $parts[] = "exp-{$context['experiment_id']}";
         }
-        if (!empty($context['crawler_id'])) {
+        if ( ! empty($context['crawler_id'])) {
             $parts[] = "cr-{$context['crawler_id']}";
         }
-        if (!empty($context['queue_id'])) {
+        if ( ! empty($context['queue_id'])) {
             $parts[] = "q-{$context['queue_id']}";
         }
-        if (!empty($context['job_id'])) {
+        if ( ! empty($context['job_id'])) {
             $parts[] = "j-{$context['job_id']}";
         }
 

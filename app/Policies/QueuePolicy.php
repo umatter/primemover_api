@@ -34,7 +34,7 @@ class QueuePolicy
     /** Shared tail of every derived chain. Missing ancestor means not owned. */
     protected function ownedViaExperiment(User $user, ?Experiment $experiment): bool
     {
-        if ($experiment === null) {
+        if (null === $experiment) {
             return false;
         }
 

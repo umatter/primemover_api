@@ -17,9 +17,7 @@ use Illuminate\Http\Resources\Json\ResourceCollection;
  */
 class ParamController extends Controller
 {
-    public function __construct(protected ParamRepository $repository)
-    {
-    }
+    public function __construct(protected ParamRepository $repository) {}
 
     /**
      * @OA\Get(
@@ -29,16 +27,21 @@ class ParamController extends Controller
      *     operationId="getParams",
      *     tags={"Params"},
      *     security={{"bearerAuth": {}}},
+     *
      *     @OA\Response(
      *         response=200,
      *         description="List of parameters",
+     *
      *         @OA\JsonContent(
      *             type="object",
+     *
      *             @OA\Property(
      *                 property="data",
      *                 type="array",
+     *
      *                 @OA\Items(
      *                     type="object",
+     *
      *                     @OA\Property(property="id", type="integer", example=1),
      *                     @OA\Property(property="pi", type="number", example=-0.5),
      *                     @OA\Property(property="psi", type="number", example=0.08),
@@ -52,6 +55,7 @@ class ParamController extends Controller
      *             )
      *         )
      *     ),
+     *
      *     @OA\Response(response=401, description="Unauthorized")
      * )
      */
@@ -70,9 +74,12 @@ class ParamController extends Controller
      *     operationId="createParam",
      *     tags={"Params"},
      *     security={{"bearerAuth": {}}},
+     *
      *     @OA\RequestBody(
      *         required=true,
+     *
      *         @OA\JsonContent(
+     *
      *             @OA\Property(property="pi", type="number", example=-0.5),
      *             @OA\Property(property="psi", type="number", example=0.08),
      *             @OA\Property(property="alpha", type="number", example=0.36),
@@ -82,11 +89,14 @@ class ParamController extends Controller
      *             @OA\Property(property="configuration_id", type="integer", example=1)
      *         )
      *     ),
+     *
      *     @OA\Response(
      *         response=201,
      *         description="Parameter created successfully",
+     *
      *         @OA\JsonContent(type="object")
      *     ),
+     *
      *     @OA\Response(response=401, description="Unauthorized"),
      *     @OA\Response(response=422, description="Validation error")
      * )
@@ -106,18 +116,23 @@ class ParamController extends Controller
      *     operationId="getParam",
      *     tags={"Params"},
      *     security={{"bearerAuth": {}}},
+     *
      *     @OA\Parameter(
      *         name="id",
      *         in="path",
      *         description="Parameter ID",
      *         required=true,
+     *
      *         @OA\Schema(type="integer")
      *     ),
+     *
      *     @OA\Response(
      *         response=200,
      *         description="Parameter details",
+     *
      *         @OA\JsonContent(type="object")
      *     ),
+     *
      *     @OA\Response(response=401, description="Unauthorized"),
      *     @OA\Response(response=404, description="Parameter not found")
      * )
@@ -142,16 +157,21 @@ class ParamController extends Controller
      *     operationId="updateParam",
      *     tags={"Params"},
      *     security={{"bearerAuth": {}}},
+     *
      *     @OA\Parameter(
      *         name="id",
      *         in="path",
      *         description="Parameter ID",
      *         required=true,
+     *
      *         @OA\Schema(type="integer")
      *     ),
+     *
      *     @OA\RequestBody(
      *         required=true,
+     *
      *         @OA\JsonContent(
+     *
      *             @OA\Property(property="pi", type="number"),
      *             @OA\Property(property="psi", type="number"),
      *             @OA\Property(property="alpha", type="number"),
@@ -160,11 +180,14 @@ class ParamController extends Controller
      *             @OA\Property(property="beta", type="number")
      *         )
      *     ),
+     *
      *     @OA\Response(
      *         response=200,
      *         description="Parameter updated successfully",
+     *
      *         @OA\JsonContent(type="object")
      *     ),
+     *
      *     @OA\Response(response=401, description="Unauthorized"),
      *     @OA\Response(response=404, description="Parameter not found"),
      *     @OA\Response(response=422, description="Validation error")
@@ -183,21 +206,27 @@ class ParamController extends Controller
      *     operationId="deleteParam",
      *     tags={"Params"},
      *     security={{"bearerAuth": {}}},
+     *
      *     @OA\Parameter(
      *         name="id",
      *         in="path",
      *         description="Parameter ID",
      *         required=true,
+     *
      *         @OA\Schema(type="integer")
      *     ),
+     *
      *     @OA\Response(
      *         response=200,
      *         description="Parameter deleted successfully",
+     *
      *         @OA\JsonContent(
      *             type="object",
+     *
      *             @OA\Property(property="data", type="array", @OA\Items(type="object"))
      *         )
      *     ),
+     *
      *     @OA\Response(response=401, description="Unauthorized"),
      *     @OA\Response(response=404, description="Parameter not found")
      * )

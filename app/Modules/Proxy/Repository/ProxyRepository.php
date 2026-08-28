@@ -10,9 +10,7 @@ use Illuminate\Support\Facades\Auth;
 
 class ProxyRepository
 {
-    public function __construct(protected Proxy $proxy)
-    {
-    }
+    public function __construct(protected Proxy $proxy) {}
 
     public function all($data): ResourceCollection
     {

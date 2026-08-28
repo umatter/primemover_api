@@ -4,13 +4,13 @@ namespace App\Modules\Report\Model;
 
 use App\Events\ModelUpdateEvent;
 use App\Models\BaseModel;
+use App\Models\Concerns\ScopesToOwner;
 use App\Models\User;
 use App\Modules\Job\Model\Job;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Spatie\QueryBuilder\QueryBuilder;
-use App\Models\Concerns\ScopesToOwner;
 
 /**
  * @property int    $user_id
@@ -23,6 +23,7 @@ use App\Models\Concerns\ScopesToOwner;
  */
 class Report extends BaseModel
 {
+    use HasFactory;
     use ScopesToOwner;
 
     /**
@@ -31,8 +32,6 @@ class Report extends BaseModel
      * Reports hang off a job (reports.job_id), so the chain is the job's.
      */
     public const OWNERSHIP_PATH = 'job.queue.crawler.experiment';
-
-    use HasFactory;
 
     public const S3PREFIX = 's3://primemoverrunner/';
 
@@ -57,7 +56,7 @@ class Report extends BaseModel
 
     public static function bootedSaved(Model $model): void
     {
-        //ModelUpdateEvent::dispatch($model);
+        // ModelUpdateEvent::dispatch($model);
     }
 
     public static function queryBuilder(): QueryBuilder

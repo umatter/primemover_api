@@ -9,9 +9,7 @@ use Illuminate\Support\Facades\Auth;
 
 class ParamRepository
 {
-    public function __construct(protected Param $param)
-    {
-    }
+    public function __construct(protected Param $param) {}
 
     public function all(): Collection
     {

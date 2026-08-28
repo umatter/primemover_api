@@ -18,7 +18,7 @@ class TermControllerTest extends TestCase
     /**
      * @covers ::index
      */
-    public function testIndex(): void
+    public function test_index(): void
     {
         Term::query()->create([
             'bigram' => 'testing',

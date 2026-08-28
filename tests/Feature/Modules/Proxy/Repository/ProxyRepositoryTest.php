@@ -20,7 +20,7 @@ class ProxyRepositoryTest extends TestCase
     /**
      * @covers ::all
      */
-    public function testGetData(): void
+    public function test_get_data(): void
     {
         $data = m::mock(Request::class)->makePartial();
         $data->allows('getPaged')->andReturns(1);
@@ -39,7 +39,7 @@ class ProxyRepositoryTest extends TestCase
     /**
      * @covers ::save
      */
-    public function testSave(): void
+    public function test_save(): void
     {
         $data = [
             'name' => 'name',
@@ -62,7 +62,7 @@ class ProxyRepositoryTest extends TestCase
     /**
      * @covers ::update
      */
-    public function testUpdate(): void
+    public function test_update(): void
     {
         $proxy = Proxy::factory()->create();
 
@@ -81,7 +81,7 @@ class ProxyRepositoryTest extends TestCase
     /**
      * @covers ::delete
      */
-    public function testDelete(): void
+    public function test_delete(): void
     {
         $proxy = Proxy::factory()->create();
 

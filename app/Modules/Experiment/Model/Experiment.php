@@ -4,6 +4,7 @@ namespace App\Modules\Experiment\Model;
 
 use App\Events\ModelUpdateEvent;
 use App\Models\BaseModel;
+use App\Models\Concerns\ScopesToOwner;
 use App\Models\User;
 use App\Modules\Crawler\Model\Crawler;
 use App\Modules\Preference\Model\Preference;
@@ -14,7 +15,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
-use App\Models\Concerns\ScopesToOwner;
 
 /**
  * @property int    $user_id
@@ -25,6 +25,7 @@ use App\Models\Concerns\ScopesToOwner;
  */
 class Experiment extends BaseModel
 {
+    use HasFactory;
     use ScopesToOwner;
 
     /**
@@ -33,8 +34,6 @@ class Experiment extends BaseModel
      * The experiment IS the ownership root.
      */
     public const OWNERSHIP_PATH = '';
-
-    use HasFactory;
 
     protected $guarded = [];
 
@@ -60,7 +59,7 @@ class Experiment extends BaseModel
 
     public static function bootedSaved(Model $model): void
     {
-        //ModelUpdateEvent::dispatch($model);
+        // ModelUpdateEvent::dispatch($model);
     }
 
     public static function queryBuilder(): QueryBuilder

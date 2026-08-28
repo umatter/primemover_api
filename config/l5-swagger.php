@@ -156,8 +156,8 @@ return [
             'description' => 'Web automation platform API for managing browser automation experiments',
             'version' => '1.0.0',
             'contact' => [
-                'email' => 'support@primemover.example'
-            ]
+                'email' => 'support@primemover.example',
+            ],
         ],
 
         /*
@@ -166,12 +166,12 @@ return [
         'servers' => [
             [
                 'url' => env('L5_SWAGGER_CONST_HOST', 'https://pm-api.test.primemover.example'),
-                'description' => 'Production API Server'
+                'description' => 'Production API Server',
             ],
             [
                 'url' => 'http://localhost:8080',
-                'description' => 'Local Development Server'
-            ]
+                'description' => 'Local Development Server',
+            ],
         ],
 
         /*
@@ -183,7 +183,7 @@ return [
                     'type' => 'http',
                     'scheme' => 'bearer',
                     'bearerFormat' => 'JWT',
-                    'description' => 'Enter JWT Bearer token'
+                    'description' => 'Enter JWT Bearer token',
                 ],
                 'passport' => [
                     'type' => 'oauth2',
@@ -191,21 +191,21 @@ return [
                     'in' => 'header',
                     'scheme' => 'https',
                     'flows' => [
-                        "password" => [
-                            "authorizationUrl" => config('app.url') . '/oauth/authorize',
-                            "tokenUrl" => config('app.url') . '/oauth/token',
-                            "refreshUrl" => config('app.url') . '/token/refresh',
-                            "scopes" => []
+                        'password' => [
+                            'authorizationUrl' => config('app.url').'/oauth/authorize',
+                            'tokenUrl' => config('app.url').'/oauth/token',
+                            'refreshUrl' => config('app.url').'/token/refresh',
+                            'scopes' => [],
                         ],
                     ],
                 ],
             ],
             'security' => [
                 [
-                    'bearerAuth' => []
+                    'bearerAuth' => [],
                 ],
                 [
-                    'passport' => []
+                    'passport' => [],
                 ],
             ],
         ],

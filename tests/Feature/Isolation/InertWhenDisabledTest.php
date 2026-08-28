@@ -31,7 +31,7 @@ use Illuminate\Support\Facades\Validator;
  */
 class InertWhenDisabledTest extends IsolationTestCase
 {
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -42,7 +42,7 @@ class InertWhenDisabledTest extends IsolationTestCase
      * @covers ::bypasses
      * @covers ::enabled
      */
-    public function testEveryCallerBypassesWhileTheFlagIsOff(): void
+    public function test_every_caller_bypasses_while_the_flag_is_off(): void
     {
         $this->assertFalse(Isolation::enabled());
 
@@ -59,7 +59,7 @@ class InertWhenDisabledTest extends IsolationTestCase
      *
      * @covers \App\Models\Concerns\ScopesToOwner::scopeVisibleTo
      */
-    public function testResearcherAndServiceAccountSeeIdenticalRows(string $key, string $model): void
+    public function test_researcher_and_service_account_see_identical_rows(string $key, string $model): void
     {
         $this->actingAs($this->researcher);
         $asResearcher = $this->visibleIds($model);
@@ -86,7 +86,7 @@ class InertWhenDisabledTest extends IsolationTestCase
     /**
      * @covers \App\Models\Concerns\ScopesToOwner::scopeVisibleTo
      */
-    public function testRepositoriesReturnIdenticalResultSets(): void
+    public function test_repositories_return_identical_result_sets(): void
     {
         $this->actingAs($this->researcher);
         $asResearcher = $this->repositorySnapshot();
@@ -108,7 +108,7 @@ class InertWhenDisabledTest extends IsolationTestCase
     /**
      * @dataProvider ownedModels
      */
-    public function testResearcherMayViewAnotherUsersRow(string $key, string $model): void
+    public function test_researcher_may_view_another_users_row(string $key, string $model): void
     {
         $this->actingAs($this->researcher);
 
@@ -118,7 +118,7 @@ class InertWhenDisabledTest extends IsolationTestCase
         );
     }
 
-    public function testResearcherMayStillUpdateAndDeleteAnotherUsersExperiment(): void
+    public function test_researcher_may_still_update_and_delete_another_users_experiment(): void
     {
         $this->actingAs($this->researcher);
 
@@ -126,7 +126,7 @@ class InertWhenDisabledTest extends IsolationTestCase
         $this->assertTrue(Gate::allows('delete', $this->theirs['experiment']));
     }
 
-    public function testResearcherMayAdministerThePlatform(): void
+    public function test_researcher_may_administer_the_platform(): void
     {
         $this->actingAs($this->researcher);
 
@@ -136,7 +136,7 @@ class InertWhenDisabledTest extends IsolationTestCase
     /**
      * @covers \App\Rules\OwnedParent::validate
      */
-    public function testOwnedParentAcceptsAnotherUsersParent(): void
+    public function test_owned_parent_accepts_another_users_parent(): void
     {
         $this->actingAs($this->researcher);
 
@@ -155,7 +155,7 @@ class InertWhenDisabledTest extends IsolationTestCase
      * @covers ::bypasses
      * @covers ::userId
      */
-    public function testUnauthenticatedCallerBypasses(): void
+    public function test_unauthenticated_caller_bypasses(): void
     {
         $this->assertNull(Isolation::userId());
         $this->assertTrue(Isolation::bypasses());
@@ -173,7 +173,7 @@ class InertWhenDisabledTest extends IsolationTestCase
      * to a policy that denies. Several controller tests construct controllers
      * with nobody authenticated.
      */
-    public function testGateStillAllowsGuestsWhileIsolationIsOn(): void
+    public function test_gate_still_allows_guests_while_isolation_is_on(): void
     {
         $this->enableIsolation();
 

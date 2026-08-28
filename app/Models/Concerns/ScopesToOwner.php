@@ -39,7 +39,7 @@ trait ScopesToOwner
         $path = static::OWNERSHIP_PATH;
 
         // The experiment itself: compare directly, no relation to walk.
-        if ($path === '') {
+        if ('' === $path) {
             return $query->where($this->getTable().'.user_id', $userId);
         }
 

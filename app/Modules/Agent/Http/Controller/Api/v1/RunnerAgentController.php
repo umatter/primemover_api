@@ -16,9 +16,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
  */
 class RunnerAgentController extends Controller
 {
-    public function __construct(protected AgentRepository $repository)
-    {
-    }
+    public function __construct(protected AgentRepository $repository) {}
 
     /**
      * @OA\Put(
@@ -28,18 +26,23 @@ class RunnerAgentController extends Controller
      *     operationId="runnerUpdateAgent",
      *     tags={"Runner - Agents"},
      *     security={{"bearerAuth": {}}},
+     *
      *     @OA\Parameter(
      *         name="agent",
      *         in="path",
      *         description="Agent ID",
      *         required=true,
+     *
      *         @OA\Schema(type="integer", example=1)
      *     ),
+     *
      *     @OA\RequestBody(
      *         required=true,
      *         description="Agent update data from runner",
+     *
      *         @OA\JsonContent(
      *             type="object",
+     *
      *             @OA\Property(
      *                 property="status",
      *                 type="string",
@@ -70,11 +73,14 @@ class RunnerAgentController extends Controller
      *             )
      *         )
      *     ),
+     *
      *     @OA\Response(
      *         response=200,
      *         description="Agent updated successfully",
+     *
      *         @OA\JsonContent(
      *             type="object",
+     *
      *             @OA\Property(
      *                 property="data",
      *                 type="object",
@@ -87,24 +93,33 @@ class RunnerAgentController extends Controller
      *             )
      *         )
      *     ),
+     *
      *     @OA\Response(
      *         response=401,
      *         description="Unauthorized",
+     *
      *         @OA\JsonContent(
+     *
      *             @OA\Property(property="message", type="string", example="Unauthenticated")
      *         )
      *     ),
+     *
      *     @OA\Response(
      *         response=404,
      *         description="Agent not found",
+     *
      *         @OA\JsonContent(
+     *
      *             @OA\Property(property="message", type="string", example="Agent not found")
      *         )
      *     ),
+     *
      *     @OA\Response(
      *         response=422,
      *         description="Validation error",
+     *
      *         @OA\JsonContent(
+     *
      *             @OA\Property(property="message", type="string", example="The given data was invalid."),
      *             @OA\Property(
      *                 property="errors",
@@ -112,6 +127,7 @@ class RunnerAgentController extends Controller
      *                 @OA\Property(
      *                     property="status",
      *                     type="array",
+     *
      *                     @OA\Items(type="string", example="The status field is required.")
      *                 )
      *             )

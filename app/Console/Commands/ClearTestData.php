@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use Exception;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 
@@ -46,9 +47,10 @@ class ClearTestData extends Command
         $this->newLine();
 
         // Confirm unless --force flag is used
-        if (!$this->option('force')) {
-            if (!$this->confirm('Are you sure you want to proceed?', false)) {
+        if ( ! $this->option('force')) {
+            if ( ! $this->confirm('Are you sure you want to proceed?', false)) {
                 $this->info('Operation cancelled.');
+
                 return Command::SUCCESS;
             }
         }
@@ -98,7 +100,7 @@ class ClearTestData extends Command
 
             return Command::SUCCESS;
 
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             // Re-enable foreign key checks even if error occurs
             DB::statement('SET FOREIGN_KEY_CHECKS=1');
 

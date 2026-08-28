@@ -16,7 +16,6 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
-use Spatie\QueryBuilder\QueryBuilder;
 use Symfony\Component\HttpFoundation\Response as ResponseAlias;
 use Tests\Feature\Modules\Crawler\Repository\CrawlerRepositoryTest;
 
@@ -259,14 +258,12 @@ class CrawlerRepository
             $response = DataMapper::disableEnforceType()
                 ->removeUndefinedAttributes()
                 ->mapList($request->getJsonFileContent(), QueueDto::class)
-                ->map(function (QueueDto $queueDto) use ($crawler) {
-                    return PipelineFactory::create()
-                        ->send($queueDto->setCrawler($crawler))
-                        ->through([
-                            CreateQueue::class,
-                        ])
-                        ->thenReturn();
-                });
+                ->map(fn (QueueDto $queueDto) => PipelineFactory::create()
+                    ->send($queueDto->setCrawler($crawler))
+                    ->through([
+                        CreateQueue::class,
+                    ])
+                    ->thenReturn());
 
             DB::commit();
 

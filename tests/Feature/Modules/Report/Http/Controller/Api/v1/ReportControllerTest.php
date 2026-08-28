@@ -21,7 +21,7 @@ class ReportControllerTest extends TestCase
     /**
      * @covers ::index
      */
-    public function testIndex(): void
+    public function test_index(): void
     {
         $controller = new ReportController(new ReportRepository(new Report()));
         $result = $controller->index();
@@ -36,7 +36,7 @@ class ReportControllerTest extends TestCase
     /**
      * @covers ::store
      */
-    public function testStore(): void
+    public function test_store(): void
     {
         $job = \App\Modules\Job\Model\Job::factory()->create();
 
@@ -62,7 +62,7 @@ class ReportControllerTest extends TestCase
     /**
      * @covers ::show
      */
-    public function testShow(): void
+    public function test_show(): void
     {
         $report = Report::factory()->create();
 
@@ -77,7 +77,7 @@ class ReportControllerTest extends TestCase
     /**
      * @covers ::destroy
      */
-    public function testDestroy(): void
+    public function test_destroy(): void
     {
         $report = Report::factory()->create();
 

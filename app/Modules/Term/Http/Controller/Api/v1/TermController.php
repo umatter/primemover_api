@@ -14,9 +14,7 @@ use Illuminate\Http\Resources\Json\ResourceCollection;
  */
 class TermController extends Controller
 {
-    public function __construct(protected TermRepository $repository)
-    {
-    }
+    public function __construct(protected TermRepository $repository) {}
 
     /**
      * @OA\Get(
@@ -26,16 +24,21 @@ class TermController extends Controller
      *     operationId="getTerms",
      *     tags={"Terms"},
      *     security={{"bearerAuth": {}}},
+     *
      *     @OA\Response(
      *         response=200,
      *         description="List of terms",
+     *
      *         @OA\JsonContent(
      *             type="object",
+     *
      *             @OA\Property(
      *                 property="data",
      *                 type="array",
+     *
      *                 @OA\Items(
      *                     type="object",
+     *
      *                     @OA\Property(property="id", type="integer", example=1),
      *                     @OA\Property(property="term", type="string", example="search term"),
      *                     @OA\Property(property="created_at", type="string", format="date-time"),
@@ -59,6 +62,7 @@ class TermController extends Controller
      *             )
      *         )
      *     ),
+     *
      *     @OA\Response(response=401, description="Unauthorized")
      * )
      */

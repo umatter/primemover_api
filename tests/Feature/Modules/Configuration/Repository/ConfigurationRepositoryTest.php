@@ -18,7 +18,7 @@ class ConfigurationRepositoryTest extends TestCase
     /**
      * @covers ::all
      */
-    public function testGetData(): void
+    public function test_get_data(): void
     {
         $service = new ConfigurationRepository(new Configuration());
         $result = $service->all();
@@ -37,7 +37,7 @@ class ConfigurationRepositoryTest extends TestCase
     /**
      * @covers ::additional
      */
-    public function testAdditional(): void
+    public function test_additional(): void
     {
         $service = new ConfigurationRepository(new Configuration());
         $configurations = $service->all()->get();
@@ -50,7 +50,7 @@ class ConfigurationRepositoryTest extends TestCase
     /**
      * @covers ::getById
      */
-    public function testGetById(): void
+    public function test_get_by_id(): void
     {
         $configuration = Configuration::factory()->create();
 
@@ -64,7 +64,7 @@ class ConfigurationRepositoryTest extends TestCase
     /**
      * @covers ::save
      */
-    public function testSave(): void
+    public function test_save(): void
     {
         $data = [
             'user_id' => $this->user->id,
@@ -83,7 +83,7 @@ class ConfigurationRepositoryTest extends TestCase
     /**
      * @covers ::update
      */
-    public function testUpdate(): void
+    public function test_update(): void
     {
         $configuration = Configuration::factory()->create();
 
@@ -105,7 +105,7 @@ class ConfigurationRepositoryTest extends TestCase
     /**
      * @covers ::delete
      */
-    public function testDelete(): void
+    public function test_delete(): void
     {
         $configuration = Configuration::factory()->create();
 

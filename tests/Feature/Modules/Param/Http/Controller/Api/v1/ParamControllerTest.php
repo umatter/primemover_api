@@ -20,7 +20,7 @@ class ParamControllerTest extends TestCase
     /**
      * @covers ::index
      */
-    public function testIndex(): void
+    public function test_index(): void
     {
         $controller = new ParamController(new ParamRepository(new Param()));
         $result = $controller->index();
@@ -35,7 +35,7 @@ class ParamControllerTest extends TestCase
     /**
      * @covers ::store
      */
-    public function testStore(): void
+    public function test_store(): void
     {
         $data = [
             'pi' => -0.50049837032537,
@@ -90,7 +90,7 @@ class ParamControllerTest extends TestCase
     /**
      * @covers ::show
      */
-    public function testShow(): void
+    public function test_show(): void
     {
         $data = [
             'user_id' => $this->user->id,
@@ -144,7 +144,7 @@ class ParamControllerTest extends TestCase
     /**
      * @covers ::edit
      */
-    public function testEdit(): void
+    public function test_edit(): void
     {
         $data = [
             'user_id' => $this->user->id,
@@ -198,7 +198,7 @@ class ParamControllerTest extends TestCase
     /**
      * @covers ::update
      */
-    public function testUpdate(): void
+    public function test_update(): void
     {
         $data = [
             'user_id' => $this->user->id,

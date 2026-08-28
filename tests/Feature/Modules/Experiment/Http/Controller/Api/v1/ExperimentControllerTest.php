@@ -28,7 +28,7 @@ class ExperimentControllerTest extends TestCase
     /**
      * @covers ::index
      */
-    public function testIndex(): void
+    public function test_index(): void
     {
         $controller = new ExperimentController();
         $result = $controller->index();
@@ -56,7 +56,7 @@ class ExperimentControllerTest extends TestCase
     /**
      * @covers ::all
      */
-    public function testAll(): void
+    public function test_all(): void
     {
         $controller = new ExperimentController(new ExperimentRepository(new Experiment()));
         $result = $controller->all();
@@ -73,7 +73,7 @@ class ExperimentControllerTest extends TestCase
     /**
      * @covers ::store
      */
-    public function testStore(): void
+    public function test_store(): void
     {
         $data = [
             'user_id' => $this->user->id,
@@ -97,7 +97,7 @@ class ExperimentControllerTest extends TestCase
     /**
      * @covers ::show
      */
-    public function testShow(): void
+    public function test_show(): void
     {
         $experiment = Experiment::factory()->create();
 
@@ -112,7 +112,7 @@ class ExperimentControllerTest extends TestCase
     /**
      * @covers ::edit
      */
-    public function testEdit(): void
+    public function test_edit(): void
     {
         $experiment = Experiment::factory()->create();
 
@@ -127,7 +127,7 @@ class ExperimentControllerTest extends TestCase
     /**
      * @covers ::update
      */
-    public function testUpdate(): void
+    public function test_update(): void
     {
         $experiment = Experiment::factory()->create();
 
@@ -154,7 +154,7 @@ class ExperimentControllerTest extends TestCase
      *
      * @throws Exception
      */
-    public function testDestroy(): void
+    public function test_destroy(): void
     {
         $experiment = Experiment::factory()->create();
 
@@ -170,7 +170,7 @@ class ExperimentControllerTest extends TestCase
      *
      * @throws Exception
      */
-    public function testForceDelete(): void
+    public function test_force_delete(): void
     {
         $experiment = Experiment::factory()->create();
 
@@ -184,7 +184,7 @@ class ExperimentControllerTest extends TestCase
     /**
      * @covers ::download
      */
-    public function testDownload(): void
+    public function test_download(): void
     {
         $experiment = Experiment::factory()->create();
         Storage::fake('s3');

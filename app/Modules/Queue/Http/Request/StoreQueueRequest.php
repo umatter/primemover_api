@@ -2,10 +2,10 @@
 
 namespace App\Modules\Queue\Http\Request;
 
+use App\Modules\Crawler\Model\Crawler;
+use App\Rules\OwnedParent;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
-use App\Rules\OwnedParent;
-use App\Modules\Crawler\Model\Crawler;
 
 class StoreQueueRequest extends FormRequest
 {

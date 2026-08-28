@@ -22,7 +22,7 @@ class ProxyControllerTest extends TestCase
 {
     protected mixed $testObject;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         $this->testObject = App::make(ProxyController::class);
@@ -31,7 +31,7 @@ class ProxyControllerTest extends TestCase
     /**
      * @covers ::index
      */
-    public function testIndex(): void
+    public function test_index(): void
     {
         $proxyIndexRequest = Mockery::mock(ProxyIndexRequest::class)->makePartial();
         $proxyIndexRequest->allows('getPaged')->andReturns(1);
@@ -48,7 +48,7 @@ class ProxyControllerTest extends TestCase
     /**
      * @covers ::store
      */
-    public function testStore(): void
+    public function test_store(): void
     {
         $request = Mockery::mock(ProxyStoreRequest::class);
         $request->expects('validated')
@@ -74,7 +74,7 @@ class ProxyControllerTest extends TestCase
     /**
      * @covers ::show
      */
-    public function testShow(): void
+    public function test_show(): void
     {
         $proxy = Proxy::factory()->create();
 
@@ -88,7 +88,7 @@ class ProxyControllerTest extends TestCase
     /**
      * @covers ::edit
      */
-    public function testEdit(): void
+    public function test_edit(): void
     {
         $proxy = Proxy::factory()->create();
 
@@ -102,7 +102,7 @@ class ProxyControllerTest extends TestCase
     /**
      * @covers ::update
      */
-    public function testUpdate(): void
+    public function test_update(): void
     {
         $proxy = Proxy::factory()->create();
 
@@ -127,7 +127,7 @@ class ProxyControllerTest extends TestCase
     /**
      * @covers ::destroy
      */
-    public function testDestroy(): void
+    public function test_destroy(): void
     {
         $proxy = Proxy::factory()->create();
 

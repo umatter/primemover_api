@@ -2,9 +2,9 @@
 
 namespace App\Modules\Crawler\Http\Request;
 
-use Illuminate\Foundation\Http\FormRequest;
-use App\Rules\OwnedParent;
 use App\Modules\Experiment\Model\Experiment;
+use App\Rules\OwnedParent;
+use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateCrawlerRequest extends FormRequest
 {

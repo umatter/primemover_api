@@ -30,7 +30,7 @@ use Illuminate\Support\Facades\Gate;
  */
 class ServiceAccountTest extends IsolationTestCase
 {
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -45,7 +45,7 @@ class ServiceAccountTest extends IsolationTestCase
      * @covers ::bypasses
      * @covers ::isServiceAccount
      */
-    public function testServiceAccountSeesRowsOwnedByEveryUser(string $key, string $model): void
+    public function test_service_account_sees_rows_owned_by_every_user(string $key, string $model): void
     {
         $visible = $this->visibleIds($model);
 
@@ -63,7 +63,7 @@ class ServiceAccountTest extends IsolationTestCase
     /**
      * @covers ::bypasses
      */
-    public function testIsolationReportsTheServiceAccountAsBypassing(): void
+    public function test_isolation_reports_the_service_account_as_bypassing(): void
     {
         $this->assertTrue(Isolation::enabled());
         $this->assertTrue(Isolation::isServiceAccount());
@@ -76,7 +76,7 @@ class ServiceAccountTest extends IsolationTestCase
      *
      * @covers \App\Models\Concerns\ScopesToOwner::scopeVisibleTo
      */
-    public function testRepositoriesStillReturnEveryUsersRows(): void
+    public function test_repositories_still_return_every_users_rows(): void
     {
         $experiments = $this->idsOf((new ExperimentRepository(new Experiment()))->getData()->get());
         $crawlers = $this->idsOf((new CrawlerRepository(new Crawler()))->all(100));
@@ -102,7 +102,7 @@ class ServiceAccountTest extends IsolationTestCase
      *
      * @covers \App\Models\Concerns\ScopesToOwner::scopeVisibleTo
      */
-    public function testRunnerDiscoveryStillFindsEveryUsersUnprocessedCrawlers(): void
+    public function test_runner_discovery_still_finds_every_users_unprocessed_crawlers(): void
     {
         $unprocessed = $this->idsOf((new CrawlerRepository(new Crawler()))->unprocessed());
 
@@ -114,7 +114,7 @@ class ServiceAccountTest extends IsolationTestCase
     /**
      * @dataProvider ownedModels
      */
-    public function testServiceAccountIsAllowedEveryAbilityOnAnotherUsersRow(string $key, string $model): void
+    public function test_service_account_is_allowed_every_ability_on_another_users_row(string $key, string $model): void
     {
         $row = $this->theirs[$key];
 
@@ -123,12 +123,12 @@ class ServiceAccountTest extends IsolationTestCase
         $this->assertTrue(Gate::allows('delete', $row), "delete denied on a {$model} the service account does not own");
     }
 
-    public function testServiceAccountMayAdministerThePlatform(): void
+    public function test_service_account_may_administer_the_platform(): void
     {
         $this->assertTrue(Gate::allows('administer-platform'));
     }
 
-    public function testResearcherMayNotAdministerThePlatform(): void
+    public function test_researcher_may_not_administer_the_platform(): void
     {
         $this->actingAs($this->researcher);
 

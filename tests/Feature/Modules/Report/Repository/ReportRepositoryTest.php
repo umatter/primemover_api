@@ -18,7 +18,7 @@ class ReportRepositoryTest extends TestCase
     /**
      * @covers ::all
      */
-    public function testGetData(): void
+    public function test_get_data(): void
     {
         $service = new ReportRepository(new Report());
         $result = $service->all();
@@ -36,7 +36,7 @@ class ReportRepositoryTest extends TestCase
     /**
      * @covers ::save
      */
-    public function testSave(): void
+    public function test_save(): void
     {
         $job = Job::factory()->create();
 
@@ -61,7 +61,7 @@ class ReportRepositoryTest extends TestCase
     /**
      * @covers ::delete
      */
-    public function testDelete(): void
+    public function test_delete(): void
     {
         $report = Report::factory()->create();
 

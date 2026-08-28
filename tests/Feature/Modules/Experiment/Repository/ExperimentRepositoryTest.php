@@ -21,7 +21,7 @@ class ExperimentRepositoryTest extends TestCase
     /**
      * @covers ::getData
      */
-    public function testGetData(): void
+    public function test_get_data(): void
     {
         $service = new ExperimentRepository(new Experiment());
         $result = $service->getData();
@@ -39,7 +39,7 @@ class ExperimentRepositoryTest extends TestCase
     /**
      * @covers ::all
      */
-    public function testAll(): void
+    public function test_all(): void
     {
         $service = new ExperimentRepository(new Experiment());
         $result = $service->all();
@@ -54,7 +54,7 @@ class ExperimentRepositoryTest extends TestCase
     /**
      * @covers ::getById
      */
-    public function testGetById(): void
+    public function test_get_by_id(): void
     {
         $experiment = Experiment::factory()->create();
 
@@ -68,7 +68,7 @@ class ExperimentRepositoryTest extends TestCase
     /**
      * @covers ::save
      */
-    public function testSave(): void
+    public function test_save(): void
     {
         $data = [
             'user_id' => $this->user->id,
@@ -90,7 +90,7 @@ class ExperimentRepositoryTest extends TestCase
     /**
      * @covers ::update
      */
-    public function testUpdate(): void
+    public function test_update(): void
     {
         $experiment = Experiment::factory()->create();
 
@@ -113,7 +113,7 @@ class ExperimentRepositoryTest extends TestCase
     /**
      * @covers ::delete
      */
-    public function testDelete(): void
+    public function test_delete(): void
     {
         $experiment = Experiment::factory()->create();
 
@@ -142,7 +142,7 @@ class ExperimentRepositoryTest extends TestCase
     /**
      * @covers ::download
      */
-    public function testDownload(): void
+    public function test_download(): void
     {
 
         $experiment = Experiment::factory()->create();

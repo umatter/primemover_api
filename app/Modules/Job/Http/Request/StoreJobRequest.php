@@ -3,11 +3,11 @@
 namespace App\Modules\Job\Http\Request;
 
 use App\Modules\Job\Enum\JobType;
+use App\Modules\Queue\Model\Queue;
+use App\Rules\OwnedParent;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
-use App\Rules\OwnedParent;
-use App\Modules\Queue\Model\Queue;
 
 class StoreJobRequest extends FormRequest
 {

@@ -29,7 +29,7 @@ use Illuminate\Support\Facades\Gate;
  */
 class CrossUserReadTest extends IsolationTestCase
 {
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -42,7 +42,7 @@ class CrossUserReadTest extends IsolationTestCase
      *
      * @covers ::scopeVisibleTo
      */
-    public function testResearcherSeesOnlyTheirOwnRows(string $key, string $model): void
+    public function test_researcher_sees_only_their_own_rows(string $key, string $model): void
     {
         $visible = $this->visibleIds($model);
 
@@ -63,7 +63,7 @@ class CrossUserReadTest extends IsolationTestCase
      *
      * @covers ::scopeVisibleTo
      */
-    public function testJobChainWalksTheQueueNotTheCrawler(): void
+    public function test_job_chain_walks_the_queue_not_the_crawler(): void
     {
         $this->assertSame('queue.crawler.experiment', Job::OWNERSHIP_PATH);
 
@@ -86,7 +86,7 @@ class CrossUserReadTest extends IsolationTestCase
      *
      * @covers ::scopeVisibleTo
      */
-    public function testReportChainReachesTheExperimentThroughTheJob(): void
+    public function test_report_chain_reaches_the_experiment_through_the_job(): void
     {
         $this->assertSame('job.queue.crawler.experiment', Report::OWNERSHIP_PATH);
 
@@ -104,7 +104,7 @@ class CrossUserReadTest extends IsolationTestCase
     /**
      * @covers ::scopeVisibleTo
      */
-    public function testRepositoriesHideTheOtherResearchersRows(): void
+    public function test_repositories_hide_the_other_researchers_rows(): void
     {
         $experiments = $this->idsOf((new ExperimentRepository(new Experiment()))->getData()->get());
         $this->assertSame([(int) $this->mine['experiment']->id], $experiments);
@@ -135,7 +135,7 @@ class CrossUserReadTest extends IsolationTestCase
     /**
      * @dataProvider ownedModels
      */
-    public function testViewIsDeniedOnAnotherResearchersRow(string $key, string $model): void
+    public function test_view_is_denied_on_another_researchers_row(string $key, string $model): void
     {
         $this->assertTrue(
             Gate::denies('view', $this->theirs[$key]),
@@ -148,7 +148,7 @@ class CrossUserReadTest extends IsolationTestCase
         );
     }
 
-    public function testShowingAnotherResearchersExperimentOverHttpIsForbidden(): void
+    public function test_showing_another_researchers_experiment_over_http_is_forbidden(): void
     {
         $this->withExceptionHandling();
 
@@ -161,7 +161,7 @@ class CrossUserReadTest extends IsolationTestCase
             ->assertSuccessful();
     }
 
-    public function testShowingAnotherResearchersCrawlerOverHttpIsForbidden(): void
+    public function test_showing_another_researchers_crawler_over_http_is_forbidden(): void
     {
         $this->withExceptionHandling();
 

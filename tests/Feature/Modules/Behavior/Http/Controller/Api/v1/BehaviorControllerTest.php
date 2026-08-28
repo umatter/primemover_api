@@ -20,7 +20,7 @@ class BehaviorControllerTest extends TestCase
 {
     protected mixed $testObject;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         $this->testObject = App::make(BehaviorController::class);
@@ -29,7 +29,7 @@ class BehaviorControllerTest extends TestCase
     /**
      * @covers ::index
      */
-    public function testIndex(): void
+    public function test_index(): void
     {
         $result = $this->testObject->index();
 
@@ -43,7 +43,7 @@ class BehaviorControllerTest extends TestCase
     /**
      * @covers ::store
      */
-    public function testStore(): void
+    public function test_store(): void
     {
         $job = Job::factory()->create();
 
@@ -64,7 +64,7 @@ class BehaviorControllerTest extends TestCase
     /**
      * @covers ::edit
      */
-    public function testEdit(): void
+    public function test_edit(): void
     {
         $behavior = Behavior::factory()->create();
 
@@ -78,7 +78,7 @@ class BehaviorControllerTest extends TestCase
     /**
      * @covers ::update
      */
-    public function testUpdate(): void
+    public function test_update(): void
     {
         $behavior = Behavior::factory()->create();
 
@@ -99,7 +99,7 @@ class BehaviorControllerTest extends TestCase
     /**
      * @covers ::show
      */
-    public function testShow(): void
+    public function test_show(): void
     {
         $behavior = Behavior::factory()->create();
 
@@ -112,7 +112,7 @@ class BehaviorControllerTest extends TestCase
     /**
      * @covers ::destroy
      */
-    public function testDestroy(): void
+    public function test_destroy(): void
     {
         $behavior = Behavior::factory()->create();
 

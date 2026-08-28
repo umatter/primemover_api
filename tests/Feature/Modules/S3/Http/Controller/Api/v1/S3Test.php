@@ -18,7 +18,7 @@ class S3Test extends TestCase
     /**
      * @covers ::store
      */
-    public function testStore(): void
+    public function test_store(): void
     {
         $this->actingAs($this->user)
             ->postJson('/api/v1/upload', ['file' => UploadedFile::fake()->image('profile.jpg')])
@@ -29,7 +29,7 @@ class S3Test extends TestCase
     /**
      * @covers ::download
      */
-    public function testDownload(): void
+    public function test_download(): void
     {
         Storage::fake('s3');
         $filename = 'test_file.txt';

@@ -2,6 +2,4 @@
 
 namespace App\Modules\Experiment\Model\DTO;
 
-class UploadData
-{
-}
+class UploadData {}

@@ -38,7 +38,7 @@ class Isolation
     {
         $id = Auth::id();
 
-        return $id === null ? null : (int) $id;
+        return null === $id ? null : (int) $id;
     }
 
     /**
@@ -52,7 +52,7 @@ class Isolation
     {
         $id = $user?->getKey() ?? self::userId();
 
-        if ($id === null) {
+        if (null === $id) {
             return false;
         }
 
@@ -73,11 +73,11 @@ class Isolation
      */
     public static function bypasses(): bool
     {
-        if (! self::enabled()) {
+        if ( ! self::enabled()) {
             return true;
         }
 
-        if (self::userId() === null) {
+        if (null === self::userId()) {
             return true;
         }
 

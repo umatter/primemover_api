@@ -26,7 +26,7 @@ use Tests\TestCase;
  */
 class CrawlerControllerTest extends TestCase
 {
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
     }
@@ -34,7 +34,7 @@ class CrawlerControllerTest extends TestCase
     /**
      * @covers ::index
      */
-    public function testIndex(): void
+    public function test_index(): void
     {
         $request = new Request();
 
@@ -48,7 +48,7 @@ class CrawlerControllerTest extends TestCase
     /**
      * @covers ::inactive
      */
-    public function testInactive(): void
+    public function test_inactive(): void
     {
         $controller = new CrawlerController(new CrawlerRepository(new Crawler()));
         $result = $controller->inactive();
@@ -63,7 +63,7 @@ class CrawlerControllerTest extends TestCase
     /**
      * @covers ::withProcessedQueues
      */
-    public function testWithProcessedQueues(): void
+    public function test_with_processed_queues(): void
     {
         $controller = new CrawlerController(new CrawlerRepository(new Crawler()));
         $result = $controller->withProcessedQueues();
@@ -79,7 +79,7 @@ class CrawlerControllerTest extends TestCase
     /**
      * @covers ::withReviewedQueues
      */
-    public function testWithReviewedQueues(): void
+    public function test_with_reviewed_queues(): void
     {
         $controller = new CrawlerController(new CrawlerRepository(new Crawler()));
         $result = $controller->withReviewedQueues();
@@ -95,7 +95,7 @@ class CrawlerControllerTest extends TestCase
     /**
      * @covers ::withUnprocessedQueues
      */
-    public function testWithUnprocessedQueues(): void
+    public function test_with_unprocessed_queues(): void
     {
         $controller = new CrawlerController(new CrawlerRepository(new Crawler()));
         $result = $controller->withUnprocessedQueues();
@@ -111,7 +111,7 @@ class CrawlerControllerTest extends TestCase
     /**
      * @covers ::testing
      */
-    public function testTesting(): void
+    public function test_testing(): void
     {
         $controller = new CrawlerController(new CrawlerRepository(new Crawler()));
         $result = $controller->testing();
@@ -126,7 +126,7 @@ class CrawlerControllerTest extends TestCase
     /**
      * @covers ::create
      */
-    public function testCreate(): void
+    public function test_create(): void
     {
         $controller = new CrawlerController(new CrawlerRepository(new Crawler()));
         $result = $controller->create();
@@ -138,7 +138,7 @@ class CrawlerControllerTest extends TestCase
     /**
      * @covers ::store
      */
-    public function testStore(): void
+    public function test_store(): void
     {
         $experiment = Experiment::query()->create([
             'user_id' => $this->user->id,
@@ -168,7 +168,7 @@ class CrawlerControllerTest extends TestCase
     /**
      * @covers ::show
      */
-    public function testShow(): void
+    public function test_show(): void
     {
         $experiment = Experiment::query()->create([
             'user_id' => $this->user->id,
@@ -203,7 +203,7 @@ class CrawlerControllerTest extends TestCase
     /**
      * @covers ::edit
      */
-    public function testEdit(): void
+    public function test_edit(): void
     {
         $experiment = Experiment::query()->create([
             'user_id' => $this->user->id,
@@ -238,7 +238,7 @@ class CrawlerControllerTest extends TestCase
     /**
      * @covers ::update
      */
-    public function testUpdate(): void
+    public function test_update(): void
     {
         $experiment = Experiment::query()->create([
             'user_id' => $this->user->id,
@@ -290,7 +290,7 @@ class CrawlerControllerTest extends TestCase
     /**
      * @covers ::disableProdCrawlers
      */
-    public function testDisableProdCrawlers(): void
+    public function test_disable_prod_crawlers(): void
     {
         $controller = new CrawlerController(new CrawlerRepository(new Crawler()));
         $result = $controller->disableProdCrawlers();
@@ -305,7 +305,7 @@ class CrawlerControllerTest extends TestCase
     /**
      * @covers ::forceDelete
      */
-    public function testForceDelete(): void
+    public function test_force_delete(): void
     {
         $proxy = Proxy::factory()->create();
         $agent = Agent::factory()->create();
@@ -331,7 +331,7 @@ class CrawlerControllerTest extends TestCase
     /**
      * @covers ::destroy
      */
-    public function testDestroy(): void
+    public function test_destroy(): void
     {
         $experiment = Experiment::create([
             'user_id' => $this->user->id,
@@ -366,7 +366,7 @@ class CrawlerControllerTest extends TestCase
     /**
      * @covers ::ip
      */
-    public function testIp(): void
+    public function test_ip(): void
     {
         self::markTestSkipped('There is an error in the repository');
 
@@ -383,7 +383,7 @@ class CrawlerControllerTest extends TestCase
     /**
      * @covers ::undo
      */
-    public function testUndo(): void
+    public function test_undo(): void
     {
         $controller = new CrawlerController(new CrawlerRepository(new Crawler()));
         $result = $controller->undo();
@@ -401,7 +401,7 @@ class CrawlerControllerTest extends TestCase
     /**
      * @covers ::cleanup
      */
-    public function testCleanup(): void
+    public function test_cleanup(): void
     {
         $controller = new CrawlerController(new CrawlerRepository(new Crawler()));
         $result = $controller->cleanup();

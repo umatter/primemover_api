@@ -18,9 +18,7 @@ use Illuminate\Http\Resources\Json\ResourceCollection;
  */
 class ConfigurationController extends Controller
 {
-    public function __construct(protected ConfigurationRepository $repository)
-    {
-    }
+    public function __construct(protected ConfigurationRepository $repository) {}
 
     /**
      * @OA\Get(
@@ -30,23 +28,30 @@ class ConfigurationController extends Controller
      *     operationId="getConfigurations",
      *     tags={"Configurations"},
      *     security={{"bearerAuth": {}}},
+     *
      *     @OA\Parameter(
      *         name="filter[search]",
      *         in="query",
      *         description="Search term",
      *         required=false,
+     *
      *         @OA\Schema(type="string", example="config")
      *     ),
+     *
      *     @OA\Response(
      *         response=200,
      *         description="List of configurations",
+     *
      *         @OA\JsonContent(
      *             type="object",
+     *
      *             @OA\Property(
      *                 property="data",
      *                 type="array",
+     *
      *                 @OA\Items(
      *                     type="object",
+     *
      *                     @OA\Property(property="id", type="integer", example=1),
      *                     @OA\Property(property="name", type="string", example="Configuration Name"),
      *                     @OA\Property(property="description", type="string", example="Configuration description"),
@@ -56,6 +61,7 @@ class ConfigurationController extends Controller
      *             )
      *         )
      *     ),
+     *
      *     @OA\Response(response=401, description="Unauthorized")
      * )
      */
@@ -75,23 +81,30 @@ class ConfigurationController extends Controller
      *     operationId="createConfiguration",
      *     tags={"Configurations"},
      *     security={{"bearerAuth": {}}},
+     *
      *     @OA\RequestBody(
      *         required=true,
+     *
      *         @OA\JsonContent(
      *             required={"name"},
+     *
      *             @OA\Property(property="name", type="string", example="Configuration Name"),
      *             @OA\Property(property="description", type="string", example="Configuration description"),
      *             @OA\Property(property="active", type="integer", example=1)
      *         )
      *     ),
+     *
      *     @OA\Response(
      *         response=201,
      *         description="Configuration created successfully",
+     *
      *         @OA\JsonContent(
      *             type="object",
+     *
      *             @OA\Property(property="data", type="object")
      *         )
      *     ),
+     *
      *     @OA\Response(response=401, description="Unauthorized"),
      *     @OA\Response(response=422, description="Validation error")
      * )
@@ -112,18 +125,23 @@ class ConfigurationController extends Controller
      *     operationId="getConfiguration",
      *     tags={"Configurations"},
      *     security={{"bearerAuth": {}}},
+     *
      *     @OA\Parameter(
      *         name="id",
      *         in="path",
      *         description="Configuration ID",
      *         required=true,
+     *
      *         @OA\Schema(type="integer")
      *     ),
+     *
      *     @OA\Response(
      *         response=200,
      *         description="Configuration details",
+     *
      *         @OA\JsonContent(type="object")
      *     ),
+     *
      *     @OA\Response(response=401, description="Unauthorized"),
      *     @OA\Response(response=404, description="Configuration not found")
      * )
@@ -146,26 +164,34 @@ class ConfigurationController extends Controller
      *     operationId="updateConfiguration",
      *     tags={"Configurations"},
      *     security={{"bearerAuth": {}}},
+     *
      *     @OA\Parameter(
      *         name="id",
      *         in="path",
      *         description="Configuration ID",
      *         required=true,
+     *
      *         @OA\Schema(type="integer")
      *     ),
+     *
      *     @OA\RequestBody(
      *         required=true,
+     *
      *         @OA\JsonContent(
+     *
      *             @OA\Property(property="name", type="string"),
      *             @OA\Property(property="description", type="string"),
      *             @OA\Property(property="active", type="integer")
      *         )
      *     ),
+     *
      *     @OA\Response(
      *         response=200,
      *         description="Configuration updated successfully",
+     *
      *         @OA\JsonContent(type="object")
      *     ),
+     *
      *     @OA\Response(response=401, description="Unauthorized"),
      *     @OA\Response(response=404, description="Configuration not found"),
      *     @OA\Response(response=422, description="Validation error")
@@ -184,13 +210,16 @@ class ConfigurationController extends Controller
      *     operationId="deleteConfiguration",
      *     tags={"Configurations"},
      *     security={{"bearerAuth": {}}},
+     *
      *     @OA\Parameter(
      *         name="id",
      *         in="path",
      *         description="Configuration ID",
      *         required=true,
+     *
      *         @OA\Schema(type="integer")
      *     ),
+     *
      *     @OA\Response(
      *         response=200,
      *         description="Configuration deleted successfully"

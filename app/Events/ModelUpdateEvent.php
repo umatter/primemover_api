@@ -11,9 +11,7 @@ class ModelUpdateEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public function __construct(public Model $model)
-    {
-    }
+    public function __construct(public Model $model) {}
 
     public function getModel(): Model
     {

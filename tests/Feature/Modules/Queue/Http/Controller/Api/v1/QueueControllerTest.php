@@ -29,7 +29,7 @@ class QueueControllerTest extends TestCase
     /**
      * @covers ::index
      */
-    public function testIndex(): void
+    public function test_index(): void
     {
         $request = m::mock(Request::class)->makePartial();
         $request->allows('input')->with('crawler')->andReturns(1);
@@ -48,7 +48,7 @@ class QueueControllerTest extends TestCase
     /**
      * @covers ::store
      */
-    public function testStore(): void
+    public function test_store(): void
     {
         $proxy = Proxy::factory()->create();
         $agent = Agent::factory()->create();
@@ -83,7 +83,7 @@ class QueueControllerTest extends TestCase
     /**
      * @covers ::show
      */
-    public function testShow(): void
+    public function test_show(): void
     {
         $queue = Queue::factory()->create();
 
@@ -98,7 +98,7 @@ class QueueControllerTest extends TestCase
     /**
      * @covers ::job
      */
-    public function testJob(): void
+    public function test_job(): void
     {
         $job = Job::factory()->create();
 
@@ -112,7 +112,7 @@ class QueueControllerTest extends TestCase
     /**
      * @covers ::processed
      */
-    public function testProcessed(): void
+    public function test_processed(): void
     {
         $controller = new QueueController(new QueueRepository(new Queue()));
         $result = $controller->processed();
@@ -128,7 +128,7 @@ class QueueControllerTest extends TestCase
     /**
      * @covers ::unprocessed
      */
-    public function testUnprocessed(): void
+    public function test_unprocessed(): void
     {
         $controller = new QueueController(new QueueRepository(new Queue()));
         $result = $controller->unprocessed();
@@ -144,7 +144,7 @@ class QueueControllerTest extends TestCase
     /**
      * @covers ::reviewed
      */
-    public function testReviewed(): void
+    public function test_reviewed(): void
     {
         $controller = new QueueController(new QueueRepository(new Queue()));
         $result = $controller->reviewed();
@@ -160,7 +160,7 @@ class QueueControllerTest extends TestCase
     /**
      * @covers ::unreviewed
      */
-    public function testUnreviewed(): void
+    public function test_unreviewed(): void
     {
         $controller = new QueueController(new QueueRepository(new Queue()));
         $result = $controller->unreviewed();
@@ -177,7 +177,7 @@ class QueueControllerTest extends TestCase
     /**
      * @covers ::experimentUnreviewed
      */
-    public function testExperimentUnreviewed(): void
+    public function test_experiment_unreviewed(): void
     {
         $experiment = Experiment::factory()->create();
         $crawler = Crawler::factory()->create([
@@ -206,7 +206,7 @@ class QueueControllerTest extends TestCase
     /**
      * @covers ::experimentReviewed
      */
-    public function testExperimentReviewed(): void
+    public function test_experiment_reviewed(): void
     {
         $experiment = Experiment::factory()->create();
         $crawler = Crawler::factory()->create([
@@ -233,7 +233,7 @@ class QueueControllerTest extends TestCase
     /**
      * @covers ::experimentUnprocessed
      */
-    public function testExperimentUnprocessed(): void
+    public function test_experiment_unprocessed(): void
     {
         $experiment = Experiment::factory()->create();
         $crawler = Crawler::factory()->create([
@@ -260,7 +260,7 @@ class QueueControllerTest extends TestCase
     /**
      * @covers ::experimentProcessed
      */
-    public function testExperimentProcessed(): void
+    public function test_experiment_processed(): void
     {
         $experiment = Experiment::factory()->create();
         $crawler = Crawler::factory()->create([
@@ -287,7 +287,7 @@ class QueueControllerTest extends TestCase
     /**
      * @covers ::edit
      */
-    public function testEdit(): void
+    public function test_edit(): void
     {
         $queue = Queue::factory()->create();
 
@@ -302,7 +302,7 @@ class QueueControllerTest extends TestCase
     /**
      * @covers ::update
      */
-    public function testUpdate(): void
+    public function test_update(): void
     {
         $queue = Queue::factory()->create();
 
@@ -338,7 +338,7 @@ class QueueControllerTest extends TestCase
     /**
      * @covers ::destroy
      */
-    public function testDestroy(): void
+    public function test_destroy(): void
     {
         $queue = Queue::factory()->create();
 

@@ -28,7 +28,7 @@ class StripClientOwnershipTest extends IsolationTestCase
     /**
      * @covers ::handle
      */
-    public function testStripsClientSuppliedOwnerForAnIsolatedResearcher(): void
+    public function test_strips_client_supplied_owner_for_an_isolated_researcher(): void
     {
         $this->enableIsolation();
         $this->actingAs($this->researcher);
@@ -43,7 +43,7 @@ class StripClientOwnershipTest extends IsolationTestCase
     /**
      * @covers ::handle
      */
-    public function testStripsClientSuppliedOwnerFromTheQueryString(): void
+    public function test_strips_client_supplied_owner_from_the_query_string(): void
     {
         $this->enableIsolation();
         $this->actingAs($this->researcher);
@@ -57,7 +57,7 @@ class StripClientOwnershipTest extends IsolationTestCase
     /**
      * @covers ::handle
      */
-    public function testLeavesTheOwnerAloneForTheServiceAccount(): void
+    public function test_leaves_the_owner_alone_for_the_service_account(): void
     {
         $this->enableIsolation();
         $this->actingAs($this->serviceAccount);
@@ -72,7 +72,7 @@ class StripClientOwnershipTest extends IsolationTestCase
     /**
      * @covers ::handle
      */
-    public function testLeavesTheOwnerAloneWhileIsolationIsDisabled(): void
+    public function test_leaves_the_owner_alone_while_isolation_is_disabled(): void
     {
         $this->disableIsolation();
         $this->actingAs($this->researcher);
@@ -85,7 +85,7 @@ class StripClientOwnershipTest extends IsolationTestCase
     /**
      * @covers ::handle
      */
-    public function testLeavesTheOwnerAloneWhenNobodyIsAuthenticated(): void
+    public function test_leaves_the_owner_alone_when_nobody_is_authenticated(): void
     {
         $this->enableIsolation();
 
@@ -101,7 +101,7 @@ class StripClientOwnershipTest extends IsolationTestCase
      *
      * @covers ::handle
      */
-    public function testResearcherCannotReOwnAJobOverHttp(): void
+    public function test_researcher_cannot_re_own_a_job_over_http(): void
     {
         $this->enableIsolation();
 
@@ -130,7 +130,7 @@ class StripClientOwnershipTest extends IsolationTestCase
      *
      * @covers ::handle
      */
-    public function testClientSuppliedOwnerStillReachesTheDatabaseWhileDisabled(): void
+    public function test_client_supplied_owner_still_reaches_the_database_while_disabled(): void
     {
         $this->disableIsolation();
 
