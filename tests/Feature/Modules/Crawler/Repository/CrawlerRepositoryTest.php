@@ -25,6 +25,8 @@ class CrawlerRepositoryTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
+        $this->actingAs($this->user);
+        config(['primemover.runner.default_user_id' => $this->user->id]);
     }
 
     /**

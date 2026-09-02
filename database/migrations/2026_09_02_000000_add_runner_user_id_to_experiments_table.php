@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class() extends Migration
@@ -24,7 +25,13 @@ return new class() extends Migration
     public function down(): void
     {
         Schema::table('experiments', function (Blueprint $table): void {
-            $table->dropConstrainedForeignId('runner_user_id');
+            if ('sqlite' !== DB::getDriverName()) {
+                $table->dropConstrainedForeignId('runner_user_id');
+
+                return;
+            }
+
+            $table->dropColumn('runner_user_id');
         });
     }
 };

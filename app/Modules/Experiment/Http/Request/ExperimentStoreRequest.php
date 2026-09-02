@@ -5,6 +5,7 @@ namespace App\Modules\Experiment\Http\Request;
 use App\Access\Isolation;
 use App\Facades\Services\DataMapper;
 use App\Models\DTO\Preference;
+use Closure;
 use Exception;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Collection;
@@ -29,7 +30,18 @@ class ExperimentStoreRequest extends FormRequest
             'contact' => ['nullable'],
             // Which runner executes this experiment. Only a configured runner
             // account is a valid target; null/absent = the default runner.
-            'runner_user_id' => ['nullable', 'integer', Rule::in(Isolation::serviceAccountIds())],
+            // PHP's 'integer' rule accepts JSON booleans (true casts to 1), so
+            // reject them explicitly before that check runs.
+            'runner_user_id' => [
+                'nullable',
+                function (string $attribute, mixed $value, Closure $fail): void {
+                    if (is_bool($value)) {
+                        $fail("The {$attribute} must be an integer runner account id.");
+                    }
+                },
+                'integer',
+                Rule::in(Isolation::serviceAccountIds()),
+            ],
         ];
     }
 

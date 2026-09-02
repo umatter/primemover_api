@@ -137,6 +137,30 @@ class WorkPartitionTest extends RunnerAssignmentTestCase
         $this->assertContains((int) $this->unassigned['crawler']->id, $ids);
     }
 
+    /**
+     * Through HTTP, as the Java runner does it -- the testing endpoint, which
+     * is paginated (its items still live under 'data').
+     */
+    public function test_testing_endpoint_serves_each_runner_its_own_slice(): void
+    {
+        $this->enableIsolation();
+
+        foreach ([$this->unassigned, $this->forDefault, $this->forSecond] as $tree) {
+            $tree['crawler']->update(['testing' => 1]);
+        }
+
+        $this->actingAs($this->secondRunner)
+            ->getJson('/api/v1/crawlers-testing')
+            ->assertOk()
+            ->assertJsonCount(1, 'data')
+            ->assertJsonPath('data.0.id', $this->forSecond['crawler']->id);
+
+        $response = $this->actingAs($this->defaultRunner)->getJson('/api/v1/crawlers-testing')->assertOk();
+        $ids = array_map('intval', array_column($response->json('data'), 'id'));
+        $this->assertNotContains((int) $this->forSecond['crawler']->id, $ids);
+        $this->assertContains((int) $this->unassigned['crawler']->id, $ids);
+    }
+
     /** @return array<int, int> */
     private function scopedCrawlerIds(): array
     {
