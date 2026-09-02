@@ -37,10 +37,11 @@ return [
         'enabled' => env('PM_ISOLATION_ENABLED', false),
 
         /*
-         | Users who see everything. These are machine callers, not people.
-         | The Java runner, the orchestrator CLI, the MCP server and the e2e
-         | suite all authenticate as admin@primemover.example (user 1) today, so it has
-         | to stay here until the runner is moved onto its own identity.
+         | Users who see everything. Machine callers, not people: every runner
+         | account (ex63 = admin@primemover.example, user 1; the runner-only VM =
+         | runner@primemover.example, user 3), which the orchestrator CLI/MCP/e2e also use.
+         | They are also the only valid targets for experiments.runner_user_id;
+         | the two work-fetching queries partition them by that column.
          */
         'service_account_ids' => array_values(array_filter(array_map(
             'intval',
