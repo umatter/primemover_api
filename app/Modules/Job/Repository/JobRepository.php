@@ -9,9 +9,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 
 class JobRepository
 {
-    public function __construct(protected Job $job)
-    {
-    }
+    public function __construct(protected Job $job) {}
 
     public function all($queueId, ?int $perPage = null): LengthAwarePaginator
     {

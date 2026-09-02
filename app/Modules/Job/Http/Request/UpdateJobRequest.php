@@ -3,10 +3,10 @@
 namespace App\Modules\Job\Http\Request;
 
 use App\Modules\Job\Enum\JobType;
+use App\Modules\Queue\Model\Queue;
+use App\Rules\OwnedParent;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
-use App\Rules\OwnedParent;
-use App\Modules\Queue\Model\Queue;
 
 class UpdateJobRequest extends FormRequest
 {
@@ -14,7 +14,7 @@ class UpdateJobRequest extends FormRequest
     {
         return [
             'name' => [],
-            'queue_id' => [ new OwnedParent(Queue::class)],
+            'queue_id' => [new OwnedParent(Queue::class)],
             // Nullable: the first job in a queue has no predecessor, and reordering must be able
             // to update it. The runner sequences by `order` and rebuilds the chain at runtime, so a
             // null previous_job_id is fine. Mirrors StoreJobRequest.

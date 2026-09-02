@@ -29,36 +29,46 @@ class ExperimentController extends Controller
      *     operationId="getExperiments",
      *     tags={"Experiments"},
      *     security={{"bearerAuth": {}}},
+     *
      *     @OA\Parameter(
      *         name="page",
      *         in="query",
      *         description="Page number for pagination",
      *         required=false,
+     *
      *         @OA\Schema(type="integer", default=1, minimum=1)
      *     ),
+     *
      *     @OA\Parameter(
      *         name="per_page",
      *         in="query",
      *         description="Items per page",
      *         required=false,
+     *
      *         @OA\Schema(type="integer", default=15, minimum=1, maximum=100)
      *     ),
+     *
      *     @OA\Response(
      *         response=200,
      *         description="Paginated list of experiments",
+     *
      *         @OA\JsonContent(
      *             type="object",
+     *
      *             @OA\Property(
      *                 property="data",
      *                 type="array",
+     *
      *                 @OA\Items(
      *                     type="object",
+     *
      *                     @OA\Property(property="id", type="integer", example=1),
      *                     @OA\Property(property="name", type="string", example="Test Experiment"),
      *                     @OA\Property(property="description", type="string", example="Experiment description"),
      *                     @OA\Property(property="contact", type="string", example="researcher@example.com"),
      *                     @OA\Property(property="active", type="integer", example=1),
      *                     @OA\Property(property="user_id", type="integer", example=1),
+     *                     @OA\Property(property="runner_user_id", type="integer", nullable=true, example=1, description="Runner account that executes this experiment; null = default runner"),
      *                     @OA\Property(property="created_at", type="string", format="date-time"),
      *                     @OA\Property(property="updated_at", type="string", format="date-time")
      *                 )
@@ -83,6 +93,7 @@ class ExperimentController extends Controller
      *             )
      *         )
      *     ),
+     *
      *     @OA\Response(response=401, description="Unauthorized")
      * )
      */
@@ -98,42 +109,47 @@ class ExperimentController extends Controller
      *     path="/experiments/experiments-list",
      *     summary="Get all experiments list",
      *     description="Retrieve a complete list of all experiments without pagination
-
-**Curl Example:**
-```bash
-curl -X GET 'https://pm-api.test.primemover.example/api/v1/experiments/experiments-list' \
-  -H 'Authorization: Bearer YOUR_TOKEN' \
-  -H 'Accept: application/json'
-```
-
-**R Example:**
-```r
-library(httr)
-
-response <- GET(
-  url = ""https://pm-api.test.primemover.example/api/v1/experiments/experiments-list"",
-  add_headers(
-    ""Authorization"" = ""Bearer YOUR_TOKEN"",
-    ""Accept"" = ""application/json""
-  )
-)
-
-experiments_data <- content(response, ""parsed"")
-print(experiments_data)
-```",
+     *
+     **Curl Example:**
+     * ```bash
+     * curl -X GET 'https://pm-api.test.primemover.example/api/v1/experiments/experiments-list' \
+     * -H 'Authorization: Bearer YOUR_TOKEN' \
+     * -H 'Accept: application/json'
+     * ```
+     *
+     **R Example:**
+     * ```r
+     * library(httr)
+     *
+     * response <- GET(
+     * url = ""https://pm-api.test.primemover.example/api/v1/experiments/experiments-list"",
+     * add_headers(
+     * ""Authorization"" = ""Bearer YOUR_TOKEN"",
+     * ""Accept"" = ""application/json""
+     * )
+     * )
+     *
+     * experiments_data <- content(response, ""parsed"")
+     * print(experiments_data)
+     * ```",
      *     operationId="getAllExperimentsList",
      *     tags={"Experiments"},
      *     security={{"bearerAuth": {}}},
+     *
      *     @OA\Response(
      *         response=200,
      *         description="Complete list of experiments",
+     *
      *         @OA\JsonContent(
      *             type="object",
+     *
      *             @OA\Property(
      *                 property="data",
      *                 type="array",
+     *
      *                 @OA\Items(
      *                     type="object",
+     *
      *                     @OA\Property(property="id", type="integer", example=1),
      *                     @OA\Property(property="name", type="string", example="Test-Experiment 1"),
      *                     @OA\Property(property="description", type="string", example="Lorem ipsum dolor sit amet"),
@@ -141,11 +157,13 @@ print(experiments_data)
      *                     @OA\Property(property="active", type="integer", example=1),
      *                     @OA\Property(property="updated_at", type="string", format="date-time"),
      *                     @OA\Property(property="created_at", type="string", format="date-time"),
-     *                     @OA\Property(property="user_id", type="integer", example=2)
+     *                     @OA\Property(property="user_id", type="integer", example=2),
+     *                     @OA\Property(property="runner_user_id", type="integer", nullable=true, example=2, description="Runner account that executes this experiment; null = default runner")
      *                 )
      *             )
      *         )
      *     ),
+     *
      *     @OA\Response(response=401, description="Unauthorized")
      * )
      */
@@ -164,21 +182,28 @@ print(experiments_data)
      *     operationId="createExperiment",
      *     tags={"Experiments"},
      *     security={{"bearerAuth": {}}},
+     *
      *     @OA\RequestBody(
      *         required=true,
+     *
      *         @OA\JsonContent(
      *             required={"name"},
+     *
      *             @OA\Property(property="name", type="string", example="My New Experiment", description="Experiment name"),
      *             @OA\Property(property="description", type="string", example="Research project description", description="Experiment description"),
      *             @OA\Property(property="contact", type="string", example="researcher@example.com", description="Contact information"),
-     *             @OA\Property(property="active", type="integer", example=1, description="Active status (0 or 1)")
+     *             @OA\Property(property="active", type="integer", example=1, description="Active status (0 or 1)"),
+     *             @OA\Property(property="runner_user_id", type="integer", nullable=true, example=1, description="Runner account that executes this experiment; null = default runner")
      *         )
      *     ),
+     *
      *     @OA\Response(
      *         response=201,
      *         description="Experiment created successfully",
+     *
      *         @OA\JsonContent(
      *             type="object",
+     *
      *             @OA\Property(
      *                 property="data",
      *                 type="object",
@@ -188,16 +213,20 @@ print(experiments_data)
      *                 @OA\Property(property="contact", type="string", example="researcher@example.com"),
      *                 @OA\Property(property="active", type="integer", example=1),
      *                 @OA\Property(property="user_id", type="integer", example=1),
+     *                 @OA\Property(property="runner_user_id", type="integer", nullable=true, example=1, description="Runner account that executes this experiment; null = default runner"),
      *                 @OA\Property(property="created_at", type="string", format="date-time"),
      *                 @OA\Property(property="updated_at", type="string", format="date-time")
      *             )
      *         )
      *     ),
+     *
      *     @OA\Response(response=401, description="Unauthorized"),
      *     @OA\Response(
      *         response=422,
      *         description="Validation error",
+     *
      *         @OA\JsonContent(
+     *
      *             @OA\Property(property="message", type="string", example="The given data was invalid."),
      *             @OA\Property(
      *                 property="errors",
@@ -205,6 +234,7 @@ print(experiments_data)
      *                 @OA\Property(
      *                     property="name",
      *                     type="array",
+     *
      *                     @OA\Items(type="string", example="The name field is required.")
      *                 )
      *             )
@@ -229,18 +259,23 @@ print(experiments_data)
      *     operationId="getExperiment",
      *     tags={"Experiments"},
      *     security={{"bearerAuth": {}}},
+     *
      *     @OA\Parameter(
      *         name="id",
      *         in="path",
      *         description="Experiment ID",
      *         required=true,
+     *
      *         @OA\Schema(type="integer", example=1)
      *     ),
+     *
      *     @OA\Response(
      *         response=200,
      *         description="Experiment details",
+     *
      *         @OA\JsonContent(
      *             type="object",
+     *
      *             @OA\Property(
      *                 property="data",
      *                 type="object",
@@ -250,17 +285,20 @@ print(experiments_data)
      *                 @OA\Property(property="contact", type="string", example="researcher@example.com"),
      *                 @OA\Property(property="active", type="integer", example=1),
      *                 @OA\Property(property="user_id", type="integer", example=1),
+     *                 @OA\Property(property="runner_user_id", type="integer", nullable=true, example=1, description="Runner account that executes this experiment; null = default runner"),
      *                 @OA\Property(property="created_at", type="string", format="date-time"),
      *                 @OA\Property(property="updated_at", type="string", format="date-time"),
      *                 @OA\Property(
      *                     property="crawlers",
      *                     type="array",
      *                     description="Associated crawlers",
+     *
      *                     @OA\Items(type="object")
      *                 )
      *             )
      *         )
      *     ),
+     *
      *     @OA\Response(response=401, description="Unauthorized"),
      *     @OA\Response(response=404, description="Experiment not found")
      * )
@@ -287,28 +325,36 @@ print(experiments_data)
      *     operationId="updateExperiment",
      *     tags={"Experiments"},
      *     security={{"bearerAuth": {}}},
+     *
      *     @OA\Parameter(
      *         name="id",
      *         in="path",
      *         description="Experiment ID",
      *         required=true,
+     *
      *         @OA\Schema(type="integer", example=1)
      *     ),
+     *
      *     @OA\RequestBody(
      *         required=true,
+     *
      *         @OA\JsonContent(
      *             required={"name"},
+     *
      *             @OA\Property(property="name", type="string", example="Updated Experiment Name"),
      *             @OA\Property(property="description", type="string", example="Updated description"),
      *             @OA\Property(property="contact", type="string", example="newemail@example.com"),
      *             @OA\Property(property="active", type="integer", example=1)
      *         )
      *     ),
+     *
      *     @OA\Response(
      *         response=200,
      *         description="Experiment updated successfully",
+     *
      *         @OA\JsonContent(
      *             type="object",
+     *
      *             @OA\Property(
      *                 property="data",
      *                 type="object",
@@ -318,17 +364,21 @@ print(experiments_data)
      *                 @OA\Property(property="contact", type="string", example="newemail@example.com"),
      *                 @OA\Property(property="active", type="integer", example=1),
      *                 @OA\Property(property="user_id", type="integer", example=1),
+     *                 @OA\Property(property="runner_user_id", type="integer", nullable=true, example=1, description="Runner account that executes this experiment; null = default runner"),
      *                 @OA\Property(property="created_at", type="string", format="date-time"),
      *                 @OA\Property(property="updated_at", type="string", format="date-time")
      *             )
      *         )
      *     ),
+     *
      *     @OA\Response(response=401, description="Unauthorized"),
      *     @OA\Response(response=404, description="Experiment not found"),
      *     @OA\Response(
      *         response=422,
      *         description="Validation error",
+     *
      *         @OA\JsonContent(
+     *
      *             @OA\Property(property="message", type="string", example="The given data was invalid."),
      *             @OA\Property(
      *                 property="errors",
@@ -336,6 +386,7 @@ print(experiments_data)
      *                 @OA\Property(
      *                     property="name",
      *                     type="array",
+     *
      *                     @OA\Items(type="string", example="The name field is required.")
      *                 )
      *             )
@@ -360,18 +411,23 @@ print(experiments_data)
      *     operationId="deleteExperiment",
      *     tags={"Experiments"},
      *     security={{"bearerAuth": {}}},
+     *
      *     @OA\Parameter(
      *         name="id",
      *         in="path",
      *         description="Experiment ID",
      *         required=true,
+     *
      *         @OA\Schema(type="integer", example=1)
      *     ),
+     *
      *     @OA\Response(
      *         response=200,
      *         description="Experiment deleted successfully",
+     *
      *         @OA\JsonContent(
      *             type="object",
+     *
      *             @OA\Property(
      *                 property="data",
      *                 type="object",
@@ -379,6 +435,7 @@ print(experiments_data)
      *             )
      *         )
      *     ),
+     *
      *     @OA\Response(response=401, description="Unauthorized"),
      *     @OA\Response(response=404, description="Experiment not found"),
      *     @OA\Response(response=500, description="Internal server error")
@@ -403,18 +460,23 @@ print(experiments_data)
      *     operationId="forceDeleteExperiment",
      *     tags={"Experiments"},
      *     security={{"bearerAuth": {}}},
+     *
      *     @OA\Parameter(
      *         name="experiment",
      *         in="path",
      *         description="Experiment ID",
      *         required=true,
+     *
      *         @OA\Schema(type="integer", example=1)
      *     ),
+     *
      *     @OA\Response(
      *         response=200,
      *         description="Experiment force deleted successfully",
+     *
      *         @OA\JsonContent(
      *             type="object",
+     *
      *             @OA\Property(
      *                 property="data",
      *                 type="object",
@@ -422,11 +484,12 @@ print(experiments_data)
      *             )
      *         )
      *     ),
+     *
      *     @OA\Response(response=401, description="Unauthorized"),
      *     @OA\Response(response=404, description="Experiment not found"),
      *     @OA\Response(response=500, description="Internal server error")
      * )
-     * 
+     *
      * @throws Exception
      */
     public function forceDelete(Experiment $experiment): JsonResource
@@ -443,60 +506,66 @@ print(experiments_data)
      *     path="/experiments/{experiment}/upload",
      *     summary="Upload experiment configuration",
      *     description="Upload configuration data or file to an experiment
-
-**Curl Example (with file):**
-```bash
-curl -X POST 'https://pm-api.test.primemover.example/api/v1/experiments/1/upload' \
-  -H 'Authorization: Bearer YOUR_TOKEN' \
-  -H 'Accept: application/json' \
-  -F 'file=@config.json'
-```
-
-**Curl Example (with JSON content):**
-```bash
-curl -X POST 'https://pm-api.test.primemover.example/api/v1/experiments/1/upload' \
-  -H 'Authorization: Bearer YOUR_TOKEN' \
-  -H 'Content-Type: application/json' \
-  -H 'Accept: application/json' \
-  -d '{
-    ""content"": ""{\\""name\\"":\\""Test Config\\"",\\""active\\""1}""
-  }'
-```
-
-**R Example (with file):**
-```r
-library(httr)
-
-response <- POST(
-  url = ""https://pm-api.test.primemover.example/api/v1/experiments/1/upload"",
-  add_headers(
-    ""Authorization"" = ""Bearer YOUR_TOKEN"",
-    ""Accept"" = ""application/json""
-  ),
-  body = list(file = upload_file(""config.json"")),
-  encode = ""multipart""
-)
-
-config_result <- content(response, ""parsed"")
-print(config_result)
-```",
+     *
+     **Curl Example (with file):**
+     * ```bash
+     * curl -X POST 'https://pm-api.test.primemover.example/api/v1/experiments/1/upload' \
+     * -H 'Authorization: Bearer YOUR_TOKEN' \
+     * -H 'Accept: application/json' \
+     * -F 'file=@config.json'
+     * ```
+     *
+     **Curl Example (with JSON content):**
+     * ```bash
+     * curl -X POST 'https://pm-api.test.primemover.example/api/v1/experiments/1/upload' \
+     * -H 'Authorization: Bearer YOUR_TOKEN' \
+     * -H 'Content-Type: application/json' \
+     * -H 'Accept: application/json' \
+     * -d '{
+     * ""content"": ""{\\""name\\"":\\""Test Config\\"",\\""active\\""1}""
+     * }'
+     * ```
+     *
+     **R Example (with file):**
+     * ```r
+     * library(httr)
+     *
+     * response <- POST(
+     * url = ""https://pm-api.test.primemover.example/api/v1/experiments/1/upload"",
+     * add_headers(
+     * ""Authorization"" = ""Bearer YOUR_TOKEN"",
+     * ""Accept"" = ""application/json""
+     * ),
+     * body = list(file = upload_file(""config.json"")),
+     * encode = ""multipart""
+     * )
+     *
+     * config_result <- content(response, ""parsed"")
+     * print(config_result)
+     * ```",
      *     operationId="uploadExperimentConfig",
      *     tags={"Experiments"},
      *     security={{"bearerAuth": {}}},
+     *
      *     @OA\Parameter(
      *         name="experiment",
      *         in="path",
      *         description="Experiment ID",
      *         required=true,
+     *
      *         @OA\Schema(type="integer", example=1)
      *     ),
+     *
      *     @OA\RequestBody(
      *         required=true,
      *         description="Upload experiment configuration data or file",
+     *
      *         @OA\MediaType(
      *             mediaType="multipart/form-data",
+     *
      *             @OA\Schema(
      *                 type="object",
+     *
      *                 @OA\Property(
      *                     property="file",
      *                     type="string",
@@ -510,10 +579,13 @@ print(config_result)
      *                 )
      *             )
      *         ),
+     *
      *         @OA\MediaType(
      *             mediaType="application/json",
+     *
      *             @OA\Schema(
      *                 type="object",
+     *
      *                 @OA\Property(
      *                     property="content",
      *                     type="string",
@@ -522,11 +594,14 @@ print(config_result)
      *             )
      *         )
      *     ),
+     *
      *     @OA\Response(
      *         response=200,
      *         description="Configuration uploaded successfully",
+     *
      *         @OA\JsonContent(
      *             type="object",
+     *
      *             @OA\Property(
      *                 property="data",
      *                 type="object",
@@ -534,17 +609,21 @@ print(config_result)
      *                     property="crawlers",
      *                     type="array",
      *                     description="Updated crawlers with configuration",
+     *
      *                     @OA\Items(type="object")
      *                 )
      *             )
      *         )
      *     ),
+     *
      *     @OA\Response(response=401, description="Unauthorized"),
      *     @OA\Response(response=404, description="Experiment not found"),
      *     @OA\Response(
      *         response=422,
      *         description="Validation error",
+     *
      *         @OA\JsonContent(
+     *
      *             @OA\Property(property="message", type="string", example="The given data was invalid."),
      *             @OA\Property(
      *                 property="errors",
@@ -552,11 +631,13 @@ print(config_result)
      *                 @OA\Property(
      *                     property="file",
      *                     type="array",
+     *
      *                     @OA\Items(type="string", example="The file field is required when content is not present.")
      *                 )
      *             )
      *         )
      *     ),
+     *
      *     @OA\Response(response=500, description="Internal server error")
      * )
      */
@@ -566,53 +647,57 @@ print(config_result)
      *     deprecated=true,
      *     summary="Upload experiment data",
      *     description="Upload experiment configuration data or file (general upload)
-
-**Curl Example (with file):**
-```bash
-curl -X POST 'https://pm-api.test.primemover.example/api/v1/experiments/upload' \
-  -H 'Authorization: Bearer YOUR_TOKEN' \
-  -H 'Accept: application/json' \
-  -F 'file=@experiment_data.json'
-```
-
-**Curl Example (with JSON content):**
-```bash
-curl -X POST 'https://pm-api.test.primemover.example/api/v1/experiments/upload' \
-  -H 'Authorization: Bearer YOUR_TOKEN' \
-  -H 'Content-Type: application/json' \
-  -H 'Accept: application/json' \
-  -d '{
-    ""content"": ""{\\""name\\"":\\""Test Experiment\\"",\\""active\\""1}""
-  }'
-```
-
-**R Example (with file):**
-```r
-library(httr)
-
-response <- POST(
-  url = ""https://pm-api.test.primemover.example/api/v1/experiments/upload"",
-  add_headers(
-    ""Authorization"" = ""Bearer YOUR_TOKEN"",
-    ""Accept"" = ""application/json""
-  ),
-  body = list(file = upload_file(""experiment_data.json"")),
-  encode = ""multipart""
-)
-
-upload_result <- content(response, ""parsed"")
-print(upload_result)
-```",
+     *
+     **Curl Example (with file):**
+     * ```bash
+     * curl -X POST 'https://pm-api.test.primemover.example/api/v1/experiments/upload' \
+     * -H 'Authorization: Bearer YOUR_TOKEN' \
+     * -H 'Accept: application/json' \
+     * -F 'file=@experiment_data.json'
+     * ```
+     *
+     **Curl Example (with JSON content):**
+     * ```bash
+     * curl -X POST 'https://pm-api.test.primemover.example/api/v1/experiments/upload' \
+     * -H 'Authorization: Bearer YOUR_TOKEN' \
+     * -H 'Content-Type: application/json' \
+     * -H 'Accept: application/json' \
+     * -d '{
+     * ""content"": ""{\\""name\\"":\\""Test Experiment\\"",\\""active\\""1}""
+     * }'
+     * ```
+     *
+     **R Example (with file):**
+     * ```r
+     * library(httr)
+     *
+     * response <- POST(
+     * url = ""https://pm-api.test.primemover.example/api/v1/experiments/upload"",
+     * add_headers(
+     * ""Authorization"" = ""Bearer YOUR_TOKEN"",
+     * ""Accept"" = ""application/json""
+     * ),
+     * body = list(file = upload_file(""experiment_data.json"")),
+     * encode = ""multipart""
+     * )
+     *
+     * upload_result <- content(response, ""parsed"")
+     * print(upload_result)
+     * ```",
      *     operationId="uploadExperimentData",
      *     tags={"Experiments"},
      *     security={{"bearerAuth": {}}},
+     *
      *     @OA\RequestBody(
      *         required=true,
      *         description="Upload experiment data or file",
+     *
      *         @OA\MediaType(
      *             mediaType="multipart/form-data",
+     *
      *             @OA\Schema(
      *                 type="object",
+     *
      *                 @OA\Property(
      *                     property="file",
      *                     type="string",
@@ -626,10 +711,13 @@ print(upload_result)
      *                 )
      *             )
      *         ),
+     *
      *         @OA\MediaType(
      *             mediaType="application/json",
+     *
      *             @OA\Schema(
      *                 type="object",
+     *
      *                 @OA\Property(
      *                     property="content",
      *                     type="string",
@@ -638,11 +726,14 @@ print(upload_result)
      *             )
      *         )
      *     ),
+     *
      *     @OA\Response(
      *         response=200,
      *         description="Experiment data uploaded successfully",
+     *
      *         @OA\JsonContent(
      *             type="object",
+     *
      *             @OA\Property(
      *                 property="data",
      *                 type="object",
@@ -652,11 +743,14 @@ print(upload_result)
      *             )
      *         )
      *     ),
+     *
      *     @OA\Response(response=401, description="Unauthorized"),
      *     @OA\Response(
      *         response=422,
      *         description="Validation error",
+     *
      *         @OA\JsonContent(
+     *
      *             @OA\Property(property="message", type="string", example="The given data was invalid."),
      *             @OA\Property(
      *                 property="errors",
@@ -664,11 +758,13 @@ print(upload_result)
      *                 @OA\Property(
      *                     property="file",
      *                     type="array",
+     *
      *                     @OA\Items(type="string", example="The file field is required when content is not present.")
      *                 )
      *             )
      *         )
      *     ),
+     *
      *     @OA\Response(response=500, description="Internal server error")
      * )
      */
@@ -685,23 +781,30 @@ print(upload_result)
      *         in="path",
      *         description="Experiment ID",
      *         required=true,
+     *
      *         @OA\Schema(type="integer", example=1)
      *     ),
      *
      *     @OA\RequestBody(
      *         required=true,
+     *
      *         @OA\MediaType(
      *             mediaType="multipart/form-data",
+     *
      *             @OA\Schema(
      *                 type="object",
+     *
      *                 @OA\Property(property="file", type="string", format="binary"),
      *                 @OA\Property(property="content", type="string")
      *             )
      *         ),
+     *
      *         @OA\MediaType(
      *             mediaType="application/json",
+     *
      *             @OA\Schema(
      *                 type="object",
+     *
      *                 @OA\Property(property="content", type="string")
      *             )
      *         )
@@ -714,7 +817,7 @@ print(upload_result)
      *     @OA\Response(response=500, description="Internal server error")
      * )
      */
-    public function upload(ExperimentUploadRequest $request, Experiment $experiment = null): JsonResource
+    public function upload(ExperimentUploadRequest $request, ?Experiment $experiment = null): JsonResource
     {
         $uploadResult = ExperimentRepository::upload($request, $experiment);
 
@@ -735,49 +838,55 @@ print(upload_result)
      *     path="/experiments/{experiment}/download",
      *     summary="Download experiment data",
      *     description="Download experiment data as a file (ZIP archive)
-
-**Curl Example:**
-```bash
-curl -X GET 'https://pm-api.test.primemover.example/api/v1/experiments/1/download' \
-  -H 'Authorization: Bearer YOUR_TOKEN' \
-  -H 'Accept: application/zip' \
-  -o experiment_1_data.zip
-```
-
-**R Example:**
-```r
-library(httr)
-
-response <- GET(
-  url = ""https://pm-api.test.primemover.example/api/v1/experiments/1/download"",
-  add_headers(
-    ""Authorization"" = ""Bearer YOUR_TOKEN"",
-    ""Accept"" = ""application/zip""
-  )
-)
-
-# Save the file
-writeBin(content(response, ""raw""), ""experiment_1_data.zip"")
-print(""File downloaded successfully"")
-```",
+     *
+     **Curl Example:**
+     * ```bash
+     * curl -X GET 'https://pm-api.test.primemover.example/api/v1/experiments/1/download' \
+     * -H 'Authorization: Bearer YOUR_TOKEN' \
+     * -H 'Accept: application/zip' \
+     * -o experiment_1_data.zip
+     * ```
+     *
+     **R Example:**
+     * ```r
+     * library(httr)
+     *
+     * response <- GET(
+     * url = ""https://pm-api.test.primemover.example/api/v1/experiments/1/download"",
+     * add_headers(
+     * ""Authorization"" = ""Bearer YOUR_TOKEN"",
+     * ""Accept"" = ""application/zip""
+     * )
+     * )
+     *
+     * # Save the file
+     * writeBin(content(response, ""raw""), ""experiment_1_data.zip"")
+     * print(""File downloaded successfully"")
+     * ```",
      *     operationId="downloadExperimentData",
      *     tags={"Experiments"},
      *     security={{"bearerAuth": {}}},
+     *
      *     @OA\Parameter(
      *         name="experiment",
      *         in="path",
      *         description="Experiment ID",
      *         required=true,
+     *
      *         @OA\Schema(type="integer", example=1)
      *     ),
+     *
      *     @OA\Response(
      *         response=200,
      *         description="File download initiated",
+     *
      *         @OA\MediaType(
      *             mediaType="application/zip",
+     *
      *             @OA\Schema(type="string", format="binary")
      *         )
      *     ),
+     *
      *     @OA\Response(response=401, description="Unauthorized"),
      *     @OA\Response(response=404, description="Experiment not found or no data available"),
      *     @OA\Response(response=500, description="Error generating download file")

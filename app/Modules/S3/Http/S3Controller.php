@@ -25,21 +25,27 @@ class S3Controller extends Controller
      *     operationId="downloadS3File",
      *     tags={"S3"},
      *     security={{"bearerAuth": {}}},
+     *
      *     @OA\Parameter(
      *         name="filename",
      *         in="path",
      *         description="Name of the file to download",
      *         required=true,
+     *
      *         @OA\Schema(type="string", example="document.pdf")
      *     ),
+     *
      *     @OA\Response(
      *         response=200,
      *         description="File download initiated",
+     *
      *         @OA\MediaType(
      *             mediaType="application/octet-stream",
+     *
      *             @OA\Schema(type="string", format="binary")
      *         )
      *     ),
+     *
      *     @OA\Response(response=401, description="Unauthorized"),
      *     @OA\Response(response=404, description="File not found"),
      *     @OA\Response(response=500, description="Error retrieving file from S3")
@@ -58,14 +64,18 @@ class S3Controller extends Controller
      *     operationId="uploadFileToS3",
      *     tags={"S3"},
      *     security={{"bearerAuth": {}}},
+     *
      *     @OA\RequestBody(
      *         required=true,
      *         description="File to upload",
+     *
      *         @OA\MediaType(
      *             mediaType="multipart/form-data",
+     *
      *             @OA\Schema(
      *                 type="object",
      *                 required={"file"},
+     *
      *                 @OA\Property(
      *                     property="file",
      *                     type="string",
@@ -75,31 +85,40 @@ class S3Controller extends Controller
      *             )
      *         )
      *     ),
+     *
      *     @OA\Response(
      *         response=200,
      *         description="File uploaded successfully",
+     *
      *         @OA\JsonContent(
      *             type="object",
+     *
      *             @OA\Property(property="status", type="integer", example=200),
      *             @OA\Property(property="message", type="string", example="file uploaded sucessfully"),
      *             @OA\Property(property="data", type="array", @OA\Items())
      *         )
      *     ),
+     *
      *     @OA\Response(
      *         response=400,
      *         description="File upload failed",
+     *
      *         @OA\JsonContent(
      *             type="object",
+     *
      *             @OA\Property(property="status", type="boolean", example=false),
      *             @OA\Property(property="message", type="string", example="upload file failed"),
      *             @OA\Property(property="data", type="array", @OA\Items())
      *         )
      *     ),
+     *
      *     @OA\Response(response=401, description="Unauthorized"),
      *     @OA\Response(
      *         response=422,
      *         description="Validation error",
+     *
      *         @OA\JsonContent(
+     *
      *             @OA\Property(property="message", type="string", example="The given data was invalid."),
      *             @OA\Property(
      *                 property="errors",
@@ -107,6 +126,7 @@ class S3Controller extends Controller
      *                 @OA\Property(
      *                     property="file",
      *                     type="array",
+     *
      *                     @OA\Items(type="string", example="The file field is required.")
      *                 )
      *             )

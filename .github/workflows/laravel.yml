@@ -16,9 +16,6 @@ jobs:
       with:
         php-version: '8.1'
     - uses: actions/checkout@v7
-      with:
-        # Pint's --diff needs the base branch to compare against.
-        fetch-depth: 0
     - name: Copy .env
       run: php -r "file_exists('.env') || copy('.env.example', '.env');"
     - name: Copy public key
@@ -43,9 +40,10 @@ jobs:
     # found. `lint` now checks (--test) and `format` writes; the two are no
     # longer the same command.
     #
-    # CI checks only what the change touched. A full-tree `composer lint` still
-    # reports 96 pre-existing style issues across app/, database/, config/ and
-    # tests/, and gating on those would mean landing a ~100-file reformat before
-    # any of this could be enforced. --diff enforces it from here forward.
+    # Checks the whole tree. This was --diff for one day, because a full check
+    # would have failed on 96 pre-existing violations; those were landed as a
+    # standalone reformat, so the concession is no longer needed. Full is the
+    # right check: with --diff, a direct push to master produced an empty diff
+    # and pint passed trivially.
     - name: Check code style (Laravel Pint)
-      run: vendor/bin/pint --test --diff=origin/${{ github.base_ref || github.event.repository.default_branch }}
+      run: vendor/bin/pint --test

@@ -26,7 +26,7 @@ use Illuminate\Support\Facades\Gate;
  */
 class DerivedOwnershipTest extends IsolationTestCase
 {
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -37,7 +37,7 @@ class DerivedOwnershipTest extends IsolationTestCase
     /**
      * @dataProvider derivedModels
      */
-    public function testFixtureStampsChildRowsWithSomebodyElse(string $key, string $model): void
+    public function test_fixture_stamps_child_rows_with_somebody_else(string $key, string $model): void
     {
         $this->assertSame(
             (int) $this->serviceAccount->id,
@@ -53,7 +53,7 @@ class DerivedOwnershipTest extends IsolationTestCase
      *
      * @covers ::scopeVisibleTo
      */
-    public function testRowStampedWithAnotherUserIsVisibleThroughTheOwnedExperiment(string $key, string $model): void
+    public function test_row_stamped_with_another_user_is_visible_through_the_owned_experiment(string $key, string $model): void
     {
         $this->assertContains(
             (int) $this->mine[$key]->id,
@@ -73,7 +73,7 @@ class DerivedOwnershipTest extends IsolationTestCase
      *
      * @covers ::scopeVisibleTo
      */
-    public function testRowStampedWithTheCallerStaysInvisibleUnderAnotherUsersExperiment(string $key, string $model): void
+    public function test_row_stamped_with_the_caller_stays_invisible_under_another_users_experiment(string $key, string $model): void
     {
         $planted = $this->treeFor($this->otherResearcher, $this->researcher->id);
 
@@ -94,7 +94,7 @@ class DerivedOwnershipTest extends IsolationTestCase
      *
      * @covers ::scopeVisibleTo
      */
-    public function testExperimentOwnershipIsReadDirectlyFromTheRow(): void
+    public function test_experiment_ownership_is_read_directly_from_the_row(): void
     {
         $this->assertSame('', Experiment::OWNERSHIP_PATH);
 

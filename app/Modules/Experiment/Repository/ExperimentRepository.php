@@ -19,9 +19,7 @@ use Throwable;
 
 class ExperimentRepository
 {
-    public function __construct(protected Experiment $experiment)
-    {
-    }
+    public function __construct(protected Experiment $experiment) {}
 
     public function getData(): QueryBuilder
     {

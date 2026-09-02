@@ -22,7 +22,7 @@ class OutletControllerTest extends TestCase
     /**
      * @covers ::index
      */
-    public function testIndex(): void
+    public function test_index(): void
     {
         $controller = new OutletController(new OutletRepository(new Outlet()));
         $result = $controller->index();
@@ -37,7 +37,7 @@ class OutletControllerTest extends TestCase
     /**
      * @covers ::store
      */
-    public function testStore(): void
+    public function test_store(): void
     {
         $request = new Request([
             'title' => 'title outlet',
@@ -58,7 +58,7 @@ class OutletControllerTest extends TestCase
     /**
      * @covers ::show
      */
-    public function testShow(): void
+    public function test_show(): void
     {
         $outlet = Outlet::create([
             'user_id' => $this->user->id,
@@ -79,7 +79,7 @@ class OutletControllerTest extends TestCase
     /**
      * @covers ::edit
      */
-    public function testEdit(): void
+    public function test_edit(): void
     {
         $outletMock = Mockery::mock(Outlet::class);
         $outletMock->expects('create')
@@ -106,7 +106,7 @@ class OutletControllerTest extends TestCase
     /**
      * @covers ::update
      */
-    public function testUpdate(): void
+    public function test_update(): void
     {
         $outlet = Outlet::create([
             'user_id' => $this->user->id,
@@ -136,7 +136,7 @@ class OutletControllerTest extends TestCase
     /**
      * @covers ::destroy
      */
-    public function testDestroy(): void
+    public function test_destroy(): void
     {
         $outlet = Outlet::create([
             'user_id' => $this->user->id,

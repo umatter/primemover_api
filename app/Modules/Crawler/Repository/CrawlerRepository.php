@@ -16,7 +16,6 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
-use Spatie\QueryBuilder\QueryBuilder;
 use Symfony\Component\HttpFoundation\Response as ResponseAlias;
 use Tests\Feature\Modules\Crawler\Repository\CrawlerRepositoryTest;
 
@@ -91,7 +90,7 @@ class CrawlerRepository
 
     public function unprocessed(): Collection
     {
-        return $this->crawler->query()->visibleTo()->where('testing', 0)
+        return $this->crawler->query()->visibleTo()->assignedToCallingRunner()->where('testing', 0)
             ->where('active', 1)
             ->whereHas('queues', function ($q): void {
                 $q->where('processed', 0);
@@ -133,7 +132,7 @@ class CrawlerRepository
 
     public function testing(): LengthAwarePaginator
     {
-        return $this->crawler->query()->visibleTo()->where('testing', 1)
+        return $this->crawler->query()->visibleTo()->assignedToCallingRunner()->where('testing', 1)
             ->where('active', 1)
             ->with(['queues', 'agent.preferences', 'proxy', 'configuration.preferences'])
             ->paginate(10);
@@ -259,14 +258,12 @@ class CrawlerRepository
             $response = DataMapper::disableEnforceType()
                 ->removeUndefinedAttributes()
                 ->mapList($request->getJsonFileContent(), QueueDto::class)
-                ->map(function (QueueDto $queueDto) use ($crawler) {
-                    return PipelineFactory::create()
-                        ->send($queueDto->setCrawler($crawler))
-                        ->through([
-                            CreateQueue::class,
-                        ])
-                        ->thenReturn();
-                });
+                ->map(fn (QueueDto $queueDto) => PipelineFactory::create()
+                    ->send($queueDto->setCrawler($crawler))
+                    ->through([
+                        CreateQueue::class,
+                    ])
+                    ->thenReturn());
 
             DB::commit();
 

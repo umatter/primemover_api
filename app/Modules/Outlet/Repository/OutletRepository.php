@@ -10,9 +10,7 @@ use Illuminate\Support\Facades\Auth;
 
 class OutletRepository
 {
-    public function __construct(protected Outlet $outlet)
-    {
-    }
+    public function __construct(protected Outlet $outlet) {}
 
     public function all(): Collection
     {

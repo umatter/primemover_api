@@ -20,9 +20,7 @@ use Illuminate\Http\Resources\Json\ResourceCollection;
  */
 class JobController extends Controller
 {
-    public function __construct(protected JobRepository $repository)
-    {
-    }
+    public function __construct(protected JobRepository $repository) {}
 
     /**
      * @OA\Get(
@@ -32,30 +30,39 @@ class JobController extends Controller
      *     operationId="getJobs",
      *     tags={"Jobs"},
      *     security={{"bearerAuth": {}}},
+     *
      *     @OA\Parameter(
      *         name="queue",
      *         in="query",
      *         description="Filter by queue ID",
      *         required=false,
+     *
      *         @OA\Schema(type="integer")
      *     ),
+     *
      *     @OA\Parameter(
      *         name="filter[recent]",
      *         in="query",
      *         description="Filter recent jobs (days)",
      *         required=false,
+     *
      *         @OA\Schema(type="integer", example=30)
      *     ),
+     *
      *     @OA\Response(
      *         response=200,
      *         description="List of jobs",
+     *
      *         @OA\JsonContent(
      *             type="object",
+     *
      *             @OA\Property(
      *                 property="data",
      *                 type="array",
+     *
      *                 @OA\Items(
      *                     type="object",
+     *
      *                     @OA\Property(property="id", type="integer", example=1),
      *                     @OA\Property(property="name", type="string", example="Job Name"),
      *                     @OA\Property(property="description", type="string", example="Job description"),
@@ -68,6 +75,7 @@ class JobController extends Controller
      *             )
      *         )
      *     ),
+     *
      *     @OA\Response(response=401, description="Unauthorized")
      * )
      */
@@ -87,21 +95,27 @@ class JobController extends Controller
      *     operationId="createJob",
      *     tags={"Jobs"},
      *     security={{"bearerAuth": {}}},
+     *
      *     @OA\RequestBody(
      *         required=true,
+     *
      *         @OA\JsonContent(
      *             required={"name", "queue_id"},
+     *
      *             @OA\Property(property="name", type="string", example="Job Name"),
      *             @OA\Property(property="description", type="string", example="Job description"),
      *             @OA\Property(property="type", type="string", example="visit_webpage_browserbar"),
      *             @OA\Property(property="queue_id", type="integer", example=1)
      *         )
      *     ),
+     *
      *     @OA\Response(
      *         response=201,
      *         description="Job created successfully",
+     *
      *         @OA\JsonContent(type="object")
      *     ),
+     *
      *     @OA\Response(response=401, description="Unauthorized"),
      *     @OA\Response(response=422, description="Validation error")
      * )
@@ -121,18 +135,23 @@ class JobController extends Controller
      *     operationId="getJob",
      *     tags={"Jobs"},
      *     security={{"bearerAuth": {}}},
+     *
      *     @OA\Parameter(
      *         name="id",
      *         in="path",
      *         description="Job ID",
      *         required=true,
+     *
      *         @OA\Schema(type="integer")
      *     ),
+     *
      *     @OA\Response(
      *         response=200,
      *         description="Job details",
+     *
      *         @OA\JsonContent(type="object")
      *     ),
+     *
      *     @OA\Response(response=401, description="Unauthorized"),
      *     @OA\Response(response=404, description="Job not found")
      * )
@@ -159,27 +178,35 @@ class JobController extends Controller
      *     operationId="updateJob",
      *     tags={"Jobs"},
      *     security={{"bearerAuth": {}}},
+     *
      *     @OA\Parameter(
      *         name="id",
      *         in="path",
      *         description="Job ID",
      *         required=true,
+     *
      *         @OA\Schema(type="integer")
      *     ),
+     *
      *     @OA\RequestBody(
      *         required=true,
+     *
      *         @OA\JsonContent(
+     *
      *             @OA\Property(property="name", type="string"),
      *             @OA\Property(property="description", type="string"),
      *             @OA\Property(property="type", type="string"),
      *             @OA\Property(property="queue_id", type="integer")
      *         )
      *     ),
+     *
      *     @OA\Response(
      *         response=200,
      *         description="Job updated successfully",
+     *
      *         @OA\JsonContent(type="object")
      *     ),
+     *
      *     @OA\Response(response=401, description="Unauthorized"),
      *     @OA\Response(response=404, description="Job not found"),
      *     @OA\Response(response=422, description="Validation error")
@@ -200,25 +227,31 @@ class JobController extends Controller
      *     operationId="deleteJob",
      *     tags={"Jobs"},
      *     security={{"bearerAuth": {}}},
+     *
      *     @OA\Parameter(
      *         name="id",
      *         in="path",
      *         description="Job ID",
      *         required=true,
+     *
      *         @OA\Schema(type="integer")
      *     ),
+     *
      *     @OA\Response(
      *         response=200,
      *         description="Job deleted successfully",
+     *
      *         @OA\JsonContent(
      *             type="object",
+     *
      *             @OA\Property(property="data", type="array", @OA\Items(type="object"))
      *         )
      *     ),
+     *
      *     @OA\Response(response=401, description="Unauthorized"),
      *     @OA\Response(response=404, description="Job not found")
      * )
-     * 
+     *
      * @throws Exception
      */
     public function destroy(Job $job): ResourceCollection

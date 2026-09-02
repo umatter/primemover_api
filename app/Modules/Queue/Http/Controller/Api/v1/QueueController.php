@@ -21,9 +21,7 @@ use Illuminate\Http\Resources\Json\ResourceCollection;
  */
 class QueueController extends Controller
 {
-    public function __construct(protected QueueRepository $repository)
-    {
-    }
+    public function __construct(protected QueueRepository $repository) {}
 
     /**
      * @OA\Get(
@@ -33,8 +31,10 @@ class QueueController extends Controller
      *     operationId="getQueues",
      *     tags={"Queues"},
      *     security={{"bearerAuth": {}}},
+     *
      *     @OA\Parameter(name="crawler", in="query", description="Filter by crawler ID", required=false, @OA\Schema(type="integer")),
      *     @OA\Parameter(name="sortBy", in="query", description="Sort field", required=false, @OA\Schema(type="string")),
+     *
      *     @OA\Response(response=200, description="List of queues", @OA\JsonContent(type="object")),
      *     @OA\Response(response=401, description="Unauthorized")
      * )
@@ -56,7 +56,9 @@ class QueueController extends Controller
      *     operationId="createQueue",
      *     tags={"Queues"},
      *     security={{"bearerAuth": {}}},
+     *
      *     @OA\RequestBody(required=true, @OA\JsonContent(required={"name","crawler_id"}, @OA\Property(property="name", type="string"), @OA\Property(property="crawler_id", type="integer"))),
+     *
      *     @OA\Response(response=201, description="Queue created", @OA\JsonContent(type="object")),
      *     @OA\Response(response=401, description="Unauthorized"),
      *     @OA\Response(response=422, description="Validation error")
@@ -77,7 +79,9 @@ class QueueController extends Controller
      *     operationId="getQueue",
      *     tags={"Queues"},
      *     security={{"bearerAuth": {}}},
+     *
      *     @OA\Parameter(name="id", in="path", description="Queue ID", required=true, @OA\Schema(type="integer")),
+     *
      *     @OA\Response(response=200, description="Queue details", @OA\JsonContent(type="object")),
      *     @OA\Response(response=401, description="Unauthorized"),
      *     @OA\Response(response=404, description="Queue not found")
@@ -95,44 +99,49 @@ class QueueController extends Controller
      *     path="/queues/job/{jobid}",
      *     summary="Get queue by job ID",
      *     description="Retrieve queue information for a specific job
-
-**Curl Example:**
-```bash
-curl -X GET 'https://pm-api.test.primemover.example/api/v1/queues/job/1' \
-  -H 'Authorization: Bearer YOUR_TOKEN' \
-  -H 'Accept: application/json'
-```
-
-**R Example:**
-```r
-library(httr)
-
-response <- GET(
-  url = ""https://pm-api.test.primemover.example/api/v1/queues/job/1"",
-  add_headers(
-    ""Authorization"" = ""Bearer YOUR_TOKEN"",
-    ""Accept"" = ""application/json""
-  )
-)
-
-queue_data <- content(response, ""parsed"")
-print(queue_data)
-```",
+     *
+     **Curl Example:**
+     * ```bash
+     * curl -X GET 'https://pm-api.test.primemover.example/api/v1/queues/job/1' \
+     * -H 'Authorization: Bearer YOUR_TOKEN' \
+     * -H 'Accept: application/json'
+     * ```
+     *
+     **R Example:**
+     * ```r
+     * library(httr)
+     *
+     * response <- GET(
+     * url = ""https://pm-api.test.primemover.example/api/v1/queues/job/1"",
+     * add_headers(
+     * ""Authorization"" = ""Bearer YOUR_TOKEN"",
+     * ""Accept"" = ""application/json""
+     * )
+     * )
+     *
+     * queue_data <- content(response, ""parsed"")
+     * print(queue_data)
+     * ```",
      *     operationId="getQueueByJobId",
      *     tags={"Queues"},
      *     security={{"bearerAuth": {}}},
+     *
      *     @OA\Parameter(
      *         name="jobid",
      *         in="path",
      *         description="Job ID",
      *         required=true,
+     *
      *         @OA\Schema(type="integer", example=1)
      *     ),
+     *
      *     @OA\Response(
      *         response=200,
      *         description="Queue information for the job",
+     *
      *         @OA\JsonContent(
      *             type="object",
+     *
      *             @OA\Property(
      *                 property="data",
      *                 type="object",
@@ -150,6 +159,7 @@ print(queue_data)
      *             )
      *         )
      *     ),
+     *
      *     @OA\Response(response=401, description="Unauthorized"),
      *     @OA\Response(response=404, description="Job not found")
      * )
@@ -166,42 +176,47 @@ print(queue_data)
      *     path="/queues-processed",
      *     summary="Get processed queues",
      *     description="Retrieve all queues that have been processed
-
-**Curl Example:**
-```bash
-curl -X GET 'https://pm-api.test.primemover.example/api/v1/queues-processed' \
-  -H 'Authorization: Bearer YOUR_TOKEN' \
-  -H 'Accept: application/json'
-```
-
-**R Example:**
-```r
-library(httr)
-
-response <- GET(
-  url = ""https://pm-api.test.primemover.example/api/v1/queues-processed"",
-  add_headers(
-    ""Authorization"" = ""Bearer YOUR_TOKEN"",
-    ""Accept"" = ""application/json""
-  )
-)
-
-queues_data <- content(response, ""parsed"")
-print(queues_data)
-```",
+     *
+     **Curl Example:**
+     * ```bash
+     * curl -X GET 'https://pm-api.test.primemover.example/api/v1/queues-processed' \
+     * -H 'Authorization: Bearer YOUR_TOKEN' \
+     * -H 'Accept: application/json'
+     * ```
+     *
+     **R Example:**
+     * ```r
+     * library(httr)
+     *
+     * response <- GET(
+     * url = ""https://pm-api.test.primemover.example/api/v1/queues-processed"",
+     * add_headers(
+     * ""Authorization"" = ""Bearer YOUR_TOKEN"",
+     * ""Accept"" = ""application/json""
+     * )
+     * )
+     *
+     * queues_data <- content(response, ""parsed"")
+     * print(queues_data)
+     * ```",
      *     operationId="getProcessedQueues",
      *     tags={"Queues"},
      *     security={{"bearerAuth": {}}},
+     *
      *     @OA\Response(
      *         response=200,
      *         description="List of processed queues",
+     *
      *         @OA\JsonContent(
      *             type="object",
+     *
      *             @OA\Property(
      *                 property="data",
      *                 type="array",
+     *
      *                 @OA\Items(
      *                     type="object",
+     *
      *                     @OA\Property(property="id", type="integer", example=1),
      *                     @OA\Property(property="name", type="string", example="Processed Queue"),
      *                     @OA\Property(property="description", type="string", example="Queue that has been processed"),
@@ -217,6 +232,7 @@ print(queues_data)
      *             )
      *         )
      *     ),
+     *
      *     @OA\Response(response=401, description="Unauthorized")
      * )
      */
@@ -232,42 +248,47 @@ print(queues_data)
      *     path="/queues-unprocessed",
      *     summary="Get unprocessed queues",
      *     description="Retrieve all queues that have not been processed
-
-**Curl Example:**
-```bash
-curl -X GET 'https://pm-api.test.primemover.example/api/v1/queues-unprocessed' \
-  -H 'Authorization: Bearer YOUR_TOKEN' \
-  -H 'Accept: application/json'
-```
-
-**R Example:**
-```r
-library(httr)
-
-response <- GET(
-  url = ""https://pm-api.test.primemover.example/api/v1/queues-unprocessed"",
-  add_headers(
-    ""Authorization"" = ""Bearer YOUR_TOKEN"",
-    ""Accept"" = ""application/json""
-  )
-)
-
-queues_data <- content(response, ""parsed"")
-print(queues_data)
-```",
+     *
+     **Curl Example:**
+     * ```bash
+     * curl -X GET 'https://pm-api.test.primemover.example/api/v1/queues-unprocessed' \
+     * -H 'Authorization: Bearer YOUR_TOKEN' \
+     * -H 'Accept: application/json'
+     * ```
+     *
+     **R Example:**
+     * ```r
+     * library(httr)
+     *
+     * response <- GET(
+     * url = ""https://pm-api.test.primemover.example/api/v1/queues-unprocessed"",
+     * add_headers(
+     * ""Authorization"" = ""Bearer YOUR_TOKEN"",
+     * ""Accept"" = ""application/json""
+     * )
+     * )
+     *
+     * queues_data <- content(response, ""parsed"")
+     * print(queues_data)
+     * ```",
      *     operationId="getUnprocessedQueues",
      *     tags={"Queues"},
      *     security={{"bearerAuth": {}}},
+     *
      *     @OA\Response(
      *         response=200,
      *         description="List of unprocessed queues",
+     *
      *         @OA\JsonContent(
      *             type="object",
+     *
      *             @OA\Property(
      *                 property="data",
      *                 type="array",
+     *
      *                 @OA\Items(
      *                     type="object",
+     *
      *                     @OA\Property(property="id", type="integer", example=1),
      *                     @OA\Property(property="name", type="string", example="Unprocessed Queue"),
      *                     @OA\Property(property="description", type="string", example="Queue waiting to be processed"),
@@ -283,6 +304,7 @@ print(queues_data)
      *             )
      *         )
      *     ),
+     *
      *     @OA\Response(response=401, description="Unauthorized")
      * )
      */
@@ -298,42 +320,47 @@ print(queues_data)
      *     path="/queues-reviewed",
      *     summary="Get reviewed queues",
      *     description="Retrieve all queues that have been reviewed
-
-**Curl Example:**
-```bash
-curl -X GET 'https://pm-api.test.primemover.example/api/v1/queues-reviewed' \
-  -H 'Authorization: Bearer YOUR_TOKEN' \
-  -H 'Accept: application/json'
-```
-
-**R Example:**
-```r
-library(httr)
-
-response <- GET(
-  url = ""https://pm-api.test.primemover.example/api/v1/queues-reviewed"",
-  add_headers(
-    ""Authorization"" = ""Bearer YOUR_TOKEN"",
-    ""Accept"" = ""application/json""
-  )
-)
-
-queues_data <- content(response, ""parsed"")
-print(queues_data)
-```",
+     *
+     **Curl Example:**
+     * ```bash
+     * curl -X GET 'https://pm-api.test.primemover.example/api/v1/queues-reviewed' \
+     * -H 'Authorization: Bearer YOUR_TOKEN' \
+     * -H 'Accept: application/json'
+     * ```
+     *
+     **R Example:**
+     * ```r
+     * library(httr)
+     *
+     * response <- GET(
+     * url = ""https://pm-api.test.primemover.example/api/v1/queues-reviewed"",
+     * add_headers(
+     * ""Authorization"" = ""Bearer YOUR_TOKEN"",
+     * ""Accept"" = ""application/json""
+     * )
+     * )
+     *
+     * queues_data <- content(response, ""parsed"")
+     * print(queues_data)
+     * ```",
      *     operationId="getReviewedQueues",
      *     tags={"Queues"},
      *     security={{"bearerAuth": {}}},
+     *
      *     @OA\Response(
      *         response=200,
      *         description="List of reviewed queues",
+     *
      *         @OA\JsonContent(
      *             type="object",
+     *
      *             @OA\Property(
      *                 property="data",
      *                 type="array",
+     *
      *                 @OA\Items(
      *                     type="object",
+     *
      *                     @OA\Property(property="id", type="integer", example=1),
      *                     @OA\Property(property="name", type="string", example="Reviewed Queue"),
      *                     @OA\Property(property="description", type="string", example="Queue that has been reviewed"),
@@ -349,6 +376,7 @@ print(queues_data)
      *             )
      *         )
      *     ),
+     *
      *     @OA\Response(response=401, description="Unauthorized")
      * )
      */
@@ -364,42 +392,47 @@ print(queues_data)
      *     path="/queues-unreviewed",
      *     summary="Get unreviewed queues",
      *     description="Retrieve all queues that have not been reviewed
-
-**Curl Example:**
-```bash
-curl -X GET 'https://pm-api.test.primemover.example/api/v1/queues-unreviewed' \
-  -H 'Authorization: Bearer YOUR_TOKEN' \
-  -H 'Accept: application/json'
-```
-
-**R Example:**
-```r
-library(httr)
-
-response <- GET(
-  url = ""https://pm-api.test.primemover.example/api/v1/queues-unreviewed"",
-  add_headers(
-    ""Authorization"" = ""Bearer YOUR_TOKEN"",
-    ""Accept"" = ""application/json""
-  )
-)
-
-queues_data <- content(response, ""parsed"")
-print(queues_data)
-```",
+     *
+     **Curl Example:**
+     * ```bash
+     * curl -X GET 'https://pm-api.test.primemover.example/api/v1/queues-unreviewed' \
+     * -H 'Authorization: Bearer YOUR_TOKEN' \
+     * -H 'Accept: application/json'
+     * ```
+     *
+     **R Example:**
+     * ```r
+     * library(httr)
+     *
+     * response <- GET(
+     * url = ""https://pm-api.test.primemover.example/api/v1/queues-unreviewed"",
+     * add_headers(
+     * ""Authorization"" = ""Bearer YOUR_TOKEN"",
+     * ""Accept"" = ""application/json""
+     * )
+     * )
+     *
+     * queues_data <- content(response, ""parsed"")
+     * print(queues_data)
+     * ```",
      *     operationId="getUnreviewedQueues",
      *     tags={"Queues"},
      *     security={{"bearerAuth": {}}},
+     *
      *     @OA\Response(
      *         response=200,
      *         description="List of unreviewed queues",
+     *
      *         @OA\JsonContent(
      *             type="object",
+     *
      *             @OA\Property(
      *                 property="data",
      *                 type="array",
+     *
      *                 @OA\Items(
      *                     type="object",
+     *
      *                     @OA\Property(property="id", type="integer", example=1),
      *                     @OA\Property(property="name", type="string", example="Unreviewed Queue"),
      *                     @OA\Property(property="description", type="string", example="Queue waiting for review"),
@@ -415,6 +448,7 @@ print(queues_data)
      *             )
      *         )
      *     ),
+     *
      *     @OA\Response(response=401, description="Unauthorized")
      * )
      */
@@ -433,23 +467,30 @@ print(queues_data)
      *     operationId="getExperimentUnreviewedQueues",
      *     tags={"Queues"},
      *     security={{"bearerAuth": {}}},
+     *
      *     @OA\Parameter(
      *         name="experiment",
      *         in="path",
      *         description="Experiment ID",
      *         required=true,
+     *
      *         @OA\Schema(type="integer", example=1)
      *     ),
+     *
      *     @OA\Response(
      *         response=200,
      *         description="List of unreviewed queues for the experiment",
+     *
      *         @OA\JsonContent(
      *             type="object",
+     *
      *             @OA\Property(
      *                 property="data",
      *                 type="array",
+     *
      *                 @OA\Items(
      *                     type="object",
+     *
      *                     @OA\Property(property="id", type="integer", example=1),
      *                     @OA\Property(property="name", type="string", example="Unreviewed Queue"),
      *                     @OA\Property(property="reviewed", type="integer", example=0),
@@ -461,6 +502,7 @@ print(queues_data)
      *             )
      *         )
      *     ),
+     *
      *     @OA\Response(response=401, description="Unauthorized"),
      *     @OA\Response(response=404, description="Experiment not found")
      * )
@@ -480,23 +522,30 @@ print(queues_data)
      *     operationId="getExperimentReviewedQueues",
      *     tags={"Queues"},
      *     security={{"bearerAuth": {}}},
+     *
      *     @OA\Parameter(
      *         name="experiment",
      *         in="path",
      *         description="Experiment ID",
      *         required=true,
+     *
      *         @OA\Schema(type="integer", example=1)
      *     ),
+     *
      *     @OA\Response(
      *         response=200,
      *         description="List of reviewed queues for the experiment",
+     *
      *         @OA\JsonContent(
      *             type="object",
+     *
      *             @OA\Property(
      *                 property="data",
      *                 type="array",
+     *
      *                 @OA\Items(
      *                     type="object",
+     *
      *                     @OA\Property(property="id", type="integer", example=1),
      *                     @OA\Property(property="name", type="string", example="Reviewed Queue"),
      *                     @OA\Property(property="reviewed", type="integer", example=1),
@@ -508,6 +557,7 @@ print(queues_data)
      *             )
      *         )
      *     ),
+     *
      *     @OA\Response(response=401, description="Unauthorized"),
      *     @OA\Response(response=404, description="Experiment not found")
      * )
@@ -527,23 +577,30 @@ print(queues_data)
      *     operationId="getExperimentUnprocessedQueues",
      *     tags={"Queues"},
      *     security={{"bearerAuth": {}}},
+     *
      *     @OA\Parameter(
      *         name="experiment",
      *         in="path",
      *         description="Experiment ID",
      *         required=true,
+     *
      *         @OA\Schema(type="integer", example=1)
      *     ),
+     *
      *     @OA\Response(
      *         response=200,
      *         description="List of unprocessed queues for the experiment",
+     *
      *         @OA\JsonContent(
      *             type="object",
+     *
      *             @OA\Property(
      *                 property="data",
      *                 type="array",
+     *
      *                 @OA\Items(
      *                     type="object",
+     *
      *                     @OA\Property(property="id", type="integer", example=1),
      *                     @OA\Property(property="name", type="string", example="Unprocessed Queue"),
      *                     @OA\Property(property="processed", type="integer", example=0),
@@ -555,6 +612,7 @@ print(queues_data)
      *             )
      *         )
      *     ),
+     *
      *     @OA\Response(response=401, description="Unauthorized"),
      *     @OA\Response(response=404, description="Experiment not found")
      * )
@@ -574,23 +632,30 @@ print(queues_data)
      *     operationId="getExperimentProcessedQueues",
      *     tags={"Queues"},
      *     security={{"bearerAuth": {}}},
+     *
      *     @OA\Parameter(
      *         name="experiment",
      *         in="path",
      *         description="Experiment ID",
      *         required=true,
+     *
      *         @OA\Schema(type="integer", example=1)
      *     ),
+     *
      *     @OA\Response(
      *         response=200,
      *         description="List of processed queues for the experiment",
+     *
      *         @OA\JsonContent(
      *             type="object",
+     *
      *             @OA\Property(
      *                 property="data",
      *                 type="array",
+     *
      *                 @OA\Items(
      *                     type="object",
+     *
      *                     @OA\Property(property="id", type="integer", example=1),
      *                     @OA\Property(property="name", type="string", example="Processed Queue"),
      *                     @OA\Property(property="processed", type="integer", example=1),
@@ -603,6 +668,7 @@ print(queues_data)
      *             )
      *         )
      *     ),
+     *
      *     @OA\Response(response=401, description="Unauthorized"),
      *     @OA\Response(response=404, description="Experiment not found")
      * )
@@ -629,8 +695,11 @@ print(queues_data)
      *     operationId="updateQueue",
      *     tags={"Queues"},
      *     security={{"bearerAuth": {}}},
+     *
      *     @OA\Parameter(name="id", in="path", description="Queue ID", required=true, @OA\Schema(type="integer")),
+     *
      *     @OA\RequestBody(required=true, @OA\JsonContent(@OA\Property(property="name", type="string"), @OA\Property(property="active", type="integer"))),
+     *
      *     @OA\Response(response=200, description="Queue updated", @OA\JsonContent(type="object")),
      *     @OA\Response(response=401, description="Unauthorized"),
      *     @OA\Response(response=404, description="Queue not found")
@@ -651,7 +720,9 @@ print(queues_data)
      *     operationId="deleteQueue",
      *     tags={"Queues"},
      *     security={{"bearerAuth": {}}},
+     *
      *     @OA\Parameter(name="id", in="path", description="Queue ID", required=true, @OA\Schema(type="integer")),
+     *
      *     @OA\Response(response=200, description="Queue deleted", @OA\JsonContent(type="object")),
      *     @OA\Response(response=401, description="Unauthorized"),
      *     @OA\Response(response=404, description="Queue not found")

@@ -9,9 +9,7 @@ use Illuminate\Support\Facades\Auth;
 
 class BehaviorRepository
 {
-    public function __construct(protected Behavior $behavior)
-    {
-    }
+    public function __construct(protected Behavior $behavior) {}
 
     public function all(): LengthAwarePaginator
     {

@@ -10,7 +10,7 @@ use App\Modules\Job\Model\Job;
  * Ownership checks for Job.
  *
  * Through the QUEUE, not the crawler: jobs has no crawler_id, so
-     * Job::crawler() is null and would deny every job.
+ * Job::crawler() is null and would deny every job.
  *
  * Gate::before short-circuits every ability while isolation is off or for
  * service accounts, so these methods only run for isolated researchers.
@@ -35,7 +35,7 @@ class JobPolicy
     /** Shared tail of every derived chain. Missing ancestor means not owned. */
     protected function ownedViaExperiment(User $user, ?Experiment $experiment): bool
     {
-        if ($experiment === null) {
+        if (null === $experiment) {
             return false;
         }
 

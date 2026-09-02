@@ -24,7 +24,7 @@ class AgentControllerTest extends TestCase
      */
     protected mixed $testObject;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         $this->testObject = App::make(AgentController::class);
@@ -33,7 +33,7 @@ class AgentControllerTest extends TestCase
     /**
      *@covers ::index
      */
-    public function testIndex(): void
+    public function test_index(): void
     {
         $result = $this->testObject->index();
 
@@ -52,7 +52,7 @@ class AgentControllerTest extends TestCase
     /**
      *@covers ::create
      */
-    public function testCreate(): void
+    public function test_create(): void
     {
         $result = $this->testObject->create();
 
@@ -62,7 +62,7 @@ class AgentControllerTest extends TestCase
     /**
      *@covers ::show
      */
-    public function testShow(): void
+    public function test_show(): void
     {
         $result = $this->testObject->show($this->agent->id);
 
@@ -74,7 +74,7 @@ class AgentControllerTest extends TestCase
     /**
      *@covers ::store
      */
-    public function testStore(): void
+    public function test_store(): void
     {
         $data = [
             'name' => 'name',
@@ -100,7 +100,7 @@ class AgentControllerTest extends TestCase
     /**
      *@covers ::edit
      */
-    public function testEdit(): void
+    public function test_edit(): void
     {
         $result = $this->testObject->edit($this->agent->id);
 
@@ -112,7 +112,7 @@ class AgentControllerTest extends TestCase
     /**
      *@covers ::update
      */
-    public function testUpdate(): void
+    public function test_update(): void
     {
         $data = [
             'name' => 'agent updated',
@@ -139,7 +139,7 @@ class AgentControllerTest extends TestCase
     /**
      *@covers ::destroy
      */
-    public function testDelete(): void
+    public function test_delete(): void
     {
         $result = $this->testObject->destroy($this->agent);
 

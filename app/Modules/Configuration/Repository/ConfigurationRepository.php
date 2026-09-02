@@ -8,9 +8,7 @@ use Spatie\QueryBuilder\QueryBuilder;
 
 class ConfigurationRepository
 {
-    public function __construct(protected Configuration $configuration)
-    {
-    }
+    public function __construct(protected Configuration $configuration) {}
 
     public function all(): QueryBuilder
     {

@@ -19,9 +19,7 @@ use Illuminate\Http\Resources\Json\ResourceCollection;
  */
 class ProxyController extends Controller
 {
-    public function __construct(protected ProxyRepository $repository)
-    {
-    }
+    public function __construct(protected ProxyRepository $repository) {}
 
     /**
      * @OA\Get(
@@ -31,37 +29,48 @@ class ProxyController extends Controller
      *     operationId="getProxies",
      *     tags={"Proxies"},
      *     security={{"bearerAuth": {}}},
+     *
      *     @OA\Parameter(
      *         name="filter[search]",
      *         in="query",
      *         description="Search term",
      *         required=false,
+     *
      *         @OA\Schema(type="string")
      *     ),
+     *
      *     @OA\Parameter(
      *         name="filter[recent]",
      *         in="query",
      *         description="Filter recent proxies",
      *         required=false,
+     *
      *         @OA\Schema(type="string")
      *     ),
+     *
      *     @OA\Parameter(
      *         name="filter[after]",
      *         in="query",
      *         description="Filter after date",
      *         required=false,
+     *
      *         @OA\Schema(type="string")
      *     ),
+     *
      *     @OA\Response(
      *         response=200,
      *         description="List of proxies",
+     *
      *         @OA\JsonContent(
      *             type="object",
+     *
      *             @OA\Property(
      *                 property="data",
      *                 type="array",
+     *
      *                 @OA\Items(
      *                     type="object",
+     *
      *                     @OA\Property(property="id", type="integer", example=1),
      *                     @OA\Property(property="name", type="string", example="Proxy Name"),
      *                     @OA\Property(property="description", type="string", example="Proxy description"),
@@ -73,6 +82,7 @@ class ProxyController extends Controller
      *             )
      *         )
      *     ),
+     *
      *     @OA\Response(response=401, description="Unauthorized")
      * )
      */
@@ -89,10 +99,13 @@ class ProxyController extends Controller
      *     operationId="createProxy",
      *     tags={"Proxies"},
      *     security={{"bearerAuth": {}}},
+     *
      *     @OA\RequestBody(
      *         required=true,
+     *
      *         @OA\JsonContent(
      *             required={"name"},
+     *
      *             @OA\Property(property="name", type="string", example="Proxy Name"),
      *             @OA\Property(property="description", type="string", example="Proxy description"),
      *             @OA\Property(property="hostname", type="string", example="proxy.example.com"),
@@ -103,11 +116,14 @@ class ProxyController extends Controller
      *             @OA\Property(property="active", type="integer", example=1)
      *         )
      *     ),
+     *
      *     @OA\Response(
      *         response=201,
      *         description="Proxy created successfully",
+     *
      *         @OA\JsonContent(type="object")
      *     ),
+     *
      *     @OA\Response(response=401, description="Unauthorized"),
      *     @OA\Response(response=422, description="Validation error")
      * )
@@ -127,18 +143,23 @@ class ProxyController extends Controller
      *     operationId="getProxy",
      *     tags={"Proxies"},
      *     security={{"bearerAuth": {}}},
+     *
      *     @OA\Parameter(
      *         name="id",
      *         in="path",
      *         description="Proxy ID",
      *         required=true,
+     *
      *         @OA\Schema(type="integer")
      *     ),
+     *
      *     @OA\Response(
      *         response=200,
      *         description="Proxy details",
+     *
      *         @OA\JsonContent(type="object")
      *     ),
+     *
      *     @OA\Response(response=401, description="Unauthorized"),
      *     @OA\Response(response=404, description="Proxy not found")
      * )
@@ -161,16 +182,21 @@ class ProxyController extends Controller
      *     operationId="updateProxy",
      *     tags={"Proxies"},
      *     security={{"bearerAuth": {}}},
+     *
      *     @OA\Parameter(
      *         name="id",
      *         in="path",
      *         description="Proxy ID",
      *         required=true,
+     *
      *         @OA\Schema(type="integer")
      *     ),
+     *
      *     @OA\RequestBody(
      *         required=true,
+     *
      *         @OA\JsonContent(
+     *
      *             @OA\Property(property="name", type="string"),
      *             @OA\Property(property="description", type="string"),
      *             @OA\Property(property="hostname", type="string"),
@@ -181,11 +207,14 @@ class ProxyController extends Controller
      *             @OA\Property(property="active", type="integer")
      *         )
      *     ),
+     *
      *     @OA\Response(
      *         response=200,
      *         description="Proxy updated successfully",
+     *
      *         @OA\JsonContent(type="object")
      *     ),
+     *
      *     @OA\Response(response=401, description="Unauthorized"),
      *     @OA\Response(response=404, description="Proxy not found"),
      *     @OA\Response(response=422, description="Validation error")
@@ -204,21 +233,27 @@ class ProxyController extends Controller
      *     operationId="deleteProxy",
      *     tags={"Proxies"},
      *     security={{"bearerAuth": {}}},
+     *
      *     @OA\Parameter(
      *         name="id",
      *         in="path",
      *         description="Proxy ID",
      *         required=true,
+     *
      *         @OA\Schema(type="integer")
      *     ),
+     *
      *     @OA\Response(
      *         response=200,
      *         description="Proxy deleted successfully",
+     *
      *         @OA\JsonContent(
      *             type="object",
+     *
      *             @OA\Property(property="data", type="array", @OA\Items(type="object"))
      *         )
      *     ),
+     *
      *     @OA\Response(response=401, description="Unauthorized"),
      *     @OA\Response(response=404, description="Proxy not found")
      * )

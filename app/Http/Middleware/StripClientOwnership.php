@@ -24,7 +24,7 @@ class StripClientOwnership
 {
     public function handle(Request $request, Closure $next): Response
     {
-        if (! Isolation::bypasses()) {
+        if ( ! Isolation::bypasses()) {
             $request->request->remove('user_id');
             $request->query->remove('user_id');
         }

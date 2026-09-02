@@ -48,7 +48,7 @@ abstract class IsolationTestCase extends TestCase
     /** @var array<string, Model> a third owner's subtree, present purely as noise */
     protected array $thirdParty = [];
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -164,8 +164,7 @@ abstract class IsolationTestCase extends TestCase
     /**
      * Ids the current caller may see, through the scope under test.
      *
-     * @param class-string<Model> $model
-     *
+     * @param  class-string<Model> $model
      * @return array<int, int>
      */
     protected function visibleIds(string $model): array
@@ -181,8 +180,7 @@ abstract class IsolationTestCase extends TestCase
     /**
      * Every id in the table, ignoring isolation.
      *
-     * @param class-string<Model> $model
-     *
+     * @param  class-string<Model> $model
      * @return array<int, int>
      */
     protected function allIds(string $model): array
@@ -195,8 +193,7 @@ abstract class IsolationTestCase extends TestCase
     }
 
     /**
-     * @param iterable<Model|array|object> $rows
-     *
+     * @param  iterable<Model|array|object> $rows
      * @return array<int, int>
      */
     protected function idsOf(iterable $rows): array

@@ -3,6 +3,7 @@
 namespace App\Modules\Job\Model;
 
 use App\Models\BaseModel;
+use App\Models\Concerns\ScopesToOwner;
 use App\Models\User;
 use App\Modules\Behavior\Model\Behavior;
 use App\Modules\Crawler\Model\Crawler;
@@ -16,7 +17,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
-use App\Models\Concerns\ScopesToOwner;
 
 /**
  * @property int            $user_id
@@ -40,6 +40,7 @@ use App\Models\Concerns\ScopesToOwner;
  */
 class Job extends BaseModel
 {
+    use HasFactory;
     use ScopesToOwner;
 
     /**
@@ -50,8 +51,6 @@ class Job extends BaseModel
      * match nothing.
      */
     public const OWNERSHIP_PATH = 'queue.crawler.experiment';
-
-    use HasFactory;
 
     protected $guarded = [];
 
@@ -122,7 +121,7 @@ class Job extends BaseModel
                 AllowedFilter::scope('recent'),
                 AllowedFilter::scope('queue'),
             ])
-            ->withCount(['reports as reports_with_path_count' => function ($query) {
+            ->withCount(['reports as reports_with_path_count' => function ($query): void {
                 $query->whereNotNull('path');
             }]);
     }

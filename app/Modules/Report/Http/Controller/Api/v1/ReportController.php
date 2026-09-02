@@ -29,16 +29,21 @@ class ReportController extends Controller
      *     operationId="getReports",
      *     tags={"Reports"},
      *     security={{"bearerAuth": {}}},
+     *
      *     @OA\Response(
      *         response=200,
      *         description="List of reports",
+     *
      *         @OA\JsonContent(
      *             type="object",
+     *
      *             @OA\Property(
      *                 property="data",
      *                 type="array",
+     *
      *                 @OA\Items(
      *                     type="object",
+     *
      *                     @OA\Property(property="id", type="integer", example=1),
      *                     @OA\Property(property="filename", type="string", example="report.zip"),
      *                     @OA\Property(property="path", type="string", example="/reports/report.zip"),
@@ -49,6 +54,7 @@ class ReportController extends Controller
      *             )
      *         )
      *     ),
+     *
      *     @OA\Response(response=401, description="Unauthorized")
      * )
      */
@@ -67,20 +73,26 @@ class ReportController extends Controller
      *     operationId="createReport",
      *     tags={"Reports"},
      *     security={{"bearerAuth": {}}},
+     *
      *     @OA\RequestBody(
      *         required=true,
+     *
      *         @OA\JsonContent(
      *             required={"filename", "job_id"},
+     *
      *             @OA\Property(property="filename", type="string", example="report.zip"),
      *             @OA\Property(property="path", type="string", example="/reports/report.zip"),
      *             @OA\Property(property="job_id", type="integer", example=1)
      *         )
      *     ),
+     *
      *     @OA\Response(
      *         response=201,
      *         description="Report created successfully",
+     *
      *         @OA\JsonContent(type="object")
      *     ),
+     *
      *     @OA\Response(response=401, description="Unauthorized"),
      *     @OA\Response(response=422, description="Validation error")
      * )
@@ -100,18 +112,23 @@ class ReportController extends Controller
      *     operationId="getReport",
      *     tags={"Reports"},
      *     security={{"bearerAuth": {}}},
+     *
      *     @OA\Parameter(
      *         name="id",
      *         in="path",
      *         description="Report ID",
      *         required=true,
+     *
      *         @OA\Schema(type="integer")
      *     ),
+     *
      *     @OA\Response(
      *         response=200,
      *         description="Report details",
+     *
      *         @OA\JsonContent(type="object")
      *     ),
+     *
      *     @OA\Response(response=401, description="Unauthorized"),
      *     @OA\Response(response=404, description="Report not found")
      * )
@@ -131,21 +148,27 @@ class ReportController extends Controller
      *     operationId="deleteReport",
      *     tags={"Reports"},
      *     security={{"bearerAuth": {}}},
+     *
      *     @OA\Parameter(
      *         name="id",
      *         in="path",
      *         description="Report ID",
      *         required=true,
+     *
      *         @OA\Schema(type="integer")
      *     ),
+     *
      *     @OA\Response(
      *         response=200,
      *         description="Report deleted successfully",
+     *
      *         @OA\JsonContent(
      *             type="object",
+     *
      *             @OA\Property(property="success", type="boolean", example=true)
      *         )
      *     ),
+     *
      *     @OA\Response(response=401, description="Unauthorized"),
      *     @OA\Response(response=404, description="Report not found")
      * )
@@ -165,21 +188,27 @@ class ReportController extends Controller
      *     operationId="getReportFile",
      *     tags={"Reports"},
      *     security={{"bearerAuth": {}}},
+     *
      *     @OA\Parameter(
      *         name="report",
      *         in="path",
      *         description="Report ID",
      *         required=true,
+     *
      *         @OA\Schema(type="integer", example=1)
      *     ),
+     *
      *     @OA\Response(
      *         response=200,
      *         description="Report file content",
+     *
      *         @OA\MediaType(
      *             mediaType="application/octet-stream",
+     *
      *             @OA\Schema(type="string", format="binary")
      *         )
      *     ),
+     *
      *     @OA\Response(response=401, description="Unauthorized"),
      *     @OA\Response(response=404, description="Report file not found"),
      *     @OA\Response(response=500, description="Error retrieving report file")
@@ -200,36 +229,46 @@ class ReportController extends Controller
      *     operationId="downloadJobReport",
      *     tags={"Reports"},
      *     security={{"bearerAuth": {}}},
+     *
      *     @OA\Parameter(
      *         name="job",
      *         in="path",
      *         description="Job ID",
      *         required=true,
+     *
      *         @OA\Schema(type="integer", example=1)
      *     ),
+     *
      *     @OA\Response(
      *         response=200,
      *         description="Report file download initiated",
+     *
      *         @OA\MediaType(
      *             mediaType="application/zip",
+     *
      *             @OA\Schema(type="string", format="binary")
      *         ),
+     *
      *         @OA\Header(
      *             header="Content-Type",
      *             description="MIME type of the downloaded file",
+     *
      *             @OA\Schema(type="string", example="application/zip")
      *         ),
+     *
      *         @OA\Header(
      *             header="Content-Disposition",
      *             description="File attachment information",
+     *
      *             @OA\Schema(type="string", example="attachment; filename=report_job_1.zip")
      *         )
      *     ),
+     *
      *     @OA\Response(response=401, description="Unauthorized"),
      *     @OA\Response(response=404, description="Job or report not found"),
      *     @OA\Response(response=500, description="Error generating report file")
      * )
-     * 
+     *
      * @throws Exception
      */
     public function download(Job $job): \Symfony\Component\HttpFoundation\Response

@@ -2,10 +2,10 @@
 
 namespace App\Modules\Crawler\Http\Request;
 
+use App\Modules\Experiment\Model\Experiment;
+use App\Rules\OwnedParent;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
-use App\Rules\OwnedParent;
-use App\Modules\Experiment\Model\Experiment;
 
 class StoreCrawlerRequest extends FormRequest
 {

@@ -26,54 +26,60 @@ class AuthController extends Controller
      *     path="/auth/token",
      *     summary="Get OAuth token",
      *     description="Exchange credentials for OAuth token
-
-**Curl Example:**
-```bash
-curl -X POST 'https://pm-api.test.primemover.example/api/v1/auth/token' \
-  -H 'Content-Type: application/json' \
-  -H 'Accept: application/json' \
-  -d '{
-    ""grant_type"": ""client_credentials"",
-    ""client_id"": ""your_client_id"",
-    ""client_secret"": ""your_client_secret""
-  }'
-```
-
-**R Example:**
-```r
-library(httr)
-library(jsonlite)
-
-response <- POST(
-  url = ""https://pm-api.test.primemover.example/api/v1/auth/token"",
-  add_headers(
-    ""Content-Type"" = ""application/json"",
-    ""Accept"" = ""application/json""
-  ),
-  body = toJSON(list(
-    grant_type = ""client_credentials"",
-    client_id = ""your_client_id"",
-    client_secret = ""your_client_secret""
-  ), auto_unbox = TRUE)
-)
-
-token_data <- content(response, ""parsed"")
-print(token_data)
-```",
+     *
+     **Curl Example:**
+     * ```bash
+     * curl -X POST 'https://pm-api.test.primemover.example/api/v1/auth/token' \
+     * -H 'Content-Type: application/json' \
+     * -H 'Accept: application/json' \
+     * -d '{
+     * ""grant_type"": ""client_credentials"",
+     * ""client_id"": ""your_client_id"",
+     * ""client_secret"": ""your_client_secret""
+     * }'
+     * ```
+     *
+     **R Example:**
+     * ```r
+     * library(httr)
+     * library(jsonlite)
+     *
+     * response <- POST(
+     * url = ""https://pm-api.test.primemover.example/api/v1/auth/token"",
+     * add_headers(
+     * ""Content-Type"" = ""application/json"",
+     * ""Accept"" = ""application/json""
+     * ),
+     * body = toJSON(list(
+     * grant_type = ""client_credentials"",
+     * client_id = ""your_client_id"",
+     * client_secret = ""your_client_secret""
+     * ), auto_unbox = TRUE)
+     * )
+     *
+     * token_data <- content(response, ""parsed"")
+     * print(token_data)
+     * ```",
      *     tags={"Authentication"},
+     *
      *     @OA\RequestBody(
      *         required=true,
+     *
      *         @OA\JsonContent(
      *             required={"grant_type","client_id","client_secret"},
+     *
      *             @OA\Property(property="grant_type", type="string", example="client_credentials"),
      *             @OA\Property(property="client_id", type="string", example="your_client_id"),
      *             @OA\Property(property="client_secret", type="string", example="your_client_secret")
      *         )
      *     ),
+     *
      *     @OA\Response(
      *         response=200,
      *         description="Token generated successfully",
+     *
      *         @OA\JsonContent(
+     *
      *             @OA\Property(property="access_token", type="string", example="eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9..."),
      *             @OA\Property(property="token_type", type="string", example="Bearer"),
      *             @OA\Property(property="expires_in", type="integer", example=3600)
@@ -108,10 +114,13 @@ print(token_data)
      *     description="Get current authenticated user information",
      *     tags={"Authentication"},
      *     security={{"bearerAuth":{}}},
+     *
      *     @OA\Response(
      *         response=200,
      *         description="User information",
+     *
      *         @OA\JsonContent(
+     *
      *             @OA\Property(property="id", type="integer"),
      *             @OA\Property(property="name", type="string"),
      *             @OA\Property(property="email", type="string", format="email"),
@@ -119,6 +128,7 @@ print(token_data)
      *             @OA\Property(property="updated_at", type="string", format="date-time")
      *         )
      *     ),
+     *
      *     @OA\Response(
      *         response=401,
      *         description="Unauthorized"
@@ -158,51 +168,57 @@ print(token_data)
      *     path="/login",
      *     summary="User login",
      *     description="Authenticate user and return access token
-
-**Curl Example:**
-```bash
-curl -X POST 'https://pm-api.test.primemover.example/api/v1/login' \
-  -H 'Content-Type: application/json' \
-  -H 'Accept: application/json' \
-  -d '{
-    ""email"": ""user@example.com"",
-    ""password"": ""password123""
-  }'
-```
-
-**R Example:**
-```r
-library(httr)
-library(jsonlite)
-
-response <- POST(
-  url = ""https://pm-api.test.primemover.example/api/v1/login"",
-  add_headers(
-    ""Content-Type"" = ""application/json"",
-    ""Accept"" = ""application/json""
-  ),
-  body = toJSON(list(
-    email = ""user@example.com"",
-    password = ""password123""
-  ), auto_unbox = TRUE)
-)
-
-login_data <- content(response, ""parsed"")
-print(login_data)
-```",
+     *
+     **Curl Example:**
+     * ```bash
+     * curl -X POST 'https://pm-api.test.primemover.example/api/v1/login' \
+     * -H 'Content-Type: application/json' \
+     * -H 'Accept: application/json' \
+     * -d '{
+     * ""email"": ""user@example.com"",
+     * ""password"": ""password123""
+     * }'
+     * ```
+     *
+     **R Example:**
+     * ```r
+     * library(httr)
+     * library(jsonlite)
+     *
+     * response <- POST(
+     * url = ""https://pm-api.test.primemover.example/api/v1/login"",
+     * add_headers(
+     * ""Content-Type"" = ""application/json"",
+     * ""Accept"" = ""application/json""
+     * ),
+     * body = toJSON(list(
+     * email = ""user@example.com"",
+     * password = ""password123""
+     * ), auto_unbox = TRUE)
+     * )
+     *
+     * login_data <- content(response, ""parsed"")
+     * print(login_data)
+     * ```",
      *     tags={"Authentication"},
+     *
      *     @OA\RequestBody(
      *         required=true,
+     *
      *         @OA\JsonContent(
      *             required={"email","password"},
+     *
      *             @OA\Property(property="email", type="string", format="email", example="user@example.com"),
      *             @OA\Property(property="password", type="string", format="password", example="password123")
      *         )
      *     ),
+     *
      *     @OA\Response(
      *         response=200,
      *         description="Login successful",
+     *
      *         @OA\JsonContent(
+     *
      *             @OA\Property(property="user", type="object",
      *                 @OA\Property(property="id", type="integer"),
      *                 @OA\Property(property="name", type="string"),
@@ -211,13 +227,17 @@ print(login_data)
      *             @OA\Property(property="access_token", type="string")
      *         )
      *     ),
+     *
      *     @OA\Response(
      *         response=401,
      *         description="Invalid credentials",
+     *
      *         @OA\JsonContent(
+     *
      *             @OA\Property(property="message", type="string", example="Invalid Credentials")
      *         )
      *     ),
+     *
      *     @OA\Response(
      *         response=422,
      *         description="Validation error"
@@ -253,29 +273,39 @@ print(login_data)
      *     summary="Request password reset",
      *     description="Send password reset email to user",
      *     tags={"Authentication"},
+     *
      *     @OA\RequestBody(
      *         required=true,
+     *
      *         @OA\JsonContent(
      *             required={"email"},
+     *
      *             @OA\Property(property="email", type="string", format="email", example="user@example.com")
      *         )
      *     ),
+     *
      *     @OA\Response(
      *         response=200,
      *         description="Password reset email sent",
+     *
      *         @OA\JsonContent(
+     *
      *             @OA\Property(property="status", type="boolean", example=true),
      *             @OA\Property(property="message", type="string", example="Password reset email sent")
      *         )
      *     ),
+     *
      *     @OA\Response(
      *         response=400,
      *         description="Failed to send reset email",
+     *
      *         @OA\JsonContent(
+     *
      *             @OA\Property(property="status", type="boolean", example=false),
      *             @OA\Property(property="message", type="string")
      *         )
      *     ),
+     *
      *     @OA\Response(
      *         response=422,
      *         description="Validation error"
@@ -379,30 +409,40 @@ print(login_data)
      *     summary="Reset user password",
      *     description="Reset password using token from email",
      *     tags={"Authentication"},
+     *
      *     @OA\RequestBody(
      *         required=true,
+     *
      *         @OA\JsonContent(
      *             required={"email","password","password_confirmation","token"},
+     *
      *             @OA\Property(property="email", type="string", format="email"),
      *             @OA\Property(property="password", type="string", format="password", description="Must contain uppercase, digit, and special character"),
      *             @OA\Property(property="password_confirmation", type="string", format="password"),
      *             @OA\Property(property="token", type="string")
      *         )
      *     ),
+     *
      *     @OA\Response(
      *         response=200,
      *         description="Password reset successful",
+     *
      *         @OA\JsonContent(
+     *
      *             @OA\Property(property="message", type="string")
      *         )
      *     ),
+     *
      *     @OA\Response(
      *         response=400,
      *         description="Password reset failed",
+     *
      *         @OA\JsonContent(
+     *
      *             @OA\Property(property="message", type="string")
      *         )
      *     ),
+     *
      *     @OA\Response(
      *         response=422,
      *         description="Validation error"

@@ -37,14 +37,42 @@ return [
         'enabled' => env('PM_ISOLATION_ENABLED', false),
 
         /*
-         | Users who see everything. These are machine callers, not people.
-         | The Java runner, the orchestrator CLI, the MCP server and the e2e
-         | suite all authenticate as admin@primemover.example (user 1) today, so it has
-         | to stay here until the runner is moved onto its own identity.
+         | Users who see everything. Machine callers, not people: every runner
+         | account (ex63 = admin@primemover.example, user 1; the runner-only VM =
+         | runner@primemover.example, user 3), which the orchestrator CLI/MCP/e2e also use.
+         | They are also the only valid targets for experiments.runner_user_id;
+         | the two work-fetching queries partition them by that column.
          */
         'service_account_ids' => array_values(array_filter(array_map(
             'intval',
             array_filter(array_map('trim', explode(',', (string) env('PM_SERVICE_ACCOUNT_IDS', '1'))), 'strlen')
         ))),
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Runner assignment
+    |--------------------------------------------------------------------------
+    |
+    | experiments.runner_user_id names the runner account that executes an
+    | experiment. NULL means this default. Runner accounts are the
+    | service_account_ids above -- they see everything (status reporting needs
+    | that) but the two work-fetching queries only hand them experiments
+    | assigned to them.
+    |
+    | WARNING -- default_user_id MUST be one of service_account_ids. With
+    | isolation on, the default runner only sees the experiments partitioned
+    | to it; if it isn't in the list, it sees nothing and the platform stops
+    | with an empty work list, silently.
+    |
+    | WARNING -- removing an id from service_account_ids strands every
+    | experiment already assigned to it: no runner fetches that id's work
+    | any more, and re-saving the experiment 422s because the id is no
+    | longer a valid runner_user_id target. Reassign those experiments
+    | before removing the account.
+    |
+    */
+    'runner' => [
+        'default_user_id' => (int) (env('PM_DEFAULT_RUNNER_USER_ID') ?: 1),
     ],
 ];

@@ -18,7 +18,7 @@ class JobRepositoryTest extends TestCase
     /**
      * @covers ::all
      */
-    public function testGetData(): void
+    public function test_get_data(): void
     {
         $queue = Queue::factory()->create();
 
@@ -39,7 +39,7 @@ class JobRepositoryTest extends TestCase
     /**
      * @covers ::getById
      */
-    public function testGetById(): void
+    public function test_get_by_id(): void
     {
         $job = Job::factory()->create();
 
@@ -53,7 +53,7 @@ class JobRepositoryTest extends TestCase
     /**
      * @covers ::save
      */
-    public function testSave(): void
+    public function test_save(): void
     {
         $queue = Queue::factory()->create();
 
@@ -73,7 +73,7 @@ class JobRepositoryTest extends TestCase
     /**
      * @covers ::update
      */
-    public function testUpdate(): void
+    public function test_update(): void
     {
         $data = [
             'name' => 'job name testing update',
@@ -91,7 +91,7 @@ class JobRepositoryTest extends TestCase
     /**
      * @covers ::delete
      */
-    public function testDelete(): void
+    public function test_delete(): void
     {
         $job = Job::factory()->create();
 

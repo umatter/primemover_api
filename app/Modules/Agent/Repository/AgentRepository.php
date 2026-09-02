@@ -8,9 +8,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 
 class AgentRepository
 {
-    public function __construct(protected Agent $agent)
-    {
-    }
+    public function __construct(protected Agent $agent) {}
 
     public function all(?int $perPage = null): LengthAwarePaginator
     {

@@ -13,9 +13,7 @@ class JobExport implements FromQuery, WithHeadings
 {
     use Exportable;
 
-    public function __construct(protected Experiment $experiment)
-    {
-    }
+    public function __construct(protected Experiment $experiment) {}
 
     public function headings(): array
     {

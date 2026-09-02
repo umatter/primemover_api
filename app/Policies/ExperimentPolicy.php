@@ -29,5 +29,4 @@ class ExperimentPolicy
     {
         return $this->view($user, $model);
     }
-
 }

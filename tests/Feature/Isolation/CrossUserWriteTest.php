@@ -26,7 +26,7 @@ use Illuminate\Validation\Validator as ValidatorInstance;
  */
 class CrossUserWriteTest extends IsolationTestCase
 {
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -37,7 +37,7 @@ class CrossUserWriteTest extends IsolationTestCase
     /**
      * @dataProvider ownedModels
      */
-    public function testUpdateIsDeniedOnAnotherResearchersRow(string $key, string $model): void
+    public function test_update_is_denied_on_another_researchers_row(string $key, string $model): void
     {
         $this->assertTrue(
             Gate::denies('update', $this->theirs[$key]),
@@ -53,7 +53,7 @@ class CrossUserWriteTest extends IsolationTestCase
     /**
      * @dataProvider ownedModels
      */
-    public function testDeleteIsDeniedOnAnotherResearchersRow(string $key, string $model): void
+    public function test_delete_is_denied_on_another_researchers_row(string $key, string $model): void
     {
         $this->assertTrue(
             Gate::denies('delete', $this->theirs[$key]),
@@ -69,7 +69,7 @@ class CrossUserWriteTest extends IsolationTestCase
     /**
      * @covers ::validate
      */
-    public function testOwnedParentRejectsAnExperimentTheCallerDoesNotOwn(): void
+    public function test_owned_parent_rejects_an_experiment_the_caller_does_not_own(): void
     {
         $validator = $this->validateParent('experiment_id', $this->theirs['experiment']->id, Experiment::class);
 
@@ -86,7 +86,7 @@ class CrossUserWriteTest extends IsolationTestCase
     /**
      * @covers ::validate
      */
-    public function testOwnedParentAcceptsAnExperimentTheCallerOwns(): void
+    public function test_owned_parent_accepts_an_experiment_the_caller_owns(): void
     {
         $validator = $this->validateParent('experiment_id', $this->mine['experiment']->id, Experiment::class);
 
@@ -98,7 +98,7 @@ class CrossUserWriteTest extends IsolationTestCase
      *
      * @covers ::validate
      */
-    public function testOwnedParentGuardsTheDerivedParentsToo(): void
+    public function test_owned_parent_guards_the_derived_parents_too(): void
     {
         $this->assertTrue($this->validateParent('crawler_id', $this->theirs['crawler']->id, Crawler::class)->fails());
         $this->assertTrue($this->validateParent('crawler_id', $this->mine['crawler']->id, Crawler::class)->passes());
@@ -110,7 +110,7 @@ class CrossUserWriteTest extends IsolationTestCase
     /**
      * @covers ::validate
      */
-    public function testReparentingACrawlerOverHttpIsRejectedAndChangesNothing(): void
+    public function test_reparenting_a_crawler_over_http_is_rejected_and_changes_nothing(): void
     {
         $this->withExceptionHandling();
 
@@ -128,7 +128,7 @@ class CrossUserWriteTest extends IsolationTestCase
         ]);
     }
 
-    public function testReparentingWithinTheCallersOwnExperimentsStillWorks(): void
+    public function test_reparenting_within_the_callers_own_experiments_still_works(): void
     {
         $this->withExceptionHandling();
 
@@ -147,7 +147,7 @@ class CrossUserWriteTest extends IsolationTestCase
         ]);
     }
 
-    public function testUpdatingAnotherResearchersCrawlerOverHttpIsForbidden(): void
+    public function test_updating_another_researchers_crawler_over_http_is_forbidden(): void
     {
         $this->withExceptionHandling();
 
@@ -165,7 +165,7 @@ class CrossUserWriteTest extends IsolationTestCase
         ]);
     }
 
-    public function testDeletingAnotherResearchersCrawlerOverHttpIsForbidden(): void
+    public function test_deleting_another_researchers_crawler_over_http_is_forbidden(): void
     {
         $this->withExceptionHandling();
 

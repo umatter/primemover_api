@@ -17,7 +17,7 @@ class TermRepositoryTest extends TestCase
     /**
      * @covers ::all
      */
-    public function testGetData(): void
+    public function test_get_data(): void
     {
         $service = new TermRepository(new Term());
         $result = $service->all();

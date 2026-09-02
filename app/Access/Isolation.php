@@ -38,7 +38,7 @@ class Isolation
     {
         $id = Auth::id();
 
-        return $id === null ? null : (int) $id;
+        return null === $id ? null : (int) $id;
     }
 
     /**
@@ -52,7 +52,7 @@ class Isolation
     {
         $id = $user?->getKey() ?? self::userId();
 
-        if ($id === null) {
+        if (null === $id) {
             return false;
         }
 
@@ -66,6 +66,14 @@ class Isolation
     }
 
     /**
+     * The runner that executes experiments whose runner_user_id is NULL.
+     */
+    public static function defaultRunnerUserId(): int
+    {
+        return (int) (config('primemover.runner.default_user_id') ?: 1);
+    }
+
+    /**
      * Whether this request bypasses isolation entirely.
      *
      * True when the feature is off, when there is no authenticated user, or when
@@ -73,11 +81,11 @@ class Isolation
      */
     public static function bypasses(): bool
     {
-        if (! self::enabled()) {
+        if ( ! self::enabled()) {
             return true;
         }
 
-        if (self::userId() === null) {
+        if (null === self::userId()) {
             return true;
         }
 

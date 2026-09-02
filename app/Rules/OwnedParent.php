@@ -23,9 +23,7 @@ use Illuminate\Database\Eloquent\Model;
 class OwnedParent implements ValidationRule
 {
     /** @param class-string<Model> $model The parent model the id refers to. */
-    public function __construct(private string $model)
-    {
-    }
+    public function __construct(private string $model) {}
 
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
@@ -33,7 +31,7 @@ class OwnedParent implements ValidationRule
             return;
         }
 
-        if ($value === null || $value === '') {
+        if (null === $value || '' === $value) {
             return; // presence is a separate rule's job
         }
 
@@ -42,11 +40,11 @@ class OwnedParent implements ValidationRule
             ->whereKey($value)
             ->exists();
 
-        if (! $visible) {
+        if ( ! $visible) {
             // Deliberately phrased as "not found", not "forbidden": telling a
             // caller that an id exists but belongs to someone else leaks the
             // existence of other researchers' rows.
-            $fail("The selected :attribute could not be found.");
+            $fail('The selected :attribute could not be found.');
         }
     }
 }

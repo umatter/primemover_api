@@ -7,9 +7,9 @@ use App\Modules\Behavior\Model\Behavior;
 use App\Modules\Behavior\Repository\BehaviorRepository;
 use Exception;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Resources\Json\ResourceCollection;
+use Illuminate\Support\Facades\Auth;
 
 /**
  * @OA\Tag(
@@ -19,9 +19,7 @@ use Illuminate\Http\Resources\Json\ResourceCollection;
  */
 class BehaviorController extends Controller
 {
-    public function __construct(protected BehaviorRepository $repository)
-    {
-    }
+    public function __construct(protected BehaviorRepository $repository) {}
 
     /**
      * @OA\Get(
@@ -31,16 +29,21 @@ class BehaviorController extends Controller
      *     operationId="getBehaviors",
      *     tags={"Behaviors"},
      *     security={{"bearerAuth": {}}},
+     *
      *     @OA\Response(
      *         response=200,
      *         description="List of behaviors",
+     *
      *         @OA\JsonContent(
      *             type="object",
+     *
      *             @OA\Property(
      *                 property="data",
      *                 type="array",
+     *
      *                 @OA\Items(
      *                     type="object",
+     *
      *                     @OA\Property(property="id", type="integer", example=1),
      *                     @OA\Property(property="name", type="string", example="click"),
      *                     @OA\Property(property="description", type="string", example="Click behavior"),
@@ -52,6 +55,7 @@ class BehaviorController extends Controller
      *             )
      *         )
      *     ),
+     *
      *     @OA\Response(response=401, description="Unauthorized")
      * )
      */
@@ -70,21 +74,27 @@ class BehaviorController extends Controller
      *     operationId="createBehavior",
      *     tags={"Behaviors"},
      *     security={{"bearerAuth": {}}},
+     *
      *     @OA\RequestBody(
      *         required=true,
+     *
      *         @OA\JsonContent(
      *             required={"name", "job_id"},
+     *
      *             @OA\Property(property="name", type="string", example="click"),
      *             @OA\Property(property="description", type="string", example="Click behavior"),
      *             @OA\Property(property="value", type="string", example="button"),
      *             @OA\Property(property="job_id", type="integer", example=1)
      *         )
      *     ),
+     *
      *     @OA\Response(
      *         response=201,
      *         description="Behavior created successfully",
+     *
      *         @OA\JsonContent(type="object")
      *     ),
+     *
      *     @OA\Response(response=401, description="Unauthorized"),
      *     @OA\Response(response=422, description="Validation error")
      * )
@@ -111,18 +121,23 @@ class BehaviorController extends Controller
      *     operationId="getBehavior",
      *     tags={"Behaviors"},
      *     security={{"bearerAuth": {}}},
+     *
      *     @OA\Parameter(
      *         name="id",
      *         in="path",
      *         description="Behavior ID",
      *         required=true,
+     *
      *         @OA\Schema(type="integer")
      *     ),
+     *
      *     @OA\Response(
      *         response=200,
      *         description="Behavior details",
+     *
      *         @OA\JsonContent(type="object")
      *     ),
+     *
      *     @OA\Response(response=401, description="Unauthorized"),
      *     @OA\Response(response=404, description="Behavior not found")
      * )
@@ -147,27 +162,35 @@ class BehaviorController extends Controller
      *     operationId="updateBehavior",
      *     tags={"Behaviors"},
      *     security={{"bearerAuth": {}}},
+     *
      *     @OA\Parameter(
      *         name="id",
      *         in="path",
      *         description="Behavior ID",
      *         required=true,
+     *
      *         @OA\Schema(type="integer")
      *     ),
+     *
      *     @OA\RequestBody(
      *         required=true,
+     *
      *         @OA\JsonContent(
+     *
      *             @OA\Property(property="name", type="string"),
      *             @OA\Property(property="description", type="string"),
      *             @OA\Property(property="value", type="string"),
      *             @OA\Property(property="job_id", type="integer")
      *         )
      *     ),
+     *
      *     @OA\Response(
      *         response=200,
      *         description="Behavior updated successfully",
+     *
      *         @OA\JsonContent(type="object")
      *     ),
+     *
      *     @OA\Response(response=401, description="Unauthorized"),
      *     @OA\Response(response=404, description="Behavior not found"),
      *     @OA\Response(response=422, description="Validation error")
@@ -188,25 +211,31 @@ class BehaviorController extends Controller
      *     operationId="deleteBehavior",
      *     tags={"Behaviors"},
      *     security={{"bearerAuth": {}}},
+     *
      *     @OA\Parameter(
      *         name="id",
      *         in="path",
      *         description="Behavior ID",
      *         required=true,
+     *
      *         @OA\Schema(type="integer")
      *     ),
+     *
      *     @OA\Response(
      *         response=200,
      *         description="Behavior deleted successfully",
+     *
      *         @OA\JsonContent(
      *             type="object",
+     *
      *             @OA\Property(property="data", type="array", @OA\Items(type="object"))
      *         )
      *     ),
+     *
      *     @OA\Response(response=401, description="Unauthorized"),
      *     @OA\Response(response=404, description="Behavior not found")
      * )
-     * 
+     *
      * @throws Exception
      */
     public function destroy(Behavior $behavior): ResourceCollection

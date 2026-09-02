@@ -19,7 +19,7 @@ class OutletRepositoryTest extends TestCase
     /**
      * @covers ::all
      */
-    public function testGetData(): void
+    public function test_get_data(): void
     {
         $service = new OutletRepository(new Outlet());
         $result = $service->all();
@@ -37,7 +37,7 @@ class OutletRepositoryTest extends TestCase
     /**
      * @covers ::getById
      */
-    public function testGetById(): void
+    public function test_get_by_id(): void
     {
         $outlet = m::mock(Outlet::class);
         $outlet->allows('getAttribute')->with('id')->andReturns(1);
@@ -65,7 +65,7 @@ class OutletRepositoryTest extends TestCase
     /**
      * @covers ::save
      */
-    public function testSave(): void
+    public function test_save(): void
     {
         $data = [
             'title' => 'outlet title',
@@ -82,7 +82,7 @@ class OutletRepositoryTest extends TestCase
     /**
      * @covers ::update
      */
-    public function testUpdate(): void
+    public function test_update(): void
     {
         $data = [
             'title' => 'outlet title updated',
@@ -116,7 +116,7 @@ class OutletRepositoryTest extends TestCase
     /**
      * @covers ::delete
      */
-    public function testDelete(): void
+    public function test_delete(): void
     {
         $outlet = Outlet::create([
             'user_id' => $this->user->id,

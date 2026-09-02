@@ -3,8 +3,8 @@
 namespace App\Policies;
 
 use App\Models\User;
-use App\Modules\Experiment\Model\Experiment;
 use App\Modules\Crawler\Model\Crawler;
+use App\Modules\Experiment\Model\Experiment;
 
 /**
  * Ownership checks for Crawler.
@@ -34,7 +34,7 @@ class CrawlerPolicy
     /** Shared tail of every derived chain. Missing ancestor means not owned. */
     protected function ownedViaExperiment(User $user, ?Experiment $experiment): bool
     {
-        if ($experiment === null) {
+        if (null === $experiment) {
             return false;
         }
 

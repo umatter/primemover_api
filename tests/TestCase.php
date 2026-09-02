@@ -46,7 +46,7 @@ abstract class TestCase extends BaseTestCase
 
     protected Queue $queue;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         Event::fake(ModelUpdateEvent::class);

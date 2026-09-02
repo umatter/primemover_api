@@ -20,7 +20,7 @@ class ParamRepositoryTest extends TestCase
     /**
      * @covers ::all
      */
-    public function testGetData(): void
+    public function test_get_data(): void
     {
         $service = new ParamRepository(new Param());
         $result = $service->all();
@@ -35,7 +35,7 @@ class ParamRepositoryTest extends TestCase
     /**
      * @covers ::getById
      */
-    public function testGetById(): void
+    public function test_get_by_id(): void
     {
         $param = m::mock(Param::class);
         $param->allows('getAttribute')->with('id')->andReturns(1);
@@ -80,7 +80,7 @@ class ParamRepositoryTest extends TestCase
     /**
      * @covers ::save
      */
-    public function testSave(): void
+    public function test_save(): void
     {
         $data = [
             'configuration_id' => $this->configuration->id,
@@ -128,7 +128,7 @@ class ParamRepositoryTest extends TestCase
     /**
      * @covers ::update
      */
-    public function testUpdate(): void
+    public function test_update(): void
     {
         $data = [
             'tau' => 2.0,
@@ -185,7 +185,7 @@ class ParamRepositoryTest extends TestCase
     /**
      * @covers ::delete
      */
-    public function testDelete(): void
+    public function test_delete(): void
     {
         $configuration = Configuration::factory()->create();
 

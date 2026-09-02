@@ -18,7 +18,7 @@ class BehaviorRepositoryTest extends TestCase
     /**
      * @covers ::all
      */
-    public function testGetData(): void
+    public function test_get_data(): void
     {
         $service = new BehaviorRepository(new Behavior());
         $result = $service->all();
@@ -36,7 +36,7 @@ class BehaviorRepositoryTest extends TestCase
     /**
      * @covers ::getById
      */
-    public function testGetById(): void
+    public function test_get_by_id(): void
     {
         $behavior = Behavior::factory()->create();
 
@@ -50,7 +50,7 @@ class BehaviorRepositoryTest extends TestCase
     /**
      * @covers ::save
      */
-    public function testSave(): void
+    public function test_save(): void
     {
         $job = Job::factory()->create();
 
@@ -72,7 +72,7 @@ class BehaviorRepositoryTest extends TestCase
     /**
      * @covers ::update
      */
-    public function testUpdate(): void
+    public function test_update(): void
     {
         $behavior = Behavior::factory()->create();
 
@@ -93,7 +93,7 @@ class BehaviorRepositoryTest extends TestCase
     /**
      * @covers ::delete
      */
-    public function testDelete(): void
+    public function test_delete(): void
     {
         $behavior = Behavior::factory()->create();
 

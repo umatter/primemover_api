@@ -22,15 +22,17 @@ use Tests\TestCase;
  */
 class CrawlerRepositoryTest extends TestCase
 {
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
+        $this->actingAs($this->user);
+        config(['primemover.runner.default_user_id' => $this->user->id]);
     }
 
     /**
      * @covers ::all
      */
-    public function testGetData(): void
+    public function test_get_data(): void
     {
         $service = new CrawlerRepository(new Crawler());
         $result = $service->all();
@@ -45,7 +47,7 @@ class CrawlerRepositoryTest extends TestCase
     /**
      * @covers ::getById
      */
-    public function testGetById(): void
+    public function test_get_by_id(): void
     {
         $crawlerMock = m::mock(Crawler::class);
         $crawlerMock->expects('firstOrFail')->andReturns(new Crawler([
@@ -72,7 +74,7 @@ class CrawlerRepositoryTest extends TestCase
     /**
      * @covers ::inactive
      */
-    public function testInactive(): void
+    public function test_inactive(): void
     {
         $service = new CrawlerRepository(new Crawler());
         $result = $service->inactive();
@@ -87,7 +89,7 @@ class CrawlerRepositoryTest extends TestCase
     /**
      * @covers ::processed
      */
-    public function testProcessed(): void
+    public function test_processed(): void
     {
         $service = new CrawlerRepository(new Crawler());
         $result = $service->processed();
@@ -107,7 +109,7 @@ class CrawlerRepositoryTest extends TestCase
     /**
      * @covers ::unprocessed
      */
-    public function testUnprocessed(): void
+    public function test_unprocessed(): void
     {
         $service = new CrawlerRepository(new Crawler());
         $result = $service->unprocessed();
@@ -129,7 +131,7 @@ class CrawlerRepositoryTest extends TestCase
     /**
      * @covers ::reviewed
      */
-    public function testReviewed(): void
+    public function test_reviewed(): void
     {
         $service = new CrawlerRepository(new Crawler());
         $result = $service->reviewed();
@@ -151,7 +153,7 @@ class CrawlerRepositoryTest extends TestCase
     /**
      * @covers ::testing
      */
-    public function testTesting(): void
+    public function test_testing(): void
     {
         $service = new CrawlerRepository(new Crawler());
         $result = $service->testing();
@@ -168,7 +170,7 @@ class CrawlerRepositoryTest extends TestCase
     /**
      * @covers ::save
      */
-    public function testSave(): void
+    public function test_save(): void
     {
         $experiment = Experiment::factory()->create();
 
@@ -190,7 +192,7 @@ class CrawlerRepositoryTest extends TestCase
     /**
      * @covers ::update
      */
-    public function testUpdate(): void
+    public function test_update(): void
     {
         $crawlerMock = m::mock(Crawler::class);
         $crawlerMock->expects('firstOrFail')->andReturns(new Crawler([
@@ -236,7 +238,7 @@ class CrawlerRepositoryTest extends TestCase
     /**
      * @covers ::disableProdCrawlers
      */
-    public function testDisableProdCrawlers(): void
+    public function test_disable_prod_crawlers(): void
     {
         $service = new CrawlerRepository(new Crawler());
         $result = $service->disableProdCrawlers();
@@ -252,7 +254,7 @@ class CrawlerRepositoryTest extends TestCase
     /**
      * @covers ::forceDelete
      */
-    public function testForceDelete(): void
+    public function test_force_delete(): void
     {
         $proxy = Proxy::factory()->create();
         $agent = Agent::factory()->create();
@@ -282,7 +284,7 @@ class CrawlerRepositoryTest extends TestCase
     /**
      * @covers ::delete
      */
-    public function testDelete(): void
+    public function test_delete(): void
     {
         $proxy = Proxy::factory()->create();
         $agent = Agent::factory()->create();
@@ -307,7 +309,7 @@ class CrawlerRepositoryTest extends TestCase
     /**
      * @covers ::ip
      */
-    public function testIp(): void
+    public function test_ip(): void
     {
         self::markTestSkipped('There is an error in the repository');
         $ip = '127.0.0.2';
@@ -321,7 +323,7 @@ class CrawlerRepositoryTest extends TestCase
     /**
      * @covers ::isLocalAddress
      */
-    public function testIsLocalAddress(): void
+    public function test_is_local_address(): void
     {
         $ip = '127.0.0.1';
 
@@ -334,7 +336,7 @@ class CrawlerRepositoryTest extends TestCase
     /**
      * @covers ::undo
      */
-    public function testUndo(): void
+    public function test_undo(): void
     {
         $service = new CrawlerRepository(new Crawler());
         $result = $service->undo();
@@ -350,7 +352,7 @@ class CrawlerRepositoryTest extends TestCase
     /**
      * @covers ::cleanup
      */
-    public function testCleanUp(): void
+    public function test_clean_up(): void
     {
         $service = new CrawlerRepository(new Crawler());
         $result = $service->cleanup();

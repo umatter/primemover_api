@@ -11,9 +11,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 
 class QueueRepository
 {
-    public function __construct(protected Queue $queue)
-    {
-    }
+    public function __construct(protected Queue $queue) {}
 
     public function all($crawlerId, $sortBy): LengthAwarePaginator
     {

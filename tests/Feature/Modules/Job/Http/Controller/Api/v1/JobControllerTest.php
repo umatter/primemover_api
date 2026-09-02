@@ -24,7 +24,7 @@ class JobControllerTest extends TestCase
     /**
      * @covers ::index
      */
-    public function testIndex(): void
+    public function test_index(): void
     {
         $request = Mockery::mock(Request::class);
 
@@ -43,7 +43,7 @@ class JobControllerTest extends TestCase
     /**
      * @covers ::store
      */
-    public function testStore(): void
+    public function test_store(): void
     {
         $queue = Queue::factory()->create();
 
@@ -67,7 +67,7 @@ class JobControllerTest extends TestCase
     /**
      * @covers ::show
      */
-    public function testShow(): void
+    public function test_show(): void
     {
         $job = Job::factory()->create();
 
@@ -81,7 +81,7 @@ class JobControllerTest extends TestCase
     /**
      * @covers ::edit
      */
-    public function testEdit(): void
+    public function test_edit(): void
     {
         $job = Job::factory()->create();
 
@@ -96,7 +96,7 @@ class JobControllerTest extends TestCase
     /**
      * @covers ::update
      */
-    public function testUpdate(): void
+    public function test_update(): void
     {
         $queue = Queue::factory()->create();
 
@@ -121,7 +121,7 @@ class JobControllerTest extends TestCase
     /**
      * @covers ::destroy
      */
-    public function testDestroy(): void
+    public function test_destroy(): void
     {
         $job = Job::factory()->create();
 

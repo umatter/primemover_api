@@ -14,9 +14,7 @@ class ModelUpdateNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 
-    public function __construct(protected Authenticatable $user, protected ModelUpdateEvent $event)
-    {
-    }
+    public function __construct(protected Authenticatable $user, protected ModelUpdateEvent $event) {}
 
     public function via(): array
     {

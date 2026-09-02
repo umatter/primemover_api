@@ -17,7 +17,7 @@ class AgentRepositoryTest extends TestCase
     /**
      * @covers ::all
      */
-    public function testGetData(): void
+    public function test_get_data(): void
     {
         $service = new AgentRepository(new Agent());
         $result = $service->all();
@@ -34,7 +34,7 @@ class AgentRepositoryTest extends TestCase
     /**
      * @covers ::getById
      */
-    public function testGetById(): void
+    public function test_get_by_id(): void
     {
         $agent = Agent::factory()->create();
 
@@ -48,7 +48,7 @@ class AgentRepositoryTest extends TestCase
     /**
      * @covers ::save
      */
-    public function testSave(): void
+    public function test_save(): void
     {
         $data = [
             'name' => 'age',
@@ -71,7 +71,7 @@ class AgentRepositoryTest extends TestCase
     /**
      * @covers ::update
      */
-    public function testUpdate(): void
+    public function test_update(): void
     {
         $agent = Agent::factory()->create();
 
@@ -94,7 +94,7 @@ class AgentRepositoryTest extends TestCase
     /**
      * @covers ::delete
      */
-    public function testDelete(): void
+    public function test_delete(): void
     {
         $agent = Agent::factory()->create();
 

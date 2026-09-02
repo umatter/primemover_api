@@ -17,9 +17,7 @@ use Illuminate\Http\Resources\Json\ResourceCollection;
  */
 class OutletController extends Controller
 {
-    public function __construct(protected OutletRepository $repository)
-    {
-    }
+    public function __construct(protected OutletRepository $repository) {}
 
     /**
      * @OA\Get(
@@ -29,16 +27,21 @@ class OutletController extends Controller
      *     operationId="getOutlets",
      *     tags={"Outlets"},
      *     security={{"bearerAuth": {}}},
+     *
      *     @OA\Response(
      *         response=200,
      *         description="List of outlets",
+     *
      *         @OA\JsonContent(
      *             type="object",
+     *
      *             @OA\Property(
      *                 property="data",
      *                 type="array",
+     *
      *                 @OA\Items(
      *                     type="object",
+     *
      *                     @OA\Property(property="id", type="integer", example=1),
      *                     @OA\Property(property="name", type="string", example="Media Outlet"),
      *                     @OA\Property(property="url", type="string", example="https://example.com"),
@@ -49,6 +52,7 @@ class OutletController extends Controller
      *             )
      *         )
      *     ),
+     *
      *     @OA\Response(response=401, description="Unauthorized")
      * )
      */
@@ -67,21 +71,27 @@ class OutletController extends Controller
      *     operationId="createOutlet",
      *     tags={"Outlets"},
      *     security={{"bearerAuth": {}}},
+     *
      *     @OA\RequestBody(
      *         required=true,
+     *
      *         @OA\JsonContent(
      *             required={"name", "url"},
+     *
      *             @OA\Property(property="name", type="string", example="Media Outlet"),
      *             @OA\Property(property="url", type="string", example="https://example.com"),
      *             @OA\Property(property="domain", type="string", example="example.com"),
      *             @OA\Property(property="description", type="string", example="Outlet description")
      *         )
      *     ),
+     *
      *     @OA\Response(
      *         response=201,
      *         description="Outlet created successfully",
+     *
      *         @OA\JsonContent(type="object")
      *     ),
+     *
      *     @OA\Response(response=401, description="Unauthorized"),
      *     @OA\Response(response=422, description="Validation error")
      * )
@@ -101,18 +111,23 @@ class OutletController extends Controller
      *     operationId="getOutlet",
      *     tags={"Outlets"},
      *     security={{"bearerAuth": {}}},
+     *
      *     @OA\Parameter(
      *         name="id",
      *         in="path",
      *         description="Outlet ID",
      *         required=true,
+     *
      *         @OA\Schema(type="integer")
      *     ),
+     *
      *     @OA\Response(
      *         response=200,
      *         description="Outlet details",
+     *
      *         @OA\JsonContent(type="object")
      *     ),
+     *
      *     @OA\Response(response=401, description="Unauthorized"),
      *     @OA\Response(response=404, description="Outlet not found")
      * )
@@ -137,27 +152,35 @@ class OutletController extends Controller
      *     operationId="updateOutlet",
      *     tags={"Outlets"},
      *     security={{"bearerAuth": {}}},
+     *
      *     @OA\Parameter(
      *         name="id",
      *         in="path",
      *         description="Outlet ID",
      *         required=true,
+     *
      *         @OA\Schema(type="integer")
      *     ),
+     *
      *     @OA\RequestBody(
      *         required=true,
+     *
      *         @OA\JsonContent(
+     *
      *             @OA\Property(property="name", type="string"),
      *             @OA\Property(property="url", type="string"),
      *             @OA\Property(property="domain", type="string"),
      *             @OA\Property(property="description", type="string")
      *         )
      *     ),
+     *
      *     @OA\Response(
      *         response=200,
      *         description="Outlet updated successfully",
+     *
      *         @OA\JsonContent(type="object")
      *     ),
+     *
      *     @OA\Response(response=401, description="Unauthorized"),
      *     @OA\Response(response=404, description="Outlet not found"),
      *     @OA\Response(response=422, description="Validation error")
@@ -176,21 +199,27 @@ class OutletController extends Controller
      *     operationId="deleteOutlet",
      *     tags={"Outlets"},
      *     security={{"bearerAuth": {}}},
+     *
      *     @OA\Parameter(
      *         name="id",
      *         in="path",
      *         description="Outlet ID",
      *         required=true,
+     *
      *         @OA\Schema(type="integer")
      *     ),
+     *
      *     @OA\Response(
      *         response=200,
      *         description="Outlet deleted successfully",
+     *
      *         @OA\JsonContent(
      *             type="object",
+     *
      *             @OA\Property(property="data", type="array", @OA\Items(type="object"))
      *         )
      *     ),
+     *
      *     @OA\Response(response=401, description="Unauthorized"),
      *     @OA\Response(response=404, description="Outlet not found")
      * )
