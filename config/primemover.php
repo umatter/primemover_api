@@ -47,4 +47,20 @@ return [
             array_filter(array_map('trim', explode(',', (string) env('PM_SERVICE_ACCOUNT_IDS', '1'))), 'strlen')
         ))),
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Runner assignment
+    |--------------------------------------------------------------------------
+    |
+    | experiments.runner_user_id names the runner account that executes an
+    | experiment. NULL means this default. Runner accounts are the
+    | service_account_ids above -- they see everything (status reporting needs
+    | that) but the two work-fetching queries only hand them experiments
+    | assigned to them.
+    |
+    */
+    'runner' => [
+        'default_user_id' => (int) (env('PM_DEFAULT_RUNNER_USER_ID') ?: 1),
+    ],
 ];

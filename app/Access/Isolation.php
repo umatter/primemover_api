@@ -66,6 +66,23 @@ class Isolation
     }
 
     /**
+     * The runner that executes experiments whose runner_user_id is NULL.
+     */
+    public static function defaultRunnerUserId(): int
+    {
+        return (int) (config('primemover.runner.default_user_id') ?: 1);
+    }
+
+    /**
+     * Runner accounts are the service accounts: valid targets for
+     * experiments.runner_user_id.
+     */
+    public static function isRunner(?User $user = null): bool
+    {
+        return self::isServiceAccount($user);
+    }
+
+    /**
      * Whether this request bypasses isolation entirely.
      *
      * True when the feature is off, when there is no authenticated user, or when

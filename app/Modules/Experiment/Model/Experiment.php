@@ -42,6 +42,14 @@ class Experiment extends BaseModel
         return $this->belongsTo(User::class);
     }
 
+    /**
+     * The runner account assigned to execute this experiment; null = default.
+     */
+    public function runner(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'runner_user_id');
+    }
+
     public function crawlers(): HasMany
     {
         return $this->hasMany(Crawler::class);
