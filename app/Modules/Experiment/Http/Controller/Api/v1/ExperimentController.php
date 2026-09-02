@@ -68,6 +68,7 @@ class ExperimentController extends Controller
      *                     @OA\Property(property="contact", type="string", example="researcher@example.com"),
      *                     @OA\Property(property="active", type="integer", example=1),
      *                     @OA\Property(property="user_id", type="integer", example=1),
+     *                     @OA\Property(property="runner_user_id", type="integer", nullable=true, example=1, description="Runner account that executes this experiment; null = default runner"),
      *                     @OA\Property(property="created_at", type="string", format="date-time"),
      *                     @OA\Property(property="updated_at", type="string", format="date-time")
      *                 )
@@ -156,7 +157,8 @@ class ExperimentController extends Controller
      *                     @OA\Property(property="active", type="integer", example=1),
      *                     @OA\Property(property="updated_at", type="string", format="date-time"),
      *                     @OA\Property(property="created_at", type="string", format="date-time"),
-     *                     @OA\Property(property="user_id", type="integer", example=2)
+     *                     @OA\Property(property="user_id", type="integer", example=2),
+     *                     @OA\Property(property="runner_user_id", type="integer", nullable=true, example=2, description="Runner account that executes this experiment; null = default runner")
      *                 )
      *             )
      *         )
@@ -190,7 +192,8 @@ class ExperimentController extends Controller
      *             @OA\Property(property="name", type="string", example="My New Experiment", description="Experiment name"),
      *             @OA\Property(property="description", type="string", example="Research project description", description="Experiment description"),
      *             @OA\Property(property="contact", type="string", example="researcher@example.com", description="Contact information"),
-     *             @OA\Property(property="active", type="integer", example=1, description="Active status (0 or 1)")
+     *             @OA\Property(property="active", type="integer", example=1, description="Active status (0 or 1)"),
+     *             @OA\Property(property="runner_user_id", type="integer", nullable=true, example=1, description="Runner account that executes this experiment; null = default runner")
      *         )
      *     ),
      *
@@ -210,6 +213,7 @@ class ExperimentController extends Controller
      *                 @OA\Property(property="contact", type="string", example="researcher@example.com"),
      *                 @OA\Property(property="active", type="integer", example=1),
      *                 @OA\Property(property="user_id", type="integer", example=1),
+     *                 @OA\Property(property="runner_user_id", type="integer", nullable=true, example=1, description="Runner account that executes this experiment; null = default runner"),
      *                 @OA\Property(property="created_at", type="string", format="date-time"),
      *                 @OA\Property(property="updated_at", type="string", format="date-time")
      *             )
@@ -281,6 +285,7 @@ class ExperimentController extends Controller
      *                 @OA\Property(property="contact", type="string", example="researcher@example.com"),
      *                 @OA\Property(property="active", type="integer", example=1),
      *                 @OA\Property(property="user_id", type="integer", example=1),
+     *                 @OA\Property(property="runner_user_id", type="integer", nullable=true, example=1, description="Runner account that executes this experiment; null = default runner"),
      *                 @OA\Property(property="created_at", type="string", format="date-time"),
      *                 @OA\Property(property="updated_at", type="string", format="date-time"),
      *                 @OA\Property(
@@ -359,6 +364,7 @@ class ExperimentController extends Controller
      *                 @OA\Property(property="contact", type="string", example="newemail@example.com"),
      *                 @OA\Property(property="active", type="integer", example=1),
      *                 @OA\Property(property="user_id", type="integer", example=1),
+     *                 @OA\Property(property="runner_user_id", type="integer", nullable=true, example=1, description="Runner account that executes this experiment; null = default runner"),
      *                 @OA\Property(property="created_at", type="string", format="date-time"),
      *                 @OA\Property(property="updated_at", type="string", format="date-time")
      *             )

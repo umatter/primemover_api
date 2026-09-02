@@ -300,7 +300,9 @@ class CrawlerController extends Controller
      *
      * crawlers_data <- content(response, ""parsed"")
      * print(crawlers_data)
-     * ```",
+     * ```
+     *
+     * Partitioned by runner assignment: returns only crawlers whose experiment is assigned to the calling runner account (unassigned ones go to the default runner).",
      *     operationId="getCrawlersWithUnprocessedQueues",
      *     tags={"Crawlers"},
      *     security={{"bearerAuth": {}}},
@@ -347,7 +349,7 @@ class CrawlerController extends Controller
      * @OA\Get(
      *     path="/crawlers-testing",
      *     summary="Get testing crawlers",
-     *     description="Retrieve all crawlers that are in testing mode",
+     *     description="Retrieve all crawlers that are in testing mode. Partitioned by runner assignment: returns only crawlers whose experiment is assigned to the calling runner account (unassigned ones go to the default runner).",
      *     operationId="getTestingCrawlers",
      *     tags={"Crawlers"},
      *     security={{"bearerAuth": {}}},
