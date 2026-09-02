@@ -2,12 +2,14 @@
 
 namespace App\Modules\Experiment\Http\Request;
 
+use App\Access\Isolation;
 use App\Facades\Services\DataMapper;
 use App\Models\DTO\Preference;
 use Exception;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 
 class ExperimentStoreRequest extends FormRequest
 {
@@ -25,6 +27,9 @@ class ExperimentStoreRequest extends FormRequest
             'description' => ['nullable'],
             'user_id' => ['required'],
             'contact' => ['nullable'],
+            // Which runner executes this experiment. Only a configured runner
+            // account is a valid target; null/absent = the default runner.
+            'runner_user_id' => ['nullable', 'integer', Rule::in(Isolation::serviceAccountIds())],
         ];
     }
 
