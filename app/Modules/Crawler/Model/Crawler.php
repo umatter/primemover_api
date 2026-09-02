@@ -2,6 +2,7 @@
 
 namespace App\Modules\Crawler\Model;
 
+use App\Access\Isolation;
 use App\Models\BaseModel;
 use App\Models\Concerns\ScopesToOwner;
 use App\Models\User;
@@ -148,6 +149,33 @@ class Crawler extends BaseModel
         return $this->hasMany(Queue::class)
             ->with('jobs')
             ->where('processed', 0);
+    }
+
+    /**
+     * Crawlers this caller, as a runner, is assigned to execute.
+     *
+     * Partition rule for the two work-fetching endpoints (crawlers-unprocessed,
+     * crawlers-testing). Unlike visibleTo() it does NOT honour
+     * Isolation::bypasses(): runners are service accounts precisely so they can
+     * see everything for status reporting, yet they must never fetch each
+     * other's work, because there is no atomic queue claim.
+     */
+    public function scopeAssignedToCallingRunner(Builder $query): Builder
+    {
+        $me = Isolation::userId();
+
+        if (null === $me) {
+            // No caller, no work. (where(col, null) would compile to IS NULL and
+            // hand every unassigned experiment to a guest.)
+            return $query->whereRaw('0 = 1');
+        }
+
+        return $query->whereHas('experiment', function (Builder $q) use ($me): void {
+            $q->where('experiments.runner_user_id', $me);
+            if ($me === Isolation::defaultRunnerUserId()) {
+                $q->orWhereNull('experiments.runner_user_id');
+            }
+        });
     }
 
     public function queuesProcessing(): HasMany
