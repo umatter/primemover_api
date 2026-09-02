@@ -28,6 +28,9 @@ Route::prefix('v1')->middleware('throttleIp:1000,1')
             Route::middleware('can:administer-platform')
                 ->get('dev/truncate-data', [\App\Http\Controllers\API\v1\Controller::class, 'truncateData']);
 
+            // The runner accounts an experiment may be assigned to (runner_user_id).
+            Route::get('runners', [\App\Http\Controllers\API\v1\RunnerController::class, 'index']);
+
             // Runner
             Route::prefix('runner')->group(function (): void {
                 Route::put('agents/{agent}', [RunnerAgentController::class, 'update']);
