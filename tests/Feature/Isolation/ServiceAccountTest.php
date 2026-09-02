@@ -36,6 +36,7 @@ class ServiceAccountTest extends IsolationTestCase
 
         $this->enableIsolation();
         $this->actingAs($this->serviceAccount);
+        config(['primemover.runner.default_user_id' => $this->serviceAccount->id]);
     }
 
     /**

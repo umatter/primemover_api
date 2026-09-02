@@ -3,6 +3,7 @@
 namespace Tests\Feature\RunnerAssignment;
 
 use App\Modules\Crawler\Model\Crawler;
+use App\Modules\Crawler\Repository\CrawlerRepository;
 
 /**
  * Two runners, one API: each must fetch only the experiments assigned to it.
@@ -77,6 +78,63 @@ class WorkPartitionTest extends RunnerAssignmentTestCase
         // Don't call actingAs() to test as a guest
 
         $this->assertSame([], $this->scopedCrawlerIds());
+    }
+
+    /**
+     * @covers \App\Modules\Crawler\Repository\CrawlerRepository::unprocessed
+     */
+    public function test_unprocessed_is_partitioned_per_runner(): void
+    {
+        $this->enableIsolation();
+        $repo = new CrawlerRepository(new Crawler());
+
+        $this->actingAs($this->defaultRunner);
+        $forDefault = $this->idsOf($repo->unprocessed());
+        $this->assertContains((int) $this->unassigned['crawler']->id, $forDefault);
+        $this->assertContains((int) $this->forDefault['crawler']->id, $forDefault);
+        $this->assertNotContains((int) $this->forSecond['crawler']->id, $forDefault);
+
+        $this->actingAs($this->secondRunner);
+        $this->assertSame([(int) $this->forSecond['crawler']->id], $this->idsOf($repo->unprocessed()));
+    }
+
+    /**
+     * @covers \App\Modules\Crawler\Repository\CrawlerRepository::testing
+     */
+    public function test_testing_is_partitioned_per_runner(): void
+    {
+        $this->enableIsolation();
+        foreach ([$this->unassigned, $this->forDefault, $this->forSecond] as $tree) {
+            $tree['crawler']->update(['testing' => 1]);
+        }
+        $repo = new CrawlerRepository(new Crawler());
+
+        $this->actingAs($this->secondRunner);
+        $this->assertSame([(int) $this->forSecond['crawler']->id], $this->idsOf($repo->testing()->items()));
+
+        $this->actingAs($this->defaultRunner);
+        $forDefault = $this->idsOf($repo->testing()->items());
+        $this->assertContains((int) $this->unassigned['crawler']->id, $forDefault);
+        $this->assertNotContains((int) $this->forSecond['crawler']->id, $forDefault);
+    }
+
+    /**
+     * Through HTTP, as the Java runner does it.
+     */
+    public function test_endpoints_serve_each_runner_its_own_slice(): void
+    {
+        $this->enableIsolation();
+
+        $this->actingAs($this->secondRunner)
+            ->getJson('/api/v1/crawlers-unprocessed')
+            ->assertOk()
+            ->assertJsonCount(1, 'data')
+            ->assertJsonPath('data.0.id', $this->forSecond['crawler']->id);
+
+        $response = $this->actingAs($this->defaultRunner)->getJson('/api/v1/crawlers-unprocessed')->assertOk();
+        $ids = array_map('intval', array_column($response->json('data'), 'id'));
+        $this->assertNotContains((int) $this->forSecond['crawler']->id, $ids);
+        $this->assertContains((int) $this->unassigned['crawler']->id, $ids);
     }
 
     /** @return array<int, int> */

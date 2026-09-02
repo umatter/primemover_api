@@ -90,7 +90,7 @@ class CrawlerRepository
 
     public function unprocessed(): Collection
     {
-        return $this->crawler->query()->visibleTo()->where('testing', 0)
+        return $this->crawler->query()->visibleTo()->assignedToCallingRunner()->where('testing', 0)
             ->where('active', 1)
             ->whereHas('queues', function ($q): void {
                 $q->where('processed', 0);
@@ -132,7 +132,7 @@ class CrawlerRepository
 
     public function testing(): LengthAwarePaginator
     {
-        return $this->crawler->query()->visibleTo()->where('testing', 1)
+        return $this->crawler->query()->visibleTo()->assignedToCallingRunner()->where('testing', 1)
             ->where('active', 1)
             ->with(['queues', 'agent.preferences', 'proxy', 'configuration.preferences'])
             ->paginate(10);
