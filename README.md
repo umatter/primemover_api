@@ -123,6 +123,10 @@ Experiment → Crawler → Configuration (params, preferences)
                            → Behaviors (job parameters)
 ```
 
+`experiments.runner_user_id` decides which runner box actually executes this pipeline
+(unset = default runner); see the orchestrator repo's `docs/integration-contract.md`
+"Runner assignment" for the full mechanism.
+
 ## 📚 Documentation
 
 ### Getting Started
