@@ -52,6 +52,11 @@ abstract class TestCase extends BaseTestCase
         Event::fake(ModelUpdateEvent::class);
         $this->withoutExceptionHandling();
 
+        // phpunit.xml keeps static properties across tests (backupStaticProperties
+        // is false), and Crawler carries one: the ?hours= rollup window. A test
+        // that widened it would otherwise widen it for every test after it.
+        Crawler::resetLatestQueuesWindow();
+
         $this->user = User::factory()->create();
 
         $this->proxy = Proxy::factory()->create(['user_id' => $this->user->id]);

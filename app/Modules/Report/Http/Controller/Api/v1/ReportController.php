@@ -218,7 +218,13 @@ class ReportController extends Controller
     {
         $this->authorize('view', $report);
 
-        return ReportRepository::getFile($report);
+        $response = ReportRepository::getFile($report);
+
+        if (null === $response) {
+            App::abort(404, 'Report file not found');
+        }
+
+        return $response;
     }
 
     /**

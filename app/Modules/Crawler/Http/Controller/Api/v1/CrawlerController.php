@@ -53,6 +53,33 @@ class CrawlerController extends Controller
      *         @OA\Schema(type="integer", default=15, minimum=1, maximum=100)
      *     ),
      *
+     *     @OA\Parameter(
+     *         name="filter[status_code]",
+     *         in="query",
+     *         description="Which bots need attention: a comma-separated status list matched against the crawler's LATEST RUN -- the run with the greatest started_at, ties broken by id, runs that never started excluded so a session composed for tomorrow cannot mask last night's failure. Values are expanded through the alias table, so failure also matches the runs spelled 'failed'. A bot that has never run matches no status. An unrecognised value returns an empty page; an unknown filter KEY is still HTTP 400.",
+     *         required=false,
+     *
+     *         @OA\Schema(type="string", example="failure,warning")
+     *     ),
+     *
+     *     @OA\Parameter(
+     *         name="filter[bad]",
+     *         in="query",
+     *         description="Shorthand for filter[status_code]=failure,warning -- the contract's is_bad predicate over the crawler's LATEST RUN, expanded through the alias table server-side so no client has to carry it. 1/true/yes/on ask for the bad ones; 0 is 'show me everything' and never 'only the good ones', because that would classify every unknown status as good.",
+     *         required=false,
+     *
+     *         @OA\Schema(type="boolean", example=true)
+     *     ),
+     *
+     *     @OA\Parameter(
+     *         name="hours",
+     *         in="query",
+     *         description="Rolling window, in hours, behind every latest_queues_* count. Clamped to 1..720 rather than rejected; anything non-numeric (or absent) means the 24-hour default.",
+     *         required=false,
+     *
+     *         @OA\Schema(type="integer", default=24, minimum=1, maximum=720)
+     *     ),
+     *
      *     @OA\Response(
      *         response=200,
      *         description="Paginated list of protected crawlers",
@@ -73,9 +100,12 @@ class CrawlerController extends Controller
      *                     @OA\Property(property="active", type="integer", example=1),
      *                     @OA\Property(property="testing", type="integer", example=0),
      *                     @OA\Property(property="experiment_id", type="integer", example=1),
-     *                     @OA\Property(property="latest_queues_succeeded", type="integer", example=10),
-     *                     @OA\Property(property="latest_queues_failed", type="integer", example=1),
-     *                     @OA\Property(property="latest_queues_count", type="integer", example=11),
+     *                     @OA\Property(property="latest_queues_count", type="integer", description="Runs this bot started inside the window, whatever their outcome.", example=11),
+     *                     @OA\Property(property="latest_queues_succeeded", type="integer", description="Runs in the window whose own status_code is success (or a legacy synonym).", example=8),
+     *                     @OA\Property(property="latest_queues_failed", type="integer", description="Runs in the window whose own status_code is failure (or the legacy 'failed'). The run produced nothing usable.", example=1),
+     *                     @OA\Property(property="latest_queues_warning", type="integer", description="Runs in the window whose own status_code is warning (or the legacy 'warn'): the run completed but lost jobs along the way. Not a success -- 'needs attention' is failure OR warning.", example=2),
+     *                     @OA\Property(property="latest_queues_degraded", type="integer", description="Runs in the window holding at least one job with status_code warning: job data was not written, or the decision function could not apply a filter the experiment requested. Derived from the JOBS, so a run whose own status is success can be degraded. Overlaps latest_queues_warning without containing it or being contained by it -- never add the two together.", example=1),
+     *                     @OA\Property(property="latest_queues_treatment_lost", type="integer", description="Runs in the window holding at least one job whose decision_treatment_lost is true: the bot was configured to be treated and produced control-arm data anyway, so that session is scientifically void. Such a run is routinely 'success' with every job 'success' -- nothing FAILED. Counted off a three-state column, so 0 means 'no run here is KNOWN to have lost its treatment': every job predating the runner deploy has a NULL verdict.", example=0),
      *                     @OA\Property(property="created_at", type="string", format="date-time"),
      *                     @OA\Property(property="updated_at", type="string", format="date-time")
      *                 )
@@ -106,6 +136,8 @@ class CrawlerController extends Controller
      */
     public function index(): ResourceCollection
     {
+        Crawler::useLatestQueuesWindow(request()->query('hours'));
+
         return ResourceCollection::make($this->repository->all());
     }
 
@@ -206,8 +238,12 @@ class CrawlerController extends Controller
      *                     @OA\Property(property="description", type="string", example="Crawler with processed queues"),
      *                     @OA\Property(property="active", type="integer", example=1),
      *                     @OA\Property(property="processed", type="integer", example=1),
-     *                     @OA\Property(property="latest_queues_succeeded", type="integer", example=5),
-     *                     @OA\Property(property="latest_queues_failed", type="integer", example=0),
+     *                     @OA\Property(property="latest_queues_count", type="integer", description="Runs this bot started inside the window, whatever their outcome.", example=11),
+     *                     @OA\Property(property="latest_queues_succeeded", type="integer", description="Runs in the window whose own status_code is success (or a legacy synonym).", example=8),
+     *                     @OA\Property(property="latest_queues_failed", type="integer", description="Runs in the window whose own status_code is failure (or the legacy 'failed'). The run produced nothing usable.", example=1),
+     *                     @OA\Property(property="latest_queues_warning", type="integer", description="Runs in the window whose own status_code is warning (or the legacy 'warn'): the run completed but lost jobs along the way. Not a success -- 'needs attention' is failure OR warning.", example=2),
+     *                     @OA\Property(property="latest_queues_degraded", type="integer", description="Runs in the window holding at least one job with status_code warning: job data was not written, or the decision function could not apply a filter the experiment requested. Derived from the JOBS, so a run whose own status is success can be degraded. Overlaps latest_queues_warning without containing it or being contained by it -- never add the two together.", example=1),
+     *                     @OA\Property(property="latest_queues_treatment_lost", type="integer", description="Runs in the window holding at least one job whose decision_treatment_lost is true: the bot was configured to be treated and produced control-arm data anyway, so that session is scientifically void. Such a run is routinely 'success' with every job 'success' -- nothing FAILED. Counted off a three-state column, so 0 means 'no run here is KNOWN to have lost its treatment': every job predating the runner deploy has a NULL verdict.", example=0),
      *                     @OA\Property(property="experiment_id", type="integer", example=1),
      *                     @OA\Property(property="created_at", type="string", format="date-time"),
      *                     @OA\Property(property="updated_at", type="string", format="date-time")
@@ -254,7 +290,12 @@ class CrawlerController extends Controller
      *                     @OA\Property(property="description", type="string", example="Crawler with reviewed queues"),
      *                     @OA\Property(property="active", type="integer", example=1),
      *                     @OA\Property(property="reviewed", type="integer", example=1),
-     *                     @OA\Property(property="latest_queues_count", type="integer", example=3),
+     *                     @OA\Property(property="latest_queues_count", type="integer", description="Runs this bot started inside the window, whatever their outcome.", example=11),
+     *                     @OA\Property(property="latest_queues_succeeded", type="integer", description="Runs in the window whose own status_code is success (or a legacy synonym).", example=8),
+     *                     @OA\Property(property="latest_queues_failed", type="integer", description="Runs in the window whose own status_code is failure (or the legacy 'failed'). The run produced nothing usable.", example=1),
+     *                     @OA\Property(property="latest_queues_warning", type="integer", description="Runs in the window whose own status_code is warning (or the legacy 'warn'): the run completed but lost jobs along the way. Not a success -- 'needs attention' is failure OR warning.", example=2),
+     *                     @OA\Property(property="latest_queues_degraded", type="integer", description="Runs in the window holding at least one job with status_code warning: job data was not written, or the decision function could not apply a filter the experiment requested. Derived from the JOBS, so a run whose own status is success can be degraded. Overlaps latest_queues_warning without containing it or being contained by it -- never add the two together.", example=1),
+     *                     @OA\Property(property="latest_queues_treatment_lost", type="integer", description="Runs in the window holding at least one job whose decision_treatment_lost is true: the bot was configured to be treated and produced control-arm data anyway, so that session is scientifically void. Such a run is routinely 'success' with every job 'success' -- nothing FAILED. Counted off a three-state column, so 0 means 'no run here is KNOWN to have lost its treatment': every job predating the runner deploy has a NULL verdict.", example=0),
      *                     @OA\Property(property="experiment_id", type="integer", example=1),
      *                     @OA\Property(property="created_at", type="string", format="date-time"),
      *                     @OA\Property(property="updated_at", type="string", format="date-time")
@@ -326,7 +367,12 @@ class CrawlerController extends Controller
      *                     @OA\Property(property="description", type="string", example="Crawler with unprocessed queues"),
      *                     @OA\Property(property="active", type="integer", example=1),
      *                     @OA\Property(property="processed", type="integer", example=0),
-     *                     @OA\Property(property="latest_queues_count", type="integer", example=2),
+     *                     @OA\Property(property="latest_queues_count", type="integer", description="Runs this bot started inside the window, whatever their outcome.", example=11),
+     *                     @OA\Property(property="latest_queues_succeeded", type="integer", description="Runs in the window whose own status_code is success (or a legacy synonym).", example=8),
+     *                     @OA\Property(property="latest_queues_failed", type="integer", description="Runs in the window whose own status_code is failure (or the legacy 'failed'). The run produced nothing usable.", example=1),
+     *                     @OA\Property(property="latest_queues_warning", type="integer", description="Runs in the window whose own status_code is warning (or the legacy 'warn'): the run completed but lost jobs along the way. Not a success -- 'needs attention' is failure OR warning.", example=2),
+     *                     @OA\Property(property="latest_queues_degraded", type="integer", description="Runs in the window holding at least one job with status_code warning: job data was not written, or the decision function could not apply a filter the experiment requested. Derived from the JOBS, so a run whose own status is success can be degraded. Overlaps latest_queues_warning without containing it or being contained by it -- never add the two together.", example=1),
+     *                     @OA\Property(property="latest_queues_treatment_lost", type="integer", description="Runs in the window holding at least one job whose decision_treatment_lost is true: the bot was configured to be treated and produced control-arm data anyway, so that session is scientifically void. Such a run is routinely 'success' with every job 'success' -- nothing FAILED. Counted off a three-state column, so 0 means 'no run here is KNOWN to have lost its treatment': every job predating the runner deploy has a NULL verdict.", example=0),
      *                     @OA\Property(property="experiment_id", type="integer", example=1),
      *                     @OA\Property(property="created_at", type="string", format="date-time"),
      *                     @OA\Property(property="updated_at", type="string", format="date-time")
@@ -455,11 +501,38 @@ class CrawlerController extends Controller
      *         @OA\Schema(type="integer", example=1)
      *     ),
      *
+     *     @OA\Parameter(
+     *         name="hours",
+     *         in="query",
+     *         description="Rolling window, in hours, behind every latest_queues_* count. Clamped to 1..720 rather than rejected; anything non-numeric (or absent) means the 24-hour default.",
+     *         required=false,
+     *
+     *         @OA\Schema(type="integer", default=24, minimum=1, maximum=720)
+     *     ),
+     *
      *     @OA\Response(
      *         response=200,
      *         description="Crawler details",
      *
-     *         @OA\JsonContent(type="object")
+     *         @OA\JsonContent(
+     *             type="object",
+     *
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="object",
+     *                 @OA\Property(property="id", type="integer", example=1),
+     *                 @OA\Property(property="name", type="string", example="bot_control_01"),
+     *                 @OA\Property(property="experiment_id", type="integer", example=1),
+     *                 @OA\Property(property="active", type="integer", example=1),
+     *                 @OA\Property(property="latest_queues_count", type="integer", description="Runs this bot started inside the window, whatever their outcome.", example=11),
+     *                 @OA\Property(property="latest_queues_succeeded", type="integer", description="Runs in the window whose own status_code is success (or a legacy synonym).", example=8),
+     *                 @OA\Property(property="latest_queues_failed", type="integer", description="Runs in the window whose own status_code is failure (or the legacy 'failed'). The run produced nothing usable.", example=1),
+     *                 @OA\Property(property="latest_queues_warning", type="integer", description="Runs in the window whose own status_code is warning (or the legacy 'warn'): the run completed but lost jobs along the way. Not a success -- 'needs attention' is failure OR warning.", example=2),
+     *                 @OA\Property(property="latest_queues_degraded", type="integer", description="Runs in the window holding at least one job with status_code warning: job data was not written, or the decision function could not apply a filter the experiment requested. Derived from the JOBS, so a run whose own status is success can be degraded. Overlaps latest_queues_warning without containing it or being contained by it -- never add the two together.", example=1),
+     *                 @OA\Property(property="created_at", type="string", format="date-time"),
+     *                 @OA\Property(property="updated_at", type="string", format="date-time")
+     *             )
+     *         )
      *     ),
      *
      *     @OA\Response(response=401, description="Unauthorized"),
@@ -469,6 +542,14 @@ class CrawlerController extends Controller
     public function show(Crawler $crawler): JsonResource
     {
         $this->authorize('view', $crawler);
+
+        // Route-model binding resolved this crawler -- rollup subselects and
+        // all -- before the controller could read ?hours=, so the counts it
+        // arrived with belong to whatever window was in force then. Set the
+        // window this request asked for (absent means the 24h default) and drop
+        // them; the accessors refetch all six in one aggregate.
+        Crawler::useLatestQueuesWindow(request()->query('hours'));
+        $crawler->forgetLatestQueueCounts();
 
         return JsonResource::make($this->repository->getById($crawler));
     }

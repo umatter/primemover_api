@@ -156,6 +156,7 @@ curl -X DELETE https://pm-api.test.primemover.example/api/v1/agents/1 \
 | Method | Route | Controller@method | Middleware |
 |--------|-------|-------------------|------------|
 | GET | experiments/experiments-list | ExperimentController@all | auth:api |
+| GET | experiments/{experiment}/health | ExperimentController@health | auth:api |
 | DELETE | experiments/{experiment}/destroy | ExperimentController@forceDelete | auth:api |
 | POST | experiments/upload | ExperimentController@upload | auth:api |
 | POST | experiments/{experiment}/upload | ExperimentController@upload | auth:api, formdata |
@@ -176,6 +177,21 @@ curl -X DELETE https://pm-api.test.primemover.example/api/v1/agents/1 \
 | DELETE | undo | CrawlerController@undo | auth:api |
 | DELETE | cleanup | CrawlerController@cleanup | auth:api |
 | POST | crawlers/{crawler}/upload | CrawlerController@upload | auth:api |
+
+## Job Routes
+
+| Method | Route | Controller@method | Middleware |
+|--------|-------|-------------------|------------|
+| GET | jobs/{job}/decision | JobController@decision | auth:api |
+
+`jobs/{job}/decision` returns the decision function's stored response for a
+lambdaselect job, read out of the runner's object store, plus a precomputed
+verdict (`degraded`, `treatment_lost`, `selection_mode`, failed and skipped
+filters). 404 means no decision payload was ever recorded for the job -- the
+ordinary answer for a visit, wait or type job -- while 502 means one was
+recorded and the store would not give it up. The two are deliberately different
+answers: an unreachable store is missing evidence about a job, never evidence
+that the job was fine.
 
 ## File Handling Routes
 

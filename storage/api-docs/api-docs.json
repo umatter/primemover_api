@@ -25,7 +25,7 @@
                     "Authentication"
                 ],
                 "summary": "Get OAuth token",
-                "description": "Exchange credentials for OAuth token\n\n**Curl Example:**\n```bash\ncurl -X POST 'https://pm-api.test.primemover.example/api/v1/auth/token' \\\n  -H 'Content-Type: application/json' \\\n  -H 'Accept: application/json' \\\n  -d '{\n    \"grant_type\": \"client_credentials\",\n    \"client_id\": \"your_client_id\",\n    \"client_secret\": \"your_client_secret\"\n  }'\n```\n\n**R Example:**\n```r\nlibrary(httr)\nlibrary(jsonlite)\n\nresponse <- POST(\n  url = \"https://pm-api.test.primemover.example/api/v1/auth/token\",\n  add_headers(\n    \"Content-Type\" = \"application/json\",\n    \"Accept\" = \"application/json\"\n  ),\n  body = toJSON(list(\n    grant_type = \"client_credentials\",\n    client_id = \"your_client_id\",\n    client_secret = \"your_client_secret\"\n  ), auto_unbox = TRUE)\n)\n\ntoken_data <- content(response, \"parsed\")\nprint(token_data)\n```",
+                "description": "Exchange credentials for OAuth token\n     *\n     **Curl Example:**\n     * ```bash\n     * curl -X POST 'https://pm-api.test.primemover.example/api/v1/auth/token' \\\n     * -H 'Content-Type: application/json' \\\n     * -H 'Accept: application/json' \\\n     * -d '{\n     * \"grant_type\": \"client_credentials\",\n     * \"client_id\": \"your_client_id\",\n     * \"client_secret\": \"your_client_secret\"\n     * }'\n     * ```\n     *\n     **R Example:**\n     * ```r\n     * library(httr)\n     * library(jsonlite)\n     *\n     * response <- POST(\n     * url = \"https://pm-api.test.primemover.example/api/v1/auth/token\",\n     * add_headers(\n     * \"Content-Type\" = \"application/json\",\n     * \"Accept\" = \"application/json\"\n     * ),\n     * body = toJSON(list(\n     * grant_type = \"client_credentials\",\n     * client_id = \"your_client_id\",\n     * client_secret = \"your_client_secret\"\n     * ), auto_unbox = TRUE)\n     * )\n     *\n     * token_data <- content(response, \"parsed\")\n     * print(token_data)\n     * ```",
                 "operationId": "07655264fb9f877f31721f75f37fb5b4",
                 "requestBody": {
                     "required": true,
@@ -140,7 +140,7 @@
                     "Authentication"
                 ],
                 "summary": "User login",
-                "description": "Authenticate user and return access token\n\n**Curl Example:**\n```bash\ncurl -X POST 'https://pm-api.test.primemover.example/api/v1/login' \\\n  -H 'Content-Type: application/json' \\\n  -H 'Accept: application/json' \\\n  -d '{\n    \"email\": \"user@example.com\",\n    \"password\": \"password123\"\n  }'\n```\n\n**R Example:**\n```r\nlibrary(httr)\nlibrary(jsonlite)\n\nresponse <- POST(\n  url = \"https://pm-api.test.primemover.example/api/v1/login\",\n  add_headers(\n    \"Content-Type\" = \"application/json\",\n    \"Accept\" = \"application/json\"\n  ),\n  body = toJSON(list(\n    email = \"user@example.com\",\n    password = \"password123\"\n  ), auto_unbox = TRUE)\n)\n\nlogin_data <- content(response, \"parsed\")\nprint(login_data)\n```",
+                "description": "Authenticate user and return access token\n     *\n     **Curl Example:**\n     * ```bash\n     * curl -X POST 'https://pm-api.test.primemover.example/api/v1/login' \\\n     * -H 'Content-Type: application/json' \\\n     * -H 'Accept: application/json' \\\n     * -d '{\n     * \"email\": \"user@example.com\",\n     * \"password\": \"password123\"\n     * }'\n     * ```\n     *\n     **R Example:**\n     * ```r\n     * library(httr)\n     * library(jsonlite)\n     *\n     * response <- POST(\n     * url = \"https://pm-api.test.primemover.example/api/v1/login\",\n     * add_headers(\n     * \"Content-Type\" = \"application/json\",\n     * \"Accept\" = \"application/json\"\n     * ),\n     * body = toJSON(list(\n     * email = \"user@example.com\",\n     * password = \"password123\"\n     * ), auto_unbox = TRUE)\n     * )\n     *\n     * login_data <- content(response, \"parsed\")\n     * print(login_data)\n     * ```",
                 "operationId": "d618a255475240ba3d40cc39692cd924",
                 "requestBody": {
                     "required": true,
@@ -295,6 +295,61 @@
                 }
             }
         },
+        "/auth/change-password": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Change the authenticated user's password",
+                "operationId": "6e69871a4fd61a5cb4367e704fe43c65",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "current_password",
+                                    "password",
+                                    "password_confirmation"
+                                ],
+                                "properties": {
+                                    "current_password": {
+                                        "type": "string",
+                                        "format": "password"
+                                    },
+                                    "password": {
+                                        "description": "Min 8 chars, one uppercase, one digit, one special char",
+                                        "type": "string",
+                                        "format": "password"
+                                    },
+                                    "password_confirmation": {
+                                        "type": "string",
+                                        "format": "password"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Password changed; other sessions' tokens revoked"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "422": {
+                        "description": "Wrong current password or new password too weak"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/reset-password": {
             "post": {
                 "tags": [
@@ -397,13 +452,64 @@
                 ]
             }
         },
+        "/runners": {
+            "get": {
+                "tags": [
+                    "Experiments"
+                ],
+                "summary": "List runner accounts",
+                "description": "The accounts an experiment's runner_user_id may point at, with the default flagged. Any authenticated user may call this.",
+                "operationId": "listRunners",
+                "responses": {
+                    "200": {
+                        "description": "Runner accounts, ordered by id",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "properties": {
+                                            "id": {
+                                                "type": "integer",
+                                                "example": 1
+                                            },
+                                            "name": {
+                                                "type": "string",
+                                                "example": "Administrator (ex63 runner, default)"
+                                            },
+                                            "email": {
+                                                "type": "string",
+                                                "example": "admin@primemover.example"
+                                            },
+                                            "is_default": {
+                                                "type": "boolean",
+                                                "example": true
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/agents": {
             "get": {
                 "tags": [
                     "Agents"
                 ],
                 "summary": "List all agents",
-                "description": "Get paginated list of browser agents\n\n**Curl Example:**\n```bash\ncurl -X GET 'https://pm-api.test.primemover.example/api/v1/agents' \\\n  -H 'Authorization: Bearer YOUR_TOKEN' \\\n  -H 'Accept: application/json'\n```\n\n**R Example:**\n```r\nlibrary(httr)\n\nresponse <- GET(\n  url = \"https://pm-api.test.primemover.example/api/v1/agents\",\n  add_headers(\n    \"Authorization\" = \"Bearer YOUR_TOKEN\",\n    \"Accept\" = \"application/json\"\n  )\n)\n\nagents_data <- content(response, \"parsed\")\nprint(agents_data)\n```",
+                "description": "Get paginated list of browser agents\n     *\n     **Curl Example:**\n     * ```bash\n     * curl -X GET 'https://pm-api.test.primemover.example/api/v1/agents' \\\n     * -H 'Authorization: Bearer YOUR_TOKEN' \\\n     * -H 'Accept: application/json'\n     * ```\n     *\n     **R Example:**\n     * ```r\n     * library(httr)\n     *\n     * response <- GET(\n     * url = \"https://pm-api.test.primemover.example/api/v1/agents\",\n     * add_headers(\n     * \"Authorization\" = \"Bearer YOUR_TOKEN\",\n     * \"Accept\" = \"application/json\"\n     * )\n     * )\n     *\n     * agents_data <- content(response, \"parsed\")\n     * print(agents_data)\n     * ```",
                 "operationId": "e106619d76c7db1c9045f011144a1c4a",
                 "parameters": [
                     {
@@ -478,7 +584,7 @@
                     "Agents"
                 ],
                 "summary": "Create new agent",
-                "description": "Create a new browser agent configuration\n\n**Curl Example:**\n```bash\ncurl -X POST 'https://pm-api.test.primemover.example/api/v1/agents' \\\n  -H 'Authorization: Bearer YOUR_TOKEN' \\\n  -H 'Content-Type: application/json' \\\n  -H 'Accept: application/json' \\\n  -d '{\n    \"name\": \"Chrome Agent\",\n    \"description\": \"Chrome browser agent\",\n    \"identification\": \"chrome\",\n    \"location\": \"US-CO-COLORADO_SPRINGS\",\n    \"active\": true\n  }'\n```\n\n**R Example:**\n```r\nlibrary(httr)\nlibrary(jsonlite)\n\nresponse <- POST(\n  url = \"https://pm-api.test.primemover.example/api/v1/agents\",\n  add_headers(\n    \"Authorization\" = \"Bearer YOUR_TOKEN\",\n    \"Content-Type\" = \"application/json\",\n    \"Accept\" = \"application/json\"\n  ),\n  body = toJSON(list(\n    name = \"Chrome Agent\",\n    description = \"Chrome browser agent\",\n    identification = \"chrome\",\n    location = \"US-CO-COLORADO_SPRINGS\",\n    active = TRUE\n  ), auto_unbox = TRUE)\n)\n\nagent_data <- content(response, \"parsed\")\nprint(agent_data)\n```",
+                "description": "Create a new browser agent configuration\n     *\n     **Curl Example:**\n     * ```bash\n     * curl -X POST 'https://pm-api.test.primemover.example/api/v1/agents' \\\n     * -H 'Authorization: Bearer YOUR_TOKEN' \\\n     * -H 'Content-Type: application/json' \\\n     * -H 'Accept: application/json' \\\n     * -d '{\n     * \"name\": \"Chrome Agent\",\n     * \"description\": \"Chrome browser agent\",\n     * \"identification\": \"chrome\",\n     * \"location\": \"US-CO-COLORADO_SPRINGS\",\n     * \"active\": true\n     * }'\n     * ```\n     *\n     **R Example:**\n     * ```r\n     * library(httr)\n     * library(jsonlite)\n     *\n     * response <- POST(\n     * url = \"https://pm-api.test.primemover.example/api/v1/agents\",\n     * add_headers(\n     * \"Authorization\" = \"Bearer YOUR_TOKEN\",\n     * \"Content-Type\" = \"application/json\",\n     * \"Accept\" = \"application/json\"\n     * ),\n     * body = toJSON(list(\n     * name = \"Chrome Agent\",\n     * description = \"Chrome browser agent\",\n     * identification = \"chrome\",\n     * location = \"US-CO-COLORADO_SPRINGS\",\n     * active = TRUE\n     * ), auto_unbox = TRUE)\n     * )\n     *\n     * agent_data <- content(response, \"parsed\")\n     * print(agent_data)\n     * ```",
                 "operationId": "c5e85312257b94330eccdf86318f8c36",
                 "requestBody": {
                     "required": true,
@@ -568,7 +674,7 @@
                     "Agents"
                 ],
                 "summary": "Get specific agent",
-                "description": "Get details of a specific agent\n\n**Curl Example:**\n```bash\ncurl -X GET 'https://pm-api.test.primemover.example/api/v1/agents/1' \\\n  -H 'Authorization: Bearer YOUR_TOKEN' \\\n  -H 'Accept: application/json'\n```\n\n**R Example:**\n```r\nlibrary(httr)\n\nresponse <- GET(\n  url = \"https://pm-api.test.primemover.example/api/v1/agents/1\",\n  add_headers(\n    \"Authorization\" = \"Bearer YOUR_TOKEN\",\n    \"Accept\" = \"application/json\"\n  )\n)\n\nagent_data <- content(response, \"parsed\")\nprint(agent_data)\n```",
+                "description": "Get details of a specific agent\n     *\n     **Curl Example:**\n     * ```bash\n     * curl -X GET 'https://pm-api.test.primemover.example/api/v1/agents/1' \\\n     * -H 'Authorization: Bearer YOUR_TOKEN' \\\n     * -H 'Accept: application/json'\n     * ```\n     *\n     **R Example:**\n     * ```r\n     * library(httr)\n     *\n     * response <- GET(\n     * url = \"https://pm-api.test.primemover.example/api/v1/agents/1\",\n     * add_headers(\n     * \"Authorization\" = \"Bearer YOUR_TOKEN\",\n     * \"Accept\" = \"application/json\"\n     * )\n     * )\n     *\n     * agent_data <- content(response, \"parsed\")\n     * print(agent_data)\n     * ```",
                 "operationId": "3fc636ef6109bb85e2c34bfc25dbc94a",
                 "parameters": [
                     {
@@ -1498,6 +1604,38 @@
                             "maximum": 100,
                             "minimum": 1
                         }
+                    },
+                    {
+                        "name": "filter[status_code]",
+                        "in": "query",
+                        "description": "Which bots need attention: a comma-separated status list matched against the crawler's LATEST RUN -- the run with the greatest started_at, ties broken by id, runs that never started excluded so a session composed for tomorrow cannot mask last night's failure. Values are expanded through the alias table, so failure also matches the runs spelled 'failed'. A bot that has never run matches no status. An unrecognised value returns an empty page; an unknown filter KEY is still HTTP 400.",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "failure,warning"
+                        }
+                    },
+                    {
+                        "name": "filter[bad]",
+                        "in": "query",
+                        "description": "Shorthand for filter[status_code]=failure,warning -- the contract's is_bad predicate over the crawler's LATEST RUN, expanded through the alias table server-side so no client has to carry it. 1/true/yes/on ask for the bad ones; 0 is 'show me everything' and never 'only the good ones', because that would classify every unknown status as good.",
+                        "required": false,
+                        "schema": {
+                            "type": "boolean",
+                            "example": true
+                        }
+                    },
+                    {
+                        "name": "hours",
+                        "in": "query",
+                        "description": "Rolling window, in hours, behind every latest_queues_* count. Clamped to 1..720 rather than rejected; anything non-numeric (or absent) means the 24-hour default.",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 24,
+                            "maximum": 720,
+                            "minimum": 1
+                        }
                     }
                 ],
                 "responses": {
@@ -1535,17 +1673,35 @@
                                                         "type": "integer",
                                                         "example": 1
                                                     },
-                                                    "latest_queues_succeeded": {
+                                                    "latest_queues_count": {
+                                                        "description": "Runs this bot started inside the window, whatever their outcome.",
                                                         "type": "integer",
-                                                        "example": 10
+                                                        "example": 11
+                                                    },
+                                                    "latest_queues_succeeded": {
+                                                        "description": "Runs in the window whose own status_code is success (or a legacy synonym).",
+                                                        "type": "integer",
+                                                        "example": 8
                                                     },
                                                     "latest_queues_failed": {
+                                                        "description": "Runs in the window whose own status_code is failure (or the legacy 'failed'). The run produced nothing usable.",
                                                         "type": "integer",
                                                         "example": 1
                                                     },
-                                                    "latest_queues_count": {
+                                                    "latest_queues_warning": {
+                                                        "description": "Runs in the window whose own status_code is warning (or the legacy 'warn'): the run completed but lost jobs along the way. Not a success -- 'needs attention' is failure OR warning.",
                                                         "type": "integer",
-                                                        "example": 11
+                                                        "example": 2
+                                                    },
+                                                    "latest_queues_degraded": {
+                                                        "description": "Runs in the window holding at least one job with status_code warning: job data was not written, or the decision function could not apply a filter the experiment requested. Derived from the JOBS, so a run whose own status is success can be degraded. Overlaps latest_queues_warning without containing it or being contained by it -- never add the two together.",
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "latest_queues_treatment_lost": {
+                                                        "description": "Runs in the window holding at least one job whose decision_treatment_lost is true: the bot was configured to be treated and produced control-arm data anyway, so that session is scientifically void. Such a run is routinely 'success' with every job 'success' -- nothing FAILED. Counted off a three-state column, so 0 means 'no run here is KNOWN to have lost its treatment': every job predating the runner deploy has a NULL verdict.",
+                                                        "type": "integer",
+                                                        "example": 0
                                                     },
                                                     "created_at": {
                                                         "type": "string",
@@ -1704,7 +1860,7 @@
                     "Crawlers"
                 ],
                 "summary": "Get crawlers with processed queues",
-                "description": "Retrieve all crawlers that have processed queues\n\n**Curl Example:**\n```bash\ncurl -X GET 'https://pm-api.test.primemover.example/api/v1/crawlers-processed' \\\n  -H 'Authorization: Bearer YOUR_TOKEN' \\\n  -H 'Accept: application/json'\n```\n\n**R Example:**\n```r\nlibrary(httr)\n\nresponse <- GET(\n  url = \"https://pm-api.test.primemover.example/api/v1/crawlers-processed\",\n  add_headers(\n    \"Authorization\" = \"Bearer YOUR_TOKEN\",\n    \"Accept\" = \"application/json\"\n  )\n)\n\ncrawlers_data <- content(response, \"parsed\")\nprint(crawlers_data)\n```",
+                "description": "Retrieve all crawlers that have processed queues\n     *\n     **Curl Example:**\n     * ```bash\n     * curl -X GET 'https://pm-api.test.primemover.example/api/v1/crawlers-processed' \\\n     * -H 'Authorization: Bearer YOUR_TOKEN' \\\n     * -H 'Accept: application/json'\n     * ```\n     *\n     **R Example:**\n     * ```r\n     * library(httr)\n     *\n     * response <- GET(\n     * url = \"https://pm-api.test.primemover.example/api/v1/crawlers-processed\",\n     * add_headers(\n     * \"Authorization\" = \"Bearer YOUR_TOKEN\",\n     * \"Accept\" = \"application/json\"\n     * )\n     * )\n     *\n     * crawlers_data <- content(response, \"parsed\")\n     * print(crawlers_data)\n     * ```",
                 "operationId": "getCrawlersWithProcessedQueues",
                 "responses": {
                     "200": {
@@ -1737,11 +1893,33 @@
                                                         "type": "integer",
                                                         "example": 1
                                                     },
-                                                    "latest_queues_succeeded": {
+                                                    "latest_queues_count": {
+                                                        "description": "Runs this bot started inside the window, whatever their outcome.",
                                                         "type": "integer",
-                                                        "example": 5
+                                                        "example": 11
+                                                    },
+                                                    "latest_queues_succeeded": {
+                                                        "description": "Runs in the window whose own status_code is success (or a legacy synonym).",
+                                                        "type": "integer",
+                                                        "example": 8
                                                     },
                                                     "latest_queues_failed": {
+                                                        "description": "Runs in the window whose own status_code is failure (or the legacy 'failed'). The run produced nothing usable.",
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "latest_queues_warning": {
+                                                        "description": "Runs in the window whose own status_code is warning (or the legacy 'warn'): the run completed but lost jobs along the way. Not a success -- 'needs attention' is failure OR warning.",
+                                                        "type": "integer",
+                                                        "example": 2
+                                                    },
+                                                    "latest_queues_degraded": {
+                                                        "description": "Runs in the window holding at least one job with status_code warning: job data was not written, or the decision function could not apply a filter the experiment requested. Derived from the JOBS, so a run whose own status is success can be degraded. Overlaps latest_queues_warning without containing it or being contained by it -- never add the two together.",
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "latest_queues_treatment_lost": {
+                                                        "description": "Runs in the window holding at least one job whose decision_treatment_lost is true: the bot was configured to be treated and produced control-arm data anyway, so that session is scientifically void. Such a run is routinely 'success' with every job 'success' -- nothing FAILED. Counted off a three-state column, so 0 means 'no run here is KNOWN to have lost its treatment': every job predating the runner deploy has a NULL verdict.",
                                                         "type": "integer",
                                                         "example": 0
                                                     },
@@ -1818,8 +1996,34 @@
                                                         "example": 1
                                                     },
                                                     "latest_queues_count": {
+                                                        "description": "Runs this bot started inside the window, whatever their outcome.",
                                                         "type": "integer",
-                                                        "example": 3
+                                                        "example": 11
+                                                    },
+                                                    "latest_queues_succeeded": {
+                                                        "description": "Runs in the window whose own status_code is success (or a legacy synonym).",
+                                                        "type": "integer",
+                                                        "example": 8
+                                                    },
+                                                    "latest_queues_failed": {
+                                                        "description": "Runs in the window whose own status_code is failure (or the legacy 'failed'). The run produced nothing usable.",
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "latest_queues_warning": {
+                                                        "description": "Runs in the window whose own status_code is warning (or the legacy 'warn'): the run completed but lost jobs along the way. Not a success -- 'needs attention' is failure OR warning.",
+                                                        "type": "integer",
+                                                        "example": 2
+                                                    },
+                                                    "latest_queues_degraded": {
+                                                        "description": "Runs in the window holding at least one job with status_code warning: job data was not written, or the decision function could not apply a filter the experiment requested. Derived from the JOBS, so a run whose own status is success can be degraded. Overlaps latest_queues_warning without containing it or being contained by it -- never add the two together.",
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "latest_queues_treatment_lost": {
+                                                        "description": "Runs in the window holding at least one job whose decision_treatment_lost is true: the bot was configured to be treated and produced control-arm data anyway, so that session is scientifically void. Such a run is routinely 'success' with every job 'success' -- nothing FAILED. Counted off a three-state column, so 0 means 'no run here is KNOWN to have lost its treatment': every job predating the runner deploy has a NULL verdict.",
+                                                        "type": "integer",
+                                                        "example": 0
                                                     },
                                                     "experiment_id": {
                                                         "type": "integer",
@@ -1860,7 +2064,7 @@
                     "Crawlers"
                 ],
                 "summary": "Get crawlers with unprocessed queues",
-                "description": "Retrieve all crawlers that have unprocessed queues\n\n**Curl Example:**\n```bash\ncurl -X GET 'https://pm-api.test.primemover.example/api/v1/crawlers-unprocessed' \\\n  -H 'Authorization: Bearer YOUR_TOKEN' \\\n  -H 'Accept: application/json'\n```\n\n**R Example:**\n```r\nlibrary(httr)\n\nresponse <- GET(\n  url = \"https://pm-api.test.primemover.example/api/v1/crawlers-unprocessed\",\n  add_headers(\n    \"Authorization\" = \"Bearer YOUR_TOKEN\",\n    \"Accept\" = \"application/json\"\n  )\n)\n\ncrawlers_data <- content(response, \"parsed\")\nprint(crawlers_data)\n```",
+                "description": "Retrieve all crawlers that have unprocessed queues\n     *\n     **Curl Example:**\n     * ```bash\n     * curl -X GET 'https://pm-api.test.primemover.example/api/v1/crawlers-unprocessed' \\\n     * -H 'Authorization: Bearer YOUR_TOKEN' \\\n     * -H 'Accept: application/json'\n     * ```\n     *\n     **R Example:**\n     * ```r\n     * library(httr)\n     *\n     * response <- GET(\n     * url = \"https://pm-api.test.primemover.example/api/v1/crawlers-unprocessed\",\n     * add_headers(\n     * \"Authorization\" = \"Bearer YOUR_TOKEN\",\n     * \"Accept\" = \"application/json\"\n     * )\n     * )\n     *\n     * crawlers_data <- content(response, \"parsed\")\n     * print(crawlers_data)\n     * ```\n     *\n     * Partitioned by runner assignment: returns only crawlers whose experiment is assigned to the calling runner account (unassigned ones go to the default runner).",
                 "operationId": "getCrawlersWithUnprocessedQueues",
                 "responses": {
                     "200": {
@@ -1894,8 +2098,34 @@
                                                         "example": 0
                                                     },
                                                     "latest_queues_count": {
+                                                        "description": "Runs this bot started inside the window, whatever their outcome.",
+                                                        "type": "integer",
+                                                        "example": 11
+                                                    },
+                                                    "latest_queues_succeeded": {
+                                                        "description": "Runs in the window whose own status_code is success (or a legacy synonym).",
+                                                        "type": "integer",
+                                                        "example": 8
+                                                    },
+                                                    "latest_queues_failed": {
+                                                        "description": "Runs in the window whose own status_code is failure (or the legacy 'failed'). The run produced nothing usable.",
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "latest_queues_warning": {
+                                                        "description": "Runs in the window whose own status_code is warning (or the legacy 'warn'): the run completed but lost jobs along the way. Not a success -- 'needs attention' is failure OR warning.",
                                                         "type": "integer",
                                                         "example": 2
+                                                    },
+                                                    "latest_queues_degraded": {
+                                                        "description": "Runs in the window holding at least one job with status_code warning: job data was not written, or the decision function could not apply a filter the experiment requested. Derived from the JOBS, so a run whose own status is success can be degraded. Overlaps latest_queues_warning without containing it or being contained by it -- never add the two together.",
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "latest_queues_treatment_lost": {
+                                                        "description": "Runs in the window holding at least one job whose decision_treatment_lost is true: the bot was configured to be treated and produced control-arm data anyway, so that session is scientifically void. Such a run is routinely 'success' with every job 'success' -- nothing FAILED. Counted off a three-state column, so 0 means 'no run here is KNOWN to have lost its treatment': every job predating the runner deploy has a NULL verdict.",
+                                                        "type": "integer",
+                                                        "example": 0
                                                     },
                                                     "experiment_id": {
                                                         "type": "integer",
@@ -1936,7 +2166,7 @@
                     "Crawlers"
                 ],
                 "summary": "Get testing crawlers",
-                "description": "Retrieve all crawlers that are in testing mode",
+                "description": "Retrieve all crawlers that are in testing mode. Partitioned by runner assignment: returns only crawlers whose experiment is assigned to the calling runner account (unassigned ones go to the default runner).",
                 "operationId": "getTestingCrawlers",
                 "responses": {
                     "200": {
@@ -2089,6 +2319,18 @@
                             "type": "integer",
                             "example": 1
                         }
+                    },
+                    {
+                        "name": "hours",
+                        "in": "query",
+                        "description": "Rolling window, in hours, behind every latest_queues_* count. Clamped to 1..720 rather than rejected; anything non-numeric (or absent) means the 24-hour default.",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 24,
+                            "maximum": 720,
+                            "minimum": 1
+                        }
                     }
                 ],
                 "responses": {
@@ -2097,6 +2339,62 @@
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "name": {
+                                                    "type": "string",
+                                                    "example": "bot_control_01"
+                                                },
+                                                "experiment_id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "active": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "latest_queues_count": {
+                                                    "description": "Runs this bot started inside the window, whatever their outcome.",
+                                                    "type": "integer",
+                                                    "example": 11
+                                                },
+                                                "latest_queues_succeeded": {
+                                                    "description": "Runs in the window whose own status_code is success (or a legacy synonym).",
+                                                    "type": "integer",
+                                                    "example": 8
+                                                },
+                                                "latest_queues_failed": {
+                                                    "description": "Runs in the window whose own status_code is failure (or the legacy 'failed'). The run produced nothing usable.",
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "latest_queues_warning": {
+                                                    "description": "Runs in the window whose own status_code is warning (or the legacy 'warn'): the run completed but lost jobs along the way. Not a success -- 'needs attention' is failure OR warning.",
+                                                    "type": "integer",
+                                                    "example": 2
+                                                },
+                                                "latest_queues_degraded": {
+                                                    "description": "Runs in the window holding at least one job with status_code warning: job data was not written, or the decision function could not apply a filter the experiment requested. Derived from the JOBS, so a run whose own status is success can be degraded. Overlaps latest_queues_warning without containing it or being contained by it -- never add the two together.",
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "created_at": {
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                },
+                                                "updated_at": {
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
                                     "type": "object"
                                 }
                             }
@@ -2613,7 +2911,7 @@
                     "Crawlers"
                 ],
                 "summary": "Upload crawler configuration",
-                "description": "Upload configuration data or file to a crawler\n\n**Curl Example (with file):**\n```bash\ncurl -X POST 'https://pm-api.test.primemover.example/api/v1/crawlers/1/upload' \\\n  -H 'Authorization: Bearer YOUR_TOKEN' \\\n  -H 'Accept: application/json' \\\n  -F 'file=@crawler_config.json'\n```\n\n**Curl Example (with JSON content):**\n```bash\ncurl -X POST 'https://pm-api.test.primemover.example/api/v1/crawlers/1/upload' \\\n  -H 'Authorization: Bearer YOUR_TOKEN' \\\n  -H 'Content-Type: application/json' \\\n  -H 'Accept: application/json' \\\n  -d '{\n    \"content\": \"{\\\\\"name\\\\\":\\\\\"Test Crawler\\\\\",\\\\\"active\\\\\"1}\"\n  }'\n```\n\n**R Example (with file):**\n```r\nlibrary(httr)\n\nresponse <- POST(\n  url = \"https://pm-api.test.primemover.example/api/v1/crawlers/1/upload\",\n  add_headers(\n    \"Authorization\" = \"Bearer YOUR_TOKEN\",\n    \"Accept\" = \"application/json\"\n  ),\n  body = list(file = upload_file(\"crawler_config.json\")),\n  encode = \"multipart\"\n)\n\nupload_result <- content(response, \"parsed\")\nprint(upload_result)\n```",
+                "description": "Upload configuration data or file to a crawler\n     *\n     **Curl Example (with file):**\n     * ```bash\n     * curl -X POST 'https://pm-api.test.primemover.example/api/v1/crawlers/1/upload' \\\n     * -H 'Authorization: Bearer YOUR_TOKEN' \\\n     * -H 'Accept: application/json' \\\n     * -F 'file=@crawler_config.json'\n     * ```\n     *\n     **Curl Example (with JSON content):**\n     * ```bash\n     * curl -X POST 'https://pm-api.test.primemover.example/api/v1/crawlers/1/upload' \\\n     * -H 'Authorization: Bearer YOUR_TOKEN' \\\n     * -H 'Content-Type: application/json' \\\n     * -H 'Accept: application/json' \\\n     * -d '{\n     * \"content\": \"{\\\\\"name\\\\\":\\\\\"Test Crawler\\\\\",\\\\\"active\\\\\"1}\"\n     * }'\n     * ```\n     *\n     **R Example (with file):**\n     * ```r\n     * library(httr)\n     *\n     * response <- POST(\n     * url = \"https://pm-api.test.primemover.example/api/v1/crawlers/1/upload\",\n     * add_headers(\n     * \"Authorization\" = \"Bearer YOUR_TOKEN\",\n     * \"Accept\" = \"application/json\"\n     * ),\n     * body = list(file = upload_file(\"crawler_config.json\")),\n     * encode = \"multipart\"\n     * )\n     *\n     * upload_result <- content(response, \"parsed\")\n     * print(upload_result)\n     * ```",
                 "operationId": "uploadCrawlerConfig",
                 "parameters": [
                     {
@@ -2842,11 +3140,23 @@
                             "maximum": 100,
                             "minimum": 1
                         }
+                    },
+                    {
+                        "name": "hours",
+                        "in": "query",
+                        "description": "Rolling window, in hours, behind runs_bad_count -- the same window and the same clamping as /crawlers, so a bot's latest_queues_* and its study's runs_bad_count always describe the same stretch of time. Clamped to 1..720 rather than rejected; anything non-numeric (or absent) means the 24-hour default.",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 24,
+                            "maximum": 720,
+                            "minimum": 1
+                        }
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "Paginated list of experiments",
+                        "description": "Paginated list of experiments, each carrying runs_bad_count",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -2878,6 +3188,17 @@
                                                     "user_id": {
                                                         "type": "integer",
                                                         "example": 1
+                                                    },
+                                                    "runner_user_id": {
+                                                        "description": "Runner account that executes this experiment; null = default runner",
+                                                        "type": "integer",
+                                                        "example": 1,
+                                                        "nullable": true
+                                                    },
+                                                    "runs_bad_count": {
+                                                        "description": "Runs of this study, in the rolling window, that need a human: status_code in failure OR warning, legacy spellings ('failed', 'error', 'fatal', 'warn') included. This is the contract's is_bad predicate (docs/integration-contract.md 3.4) and never failure alone -- a run that completed having lost work is precisely the one nobody would otherwise look at. Use GET /experiments/{id}/health for the full breakdown.",
+                                                        "type": "integer",
+                                                        "example": 3
                                                     },
                                                     "created_at": {
                                                         "type": "string",
@@ -2984,6 +3305,12 @@
                                         "description": "Active status (0 or 1)",
                                         "type": "integer",
                                         "example": 1
+                                    },
+                                    "runner_user_id": {
+                                        "description": "Runner account that executes this experiment; null = default runner",
+                                        "type": "integer",
+                                        "example": 1,
+                                        "nullable": true
                                     }
                                 },
                                 "type": "object"
@@ -3023,6 +3350,12 @@
                                                 "user_id": {
                                                     "type": "integer",
                                                     "example": 1
+                                                },
+                                                "runner_user_id": {
+                                                    "description": "Runner account that executes this experiment; null = default runner",
+                                                    "type": "integer",
+                                                    "example": 1,
+                                                    "nullable": true
                                                 },
                                                 "created_at": {
                                                     "type": "string",
@@ -3086,7 +3419,7 @@
                     "Experiments"
                 ],
                 "summary": "Get all experiments list",
-                "description": "Retrieve a complete list of all experiments without pagination\n\n**Curl Example:**\n```bash\ncurl -X GET 'https://pm-api.test.primemover.example/api/v1/experiments/experiments-list' \\\n  -H 'Authorization: Bearer YOUR_TOKEN' \\\n  -H 'Accept: application/json'\n```\n\n**R Example:**\n```r\nlibrary(httr)\n\nresponse <- GET(\n  url = \"https://pm-api.test.primemover.example/api/v1/experiments/experiments-list\",\n  add_headers(\n    \"Authorization\" = \"Bearer YOUR_TOKEN\",\n    \"Accept\" = \"application/json\"\n  )\n)\n\nexperiments_data <- content(response, \"parsed\")\nprint(experiments_data)\n```",
+                "description": "Retrieve a complete list of all experiments without pagination\n     *\n     **Curl Example:**\n     * ```bash\n     * curl -X GET 'https://pm-api.test.primemover.example/api/v1/experiments/experiments-list' \\\n     * -H 'Authorization: Bearer YOUR_TOKEN' \\\n     * -H 'Accept: application/json'\n     * ```\n     *\n     **R Example:**\n     * ```r\n     * library(httr)\n     *\n     * response <- GET(\n     * url = \"https://pm-api.test.primemover.example/api/v1/experiments/experiments-list\",\n     * add_headers(\n     * \"Authorization\" = \"Bearer YOUR_TOKEN\",\n     * \"Accept\" = \"application/json\"\n     * )\n     * )\n     *\n     * experiments_data <- content(response, \"parsed\")\n     * print(experiments_data)\n     * ```",
                 "operationId": "getAllExperimentsList",
                 "responses": {
                     "200": {
@@ -3130,6 +3463,12 @@
                                                     "user_id": {
                                                         "type": "integer",
                                                         "example": 2
+                                                    },
+                                                    "runner_user_id": {
+                                                        "description": "Runner account that executes this experiment; null = default runner",
+                                                        "type": "integer",
+                                                        "example": 2,
+                                                        "nullable": true
                                                     }
                                                 },
                                                 "type": "object"
@@ -3170,6 +3509,18 @@
                             "type": "integer",
                             "example": 1
                         }
+                    },
+                    {
+                        "name": "hours",
+                        "in": "query",
+                        "description": "Rolling window, in hours, behind runs_bad_count. Clamped to 1..720; anything non-numeric (or absent) means the 24-hour default.",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 24,
+                            "maximum": 720,
+                            "minimum": 1
+                        }
                     }
                 ],
                 "responses": {
@@ -3204,6 +3555,17 @@
                                                 "user_id": {
                                                     "type": "integer",
                                                     "example": 1
+                                                },
+                                                "runner_user_id": {
+                                                    "description": "Runner account that executes this experiment; null = default runner",
+                                                    "type": "integer",
+                                                    "example": 1,
+                                                    "nullable": true
+                                                },
+                                                "runs_bad_count": {
+                                                    "description": "Runs of this study, in the rolling window, whose status_code is failure OR warning (legacy spellings included). The contract's is_bad predicate; never failure alone.",
+                                                    "type": "integer",
+                                                    "example": 3
                                                 },
                                                 "created_at": {
                                                     "type": "string",
@@ -3325,6 +3687,12 @@
                                                     "type": "integer",
                                                     "example": 1
                                                 },
+                                                "runner_user_id": {
+                                                    "description": "Runner account that executes this experiment; null = default runner",
+                                                    "type": "integer",
+                                                    "example": 1,
+                                                    "nullable": true
+                                                },
                                                 "created_at": {
                                                     "type": "string",
                                                     "format": "date-time"
@@ -3432,6 +3800,185 @@
                     },
                     "500": {
                         "description": "Internal server error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/experiments/{experiment}/health": {
+            "get": {
+                "tags": [
+                    "Experiments"
+                ],
+                "summary": "Health of one experiment over a rolling window",
+                "description": "Triage above the bot. An experiment carries no status of its own -- no column, no aggregate -- so answering 'which of my studies needs attention?' used to mean paging through every crawler (15 per page) and summing the rollups client-side. This is that answer in one request and a constant number of grouped queries.\n     *\n     * Three things worth knowing before reading the numbers:\n     *\n     * - **Every bucket is alias-aware.** status_code is not a normalised column and the API deliberately never coerces on write, so the same outcome is spelled several ways in one table: 277 queue rows and 256 job rows say failed where the runner now says failure, and skpped is a runner typo that persists. Rows are grouped by the raw value and folded through the alias table, so failure counts all four spellings.\n     * - **unknown is a reported bucket, never folded into success.** A NULL status_code, an empty one, and a spelling nobody has an alias for all land there. The six buckets always sum to total.\n     * - **bad_runs / bad_jobs are failure OR warning** (docs/integration-contract.md 3.4), never failure alone. warning means the run or job finished having lost something the experiment cares about -- the state nobody would otherwise look at, and the reason the 2026-08 overhaul exists.\n     *\n     * treatment_lost_jobs and degraded_jobs count VERDICTS off three-state columns (true / false / NULL = unknown). Only true is counted, so 0 means 'nothing here is KNOWN to have lost its treatment' -- a study whose jobs all predate the runner deploy reports 0 while knowing nothing. See docs/integration-contract.md 7.3.",
+                "operationId": "getExperimentHealth",
+                "parameters": [
+                    {
+                        "name": "experiment",
+                        "in": "path",
+                        "description": "Experiment ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 30
+                        }
+                    },
+                    {
+                        "name": "hours",
+                        "in": "query",
+                        "description": "Size of the rolling window, counted back from now over the runs' started_at. Clamped to 1..720 rather than rejected -- this answers a dashboard, and a 400 because someone typed hours=0 would be worse than the one-hour window they nearly asked for. Anything non-numeric (or absent) means 24. The window actually used comes back as window_hours.",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 24,
+                            "maximum": 720,
+                            "minimum": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Health of the experiment over the window",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "experiment_id": {
+                                                    "type": "integer",
+                                                    "example": 30
+                                                },
+                                                "window_hours": {
+                                                    "description": "The window actually used, after clamping.",
+                                                    "type": "integer",
+                                                    "example": 24
+                                                },
+                                                "bots": {
+                                                    "description": "Crawlers configured on this experiment. Deliberately NOT window-scoped: it is the denominator that makes the run counts readable.",
+                                                    "type": "integer",
+                                                    "example": 12
+                                                },
+                                                "runs": {
+                                                    "description": "Runs that STARTED inside the window, bucketed by status_code. started_at rather than created_at, because runs are composed ahead of time -- a queue exists, with a future start_at and no status_code, long before it runs.",
+                                                    "properties": {
+                                                        "total": {
+                                                            "description": "The sum of the six buckets below, never counted separately.",
+                                                            "type": "integer",
+                                                            "example": 20
+                                                        },
+                                                        "running": {
+                                                            "type": "integer",
+                                                            "example": 1
+                                                        },
+                                                        "success": {
+                                                            "type": "integer",
+                                                            "example": 12
+                                                        },
+                                                        "warning": {
+                                                            "description": "Completed, but lost work along the way.",
+                                                            "type": "integer",
+                                                            "example": 3
+                                                        },
+                                                        "failure": {
+                                                            "type": "integer",
+                                                            "example": 2
+                                                        },
+                                                        "skipped": {
+                                                            "type": "integer",
+                                                            "example": 1
+                                                        },
+                                                        "unknown": {
+                                                            "description": "Anything that normalises to none of the five: NULL, empty, or an unrecognised spelling. Reported, never counted as success.",
+                                                            "type": "integer",
+                                                            "example": 1
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                },
+                                                "jobs": {
+                                                    "description": "Jobs belonging to those runs, bucketed the same way. Scoped through the run's start, not the job's own, so runs and jobs describe the same body of work.",
+                                                    "properties": {
+                                                        "total": {
+                                                            "type": "integer",
+                                                            "example": 812
+                                                        },
+                                                        "running": {
+                                                            "type": "integer",
+                                                            "example": 4
+                                                        },
+                                                        "success": {
+                                                            "type": "integer",
+                                                            "example": 701
+                                                        },
+                                                        "warning": {
+                                                            "type": "integer",
+                                                            "example": 25
+                                                        },
+                                                        "failure": {
+                                                            "type": "integer",
+                                                            "example": 12
+                                                        },
+                                                        "skipped": {
+                                                            "type": "integer",
+                                                            "example": 64
+                                                        },
+                                                        "unknown": {
+                                                            "type": "integer",
+                                                            "example": 6
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                },
+                                                "bad_runs": {
+                                                    "description": "runs.failure + runs.warning.",
+                                                    "type": "integer",
+                                                    "example": 5
+                                                },
+                                                "bad_jobs": {
+                                                    "description": "jobs.failure + jobs.warning.",
+                                                    "type": "integer",
+                                                    "example": 37
+                                                },
+                                                "treatment_lost_jobs": {
+                                                    "description": "Jobs whose decision_treatment_lost is true: the bot was configured to be treated and produced control-arm data, so that session is scientifically void. The alarm. Such a job is routinely status_code success -- nothing about it failed.",
+                                                    "type": "integer",
+                                                    "example": 4
+                                                },
+                                                "degraded_jobs": {
+                                                    "description": "Jobs whose decision_degraded is true: a filter the crawler REQUESTED did not apply. 'A human should look at this decision.'",
+                                                    "type": "integer",
+                                                    "example": 9
+                                                },
+                                                "last_finished_at": {
+                                                    "description": "When this study last finished a run, ACROSS ALL TIME -- the one field here that is deliberately not window-scoped, because it is what makes an empty window readable: 'last finished 5 days ago' and 'never ran' are different situations. null means no run has ever finished.",
+                                                    "type": "string",
+                                                    "format": "date-time",
+                                                    "example": "2026-09-07T08:12:00.000000Z",
+                                                    "nullable": true
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Not your experiment"
+                    },
+                    "404": {
+                        "description": "Experiment not found"
                     }
                 },
                 "security": [
@@ -3578,7 +4125,7 @@
                     "Experiments"
                 ],
                 "summary": "Download experiment data",
-                "description": "Download experiment data as a file (ZIP archive)\n\n**Curl Example:**\n```bash\ncurl -X GET 'https://pm-api.test.primemover.example/api/v1/experiments/1/download' \\\n  -H 'Authorization: Bearer YOUR_TOKEN' \\\n  -H 'Accept: application/zip' \\\n  -o experiment_1_data.zip\n```\n\n**R Example:**\n```r\nlibrary(httr)\n\nresponse <- GET(\n  url = \"https://pm-api.test.primemover.example/api/v1/experiments/1/download\",\n  add_headers(\n    \"Authorization\" = \"Bearer YOUR_TOKEN\",\n    \"Accept\" = \"application/zip\"\n  )\n)\n\n# Save the file\nwriteBin(content(response, \"raw\"), \"experiment_1_data.zip\")\nprint(\"File downloaded successfully\")\n```",
+                "description": "Download experiment data as a file (ZIP archive)\n     *\n     **Curl Example:**\n     * ```bash\n     * curl -X GET 'https://pm-api.test.primemover.example/api/v1/experiments/1/download' \\\n     * -H 'Authorization: Bearer YOUR_TOKEN' \\\n     * -H 'Accept: application/zip' \\\n     * -o experiment_1_data.zip\n     * ```\n     *\n     **R Example:**\n     * ```r\n     * library(httr)\n     *\n     * response <- GET(\n     * url = \"https://pm-api.test.primemover.example/api/v1/experiments/1/download\",\n     * add_headers(\n     * \"Authorization\" = \"Bearer YOUR_TOKEN\",\n     * \"Accept\" = \"application/zip\"\n     * )\n     * )\n     *\n     * # Save the file\n     * writeBin(content(response, \"raw\"), \"experiment_1_data.zip\")\n     * print(\"File downloaded successfully\")\n     * ```",
                 "operationId": "downloadExperimentData",
                 "parameters": [
                     {
@@ -3648,6 +4195,46 @@
                             "type": "integer",
                             "example": 30
                         }
+                    },
+                    {
+                        "name": "filter[status_code]",
+                        "in": "query",
+                        "description": "Comma-separated list of statuses, each expanded through the alias table: failure also returns the 256 rows this database spells 'failed' (plus 'error' and 'fatal'), skipped also returns the runner's 'skpped' typo. An unrecognised value matches nothing and returns an empty page; an empty value is no filter at all. An unknown filter KEY is still HTTP 400.",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "failure,warning"
+                        }
+                    },
+                    {
+                        "name": "filter[bad]",
+                        "in": "query",
+                        "description": "1 = only the jobs a human should look at, exactly equivalent to filter[status_code]=failure,warning. The contract's is_bad predicate (docs/integration-contract.md 3.4), computed server-side so no client has to carry the alias table -- and so nobody writes it as failure alone, which is how degraded jobs stayed invisible. 0 is a no-op, not an inversion.",
+                        "required": false,
+                        "schema": {
+                            "type": "boolean",
+                            "example": true
+                        }
+                    },
+                    {
+                        "name": "sortBy",
+                        "in": "query",
+                        "description": "'severity' or '-severity': order by what the status_code MEANS -- success 0, skipped 1, running 2, unknown 3, warning 4, failure 5 -- so the four spellings of failure land together and a NULL or unrecognised code ranks above running rather than beside success. Replaces the default -id ordering.",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "-severity"
+                        }
+                    },
+                    {
+                        "name": "sort",
+                        "in": "query",
+                        "description": "Spatie sort list; accepts the same 'severity' / '-severity' as sortBy, and composes (sort=severity,-id).",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "severity,-id"
+                        }
                     }
                 ],
                 "responses": {
@@ -3678,8 +4265,17 @@
                                                         "example": "visit_webpage_browserbar"
                                                     },
                                                     "status_code": {
+                                                        "description": "Legacy rows also hold 'failed' and 'skpped'; an unrecognised value is unknown and must never be read as success.",
                                                         "type": "string",
-                                                        "example": "pending"
+                                                        "enum": [
+                                                            "running",
+                                                            "success",
+                                                            "warning",
+                                                            "failure",
+                                                            "skipped"
+                                                        ],
+                                                        "example": "success",
+                                                        "nullable": true
                                                     },
                                                     "queue_id": {
                                                         "type": "integer",
@@ -3692,6 +4288,29 @@
                                                     "updated_at": {
                                                         "type": "string",
                                                         "format": "date-time"
+                                                    },
+                                                    "decision_degraded": {
+                                                        "description": "The decision function's verdict: a filter this crawler REQUESTED did not apply. NULL MEANS UNKNOWN -- never clean and never false. A job that predates the migration, a job that never called the decision function (most jobs), and a job run by a runner that has not been redeployed are all NULL. Render 'no verdict', not a green tick.",
+                                                        "type": "boolean",
+                                                        "example": false,
+                                                        "nullable": true
+                                                    },
+                                                    "decision_treatment_lost": {
+                                                        "description": "The bot was configured to be treated and produced control-arm data. The alarm: this session's data is scientifically void. Always false for a control crawler; NULL means unknown.",
+                                                        "type": "boolean",
+                                                        "example": false,
+                                                        "nullable": true
+                                                    },
+                                                    "decision_selection_mode": {
+                                                        "description": "'llm' or 'random'. A NEUTRAL DESCRIPTION of how the video was picked -- 'random' is the correct answer for a control crawler and 82% of measured payloads. NEVER branch on it alone.",
+                                                        "type": "string",
+                                                        "example": "random",
+                                                        "nullable": true
+                                                    },
+                                                    "decision_report": {
+                                                        "description": "{filters, llm, warnings, applied, requested}. filters[x] == 'skipped' means NOT REQUESTED and is never a failure. GET /jobs/{id}/decision serves the full stored payload, including for jobs that predate these columns.",
+                                                        "type": "object",
+                                                        "nullable": true
                                                     }
                                                 },
                                                 "type": "object"
@@ -3798,10 +4417,60 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Job details",
+                        "description": "Job details, including the decision function's verdict",
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 34226
+                                                },
+                                                "status_code": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "running",
+                                                        "success",
+                                                        "warning",
+                                                        "failure",
+                                                        "skipped"
+                                                    ],
+                                                    "example": "success",
+                                                    "nullable": true
+                                                },
+                                                "status_message": {
+                                                    "type": "string",
+                                                    "nullable": true
+                                                },
+                                                "decision_degraded": {
+                                                    "description": "The decision function's verdict: a filter this crawler REQUESTED did not apply. NULL MEANS UNKNOWN -- never clean and never false. A job that predates the migration, a job that never called the decision function (most jobs), and a job run by a runner that has not been redeployed are all NULL. Render 'no verdict', not a green tick.",
+                                                    "type": "boolean",
+                                                    "example": false,
+                                                    "nullable": true
+                                                },
+                                                "decision_treatment_lost": {
+                                                    "description": "The bot was configured to be treated and produced control-arm data. The alarm: this session's data is scientifically void. Always false for a control crawler; NULL means unknown.",
+                                                    "type": "boolean",
+                                                    "example": false,
+                                                    "nullable": true
+                                                },
+                                                "decision_selection_mode": {
+                                                    "description": "'llm' or 'random'. A NEUTRAL DESCRIPTION of how the video was picked -- 'random' is the correct answer for a control crawler and 82% of measured payloads. NEVER branch on it alone.",
+                                                    "type": "string",
+                                                    "example": "random",
+                                                    "nullable": true
+                                                },
+                                                "decision_report": {
+                                                    "description": "{filters, llm, warnings, applied, requested}. filters[x] == 'skipped' means NOT REQUESTED and is never a failure. GET /jobs/{id}/decision serves the full stored payload, including for jobs that predate these columns.",
+                                                    "type": "object",
+                                                    "nullable": true
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
                                     "type": "object"
                                 }
                             }
@@ -3940,6 +4609,119 @@
                 ]
             }
         },
+        "/jobs/{id}/decision": {
+            "get": {
+                "tags": [
+                    "Jobs"
+                ],
+                "summary": "The decision function's response for a job",
+                "description": "Serves the parsed lambda-jobdata payload recorded for this job, straight from the runner's object store. This is what makes the HISTORICAL verdicts readable: the four decision_* columns on the job row only describe jobs run after the runner deploy, while the ~54000 stored objects go back to the start.",
+                "operationId": "getJobDecision",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Job ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The decision function's response, with the verdict already read off it",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "description": "The decision function's own response: xpath, present, selected, procedure, timestamps, warnings and, when the function was new enough to emit them, degraded / treatment_lost / selection_mode / filters / llm.",
+                                            "type": "object"
+                                        },
+                                        "meta": {
+                                            "properties": {
+                                                "job_id": {
+                                                    "type": "integer",
+                                                    "example": 34226
+                                                },
+                                                "report_id": {
+                                                    "type": "integer",
+                                                    "example": 91455
+                                                },
+                                                "key": {
+                                                    "type": "string",
+                                                    "example": "reports/lambda-jobdata-lambdaselectjob-youtube_video_select-34226"
+                                                },
+                                                "entry": {
+                                                    "type": "string",
+                                                    "example": "20260907-153436_lambda_output_jobdata_34226.json"
+                                                },
+                                                "invocation": {
+                                                    "description": "The runner's envelope: statusCode/success/functionError. These describe the CALL, which is 200 even when every requested filter failed. Never a verdict.",
+                                                    "type": "object"
+                                                },
+                                                "verdict": {
+                                                    "description": "The contract's rules applied once, here, so no client has to reimplement them. reported=false means the payload predates the degradation report and the answer is UNKNOWN, not clean.",
+                                                    "properties": {
+                                                        "reported": {
+                                                            "type": "boolean",
+                                                            "example": true
+                                                        },
+                                                        "degraded": {
+                                                            "type": "boolean",
+                                                            "example": false
+                                                        },
+                                                        "treatment_lost": {
+                                                            "type": "boolean",
+                                                            "example": false
+                                                        },
+                                                        "selection_mode": {
+                                                            "type": "string",
+                                                            "example": "random"
+                                                        },
+                                                        "failed_filters": {
+                                                            "type": "object"
+                                                        },
+                                                        "skipped_filters": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "label": {
+                                                            "type": "string",
+                                                            "example": "ok"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "404": {
+                        "description": "No decision payload was ever recorded for this job"
+                    },
+                    "502": {
+                        "description": "A payload was recorded and the object store would not give it up. Missing evidence about the job, never evidence that the job was fine."
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/api/v1/runner/jobs/{job}": {
             "put": {
                 "tags": [
@@ -3968,16 +4750,16 @@
                             "schema": {
                                 "properties": {
                                     "status_code": {
-                                        "description": "Current job status",
+                                        "description": "Current job status. 'warning' is terminal: the job ran to completion but something the experiment cares about degraded -- job data was not written, or the decision function could not apply a filter the crawler had requested. A decision answering selection_mode 'random' is NOT on its own a warning: for a control crawler that requested no filter it is the correct answer. Not validated against this list -- an unknown code is stored as sent, so a new runner state can never leave a job stuck at 'running'.",
                                         "type": "string",
                                         "enum": [
-                                            "pending",
                                             "running",
-                                            "completed",
-                                            "failed",
-                                            "cancelled"
+                                            "success",
+                                            "warning",
+                                            "failure",
+                                            "skipped"
                                         ],
-                                        "example": "completed"
+                                        "example": "success"
                                     },
                                     "status_message": {
                                         "description": "Status message or error details",
@@ -4026,6 +4808,42 @@
                                             "data_collected": 150
                                         },
                                         "nullable": true
+                                    },
+                                    "decision_degraded": {
+                                        "description": "The decision function's 'degraded': a filter the crawler REQUESTED failed to apply, or nothing could be selected. Omit it (NULL) when there is no verdict -- NULL means unknown, never clean and never false.",
+                                        "type": "boolean",
+                                        "example": false,
+                                        "nullable": true
+                                    },
+                                    "decision_treatment_lost": {
+                                        "description": "The decision function's 'treatment_lost': degraded AND nothing requested applied, so a bot configured to be treated produced control-arm data. The alarm. Always false for a control crawler.",
+                                        "type": "boolean",
+                                        "example": false,
+                                        "nullable": true
+                                    },
+                                    "decision_selection_mode": {
+                                        "description": "'llm' or 'random'. A NEUTRAL DESCRIPTION of how the video was chosen; 'random' is the correct answer for a control crawler and is not an error. Never branch on it alone. Not validated against a list -- an unknown mode is stored as sent.",
+                                        "type": "string",
+                                        "maxLength": 32,
+                                        "example": "random",
+                                        "nullable": true
+                                    },
+                                    "decision_report": {
+                                        "description": "{filters, llm, warnings, applied, requested}. filters[x] == 'skipped' means NOT REQUESTED and is never a failure. Shrunk member by member rather than rejected if it exceeds 60000 bytes encoded, and marked _truncated when that happens.",
+                                        "type": "object",
+                                        "example": {
+                                            "filters": {
+                                                "children_entertainment": "ok",
+                                                "political": "skipped"
+                                            },
+                                            "llm": {
+                                                "available": true,
+                                                "error_type": null,
+                                                "error": null
+                                            },
+                                            "warnings": []
+                                        },
+                                        "nullable": true
                                     }
                                 },
                                 "type": "object"
@@ -4052,7 +4870,7 @@
                                                 },
                                                 "status_code": {
                                                     "type": "string",
-                                                    "example": "completed"
+                                                    "example": "success"
                                                 },
                                                 "status_message": {
                                                     "type": "string",
@@ -4078,6 +4896,23 @@
                                                 },
                                                 "captcha_solved": {
                                                     "type": "boolean",
+                                                    "nullable": true
+                                                },
+                                                "decision_degraded": {
+                                                    "type": "boolean",
+                                                    "nullable": true
+                                                },
+                                                "decision_treatment_lost": {
+                                                    "type": "boolean",
+                                                    "nullable": true
+                                                },
+                                                "decision_selection_mode": {
+                                                    "type": "string",
+                                                    "example": "random",
+                                                    "nullable": true
+                                                },
+                                                "decision_report": {
+                                                    "type": "object",
                                                     "nullable": true
                                                 },
                                                 "updated_at": {
@@ -5136,21 +5971,133 @@
                         }
                     },
                     {
-                        "name": "sortBy",
+                        "name": "filter[status_code]",
                         "in": "query",
-                        "description": "Sort field",
+                        "description": "Comma-separated list of statuses. Every value is expanded through the alias table, so failure also returns the rows this database spells 'failed', 'error' and 'fatal', and skipped also returns the runner's 'skpped' typo. An unrecognised value matches nothing and returns an empty page; an empty value is no filter at all. An unknown filter KEY is still HTTP 400.",
                         "required": false,
                         "schema": {
-                            "type": "string"
+                            "type": "string",
+                            "example": "failure,warning"
+                        }
+                    },
+                    {
+                        "name": "filter[bad]",
+                        "in": "query",
+                        "description": "1 = only the runs a human should look at, exactly equivalent to filter[status_code]=failure,warning. This is the contract's is_bad predicate (docs/integration-contract.md 3.4) computed server-side; it is never failure alone, because a run that completed having lost work is the one nobody would otherwise see. 0 is a no-op, not an inversion.",
+                        "required": false,
+                        "schema": {
+                            "type": "boolean",
+                            "example": true
+                        }
+                    },
+                    {
+                        "name": "sortBy",
+                        "in": "query",
+                        "description": "Sort field. 'severity' (and '-severity') orders by what the status_code MEANS -- success 0, skipped 1, running 2, unknown 3, warning 4, failure 5 -- so the four spellings of failure land together and an unrecognised or NULL code ranks above running rather than beside success. Severity replaces the default ordering; any other value is appended to it.",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "-severity"
+                        }
+                    },
+                    {
+                        "name": "sort",
+                        "in": "query",
+                        "description": "Spatie sort list; accepts the same 'severity' / '-severity' as sortBy, and composes (sort=severity,-id).",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "severity,-id"
                         }
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "List of queues",
+                        "description": "List of queues, each carrying its job rollup",
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 849
+                                                    },
+                                                    "crawler_id": {
+                                                        "type": "integer",
+                                                        "example": 14
+                                                    },
+                                                    "status_code": {
+                                                        "description": "The run's own verdict on itself. Legacy rows also hold 'failed' and 'skpped'; an unrecognised value is unknown and must never be read as success.",
+                                                        "type": "string",
+                                                        "enum": [
+                                                            "running",
+                                                            "success",
+                                                            "warning",
+                                                            "failure",
+                                                            "skipped"
+                                                        ],
+                                                        "example": "warning",
+                                                        "nullable": true
+                                                    },
+                                                    "status_message": {
+                                                        "type": "string",
+                                                        "example": "8/204 jobs succeeded (0 warning, 49 failed, 147 skipped)",
+                                                        "nullable": true
+                                                    },
+                                                    "jobs_count": {
+                                                        "description": "Every job in the run, whatever its state -- the progress denominator. Jobs still running, or with no status_code yet, are counted only here.",
+                                                        "type": "integer",
+                                                        "example": 204
+                                                    },
+                                                    "jobs_succeeded_count": {
+                                                        "description": "Jobs whose status_code is success (or a legacy synonym).",
+                                                        "type": "integer",
+                                                        "example": 8
+                                                    },
+                                                    "jobs_warning_count": {
+                                                        "description": "Jobs that finished but degraded: job data was not written, or the decision function could not apply a filter the experiment requested. Nothing else marks them -- they finished -- which is why this count is the one worth showing.",
+                                                        "type": "integer",
+                                                        "example": 0
+                                                    },
+                                                    "jobs_failed_count": {
+                                                        "description": "Jobs whose status_code is failure (or the legacy 'failed').",
+                                                        "type": "integer",
+                                                        "example": 49
+                                                    },
+                                                    "jobs_skipped_count": {
+                                                        "description": "Jobs never attempted, normally because an earlier job in the run failed (also the legacy 'skpped').",
+                                                        "type": "integer",
+                                                        "example": 147
+                                                    },
+                                                    "jobs_degraded_count": {
+                                                        "description": "Jobs whose decision_degraded is true: a filter the crawler REQUESTED did not apply. A count of verdicts, not of statuses -- a NULL verdict is unknown and is counted in neither direction, so 0 is not a clean bill of health unless a verdict exists.",
+                                                        "type": "integer",
+                                                        "example": 0
+                                                    },
+                                                    "jobs_treatment_lost_count": {
+                                                        "description": "Jobs whose decision_treatment_lost is true: the bot was configured to be treated and produced control-arm data. The alarm. Also counted off a three-state column, so 0 means 'nothing here is KNOWN to have lost its treatment'.",
+                                                        "type": "integer",
+                                                        "example": 0
+                                                    },
+                                                    "started_at": {
+                                                        "type": "string",
+                                                        "format": "date-time",
+                                                        "nullable": true
+                                                    },
+                                                    "finished_at": {
+                                                        "type": "string",
+                                                        "format": "date-time",
+                                                        "nullable": true
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
                                     "type": "object"
                                 }
                             }
@@ -5241,10 +6188,72 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Queue details",
+                        "description": "The run, its jobs, and its job rollup. The seven jobs_*_count fields rode on GET /queues alone until 2026-09-07, so a run-detail view had the jobs and no counts while the list had the counts and no jobs.",
                         "content": {
                             "application/json": {
                                 "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 849
+                                                },
+                                                "status_code": {
+                                                    "description": "The run's own verdict on itself. Legacy rows also hold 'failed' and 'skpped'; an unrecognised value is unknown and must never be read as success.",
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "running",
+                                                        "success",
+                                                        "warning",
+                                                        "failure",
+                                                        "skipped"
+                                                    ],
+                                                    "example": "warning",
+                                                    "nullable": true
+                                                },
+                                                "jobs_count": {
+                                                    "description": "Every job in the run, whatever its state -- the progress denominator.",
+                                                    "type": "integer",
+                                                    "example": 204
+                                                },
+                                                "jobs_succeeded_count": {
+                                                    "type": "integer",
+                                                    "example": 8
+                                                },
+                                                "jobs_warning_count": {
+                                                    "description": "Jobs that finished but degraded. Nothing else marks them.",
+                                                    "type": "integer",
+                                                    "example": 0
+                                                },
+                                                "jobs_failed_count": {
+                                                    "type": "integer",
+                                                    "example": 49
+                                                },
+                                                "jobs_skipped_count": {
+                                                    "type": "integer",
+                                                    "example": 147
+                                                },
+                                                "jobs_degraded_count": {
+                                                    "description": "Counted off a three-state column: NULL is unknown and counts in neither direction, so 0 is not a clean bill of health.",
+                                                    "type": "integer",
+                                                    "example": 0
+                                                },
+                                                "jobs_treatment_lost_count": {
+                                                    "description": "The alarm: the bot was treated and produced control-arm data. Also three-state.",
+                                                    "type": "integer",
+                                                    "example": 0
+                                                },
+                                                "jobs": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
                                     "type": "object"
                                 }
                             }
@@ -5372,7 +6381,7 @@
                     "Queues"
                 ],
                 "summary": "Get queue by job ID",
-                "description": "Retrieve queue information for a specific job\n\n**Curl Example:**\n```bash\ncurl -X GET 'https://pm-api.test.primemover.example/api/v1/queues/job/1' \\\n  -H 'Authorization: Bearer YOUR_TOKEN' \\\n  -H 'Accept: application/json'\n```\n\n**R Example:**\n```r\nlibrary(httr)\n\nresponse <- GET(\n  url = \"https://pm-api.test.primemover.example/api/v1/queues/job/1\",\n  add_headers(\n    \"Authorization\" = \"Bearer YOUR_TOKEN\",\n    \"Accept\" = \"application/json\"\n  )\n)\n\nqueue_data <- content(response, \"parsed\")\nprint(queue_data)\n```",
+                "description": "Retrieve queue information for a specific job\n     *\n     **Curl Example:**\n     * ```bash\n     * curl -X GET 'https://pm-api.test.primemover.example/api/v1/queues/job/1' \\\n     * -H 'Authorization: Bearer YOUR_TOKEN' \\\n     * -H 'Accept: application/json'\n     * ```\n     *\n     **R Example:**\n     * ```r\n     * library(httr)\n     *\n     * response <- GET(\n     * url = \"https://pm-api.test.primemover.example/api/v1/queues/job/1\",\n     * add_headers(\n     * \"Authorization\" = \"Bearer YOUR_TOKEN\",\n     * \"Accept\" = \"application/json\"\n     * )\n     * )\n     *\n     * queue_data <- content(response, \"parsed\")\n     * print(queue_data)\n     * ```",
                 "operationId": "getQueueByJobId",
                 "parameters": [
                     {
@@ -5468,11 +6477,11 @@
                     "Queues"
                 ],
                 "summary": "Get processed queues",
-                "description": "Retrieve all queues that have been processed\n\n**Curl Example:**\n```bash\ncurl -X GET 'https://pm-api.test.primemover.example/api/v1/queues-processed' \\\n  -H 'Authorization: Bearer YOUR_TOKEN' \\\n  -H 'Accept: application/json'\n```\n\n**R Example:**\n```r\nlibrary(httr)\n\nresponse <- GET(\n  url = \"https://pm-api.test.primemover.example/api/v1/queues-processed\",\n  add_headers(\n    \"Authorization\" = \"Bearer YOUR_TOKEN\",\n    \"Accept\" = \"application/json\"\n  )\n)\n\nqueues_data <- content(response, \"parsed\")\nprint(queues_data)\n```",
+                "description": "Retrieve all queues that have been processed\n     *\n     **Curl Example:**\n     * ```bash\n     * curl -X GET 'https://pm-api.test.primemover.example/api/v1/queues-processed' \\\n     * -H 'Authorization: Bearer YOUR_TOKEN' \\\n     * -H 'Accept: application/json'\n     * ```\n     *\n     **R Example:**\n     * ```r\n     * library(httr)\n     *\n     * response <- GET(\n     * url = \"https://pm-api.test.primemover.example/api/v1/queues-processed\",\n     * add_headers(\n     * \"Authorization\" = \"Bearer YOUR_TOKEN\",\n     * \"Accept\" = \"application/json\"\n     * )\n     * )\n     *\n     * queues_data <- content(response, \"parsed\")\n     * print(queues_data)\n     * ```",
                 "operationId": "getProcessedQueues",
                 "responses": {
                     "200": {
-                        "description": "List of processed queues",
+                        "description": "List of processed queues, each carrying the seven jobs_*_count rollup fields documented on GET /queues (added 2026-09-07; before that only GET /queues had them, so showing an outcome beside a run cost a second request per run)",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -5552,11 +6561,11 @@
                     "Queues"
                 ],
                 "summary": "Get unprocessed queues",
-                "description": "Retrieve all queues that have not been processed\n\n**Curl Example:**\n```bash\ncurl -X GET 'https://pm-api.test.primemover.example/api/v1/queues-unprocessed' \\\n  -H 'Authorization: Bearer YOUR_TOKEN' \\\n  -H 'Accept: application/json'\n```\n\n**R Example:**\n```r\nlibrary(httr)\n\nresponse <- GET(\n  url = \"https://pm-api.test.primemover.example/api/v1/queues-unprocessed\",\n  add_headers(\n    \"Authorization\" = \"Bearer YOUR_TOKEN\",\n    \"Accept\" = \"application/json\"\n  )\n)\n\nqueues_data <- content(response, \"parsed\")\nprint(queues_data)\n```",
+                "description": "Retrieve all queues that have not been processed\n     *\n     **Curl Example:**\n     * ```bash\n     * curl -X GET 'https://pm-api.test.primemover.example/api/v1/queues-unprocessed' \\\n     * -H 'Authorization: Bearer YOUR_TOKEN' \\\n     * -H 'Accept: application/json'\n     * ```\n     *\n     **R Example:**\n     * ```r\n     * library(httr)\n     *\n     * response <- GET(\n     * url = \"https://pm-api.test.primemover.example/api/v1/queues-unprocessed\",\n     * add_headers(\n     * \"Authorization\" = \"Bearer YOUR_TOKEN\",\n     * \"Accept\" = \"application/json\"\n     * )\n     * )\n     *\n     * queues_data <- content(response, \"parsed\")\n     * print(queues_data)\n     * ```",
                 "operationId": "getUnprocessedQueues",
                 "responses": {
                     "200": {
-                        "description": "List of unprocessed queues",
+                        "description": "List of unprocessed queues, each carrying the seven jobs_*_count rollup fields documented on GET /queues (added 2026-09-07; before that only GET /queues had them, so showing an outcome beside a run cost a second request per run)",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -5595,7 +6604,15 @@
                                                     },
                                                     "status_code": {
                                                         "type": "string",
-                                                        "example": "pending"
+                                                        "enum": [
+                                                            "running",
+                                                            "success",
+                                                            "warning",
+                                                            "failure",
+                                                            "skipped"
+                                                        ],
+                                                        "example": "running",
+                                                        "nullable": true
                                                     },
                                                     "crawler_id": {
                                                         "type": "integer",
@@ -5636,11 +6653,11 @@
                     "Queues"
                 ],
                 "summary": "Get reviewed queues",
-                "description": "Retrieve all queues that have been reviewed\n\n**Curl Example:**\n```bash\ncurl -X GET 'https://pm-api.test.primemover.example/api/v1/queues-reviewed' \\\n  -H 'Authorization: Bearer YOUR_TOKEN' \\\n  -H 'Accept: application/json'\n```\n\n**R Example:**\n```r\nlibrary(httr)\n\nresponse <- GET(\n  url = \"https://pm-api.test.primemover.example/api/v1/queues-reviewed\",\n  add_headers(\n    \"Authorization\" = \"Bearer YOUR_TOKEN\",\n    \"Accept\" = \"application/json\"\n  )\n)\n\nqueues_data <- content(response, \"parsed\")\nprint(queues_data)\n```",
+                "description": "Retrieve all queues that have been reviewed\n     *\n     **Curl Example:**\n     * ```bash\n     * curl -X GET 'https://pm-api.test.primemover.example/api/v1/queues-reviewed' \\\n     * -H 'Authorization: Bearer YOUR_TOKEN' \\\n     * -H 'Accept: application/json'\n     * ```\n     *\n     **R Example:**\n     * ```r\n     * library(httr)\n     *\n     * response <- GET(\n     * url = \"https://pm-api.test.primemover.example/api/v1/queues-reviewed\",\n     * add_headers(\n     * \"Authorization\" = \"Bearer YOUR_TOKEN\",\n     * \"Accept\" = \"application/json\"\n     * )\n     * )\n     *\n     * queues_data <- content(response, \"parsed\")\n     * print(queues_data)\n     * ```",
                 "operationId": "getReviewedQueues",
                 "responses": {
                     "200": {
-                        "description": "List of reviewed queues",
+                        "description": "List of reviewed queues, each carrying the seven jobs_*_count rollup fields documented on GET /queues (added 2026-09-07; before that only GET /queues had them, so showing an outcome beside a run cost a second request per run)",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -5720,11 +6737,11 @@
                     "Queues"
                 ],
                 "summary": "Get unreviewed queues",
-                "description": "Retrieve all queues that have not been reviewed\n\n**Curl Example:**\n```bash\ncurl -X GET 'https://pm-api.test.primemover.example/api/v1/queues-unreviewed' \\\n  -H 'Authorization: Bearer YOUR_TOKEN' \\\n  -H 'Accept: application/json'\n```\n\n**R Example:**\n```r\nlibrary(httr)\n\nresponse <- GET(\n  url = \"https://pm-api.test.primemover.example/api/v1/queues-unreviewed\",\n  add_headers(\n    \"Authorization\" = \"Bearer YOUR_TOKEN\",\n    \"Accept\" = \"application/json\"\n  )\n)\n\nqueues_data <- content(response, \"parsed\")\nprint(queues_data)\n```",
+                "description": "Retrieve all queues that have not been reviewed\n     *\n     **Curl Example:**\n     * ```bash\n     * curl -X GET 'https://pm-api.test.primemover.example/api/v1/queues-unreviewed' \\\n     * -H 'Authorization: Bearer YOUR_TOKEN' \\\n     * -H 'Accept: application/json'\n     * ```\n     *\n     **R Example:**\n     * ```r\n     * library(httr)\n     *\n     * response <- GET(\n     * url = \"https://pm-api.test.primemover.example/api/v1/queues-unreviewed\",\n     * add_headers(\n     * \"Authorization\" = \"Bearer YOUR_TOKEN\",\n     * \"Accept\" = \"application/json\"\n     * )\n     * )\n     *\n     * queues_data <- content(response, \"parsed\")\n     * print(queues_data)\n     * ```",
                 "operationId": "getUnreviewedQueues",
                 "responses": {
                     "200": {
-                        "description": "List of unreviewed queues",
+                        "description": "List of unreviewed queues, each carrying the seven jobs_*_count rollup fields documented on GET /queues (added 2026-09-07; before that only GET /queues had them, so showing an outcome beside a run cost a second request per run)",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -5820,7 +6837,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "List of unreviewed queues for the experiment",
+                        "description": "List of unreviewed queues for the experiment, each carrying the seven jobs_*_count rollup fields documented on GET /queues (added 2026-09-07; before that only GET /queues had them, so showing an outcome beside a run cost a second request per run)",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -5903,7 +6920,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "List of reviewed queues for the experiment",
+                        "description": "List of reviewed queues for the experiment, each carrying the seven jobs_*_count rollup fields documented on GET /queues (added 2026-09-07; before that only GET /queues had them, so showing an outcome beside a run cost a second request per run)",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -5986,7 +7003,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "List of unprocessed queues for the experiment",
+                        "description": "List of unprocessed queues for the experiment, each carrying the seven jobs_*_count rollup fields documented on GET /queues (added 2026-09-07; before that only GET /queues had them, so showing an outcome beside a run cost a second request per run)",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -6069,7 +7086,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "List of processed queues for the experiment",
+                        "description": "List of processed queues for the experiment, each carrying the seven jobs_*_count rollup fields documented on GET /queues (added 2026-09-07; before that only GET /queues had them, so showing an outcome beside a run cost a second request per run)",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -6162,14 +7179,14 @@
                             "schema": {
                                 "properties": {
                                     "status_code": {
-                                        "description": "Current queue status",
+                                        "description": "Current run status. 'warning' is terminal and has been written by the runner since 2026-08-28: the run completed but lost jobs along the way (JoblistState DONE_JOBSWARNING), with the counts in status_message -- 'failure' stays reserved for a run that produced nothing usable. Consumers must not read 'warning' as success; 'needs attention' is failure OR warning. Not validated against this list: an unknown code is stored as sent rather than rejected, so a new runner state can never leave a run stuck mid-flight.",
                                         "type": "string",
                                         "enum": [
-                                            "pending",
                                             "running",
-                                            "completed",
-                                            "failed",
-                                            "cancelled"
+                                            "success",
+                                            "warning",
+                                            "failure",
+                                            "skipped"
                                         ],
                                         "example": "running"
                                     },

@@ -37,6 +37,17 @@ class Report extends BaseModel
 
     public const S3DISK = 's3runner';
 
+    /**
+     * The mimetype the runner stamps on a POINTER row.
+     *
+     * Not a media type -- there is no "primemover" type registry. It marks a
+     * reports row whose filecontent is NULL because the bytes live in the
+     * object store at $path, which is every row the runner has written since
+     * job data moved to MinIO. Serving it as the Content-Type of the download
+     * would tell the browser nothing and confuse anything that reads it.
+     */
+    public const S3MIMETYPE = 'primemover/s3';
+
     protected $guarded = [];
 
     public function job(): BelongsTo
