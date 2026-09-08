@@ -27,17 +27,6 @@ class Ex63OverlayNetworkTest extends TestCase
     private const NETWORK = 'ex63_internal';
 
     /**
-     * @return array<string, mixed>
-     */
-    private function overlay(): array
-    {
-        $path = base_path('docker-compose.ex63.yml');
-        $this->assertFileExists($path, 'the ex63 overlay should exist');
-
-        return Yaml::parseFile($path);
-    }
-
-    /**
      * @return array<int, array{0: string, 1: string}>
      */
     public static function containersNeedingTheEdgeNetwork(): array
@@ -76,5 +65,16 @@ class Ex63OverlayNetworkTest extends TestCase
             (bool) ($network['external'] ?? false),
             'the edge network is created by ex63-infra and must be joined, not created'
         );
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function overlay(): array
+    {
+        $path = base_path('docker-compose.ex63.yml');
+        $this->assertFileExists($path, 'the ex63 overlay should exist');
+
+        return Yaml::parseFile($path);
     }
 }
