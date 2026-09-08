@@ -365,7 +365,7 @@ class QueueListRollupTest extends TestCase
      */
     private function listed(int $id): Queue
     {
-        $listed = (new QueueRepository(new Queue()))->processed()->firstWhere('id', $id);
+        $listed = (new QueueRepository(new Queue()))->processed()->getCollection()->firstWhere('id', $id);
 
         $this->assertNotNull($listed, 'the run was not in the processed list');
 

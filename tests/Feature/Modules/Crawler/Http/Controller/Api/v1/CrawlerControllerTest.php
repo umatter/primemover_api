@@ -15,6 +15,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Resources\Json\ResourceCollection;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Mockery as m;
 use Tests\TestCase;
@@ -71,7 +72,7 @@ class CrawlerControllerTest extends TestCase
         $result = $controller->withProcessedQueues();
 
         $this->assertInstanceOf(ResourceCollection::class, $result);
-        $this->assertInstanceOf(Collection::class, $result->resource);
+        $this->assertInstanceOf(LengthAwarePaginator::class, $result->resource);
 
         foreach ($result->resource as $crawler) {
             $this->assertInstanceOf(Crawler::class, $crawler);
@@ -87,7 +88,7 @@ class CrawlerControllerTest extends TestCase
         $result = $controller->withReviewedQueues();
 
         $this->assertInstanceOf(ResourceCollection::class, $result);
-        $this->assertInstanceOf(Collection::class, $result->resource);
+        $this->assertInstanceOf(LengthAwarePaginator::class, $result->resource);
 
         foreach ($result->resource as $crawler) {
             $this->assertInstanceOf(Crawler::class, $crawler);

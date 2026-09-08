@@ -159,6 +159,11 @@ class QueueRepository
         return $this->queue->query()
             ->visibleTo()
             ->withJobOutcomeCounts()
+            // Newest run first, matching GET /queues' defaultSort('-id'). A
+            // paginated query with no ORDER BY has no defined page boundaries:
+            // MySQL may return a row on page one and again on page two, or on
+            // neither, and the caller cannot tell.
+            ->orderByDesc('id')
             ->when(
                 null !== $experiment,
                 fn (Builder $query) => $query->whereHas(

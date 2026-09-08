@@ -97,6 +97,9 @@ class CrawlerRepository
             ->whereHas('queues', function ($q): void {
                 $q->where('processed', 1);
             })
+            // Paged output needs a defined order; without one a row can appear
+            // on two pages or on none.
+            ->orderByDesc('id')
             ->fastPaginate(request()->input('per_page', 15));
     }
 
@@ -154,6 +157,9 @@ class CrawlerRepository
             ->whereHas('queues', function ($q): void {
                 $q->where('reviewed', 1);
             })
+            // Paged output needs a defined order; without one a row can appear
+            // on two pages or on none.
+            ->orderByDesc('id')
             ->fastPaginate(request()->input('per_page', 15));
     }
 
