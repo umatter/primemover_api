@@ -6,6 +6,7 @@ use App\Modules\Job\Model\Job;
 use App\Modules\Job\Service\JobDecisionService;
 use App\Modules\Queue\Model\Queue;
 use App\Modules\Report\Model\Report;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Tests\Concerns\MakesDecisionPayloads;
 use Tests\TestCase;
@@ -273,6 +274,71 @@ class BackfillDecisionsTest extends TestCase
             $before->toDateTimeString(),
             $fresh->updated_at->toDateTimeString(),
             'the backfill moved updated_at, which redates the whole archive'
+        );
+    }
+
+    /**
+     * The write re-asserts updated_at, so a schema that redates it cannot.
+     *
+     * The assertion above can only ever pass on this suite: it runs on in-memory
+     * SQLite, where Laravel's SQLiteGrammar rewrites the column default to a
+     * plain CURRENT_TIMESTAMP and the ON UPDATE clause the 2020 migration asks
+     * for (`->default(DB::raw('CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP'))`)
+     * cannot exist. On MySQL, ON UPDATE CURRENT_TIMESTAMP is applied by the
+     * SERVER to every UPDATE that does not assign the column -- $timestamps =
+     * false does not reach it. So the thing worth asserting is the statement:
+     * updated_at must appear in the SET clause, carrying its archived value.
+     *
+     * (Measured 2026-09-08: this deployment's jobs.updated_at happens to carry
+     * no ON UPDATE clause, so the old code would not have redated it here. The
+     * command writes 31,600 archived rows once and irreversibly; which framework
+     * version created the table is not a fact it should depend on.)
+     *
+     * @covers ::handle
+     */
+    public function test_the_write_re_asserts_updated_at_in_the_statement(): void
+    {
+        $job = $this->lambdaJob();
+        $this->storeDecisionFor($job, $this->reportedPayload(['degraded' => true]));
+
+        $job->timestamps = false;
+        $job->forceFill(['updated_at' => '2024-01-02 03:04:05'])->save();
+        $job->timestamps = true;
+
+        $archived = $job->fresh()->getRawOriginal('updated_at');
+
+        /** @var array<int, \Illuminate\Database\Events\QueryExecuted> $verdictWrites */
+        $verdictWrites = [];
+        DB::listen(function ($query) use (&$verdictWrites): void {
+            $sql = mb_strtolower($query->sql);
+
+            if (str_starts_with($sql, 'update') && str_contains($sql, 'jobs') && str_contains($sql, 'decision_degraded')) {
+                $verdictWrites[] = $query;
+            }
+        });
+
+        $this->artisan('decisions:backfill')->assertSuccessful();
+
+        $this->assertCount(1, $verdictWrites, 'the backfill should write the verdict in one statement');
+
+        $this->assertStringContainsString(
+            'updated_at',
+            $verdictWrites[0]->sql,
+            'updated_at is absent from the SET clause, so a column declared ON UPDATE CURRENT_TIMESTAMP would be redated by MySQL'
+        );
+        $this->assertContains(
+            $archived,
+            $verdictWrites[0]->bindings,
+            'updated_at should be re-asserted with the value the archive already held'
+        );
+
+        // ...and the row itself is unchanged, which is the point of all of it.
+        $this->assertSame($archived, $job->fresh()->getRawOriginal('updated_at'));
+        $this->assertTrue($job->fresh()->decision_degraded);
+
+        // The statement is keyed, so no other job was written on the way past.
+        $this->assertNull(
+            Job::query()->where('id', '!=', $job->id)->orderBy('id')->firstOrFail()->decision_degraded
         );
     }
 

@@ -318,6 +318,168 @@ class RunnerJobDecisionTest extends TestCase
         $this->assertNull($otherRow['decision_treatment_lost']);
     }
 
+    /**
+     * An empty verdict flag is UNKNOWN, never a measured false.
+     *
+     * filter_var() reads "" as FALSE -- it sits in FILTER_VALIDATE_BOOL's false
+     * list beside "0"/"off"/"no" -- so before this was fixed a sender that said
+     * nothing at all had "the treatment applied" written into the one table
+     * every analysis joins on. Every downstream reader then counts that job in
+     * the not-degraded direction and decisions:backfill will never revisit it
+     * (its whereNull guard no longer matches), so the object in MinIO that holds
+     * the real answer is never read for it again.
+     *
+     * The global TrimStrings/ConvertEmptyStringsToNull middleware turns a bare
+     * "" into null before this class ever sees it, which is why the value is
+     * asserted at the FormRequest instead of over HTTP: the guard has to hold
+     * for the layer that owns it, not because of a middleware two floors up
+     * that a future route could be registered without.
+     *
+     * @covers ::rules
+     */
+    public function test_an_empty_verdict_flag_is_unknown_not_false(): void
+    {
+        foreach (['', '   '] as $blank) {
+            $request = RunnerJobUpdateRequest::create('/api/v1/runner/jobs/1', 'PUT', [
+                'status_code' => Queue::STATUS_SUCCESS,
+                'decision_degraded' => $blank,
+                'decision_treatment_lost' => $blank,
+            ]);
+            $request->setContainer($this->app)->setRedirector($this->app->make(\Illuminate\Routing\Redirector::class));
+            $request->validateResolved();
+
+            $validated = $request->validated();
+
+            $this->assertArrayNotHasKey('decision_degraded', $validated, 'an empty flag must not be stored as a measured false');
+            $this->assertArrayNotHasKey('decision_treatment_lost', $validated);
+            $this->assertSame(Queue::STATUS_SUCCESS, $validated['status_code']);
+        }
+
+        // ...and a real false is still a real false.
+        $request = RunnerJobUpdateRequest::create('/api/v1/runner/jobs/1', 'PUT', [
+            'status_code' => Queue::STATUS_SUCCESS,
+            'decision_degraded' => 'false',
+            'decision_treatment_lost' => '0',
+        ]);
+        $request->setContainer($this->app)->setRedirector($this->app->make(\Illuminate\Routing\Redirector::class));
+        $request->validateResolved();
+
+        $this->assertFalse($request->validated()['decision_degraded']);
+        $this->assertFalse($request->validated()['decision_treatment_lost']);
+    }
+
+    /**
+     * A report MySQL would refuse is shrunk, not sent to the database.
+     *
+     * MySQL's JSON type rejects any document nested deeper than 100 levels
+     * (ER_JSON_DOCUMENT_TOO_DEEP, 3157); PHP's json_encode() encodes to 512. A
+     * small-but-deep report therefore passed the byte guard, reached
+     * $job->update(), and made the whole status PUT a 500 -- costing the job its
+     * terminal state, which is the one outcome this class exists to prevent.
+     * SQLite stores json() as TEXT and accepts any depth, so nothing but the
+     * shape of the stored value can show this here.
+     *
+     * @covers ::rules
+     */
+    public function test_a_report_deeper_than_mysql_allows_is_shrunk_and_the_status_lands(): void
+    {
+        $job = $this->runningJob();
+
+        $deep = ['bottom' => true];
+
+        for ($level = 0; $level < 150; $level++) {
+            $deep = ['a' => $deep];
+        }
+
+        $this->updateJob($job, [
+            'status_code' => Queue::STATUS_SUCCESS,
+            'decision_report' => ['filters' => ['similar' => 'ok'], 'warnings' => $deep],
+        ])->assertOk();
+
+        $fresh = $job->fresh();
+
+        $this->assertSame(Queue::STATUS_SUCCESS, $fresh->status_code, 'the status must land whatever the report was');
+        $this->assertLessThan(
+            100,
+            $this->depthOf((array) $fresh->decision_report),
+            'a report deeper than MySQL allows was stored verbatim and would have failed the write'
+        );
+        $this->assertTrue($fresh->decision_report['_truncated'] ?? false, 'a shortened report must say so');
+    }
+
+    /**
+     * Only a runner may write the verdict.
+     *
+     * PUT /v1/runner/jobs/{job} has no authorization of its own, and
+     * decision_treatment_lost is not another status field: it is what
+     * /experiments/{id}/health reports as treatment_lost_jobs and what every
+     * alarm in this system reads. A NULL verdict flipped to a recorded false is
+     * the transition the contract forbids, and afterwards every alarm reads a
+     * truthful-looking 0.
+     *
+     * Same predicate as can:administer-platform, so it is inert while isolation
+     * is off and for the service accounts the runner authenticates as.
+     *
+     * @covers ::rules
+     */
+    public function test_a_researchers_token_cannot_write_a_verdict(): void
+    {
+        $job = $this->runningJob();
+
+        config([
+            'primemover.isolation.enabled' => true,
+            'primemover.isolation.service_account_ids' => [],
+        ]);
+
+        $this->updateJob($job, [
+            'status_code' => Queue::STATUS_SUCCESS,
+            'decision_degraded' => false,
+            'decision_treatment_lost' => false,
+            'decision_selection_mode' => 'random',
+            'decision_report' => ['filters' => ['similar' => 'ok']],
+        ])->assertOk();
+
+        $fresh = $job->fresh();
+
+        // The status still lands -- dropping is never allowed to cost the job
+        // its terminal state.
+        $this->assertSame(Queue::STATUS_SUCCESS, $fresh->status_code);
+
+        // ...and the verdict stays unknown rather than becoming a measured
+        // "nothing was lost" that nobody measured.
+        $this->assertNull($fresh->decision_degraded);
+        $this->assertNull($fresh->decision_treatment_lost);
+        $this->assertNull($fresh->decision_selection_mode);
+        $this->assertNull($fresh->decision_report);
+
+        // The runner itself is a service account and is unaffected.
+        config(['primemover.isolation.service_account_ids' => [$this->user->id]]);
+
+        $this->updateJob($job, [
+            'status_code' => Queue::STATUS_SUCCESS,
+            'decision_degraded' => false,
+            'decision_treatment_lost' => false,
+        ])->assertOk();
+
+        $this->assertFalse($job->fresh()->decision_degraded);
+    }
+
+    /**
+     * @param array<mixed> $value
+     */
+    private function depthOf(array $value): int
+    {
+        $deepest = 1;
+
+        foreach ($value as $child) {
+            if (is_array($child)) {
+                $deepest = max($deepest, 1 + $this->depthOf($child));
+            }
+        }
+
+        return $deepest;
+    }
+
     private function runningJob(): Job
     {
         return Job::factory()->create([

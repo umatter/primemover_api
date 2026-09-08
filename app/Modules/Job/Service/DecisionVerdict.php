@@ -57,20 +57,41 @@ final class DecisionVerdict
     /**
      * Filter states that are NOT failures.
      *
-     * 'skipped' means the filter was never REQUESTED -- the normal state of
-     * five of the six filters on every healthy control invocation -- and
-     * counting it as a failure is the single most common way to turn this
-     * contract back into a false-alarm generator.
+     * - 'ok'              requested, and it applied.
+     * - 'skipped'         NOT REQUESTED. The normal state of four or five of
+     *                     the six filters on every healthy control invocation,
+     *                     and counting it as a failure is the single most
+     *                     common way to turn this contract back into a
+     *                     false-alarm generator.
+     * - 'not_implemented' the filter is a stub that cannot do anything yet and
+     *                     the decision function says so honestly instead of
+     *                     lying with 'ok' (lambda_function.py:
+     *                     filters['already_watched'] = 'not_implemented', on the
+     *                     unconditional success path). Nothing went wrong;
+     *                     nothing was ever going to happen. already_watched is
+     *                     always-on hygiene, never a configured treatment, so it
+     *                     is also absent from the function's own
+     *                     requested_treatments denominator and can neither
+     *                     degrade a decision nor lose a treatment. The function's
+     *                     own gate agrees: filter_failed is
+     *                     any(str(status).startswith('failed')).
+     * - ''                nothing was said. Unknown, and unknown is not a finding.
      *
-     * Anything else is treated as a failure so an unrecognised future state
-     * errs towards being seen. This mirrors orchestrator/status.py's
-     * _FILTER_OK_STATES byte for byte, deliberately, including the fact that
-     * the production payloads' 'not_implemented' state for already_watched
-     * therefore reads as a failure. It only reaches that code on the legacy
-     * path (a payload carrying no explicit 'degraded'), and diverging from the
-     * executable copy of the contract would be worse than the imprecision.
+     * Anything else is treated as a failure so an unrecognised FUTURE state errs
+     * towards being seen.
+     *
+     * 'not_implemented' was missing from this list until 2026-09-08, and it is
+     * present in every payload the deployed decision function has produced since
+     * 20260902-144403 (32 of 32 archived payloads, 31 of them with
+     * degraded: false). Without it, meta.verdict.failed_filters reported one
+     * failed filter on 100% of healthy lambdaselect jobs -- the same
+     * always-on-alarm failure mode 'skipped' is called out for above.
+     *
+     * This mirrors orchestrator/status.py's _FILTER_OK_STATES, which is the copy
+     * this one and the runner's LambdaSelectJobResult are written against
+     * (docs/integration-contract.md 7.3). The three must agree.
      */
-    public const FILTER_OK_STATES = ['ok', 'skipped', ''];
+    public const FILTER_OK_STATES = ['ok', 'skipped', 'not_implemented', ''];
 
     /**
      * The keys of the decision payload that are kept in jobs.decision_report.

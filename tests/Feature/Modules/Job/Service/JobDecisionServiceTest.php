@@ -43,7 +43,10 @@ class JobDecisionServiceTest extends TestCase
     public function test_it_parses_a_real_production_object(): void
     {
         $job = $this->lambdaJob();
-        $key = 'reports/lambda-jobdata-lambdaselectjob-youtube_video_select-34226';
+        // Real bytes, filed under the job under test: an object key names the
+        // job it belongs to, and Report::storageKey() will not read one that
+        // names a different job. The fixture is job 34226's object on ex63.
+        $key = 'reports/lambda-jobdata-lambdaselectjob-youtube_video_select-'.$job->id;
 
         Storage::disk(Report::S3DISK)->put(
             $key,

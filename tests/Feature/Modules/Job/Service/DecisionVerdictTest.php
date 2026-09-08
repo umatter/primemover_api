@@ -75,6 +75,66 @@ class DecisionVerdictTest extends TestCase
     }
 
     /**
+     * 'not_implemented' is not a failure either.
+     *
+     * The deployed decision function writes
+     * filters['already_watched'] = 'not_implemented' on its unconditional
+     * success path -- every invocation, control and treated alike (32 of 32
+     * archived payloads since 20260902-144403, 31 of them with degraded:false).
+     * already_watched is always-on hygiene, never a configured treatment, so it
+     * is absent from the function's own requested_treatments denominator and its
+     * own gate ignores it: filter_failed is
+     * any(str(status).startswith('failed')).
+     *
+     * Counting it made meta.verdict.failed_filters report one failed filter on
+     * 100% of healthy lambdaselect jobs -- the always-on alarm that 'skipped' is
+     * called out for one test above, wearing a different value. The set has to
+     * match orchestrator/status.py's _FILTER_OK_STATES, which is the copy this
+     * one is written against.
+     *
+     * @covers ::failedFilters
+     * @covers ::skippedFilters
+     */
+    public function test_a_not_implemented_filter_is_neither_a_failure_nor_a_skip(): void
+    {
+        $verdict = DecisionVerdict::fromPayload([
+            'degraded' => false,
+            'treatment_lost' => false,
+            'selection_mode' => 'random',
+            'filters' => [
+                'already_watched' => 'not_implemented',
+                'mainstream_media' => 'skipped',
+                'children_entertainment' => 'skipped',
+                'similar' => 'skipped',
+                'political' => 'skipped',
+                'fringe' => 'skipped',
+            ],
+        ]);
+
+        $this->assertSame([], $verdict->failedFilters(), 'the whole healthy control fleet would report a casualty');
+        $this->assertNotContains('already_watched', $verdict->skippedFilters(), 'a stub is not "not requested"');
+        $this->assertSame('ok', $verdict->label());
+    }
+
+    /**
+     * ...and on the LEGACY path, where degradation has to be re-derived from the
+     * filter states, the same value must not invent a degradation either.
+     *
+     * @covers ::fromPayload
+     */
+    public function test_not_implemented_does_not_degrade_a_legacy_payload(): void
+    {
+        $verdict = DecisionVerdict::fromPayload([
+            'filters' => ['already_watched' => 'not_implemented', 'political' => 'skipped'],
+            'selection_mode' => 'random',
+        ]);
+
+        $this->assertTrue($verdict->reported, 'filters alone is a report');
+        $this->assertFalse($verdict->degraded);
+        $this->assertFalse($verdict->treatmentLost);
+    }
+
+    /**
      * Absence of a report is UNKNOWN. It is not degradation -- reading it that
      * way turns every archived HAR into an incident -- and it is not health,
      * which would assert something nobody measured.

@@ -4,7 +4,6 @@ namespace App\Modules\Job\Service;
 
 use App\Modules\Job\Exception\DecisionPayloadException;
 use App\Modules\Job\Model\Job;
-use App\Modules\Report\Facade\Service\ReportService;
 use App\Modules\Report\Model\Report;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Storage;
@@ -62,7 +61,12 @@ class JobDecisionService
                 ->where('filename', 'like', '%'.self::JOBDATA_MARKER.'%')
                 ->orWhere('path', 'like', '%'.self::JOBDATA_MARKER.'%'))
             ->orderByDesc('id')
-            ->first();
+            ->get()
+            // Rows whose path is not a key this job may be read from are passed
+            // over rather than returned and then refused: a crafted row must not
+            // be able to shadow the real payload sitting behind it. A job has one
+            // or two of these, so materialising them costs nothing.
+            ->first(fn (Report $report): bool => null !== $report->storageKey());
     }
 
     /**
@@ -105,7 +109,18 @@ class JobDecisionService
      */
     public function payloadForReport(Report $report): DecisionPayload
     {
-        $key = ReportService::getS3Path($report);
+        // Not $report->path: the row's own key is re-derived and checked
+        // against this report's job before anything is fetched. A row can be
+        // attached to one job and point at another job's object -- see
+        // Report::storageKey() -- and the caller has authorised the row, not
+        // the key.
+        $key = $report->storageKey();
+
+        if (null === $key) {
+            throw new DecisionPayloadException(
+                "report {$report->id} does not point at an object belonging to job {$report->job_id}"
+            );
+        }
 
         try {
             $bytes = Storage::disk(Report::S3DISK)->get($key);

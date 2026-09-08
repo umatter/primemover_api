@@ -1,5 +1,6 @@
 <?php
 
+use App\Modules\Job\Model\Job;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -67,6 +68,12 @@ return new class() extends Migration
             $table->index('decision_degraded');
             $table->index('decision_treatment_lost');
         });
+
+        // The rollups ask Job::hasDecisionColumns() before they reference these
+        // columns, and memoise the answer for the life of the process. php-fpm
+        // gives every request a fresh one, so a web request cannot hold a stale
+        // "no"; an artisan process that migrates and then keeps working can.
+        Job::forgetDecisionColumnSupport();
     }
 
     /**
@@ -93,5 +100,7 @@ return new class() extends Migration
                 'decision_report',
             ]);
         });
+
+        Job::forgetDecisionColumnSupport();
     }
 };

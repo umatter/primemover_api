@@ -68,6 +68,15 @@ class Job extends BaseModel
      */
     public const OWNERSHIP_PATH = 'queue.crawler.experiment';
 
+    /**
+     * The column hasDecisionColumns() probes.
+     *
+     * The four decision_* columns are added by one migration and dropped by its
+     * down(), so they are present or absent together and one probe answers for
+     * all four. This is the one every rollup outside this model reads.
+     */
+    public const DECISION_CAPABILITY_COLUMN = 'decision_treatment_lost';
+
     protected $guarded = [];
 
     protected $appends = [];
@@ -86,6 +95,68 @@ class Job extends BaseModel
         'decision_treatment_lost' => 'boolean',
         'decision_report' => 'array',
     ];
+
+    /**
+     * Memoised answer to "does the jobs table carry the decision columns yet?".
+     *
+     * Null means "not asked yet". Resolved at most ONCE per process, because
+     * the alternative -- a Schema::hasColumn per crawler row, per queue row --
+     * would trade a 500 for a query storm on the same endpoints.
+     */
+    private static ?bool $hasDecisionColumns = null;
+
+    /**
+     * Whether jobs.decision_* actually exists in the database in front of us.
+     *
+     * THIS IS WHY IT EXISTS. The API source is bind-mounted into the running
+     * php container on ex63, so new code is live the instant it lands on disk
+     * while `php artisan migrate` is a separate, later command. Every rollup
+     * added by the status-surfacing change set -- Crawler::$withCount,
+     * Queue::jobOutcomeCountRelations(), ExperimentHealth::decisionCounts() --
+     * reads a column that does not exist until that command runs, and MySQL
+     * answers SQLSTATE[42S22] with an HTTP 500. GET /crawlers-unprocessed is
+     * the runner's only work feed and it polls every 60 seconds, so the whole
+     * fleet stops fetching work for the length of that window. It has already
+     * happened once, for 31 minutes. No deploy ordering can close the window
+     * on a bind mount; only the code can, by asking first.
+     *
+     * A false answer means the rollups are OMITTED, never emitted as 0: absent
+     * is unknown, and a 0 treatment-lost count is the positive claim "nothing
+     * was lost" about a study nobody has measured. See
+     * docs/integration-contract.md 7.3.
+     *
+     * Memoised in a static rather than a cache on purpose. PHP-FPM gives each
+     * request a fresh process, so the memo cannot outlive the request and a
+     * "false" recorded before the migration cannot survive it -- which a
+     * Cache::rememberForever would, pinning the rollups off for good. A
+     * long-lived worker (Octane, a queue worker, an artisan command that spans
+     * the migration) is the one case that must call
+     * forgetDecisionColumnSupport(); the migration itself does.
+     */
+    public static function hasDecisionColumns(): bool
+    {
+        if (null !== self::$hasDecisionColumns) {
+            return self::$hasDecisionColumns;
+        }
+
+        $model = new self();
+
+        return self::$hasDecisionColumns = $model->getConnection()
+            ->getSchemaBuilder()
+            ->hasColumn($model->getTable(), self::DECISION_CAPABILITY_COLUMN);
+    }
+
+    /**
+     * Drop the memo, so the next caller asks the database again.
+     *
+     * Called by the migration that adds the columns and by the test suite
+     * between tests. A long-lived process that runs across a migration needs
+     * this; a php-fpm request does not.
+     */
+    public static function forgetDecisionColumnSupport(): void
+    {
+        self::$hasDecisionColumns = null;
+    }
 
     public function crawler(): BelongsTo
     {

@@ -17,7 +17,19 @@ class ReportService
      */
     public function getFileByPath(Report $report): ?string
     {
-        $file = Storage::disk(Report::S3DISK)->get($this->getS3Path($report));
+        // The job ZIP pipeline authorises the JOB and then walks that job's
+        // report rows, so it inherits the same decoupling the single-object
+        // reader had: a row attached to this job may name another job's object.
+        // Report::storageKey() re-derives the key and refuses anything that is
+        // not this report's own. CreateJobReportBinaries catches this exception
+        // per report and continues, so one bad row costs one entry, not the zip.
+        $key = $report->storageKey();
+
+        if (null === $key) {
+            throw new ReportDownloadException('Path is not a readable object key');
+        }
+
+        $file = Storage::disk(Report::S3DISK)->get($key);
 
         if ( ! $file) {
             throw new ReportDownloadException('Path not found');

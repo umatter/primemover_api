@@ -179,14 +179,65 @@ class BackfillDecisions extends Command
         }
 
         if ( ! $dryRun) {
-            // timestamps off: this is archaeology, not activity. Touching
-            // updated_at on tens of thousands of historical jobs would push
-            // every one of them to the top of ?sort=-updated_at and make the
-            // whole archive look like it changed the day the backfill ran.
-            $job->timestamps = false;
-            $job->forceFill($columns)->save();
-            $job->timestamps = true;
+            $this->writeWithoutRedating($job, $columns);
         }
+    }
+
+    /**
+     * Write the verdict columns and leave updated_at exactly as it was.
+     *
+     * This is archaeology, not activity. Touching updated_at on tens of
+     * thousands of historical jobs would push every one of them to the top of
+     * ?sort=-updated_at and make the whole archive look like it changed the day
+     * the backfill ran -- irreversibly, because the previous values are gone.
+     *
+     * Eloquent's $timestamps = false is NOT enough on its own. It stops ELOQUENT
+     * writing the column; it does not stop MySQL. The 2020 migration declares
+     * updated_at as `->useCurrent()->default(DB::raw('CURRENT_TIMESTAMP on
+     * update CURRENT_TIMESTAMP'))`, and a jobs table created from it carries ON
+     * UPDATE CURRENT_TIMESTAMP, which the server applies to every UPDATE that
+     * does not assign the column itself, whatever the ORM sent.
+     *
+     * Measured on this deployment on 2026-09-08: its jobs.updated_at is plain
+     * `timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP` with no ON UPDATE clause
+     * (SHOW CREATE TABLE against a copy of the production schema, and an UPDATE
+     * of the decision columns on MySQL 8.0.25 left updated_at untouched) --
+     * because the framework this repo runs today silently drops that raw
+     * clause: MySqlGrammar::typeTimestamp() overwrites $column->default when
+     * useCurrent() is set. So this box would not have been redated. A table
+     * created from the same migration under the Laravel 7 the repo shipped with
+     * would have been, and "which framework version happened to create the
+     * table" is not something a one-way write over 31,600 archived rows should
+     * depend on.
+     *
+     * Assigning updated_at its own stored value in the SET clause suppresses the
+     * ON UPDATE clause where it exists and writes the identical value where it
+     * does not. The query builder rather than save() because Eloquent cannot be
+     * made to emit a column whose value has not changed.
+     *
+     * @param array<string, mixed> $columns
+     */
+    private function writeWithoutRedating(Job $job, array $columns): void
+    {
+        $job->timestamps = false;
+        $job->forceFill($columns);
+
+        // Post-cast values: decision_report is already the JSON string the
+        // 'array' cast produced, so this writes exactly what save() would have.
+        $changes = $job->getDirty();
+
+        if ([] !== $changes) {
+            $archived = $job->getRawOriginal('updated_at');
+
+            if (null !== $archived && '' !== $archived) {
+                $changes['updated_at'] = $archived;
+            }
+
+            $job->newModelQuery()->whereKey($job->getKey())->toBase()->update($changes);
+            $job->syncOriginal();
+        }
+
+        $job->timestamps = true;
     }
 
     /**

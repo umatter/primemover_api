@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Modules\Agent\Model\Agent;
 use App\Modules\Configuration\Model\Configuration;
 use App\Modules\Experiment\Model\Experiment;
+use App\Modules\Job\Model\Job;
 use App\Modules\Proxy\Model\Proxy;
 use App\Modules\Queue\Model\Queue;
 use App\Modules\Queue\Query\StatusQuery;
@@ -38,7 +39,7 @@ use Spatie\QueryBuilder\QueryBuilder;
  * @property int  latest_queues_failed
  * @property int  latest_queues_warning
  * @property int  latest_queues_degraded
- * @property int  latest_queues_treatment_lost
+ * @property null|int  latest_queues_treatment_lost
  *
  * The six latest_queues_* rollups count runs this bot started inside a rolling
  * window (24 hours by default, ?hours= to widen or narrow it). Two of them are
@@ -112,11 +113,14 @@ class Crawler extends BaseModel
     public const LATEST_QUEUES_HOURS_MAX = 720;
 
     /**
-     * The rollup attributes, in the order they are serialised.
+     * Every rollup attribute, in the order they are serialised.
      *
      * Kept as a constant so the accessors, the lazy fallback and the tests all
-     * name the same six things; $appends and $withCount below repeat them
-     * because PHP property defaults cannot be computed.
+     * name the same six things. What a given DATABASE can answer is
+     * latestQueuesAttributes(), which is this list minus
+     * DECISION_ROLLUP_ATTRIBUTES until the decision migration has run; that is
+     * the list $appends and $withCount are built from, in the constructor,
+     * because a property default cannot ask the schema a question.
      *
      * @var string[]
      */
@@ -129,16 +133,27 @@ class Crawler extends BaseModel
         'latest_queues_count',
     ];
 
+    /**
+     * The rollups that read a jobs.decision_* column.
+     *
+     * They exist only once the migration adding those columns has run. Before
+     * that they are OMITTED -- not zeroed -- which is why they are named apart
+     * from the five that only ever read queues.status_code.
+     *
+     * @var string[]
+     */
+    public const DECISION_ROLLUP_ATTRIBUTES = [
+        'latest_queues_treatment_lost',
+    ];
+
     protected $guarded = [];
 
-    protected $appends = [
-        'latest_queues_succeeded',
-        'latest_queues_failed',
-        'latest_queues_warning',
-        'latest_queues_degraded',
-        'latest_queues_treatment_lost',
-        'latest_queues_count',
-    ];
+    /**
+     * Set per instance in the constructor, from latestQueuesAttributes().
+     *
+     * @var string[]
+     */
+    protected $appends = [];
 
     /**
      * The rollups as count subselects on whatever query loads the crawler.
@@ -154,16 +169,15 @@ class Crawler extends BaseModel
      * The accessors below still work on a model loaded without them; they just
      * pay for one aggregate query instead of getting the numbers for free.
      *
+     * Empty here and set per instance in the constructor, from
+     * latestQueuesWithCount(), because ONE of the six depends on a column that
+     * may not exist yet -- and this property is applied by newQuery(), which
+     * includes GET /crawlers-unprocessed, the runner's work feed. A property
+     * default cannot ask the database; a constructor can.
+     *
      * @var string[]
      */
-    protected $withCount = [
-        'queuesInWindowSucceeded as latest_queues_succeeded',
-        'queuesInWindowFailed as latest_queues_failed',
-        'queuesInWindowWarning as latest_queues_warning',
-        'queuesInWindowDegraded as latest_queues_degraded',
-        'queuesInWindowTreatmentLost as latest_queues_treatment_lost',
-        'queuesInWindow as latest_queues_count',
-    ];
+    protected $withCount = [];
 
     protected $with = [
         'configuration',
@@ -194,6 +208,62 @@ class Crawler extends BaseModel
      * test suite calls between tests.
      */
     private static ?int $latestQueuesWindowHours = null;
+
+    /**
+     * @param array<string, mixed> $attributes
+     */
+    public function __construct(array $attributes = [])
+    {
+        parent::__construct($attributes);
+
+        // Both lists are order-sensitive (they decide the order the rollups
+        // serialise in) and one entry of each is conditional on the schema, so
+        // neither can be a property default. Job::hasDecisionColumns() is
+        // memoised per process, so this costs one boolean read per hydrated
+        // crawler and one schema query per request.
+        $this->appends = self::latestQueuesAttributes();
+        $this->withCount = self::latestQueuesWithCount();
+    }
+
+    /**
+     * The rollup attributes this database can actually answer.
+     *
+     * All six once the decision migration has run; the five status-only ones
+     * before that. The missing one is OMITTED rather than appended as 0: the
+     * contract's "absent means unknown" (docs/integration-contract.md 7.3) is
+     * the whole point -- latest_queues_treatment_lost = 0 asserts that no run
+     * in the window lost its treatment, which is a claim about the science
+     * that an unmigrated database has no basis for.
+     *
+     * @return string[]
+     */
+    public static function latestQueuesAttributes(): array
+    {
+        if (Job::hasDecisionColumns()) {
+            return self::LATEST_QUEUES_ATTRIBUTES;
+        }
+
+        return array_values(array_diff(self::LATEST_QUEUES_ATTRIBUTES, self::DECISION_ROLLUP_ATTRIBUTES));
+    }
+
+    /**
+     * The count subselects behind latestQueuesAttributes(), in the same order.
+     *
+     * @return string[]
+     */
+    public static function latestQueuesWithCount(): array
+    {
+        $relations = [
+            'latest_queues_succeeded' => 'queuesInWindowSucceeded as latest_queues_succeeded',
+            'latest_queues_failed' => 'queuesInWindowFailed as latest_queues_failed',
+            'latest_queues_warning' => 'queuesInWindowWarning as latest_queues_warning',
+            'latest_queues_degraded' => 'queuesInWindowDegraded as latest_queues_degraded',
+            'latest_queues_treatment_lost' => 'queuesInWindowTreatmentLost as latest_queues_treatment_lost',
+            'latest_queues_count' => 'queuesInWindow as latest_queues_count',
+        ];
+
+        return array_values(array_intersect_key($relations, array_flip(self::latestQueuesAttributes())));
+    }
 
     public function proxy(): BelongsTo
     {
@@ -572,8 +642,16 @@ class Crawler extends BaseModel
      * its forty selects is one void session, and the per-job number is the
      * queue's jobs_treatment_lost_count.
      */
-    public function getLatestQueuesTreatmentLostAttribute(): int
+    public function getLatestQueuesTreatmentLostAttribute(): ?int
     {
+        if ( ! Job::hasDecisionColumns()) {
+            // Nullable purely for this case: the column the rollup counts does
+            // not exist, so there is no honest number. It is also not in
+            // $appends here, so nothing serialises it -- a direct read gets
+            // null ("unknown"), never 0 ("nothing lost").
+            return null;
+        }
+
         return $this->latestQueueCount('latest_queues_treatment_lost');
     }
 
@@ -698,7 +776,13 @@ class Crawler extends BaseModel
             return $this->latestQueueCounts;
         }
 
-        $counts = array_fill_keys(self::LATEST_QUEUES_ATTRIBUTES, 0);
+        // latestQueuesAttributes(), not LATEST_QUEUES_ATTRIBUTES: on a database
+        // without the decision columns the treatment-lost rollup is not one of
+        // the numbers this query can ask for, and must stay ABSENT here rather
+        // than being filled in as 0 by array_fill_keys.
+        $attributes = self::latestQueuesAttributes();
+
+        $counts = array_fill_keys($attributes, 0);
 
         if (null === $this->getKey()) {
             return $this->latestQueueCounts = $counts;
@@ -708,13 +792,13 @@ class Crawler extends BaseModel
         // three more queries onto what must stay a single aggregate.
         $row = $this->newModelQuery()
             ->select($this->getTable().'.'.$this->getKeyName())
-            ->withCount($this->withCount)
+            ->withCount(self::latestQueuesWithCount())
             ->whereKey($this->getKey())
             ->first();
 
         $raw = null === $row ? [] : $row->getAttributes();
 
-        foreach (self::LATEST_QUEUES_ATTRIBUTES as $attribute) {
+        foreach ($attributes as $attribute) {
             $counts[$attribute] = (int) ($raw[$attribute] ?? 0);
         }
 

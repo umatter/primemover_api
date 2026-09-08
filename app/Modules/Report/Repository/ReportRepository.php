@@ -4,7 +4,6 @@ namespace App\Modules\Report\Repository;
 
 use App\Facades\Factories\PipelineFactory;
 use App\Modules\Job\Model\Job;
-use App\Modules\Report\Facade\Service\ReportService;
 use App\Modules\Report\Model\Report;
 use App\Modules\Report\Pipe\AddFilesToArchive;
 use App\Modules\Report\Pipe\AssertJobHasReports;
@@ -39,8 +38,10 @@ class ReportRepository
     /**
      * One stored object, streamed off the runner's object store.
      *
-     * null means "there is nothing to serve" -- the row carries no path, or the
-     * store has no object at it -- and the controller turns that into a 404.
+     * null means "there is nothing to serve" -- the row carries no path, the
+     * path is not a key this report may be read from (see Report::storageKey()),
+     * or the store has no object at it -- and the controller turns that into a
+     * 404.
      *
      * This method did not exist until 2026-09-07. ReportController::getFile()
      * called it anyway, so GET /v1/file/{report} answered 500 on every request
@@ -55,11 +56,28 @@ class ReportRepository
     public function getFile(Report $report): ?StreamedResponse
     {
         if (blank($report->path)) {
+            // A row that never pointed anywhere -- an inline-filecontent row, or
+            // a write that failed halfway. Nothing to log.
+            return null;
+        }
+
+        // The row was authorised through job -> queue -> crawler -> experiment;
+        // the KEY was not. reports.path is chosen by whoever POSTed the row and
+        // the table holds ~70,400 rows written before any rule existed, so the
+        // key is re-derived here rather than trusted. null means "not a key this
+        // report may be read from" and becomes the same 404 as a missing object.
+        $key = $report->storageKey();
+
+        if (null === $key) {
+            Log::warning('1757260001: report path is not a readable object key', [
+                'report' => $report->id,
+                'job' => $report->job_id,
+            ]);
+
             return null;
         }
 
         $disk = Storage::disk(Report::S3DISK);
-        $key = ReportService::getS3Path($report);
 
         try {
             if ( ! $disk->exists($key)) {

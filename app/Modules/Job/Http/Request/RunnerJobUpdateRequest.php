@@ -2,6 +2,9 @@
 
 namespace App\Modules\Job\Http\Request;
 
+use App\Access\Isolation;
+use App\Modules\Job\Model\Job;
+
 class RunnerJobUpdateRequest extends UpdateJobRequest
 {
     /**
@@ -29,6 +32,22 @@ class RunnerJobUpdateRequest extends UpdateJobRequest
     public const DECISION_SELECTION_MODE_MAX = 32;
 
     /**
+     * Deepest decision_report we encode, in nesting levels.
+     *
+     * MySQL's JSON type refuses any document nested deeper than 100 levels
+     * (ER_JSON_DOCUMENT_TOO_DEEP, 3157) while PHP's json_encode() happily
+     * encodes to 512, so a small but deeply nested report passed every guard
+     * here and then failed at the database -- turning the whole status PUT into
+     * a 500 and leaving the job at "running" for ever, which is exactly the
+     * outcome this class exists to prevent. The suite cannot see it: SQLite
+     * stores json() as TEXT and accepts any depth.
+     *
+     * 64 rather than 99: the margin costs nothing (a real report is 3 levels)
+     * and PHP and MySQL do not count levels identically.
+     */
+    public const DECISION_REPORT_MAX_DEPTH = 64;
+
+    /**
      * Report members dropped, in this order, to fit DECISION_REPORT_MAX.
      *
      * Worst first: warnings is the only unbounded one, applied/requested are
@@ -37,6 +56,16 @@ class RunnerJobUpdateRequest extends UpdateJobRequest
      * worth losing.
      */
     public const DECISION_REPORT_SHRINK_ORDER = ['warnings', 'requested', 'applied', 'llm', 'filters'];
+
+    /**
+     * The four columns that carry the decision function's verdict.
+     */
+    public const DECISION_FIELDS = [
+        'decision_degraded',
+        'decision_treatment_lost',
+        'decision_selection_mode',
+        'decision_report',
+    ];
 
     /**
      * Both models are $guarded = [], so whatever survives validation here is
@@ -101,12 +130,98 @@ class RunnerJobUpdateRequest extends UpdateJobRequest
     {
         $this->truncateStatusMessage();
 
+        if ($this->dropVerdictWithoutColumns()) {
+            return;
+        }
+
+        if ($this->dropVerdictFromUntrustedCaller()) {
+            return;
+        }
+
         foreach (['decision_degraded', 'decision_treatment_lost'] as $flag) {
             $this->normaliseBoolean($flag);
         }
 
         $this->normaliseSelectionMode();
         $this->normaliseReport();
+    }
+
+    /**
+     * Strip the verdict when the columns it targets do not exist yet.
+     *
+     * The read surface is already order-independent (Job::hasDecisionColumns()
+     * keeps the rollups out of every SELECT until the migration has run). This
+     * is the write half of the same property. Without it the API is only
+     * order-independent for readers: the runner PUTs decision_degraded and
+     * friends, both models are $guarded = [], so JobRepository::update() mass-
+     * assigns them into an UPDATE naming columns the schema does not have,
+     * MySQL answers SQLSTATE[42S22] 1054 and the endpoint 500s.
+     *
+     * What that costs is not the verdict, it is the job. The verdict rides the
+     * same PUT as status_code, so a 500 loses the job's terminal state and it
+     * sits at 'running' for ever, taking its run's rollup -- and every analysis
+     * that joins on status_code -- with it.
+     *
+     * Reachable whenever schema and code are out of step in this direction: a
+     * migration rolled back under a deployed runner, a restore from a pre-
+     * migration dump, or a runner shipped ahead of the documented order (API
+     * migration -> GUI -> runner jar; docs/integration-contract.md section 0).
+     * The runner's own strip-and-retry recovers the status on a refusal, but
+     * that costs a wasted round trip per job and relies on the runner being new
+     * enough to have it. Dropping here is cheaper and works for every runner.
+     *
+     * Dropped, not rejected, for the same reason as everywhere else in this
+     * class: the columns are absent, so the verdict has nowhere to land, and
+     * absent reads as unknown -- which is the honest answer.
+     */
+    private function dropVerdictWithoutColumns(): bool
+    {
+        if (Job::hasDecisionColumns()) {
+            return false;
+        }
+
+        foreach (self::DECISION_FIELDS as $field) {
+            $this->drop($field);
+        }
+
+        return true;
+    }
+
+    /**
+     * Strip the verdict unless the caller is a runner.
+     *
+     * PUT /v1/runner/jobs/{job} has no authorization of its own -- no policy
+     * call, no can: middleware, no authorize() on this request or its parent --
+     * and route-model binding resolves {job} unscoped on purpose (a global scope
+     * there would 404 the runner's status PUTs and strand queues in processing).
+     * That gap is older than this change set, but the four decision_* columns
+     * are new to it, and they are not another status field: decision_treatment_lost
+     * is what /experiments/{id}/health reports as treatment_lost_jobs and what
+     * every alarm in this system reads. A job whose honest verdict is NULL being
+     * flipped to a recorded false is the one transition the contract forbids,
+     * and after it every alarm reads a truthful-looking 0.
+     *
+     * The predicate is Isolation::bypasses() -- the same one behind the
+     * can:administer-platform gate -- so this is inert while isolation is off
+     * and for the service accounts the runner authenticates as (users 1 and 3),
+     * exactly like OwnedParent and the policies. Nothing changes for today's
+     * deployment; the day isolation is switched on, a researcher's token can no
+     * longer write a scientific-validity verdict onto anybody's job.
+     *
+     * Dropped, not rejected: a 422 would cost the job its terminal state as well
+     * as its verdict, and the columns then keep NULL, which is "unknown".
+     */
+    private function dropVerdictFromUntrustedCaller(): bool
+    {
+        if (Isolation::bypasses()) {
+            return false;
+        }
+
+        foreach (self::DECISION_FIELDS as $field) {
+            $this->drop($field);
+        }
+
+        return true;
     }
 
     /**
@@ -149,6 +264,19 @@ class RunnerJobUpdateRequest extends UpdateJobRequest
             // OMITTING the field is different and is handled by has() above:
             // a runner re-reporting a job without a verdict must not erase the
             // verdict an earlier PUT recorded.
+            return;
+        }
+
+        if (is_string($value) && '' === trim($value)) {
+            // filter_var() reads "" as FALSE -- it sits in FILTER_VALIDATE_BOOL's
+            // false list beside "0"/"off"/"no" -- so without this an empty value
+            // would be stored as a MEASURED "the treatment applied", from a
+            // sender that said nothing at all. A form-encoded body, a proxy
+            // normalising a JSON null, or a Java Boolean null through a string
+            // formatter all produce it. Nothing said is unknown, and unknown is
+            // NULL: drop it. "0"/"false"/"off" remain a real false.
+            $this->drop($field);
+
             return;
         }
 
@@ -268,7 +396,11 @@ class RunnerJobUpdateRequest extends UpdateJobRequest
      */
     private function reportIsOversized(array $report): bool
     {
-        $encoded = json_encode($report);
+        // The depth cap makes json_encode() return false on a document MySQL
+        // would refuse, which is already this method's "too big" answer -- so a
+        // pathological report is shrunk like any other and the status update
+        // still lands.
+        $encoded = json_encode($report, 0, self::DECISION_REPORT_MAX_DEPTH);
 
         return false === $encoded || mb_strlen($encoded, '8bit') > self::DECISION_REPORT_MAX;
     }

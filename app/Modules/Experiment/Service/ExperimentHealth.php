@@ -4,6 +4,7 @@ namespace App\Modules\Experiment\Service;
 
 use App\Modules\Crawler\Model\Crawler;
 use App\Modules\Experiment\Model\Experiment;
+use App\Modules\Job\Model\Job;
 use App\Modules\Queue\Model\Queue;
 use App\Modules\Queue\Query\StatusQuery;
 use Carbon\Carbon;
@@ -120,7 +121,7 @@ class ExperimentHealth
         $jobs = self::bucket($this->jobStatusCounts($experimentId, $since));
         $decisions = $this->decisionCounts($experimentId, $since);
 
-        return [
+        $health = [
             'experiment_id' => $experimentId,
             'window_hours' => $windowHours,
             'bots' => $this->botCount($experimentId),
@@ -128,10 +129,22 @@ class ExperimentHealth
             'jobs' => $jobs,
             'bad_runs' => self::badTotal($runs),
             'bad_jobs' => self::badTotal($jobs),
-            'treatment_lost_jobs' => $decisions['treatment_lost'],
-            'degraded_jobs' => $decisions['degraded'],
-            'last_finished_at' => $this->lastFinishedAt($experimentId),
         ];
+
+        // Absent, not zero. decisionCounts() returns null on a database that
+        // has not run the decision migration, and 'treatment_lost_jobs' => 0
+        // would tell the researcher looking at the triage screen that nothing
+        // in this study lost its treatment -- a statement about the science
+        // that nobody has measured. A missing key is the contract's "unknown"
+        // (docs/integration-contract.md 7.3) and the GUI already renders it.
+        if (null !== $decisions) {
+            $health['treatment_lost_jobs'] = $decisions['treatment_lost'];
+            $health['degraded_jobs'] = $decisions['degraded'];
+        }
+
+        $health['last_finished_at'] = $this->lastFinishedAt($experimentId);
+
+        return $health;
     }
 
     /**
@@ -289,10 +302,20 @@ class ExperimentHealth
      * job in the window is KNOWN to have lost its treatment", which is weaker
      * than it looks; see docs/integration-contract.md 7.3.
      *
-     * @return array{degraded: int, treatment_lost: int}
+     * Null when the jobs table has no decision_* columns at all -- the window
+     * between this code going live on the bind-mounted API source and
+     * `php artisan migrate` running. Asking for them then is SQLSTATE[42S22]
+     * and a 500 on GET /experiments/{id}/health; answering 0 would be worse
+     * than the 500, because it is a false all-clear rather than an outage.
+     *
+     * @return null|array{degraded: int, treatment_lost: int}
      */
-    private function decisionCounts(int $experimentId, Carbon $since): array
+    private function decisionCounts(int $experimentId, Carbon $since): ?array
     {
+        if ( ! Job::hasDecisionColumns()) {
+            return null;
+        }
+
         $row = $this->jobsInWindow($experimentId, $since)
             ->selectRaw('sum(case when jobs.decision_degraded = 1 then 1 else 0 end) as degraded_jobs')
             ->selectRaw('sum(case when jobs.decision_treatment_lost = 1 then 1 else 0 end) as treatment_lost_jobs')

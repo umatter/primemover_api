@@ -36,7 +36,7 @@ class ReportFileEndpointTest extends TestCase
      */
     public function test_it_serves_the_object_off_the_runner_disk(): void
     {
-        $report = $this->reportWithObject('reports/static-jobdata-visitjob-youtube-4242', 'PK-the-bytes');
+        $report = $this->reportWithObject($this->keyForJobUnderTest(), 'PK-the-bytes');
 
         $response = $this->fetch($report)->assertOk();
 
@@ -51,7 +51,8 @@ class ReportFileEndpointTest extends TestCase
      */
     public function test_the_pointer_marker_is_not_served_as_a_content_type(): void
     {
-        $report = $this->reportWithObject('reports/static-jobdata-visitjob-youtube-4242', 'bytes');
+        $key = $this->keyForJobUnderTest();
+        $report = $this->reportWithObject($key, 'bytes');
 
         $response = $this->fetch($report)->assertOk();
 
@@ -62,7 +63,7 @@ class ReportFileEndpointTest extends TestCase
         // Built by Symfony's makeDisposition, not by concatenating a
         // runner-written filename into a header.
         $this->assertStringStartsWith('attachment;', $disposition);
-        $this->assertStringContainsString('static-jobdata-visitjob-youtube-4242', $disposition);
+        $this->assertStringContainsString(basename($key), $disposition);
     }
 
     /**
@@ -72,7 +73,7 @@ class ReportFileEndpointTest extends TestCase
      */
     public function test_a_real_mimetype_is_respected(): void
     {
-        $report = $this->reportWithObject('reports/thing.zip', 'bytes', 'application/zip');
+        $report = $this->reportWithObject($this->keyForJobUnderTest(), 'bytes', 'application/zip');
 
         $this->fetch($report)->assertOk()->assertHeader('Content-Type', 'application/zip');
     }
@@ -103,7 +104,7 @@ class ReportFileEndpointTest extends TestCase
         $report = Report::factory()->create([
             'job_id' => $this->jobUnderTest()->id,
             'user_id' => $this->user->id,
-            'path' => Report::S3PREFIX.'reports/nothing-was-ever-written-here',
+            'path' => Report::S3PREFIX.'reports/nothing-was-ever-written-here-'.$this->jobUnderTest()->id,
         ]);
 
         $this->fetch($report)->assertNotFound();
@@ -119,7 +120,7 @@ class ReportFileEndpointTest extends TestCase
     {
         $this->withExceptionHandling();
 
-        $report = $this->reportWithObject('reports/static-jobdata-visitjob-youtube-4242', 'bytes');
+        $report = $this->reportWithObject($this->keyForJobUnderTest(), 'bytes');
 
         $stranger = User::factory()->create();
         config([
@@ -143,6 +144,16 @@ class ReportFileEndpointTest extends TestCase
             'filecontent' => null,
             'path' => Report::S3PREFIX.$key,
         ]);
+    }
+
+    /**
+     * The runner names every object after the job it belongs to:
+     * <prefix>-<jobtype>-<task>-<jobId>. Report::storageKey() requires that,
+     * so a fixture key has to carry the real id.
+     */
+    private function keyForJobUnderTest(): string
+    {
+        return 'reports/static-jobdata-visitjob-youtube-'.$this->jobUnderTest()->id;
     }
 
     private function jobUnderTest(): Job

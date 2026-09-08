@@ -79,72 +79,110 @@ class QueueRepository
     /**
      * The queues-* families below all carry the job-outcome rollup.
      *
-     * withJobOutcomeCounts() adds seven count SUBSELECTS to the one query, not
-     * seven queries and not one per row, so a list that was already fetching
-     * every job of every run now also states what those jobs came to. Until
-     * this change the rollup rode on GET /queues alone, which meant the only
-     * endpoints a GUI uses to show a set of runs -- processed, unprocessed,
-     * reviewed, unreviewed and their four experiment-scoped twins -- could show
-     * the runs but not their outcome without a second request per run.
+     * Until this change the rollup rode on GET /queues alone, which meant the
+     * only endpoints a GUI uses to show a set of runs -- processed,
+     * unprocessed, reviewed, unreviewed and their four experiment-scoped twins
+     * -- could show the runs but not their outcome without a second request per
+     * run.
+     *
+     * It is COUNTED IN PHP here, not asked for in SQL. These eight lists are
+     * unpaginated and already eager-load `jobs` in full, so every one of the
+     * seven numbers is derivable from rows that are about to be serialised
+     * anyway. The scope would add seven correlated count subselects per row on
+     * top of that: measured on the rehearsal copy of production (735 queues /
+     * 31,574 jobs) they cost 87 ms against 2 ms to fetch every job row they
+     * were recounting. Queue::rollupFromLoadedJobs() produces the identical
+     * seven attributes for no query at all.
+     *
+     * GET /queues (paginated, no `jobs` relation) and GET /queues/{id} keep the
+     * SQL rollup, because there the jobs are not all in memory.
      */
     public function processed(): Collection
     {
-        return $this->queue->query()->visibleTo()->withJobOutcomeCounts()->with(['jobs'])->where('processed', 1)->get();
+        return self::withLoadedJobRollup(
+            $this->queue->query()->visibleTo()->with(['jobs'])->where('processed', 1)->get()
+        );
     }
 
     public function unprocessed(): Collection
     {
-        return $this->queue->query()->visibleTo()->withJobOutcomeCounts()->with(['jobs'])->where('processed', 0)->get();
+        return self::withLoadedJobRollup(
+            $this->queue->query()->visibleTo()->with(['jobs'])->where('processed', 0)->get()
+        );
     }
 
     public function reviewed(): Collection
     {
-        return $this->queue->query()->visibleTo()->withJobOutcomeCounts()->with(['jobs'])->where('reviewed', 1)->get();
+        return self::withLoadedJobRollup(
+            $this->queue->query()->visibleTo()->with(['jobs'])->where('reviewed', 1)->get()
+        );
     }
 
     public function unreviewed(): Collection
     {
-        return $this->queue->query()->visibleTo()->withJobOutcomeCounts()->with(['jobs'])->where('reviewed', 0)->where('processed', 1)->get();
+        return self::withLoadedJobRollup(
+            $this->queue->query()->visibleTo()->with(['jobs'])->where('reviewed', 0)->where('processed', 1)->get()
+        );
     }
 
     public function experimentUnreviewed($experiment): Collection
     {
-        return $this->queue->query()->visibleTo()->withJobOutcomeCounts()->with(['jobs'])
-            ->whereHas('crawler', function ($crawler) use ($experiment): void {
-                $crawler->where('experiment_id', $experiment->id);
-            })
-            ->where('reviewed', 0)
-            ->where('processed', 1)
-            ->get();
+        return self::withLoadedJobRollup(
+            $this->queue->query()->visibleTo()->with(['jobs'])
+                ->whereHas('crawler', function ($crawler) use ($experiment): void {
+                    $crawler->where('experiment_id', $experiment->id);
+                })
+                ->where('reviewed', 0)
+                ->where('processed', 1)
+                ->get()
+        );
     }
 
     public function experimentReviewed($experiment): Collection
     {
-        return $this->queue->query()->visibleTo()->withJobOutcomeCounts()->with(['jobs'])
-            ->whereHas('crawler', function ($crawler) use ($experiment): void {
-                $crawler->where('experiment_id', $experiment->id);
-            })
-            ->where('reviewed', 1)
-            ->get();
+        return self::withLoadedJobRollup(
+            $this->queue->query()->visibleTo()->with(['jobs'])
+                ->whereHas('crawler', function ($crawler) use ($experiment): void {
+                    $crawler->where('experiment_id', $experiment->id);
+                })
+                ->where('reviewed', 1)
+                ->get()
+        );
     }
 
     public function experimentUnprocessed($experiment): Collection
     {
-        return $this->queue->query()->visibleTo()->withJobOutcomeCounts()->with(['jobs'])
-            ->whereHas('crawler', function ($crawler) use ($experiment): void {
-                $crawler->where('experiment_id', $experiment->id);
-            })
-            ->where('processed', 0)
-            ->get();
+        return self::withLoadedJobRollup(
+            $this->queue->query()->visibleTo()->with(['jobs'])
+                ->whereHas('crawler', function ($crawler) use ($experiment): void {
+                    $crawler->where('experiment_id', $experiment->id);
+                })
+                ->where('processed', 0)
+                ->get()
+        );
     }
 
     public function experimentProcessed($experiment): Collection
     {
-        return $this->queue->query()->visibleTo()->withJobOutcomeCounts()->with(['jobs'])
-            ->whereHas('crawler', function ($crawler) use ($experiment): void {
-                $crawler->where('experiment_id', $experiment->id);
-            })
-            ->where('processed', 1)
-            ->get();
+        return self::withLoadedJobRollup(
+            $this->queue->query()->visibleTo()->with(['jobs'])
+                ->whereHas('crawler', function ($crawler) use ($experiment): void {
+                    $crawler->where('experiment_id', $experiment->id);
+                })
+                ->where('processed', 1)
+                ->get()
+        );
+    }
+
+    /**
+     * Put the job-outcome rollup on every queue in a list whose `jobs` relation
+     * is already loaded.
+     *
+     * @param  Collection<int, Queue> $queues
+     * @return Collection<int, Queue>
+     */
+    private static function withLoadedJobRollup(Collection $queues): Collection
+    {
+        return $queues->each(fn (Queue $queue) => $queue->rollupFromLoadedJobs());
     }
 }
