@@ -3,6 +3,7 @@
 namespace App\Modules\Job\Repository;
 
 use App\Modules\Job\Model\Job;
+use App\Modules\Queue\Query\StatusQuery;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -11,11 +12,26 @@ class JobRepository
 {
     public function __construct(protected Job $job) {}
 
-    public function all($queueId, ?int $perPage = null): LengthAwarePaginator
+    /**
+     * GET /jobs.
+     *
+     * ?sortBy=severity (and -severity) orders the page by what the status_code
+     * MEANS rather than by how it is spelled: the four spellings of failure in
+     * this table ('failure', 'failed', 'error', 'fatal') are one outcome and
+     * have to land together, which ordering the raw string cannot do.
+     *
+     * It replaces the default ordering rather than being appended to it --
+     * Spatie has already applied defaultSort('-id') by the time this runs, and
+     * "order by id desc, severity" sorts by severity not at all. Any other
+     * ?sortBy= value is ignored here exactly as it always was; ?sort= is the
+     * validated way to order this endpoint by anything else.
+     */
+    public function all($queueId, ?int $perPage = null, mixed $sortBy = null): LengthAwarePaginator
     {
         return Job::queryBuilder()
             ->visibleTo()
             ->when($queueId, fn (Builder $query) => $query->where('queue_id', $queueId))
+            ->when(StatusQuery::isSeveritySort($sortBy), fn (Builder $query) => StatusQuery::applySeveritySortBy($query, $sortBy, (new Job())->getTable()))
             ->with(['queue:id,name,crawler_id'])
             ->fastPaginate($perPage ?? request()->input('per_page', 15));
     }

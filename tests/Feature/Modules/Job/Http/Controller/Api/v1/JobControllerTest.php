@@ -29,6 +29,7 @@ class JobControllerTest extends TestCase
         $request = Mockery::mock(Request::class);
 
         $request->expects('input')->with('queue')->andReturns(1);
+        $request->expects('input')->with('sortBy')->andReturns(null);
 
         $controller = new JobController(new JobRepository(new Job()));
         $result = $controller->index($request);

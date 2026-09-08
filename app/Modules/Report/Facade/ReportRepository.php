@@ -8,9 +8,11 @@ use Illuminate\Http\Response;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Facade;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 /**
  * @method static Response|BinaryFileResponse|null download(Job $job)
+ * @method static null|StreamedResponse            getFile(Report $report)
  * @method static LengthAwarePaginator             all()
  * @method static Report                           save(array $data)
  * @method static bool                             delete(Report $report)

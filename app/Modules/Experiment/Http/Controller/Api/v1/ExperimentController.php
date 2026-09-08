@@ -8,7 +8,9 @@ use App\Modules\Experiment\Facade\ExperimentRepository;
 use App\Modules\Experiment\Http\Request\ExperimentStoreRequest;
 use App\Modules\Experiment\Http\Request\ExperimentUploadRequest;
 use App\Modules\Experiment\Model\Experiment;
+use App\Modules\Experiment\Service\ExperimentHealth;
 use Exception;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 use Illuminate\Http\Response;
@@ -48,9 +50,18 @@ class ExperimentController extends Controller
      *         @OA\Schema(type="integer", default=15, minimum=1, maximum=100)
      *     ),
      *
+     *     @OA\Parameter(
+     *         name="hours",
+     *         in="query",
+     *         description="Rolling window, in hours, behind runs_bad_count -- the same window and the same clamping as /crawlers, so a bot's latest_queues_* and its study's runs_bad_count always describe the same stretch of time. Clamped to 1..720 rather than rejected; anything non-numeric (or absent) means the 24-hour default.",
+     *         required=false,
+     *
+     *         @OA\Schema(type="integer", default=24, minimum=1, maximum=720)
+     *     ),
+     *
      *     @OA\Response(
      *         response=200,
-     *         description="Paginated list of experiments",
+     *         description="Paginated list of experiments, each carrying runs_bad_count",
      *
      *         @OA\JsonContent(
      *             type="object",
@@ -69,6 +80,7 @@ class ExperimentController extends Controller
      *                     @OA\Property(property="active", type="integer", example=1),
      *                     @OA\Property(property="user_id", type="integer", example=1),
      *                     @OA\Property(property="runner_user_id", type="integer", nullable=true, example=1, description="Runner account that executes this experiment; null = default runner"),
+     *                     @OA\Property(property="runs_bad_count", type="integer", description="Runs of this study, in the rolling window, that need a human: status_code in failure OR warning, legacy spellings ('failed', 'error', 'fatal', 'warn') included. This is the contract's is_bad predicate (docs/integration-contract.md 3.4) and never failure alone -- a run that completed having lost work is precisely the one nobody would otherwise look at. Use GET /experiments/{id}/health for the full breakdown.", example=3),
      *                     @OA\Property(property="created_at", type="string", format="date-time"),
      *                     @OA\Property(property="updated_at", type="string", format="date-time")
      *                 )
@@ -99,6 +111,10 @@ class ExperimentController extends Controller
      */
     public function index(): ResourceCollection
     {
+        // Before the query is built: runs_bad_count is a count subselect and
+        // the window is read while Eloquent assembles it.
+        Crawler::useLatestQueuesWindow(request()->query('hours'));
+
         $experiments = ExperimentRepository::getData();
 
         return ResourceCollection::make($experiments->paginate());
@@ -269,6 +285,15 @@ class ExperimentController extends Controller
      *         @OA\Schema(type="integer", example=1)
      *     ),
      *
+     *     @OA\Parameter(
+     *         name="hours",
+     *         in="query",
+     *         description="Rolling window, in hours, behind runs_bad_count. Clamped to 1..720; anything non-numeric (or absent) means the 24-hour default.",
+     *         required=false,
+     *
+     *         @OA\Schema(type="integer", default=24, minimum=1, maximum=720)
+     *     ),
+     *
      *     @OA\Response(
      *         response=200,
      *         description="Experiment details",
@@ -286,6 +311,7 @@ class ExperimentController extends Controller
      *                 @OA\Property(property="active", type="integer", example=1),
      *                 @OA\Property(property="user_id", type="integer", example=1),
      *                 @OA\Property(property="runner_user_id", type="integer", nullable=true, example=1, description="Runner account that executes this experiment; null = default runner"),
+     *                 @OA\Property(property="runs_bad_count", type="integer", description="Runs of this study, in the rolling window, whose status_code is failure OR warning (legacy spellings included). The contract's is_bad predicate; never failure alone.", example=3),
      *                 @OA\Property(property="created_at", type="string", format="date-time"),
      *                 @OA\Property(property="updated_at", type="string", format="date-time"),
      *                 @OA\Property(
@@ -307,6 +333,11 @@ class ExperimentController extends Controller
     {
         $this->authorize('view', $experiment);
 
+        // Route-model binding resolved the row before ?hours= could be read;
+        // runs_bad_count is loaded afterwards (getById), so setting the window
+        // here is enough -- there is nothing stale to discard.
+        Crawler::useLatestQueuesWindow(request()->query('hours'));
+
         return JsonResource::make(ExperimentRepository::getById($experiment));
     }
 
@@ -315,6 +346,103 @@ class ExperimentController extends Controller
         $this->authorize('view', $experiment);
 
         return JsonResource::make($experiment);
+    }
+
+    /**
+     * @OA\Get(
+     *     path="/experiments/{experiment}/health",
+     *     summary="Health of one experiment over a rolling window",
+     *     description="Triage above the bot. An experiment carries no status of its own -- no column, no aggregate -- so answering 'which of my studies needs attention?' used to mean paging through every crawler (15 per page) and summing the rollups client-side. This is that answer in one request and a constant number of grouped queries.
+     *
+     * Three things worth knowing before reading the numbers:
+     *
+     * - **Every bucket is alias-aware.** status_code is not a normalised column and the API deliberately never coerces on write, so the same outcome is spelled several ways in one table: 277 queue rows and 256 job rows say failed where the runner now says failure, and skpped is a runner typo that persists. Rows are grouped by the raw value and folded through the alias table, so failure counts all four spellings.
+     * - **unknown is a reported bucket, never folded into success.** A NULL status_code, an empty one, and a spelling nobody has an alias for all land there. The six buckets always sum to total.
+     * - **bad_runs / bad_jobs are failure OR warning** (docs/integration-contract.md 3.4), never failure alone. warning means the run or job finished having lost something the experiment cares about -- the state nobody would otherwise look at, and the reason the 2026-08 overhaul exists.
+     *
+     * treatment_lost_jobs and degraded_jobs count VERDICTS off three-state columns (true / false / NULL = unknown). Only true is counted, so 0 means 'nothing here is KNOWN to have lost its treatment' -- a study whose jobs all predate the runner deploy reports 0 while knowing nothing. See docs/integration-contract.md 7.3.",
+     *     operationId="getExperimentHealth",
+     *     tags={"Experiments"},
+     *     security={{"bearerAuth": {}}},
+     *
+     *     @OA\Parameter(
+     *         name="experiment",
+     *         in="path",
+     *         description="Experiment ID",
+     *         required=true,
+     *
+     *         @OA\Schema(type="integer", example=30)
+     *     ),
+     *
+     *     @OA\Parameter(
+     *         name="hours",
+     *         in="query",
+     *         description="Size of the rolling window, counted back from now over the runs' started_at. Clamped to 1..720 rather than rejected -- this answers a dashboard, and a 400 because someone typed hours=0 would be worse than the one-hour window they nearly asked for. Anything non-numeric (or absent) means 24. The window actually used comes back as window_hours.",
+     *         required=false,
+     *
+     *         @OA\Schema(type="integer", default=24, minimum=1, maximum=720)
+     *     ),
+     *
+     *     @OA\Response(
+     *         response=200,
+     *         description="Health of the experiment over the window",
+     *
+     *         @OA\JsonContent(
+     *             type="object",
+     *
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="object",
+     *                 @OA\Property(property="experiment_id", type="integer", example=30),
+     *                 @OA\Property(property="window_hours", type="integer", description="The window actually used, after clamping.", example=24),
+     *                 @OA\Property(property="bots", type="integer", description="Crawlers configured on this experiment. Deliberately NOT window-scoped: it is the denominator that makes the run counts readable.", example=12),
+     *                 @OA\Property(
+     *                     property="runs",
+     *                     type="object",
+     *                     description="Runs that STARTED inside the window, bucketed by status_code. started_at rather than created_at, because runs are composed ahead of time -- a queue exists, with a future start_at and no status_code, long before it runs.",
+     *                     @OA\Property(property="total", type="integer", description="The sum of the six buckets below, never counted separately.", example=20),
+     *                     @OA\Property(property="running", type="integer", example=1),
+     *                     @OA\Property(property="success", type="integer", example=12),
+     *                     @OA\Property(property="warning", type="integer", description="Completed, but lost work along the way.", example=3),
+     *                     @OA\Property(property="failure", type="integer", example=2),
+     *                     @OA\Property(property="skipped", type="integer", example=1),
+     *                     @OA\Property(property="unknown", type="integer", description="Anything that normalises to none of the five: NULL, empty, or an unrecognised spelling. Reported, never counted as success.", example=1)
+     *                 ),
+     *                 @OA\Property(
+     *                     property="jobs",
+     *                     type="object",
+     *                     description="Jobs belonging to those runs, bucketed the same way. Scoped through the run's start, not the job's own, so runs and jobs describe the same body of work.",
+     *                     @OA\Property(property="total", type="integer", example=812),
+     *                     @OA\Property(property="running", type="integer", example=4),
+     *                     @OA\Property(property="success", type="integer", example=701),
+     *                     @OA\Property(property="warning", type="integer", example=25),
+     *                     @OA\Property(property="failure", type="integer", example=12),
+     *                     @OA\Property(property="skipped", type="integer", example=64),
+     *                     @OA\Property(property="unknown", type="integer", example=6)
+     *                 ),
+     *                 @OA\Property(property="bad_runs", type="integer", description="runs.failure + runs.warning.", example=5),
+     *                 @OA\Property(property="bad_jobs", type="integer", description="jobs.failure + jobs.warning.", example=37),
+     *                 @OA\Property(property="treatment_lost_jobs", type="integer", description="Jobs whose decision_treatment_lost is true: the bot was configured to be treated and produced control-arm data, so that session is scientifically void. The alarm. Such a job is routinely status_code success -- nothing about it failed.", example=4),
+     *                 @OA\Property(property="degraded_jobs", type="integer", description="Jobs whose decision_degraded is true: a filter the crawler REQUESTED did not apply. 'A human should look at this decision.'", example=9),
+     *                 @OA\Property(property="last_finished_at", type="string", format="date-time", nullable=true, description="When this study last finished a run, ACROSS ALL TIME -- the one field here that is deliberately not window-scoped, because it is what makes an empty window readable: 'last finished 5 days ago' and 'never ran' are different situations. null means no run has ever finished.", example="2026-09-07T08:12:00.000000Z")
+     *             )
+     *         )
+     *     ),
+     *
+     *     @OA\Response(response=401, description="Unauthorized"),
+     *     @OA\Response(response=403, description="Not your experiment"),
+     *     @OA\Response(response=404, description="Experiment not found")
+     * )
+     */
+    public function health(Experiment $experiment, ExperimentHealth $health): JsonResponse
+    {
+        // The same policy as show(): if you may see the study, you may see what
+        // its runs came to.
+        $this->authorize('view', $experiment);
+
+        return response()->json([
+            'data' => $health->for($experiment, request()->query('hours')),
+        ]);
     }
 
     /**

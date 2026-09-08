@@ -52,6 +52,16 @@ abstract class TestCase extends BaseTestCase
         Event::fake(ModelUpdateEvent::class);
         $this->withoutExceptionHandling();
 
+        // phpunit.xml keeps static properties across tests (backupStaticProperties
+        // is false), and Crawler carries one: the ?hours= rollup window. A test
+        // that widened it would otherwise widen it for every test after it.
+        Crawler::resetLatestQueuesWindow();
+
+        // Job carries one too: the memoised "does jobs.decision_* exist?"
+        // answer behind every rollup guard. A test that drops those columns
+        // would otherwise leave every test after it believing they are gone.
+        Job::forgetDecisionColumnSupport();
+
         $this->user = User::factory()->create();
 
         $this->proxy = Proxy::factory()->create(['user_id' => $this->user->id]);

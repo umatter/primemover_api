@@ -52,6 +52,10 @@ Route::prefix('v1')->middleware('throttleIp:1000,1')
                 ->controller(ExperimentController::class)
                 ->group(function (): void {
                     Route::get('experiments-list', 'all');
+                    // Triage above the bot: the six status buckets over a
+                    // study's runs and jobs in a rolling window. Three
+                    // segments, so it cannot collide with experiments/{id}.
+                    Route::get('{experiment}/health', 'health');
                     Route::delete('{experiment}/destroy', 'forceDelete');
                     Route::post('upload', 'upload');
                     Route::middleware(['formdata'])->post('{experiment}/upload', 'upload');
@@ -88,6 +92,11 @@ Route::prefix('v1')->middleware('throttleIp:1000,1')
                     Route::get('crawlers-protected', 'index');
                     Route::post('crawlers/{crawler}/upload', 'upload');
                 });
+
+            // Job
+            // Before the apiResource block only for readability -- jobs/{job}/decision
+            // has three segments and cannot collide with jobs/{job}.
+            Route::get('jobs/{job}/decision', [JobController::class, 'decision']);
 
             // Files
             Route::get('file/{report}', [ReportController::class, 'getFile']);

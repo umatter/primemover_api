@@ -52,16 +52,13 @@ class QueueRepositoryTest extends TestCase
             // The list query carries the job-outcome rollup (withJobOutcomeCounts),
             // and those are count subselects, not columns -- assertDatabaseHas
             // would look for a jobs_warning_count column and never find one.
-            unset(
-                $queue->crawler,
-                $queue->created_at,
-                $queue->updated_at,
-                $queue->jobs_count,
-                $queue->jobs_succeeded_count,
-                $queue->jobs_warning_count,
-                $queue->jobs_failed_count,
-                $queue->jobs_skipped_count,
-            );
+            // Stripped via the constant rather than by name, so a rollup added
+            // later does not fail here for the wrong reason.
+            unset($queue->crawler, $queue->created_at, $queue->updated_at);
+
+            foreach (Queue::JOB_OUTCOME_COUNT_ATTRIBUTES as $rollup) {
+                unset($queue->{$rollup});
+            }
 
             $this->assertInstanceOf(Queue::class, $queue);
             $this->assertDatabaseHas('queues', $queue->toArray());

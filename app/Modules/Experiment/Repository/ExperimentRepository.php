@@ -36,13 +36,18 @@ class ExperimentRepository
 
     public function getById($experiment): Experiment
     {
-        return $experiment->load([
-            'crawlers.agent',
-            'crawlers.proxy',
-            'crawlers.configuration',
-            'crawlers.configuration.preferences',
-            'preferences',
-        ]);
+        // loadRunsBadCount() rather than an accessor: route-model binding has
+        // already resolved the row, so the rollup the list gets as a subselect
+        // has to be fetched here -- one extra query, not one per crawler.
+        return $experiment
+            ->loadRunsBadCount()
+            ->load([
+                'crawlers.agent',
+                'crawlers.proxy',
+                'crawlers.configuration',
+                'crawlers.configuration.preferences',
+                'preferences',
+            ]);
     }
 
     public function save($data): Experiment|Model

@@ -104,6 +104,35 @@ class RunnerJobController extends Controller
      *                 nullable=true,
      *                 description="Job execution results",
      *                 example={"pages_visited": 5, "data_collected": 150}
+     *             ),
+     *             @OA\Property(
+     *                 property="decision_degraded",
+     *                 type="boolean",
+     *                 nullable=true,
+     *                 description="The decision function's 'degraded': a filter the crawler REQUESTED failed to apply, or nothing could be selected. Omit it (NULL) when there is no verdict -- NULL means unknown, never clean and never false.",
+     *                 example=false
+     *             ),
+     *             @OA\Property(
+     *                 property="decision_treatment_lost",
+     *                 type="boolean",
+     *                 nullable=true,
+     *                 description="The decision function's 'treatment_lost': degraded AND nothing requested applied, so a bot configured to be treated produced control-arm data. The alarm. Always false for a control crawler.",
+     *                 example=false
+     *             ),
+     *             @OA\Property(
+     *                 property="decision_selection_mode",
+     *                 type="string",
+     *                 maxLength=32,
+     *                 nullable=true,
+     *                 description="'llm' or 'random'. A NEUTRAL DESCRIPTION of how the video was chosen; 'random' is the correct answer for a control crawler and is not an error. Never branch on it alone. Not validated against a list -- an unknown mode is stored as sent.",
+     *                 example="random"
+     *             ),
+     *             @OA\Property(
+     *                 property="decision_report",
+     *                 type="object",
+     *                 nullable=true,
+     *                 description="{filters, llm, warnings, applied, requested}. filters[x] == 'skipped' means NOT REQUESTED and is never a failure. Shrunk member by member rather than rejected if it exceeds 60000 bytes encoded, and marked _truncated when that happens.",
+     *                 example={"filters": {"children_entertainment": "ok", "political": "skipped"}, "llm": {"available": true, "error_type": null, "error": null}, "warnings": {}}
      *             )
      *         )
      *     ),
@@ -127,6 +156,10 @@ class RunnerJobController extends Controller
      *                 @OA\Property(property="finished_at", type="string", format="date-time", nullable=true),
      *                 @OA\Property(property="captcha_found", type="boolean", nullable=true),
      *                 @OA\Property(property="captcha_solved", type="boolean", nullable=true),
+     *                 @OA\Property(property="decision_degraded", type="boolean", nullable=true),
+     *                 @OA\Property(property="decision_treatment_lost", type="boolean", nullable=true),
+     *                 @OA\Property(property="decision_selection_mode", type="string", nullable=true, example="random"),
+     *                 @OA\Property(property="decision_report", type="object", nullable=true),
      *                 @OA\Property(property="updated_at", type="string", format="date-time")
      *             )
      *         )

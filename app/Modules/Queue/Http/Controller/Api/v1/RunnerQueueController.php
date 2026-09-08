@@ -48,8 +48,8 @@ class RunnerQueueController extends Controller
      *             @OA\Property(
      *                 property="status_code",
      *                 type="string",
-     *                 enum={"running", "success", "failure", "skipped"},
-     *                 description="Current run status. A queue has no 'warning' state -- that one is job-only. Not validated against this list: an unknown code is stored as sent rather than rejected, so a new runner state can never leave a run stuck mid-flight.",
+     *                 enum={"running", "success", "warning", "failure", "skipped"},
+     *                 description="Current run status. 'warning' is terminal and has been written by the runner since 2026-08-28: the run completed but lost jobs along the way (JoblistState DONE_JOBSWARNING), with the counts in status_message -- 'failure' stays reserved for a run that produced nothing usable. Consumers must not read 'warning' as success; 'needs attention' is failure OR warning. Not validated against this list: an unknown code is stored as sent rather than rejected, so a new runner state can never leave a run stuck mid-flight.",
      *                 example="running"
      *             ),
      *             @OA\Property(
@@ -234,9 +234,13 @@ class RunnerQueueController extends Controller
      * than the request body, so a write that throws no longer leaves a log line
      * announcing a failure the database never recorded.
      *
-     * A queue is never 'warning' under the current contract (that state is
-     * job-only), but it is handled here so a future runner that reports one
-     * does not go silently unlogged.
+     * Both bad outcomes are logged, because both are bad: 'warning' is a real,
+     * terminal queue state that the runner has written since 2026-08-28 (the
+     * run completed but lost jobs along the way), and 73 rows on the production
+     * database already carried it while this comment still claimed the state
+     * was job-only. "Needs attention" is failure OR warning, never failure
+     * alone -- a run that finished degraded is precisely the one nobody would
+     * otherwise look at.
      *
      * Warning, not error: a bot session failing is not a fault in this API, and
      * logging it at error level makes the API's error rate track the fleet's
