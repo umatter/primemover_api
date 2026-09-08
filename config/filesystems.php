@@ -91,7 +91,17 @@ return [
             'endpoint' => env('AWS_ENDPOINT_RUNNER', env('AWS_ENDPOINT')),
             'url' => env('AWS_URL'),
             'mock' => env('AWS_MOCK', false),
-            'use_path_style_endpoint' => env('AWS_USE_PATH_STYLE_ENDPOINT', true),
+            /*
+             * The one key that had no _RUNNER override, and the omission was not
+             * free: MinIO needs path-style, the plain s3 disk above reads the
+             * same variable, so switching it on for this disk on ex63 meant
+             * flipping a flag belonging to another disk too. Harmless there --
+             * that disk has an ARN where a bucket name should be, no endpoint
+             * and no AWS account behind it -- but "harmless on the one host we
+             * checked" is not a reason for a disk to reach into a neighbour's
+             * configuration.
+             */
+            'use_path_style_endpoint' => env('AWS_USE_PATH_STYLE_ENDPOINT_RUNNER', env('AWS_USE_PATH_STYLE_ENDPOINT', true)),
         ],
     ],
 
