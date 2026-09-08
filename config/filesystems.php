@@ -63,12 +63,32 @@ return [
             'mock' => env('AWS_MOCK', false),
             'use_path_style_endpoint' => env('AWS_USE_PATH_STYLE_ENDPOINT', true),
         ],
+        /*
+         * The runner's job-data store. Despite the AWS_ naming this is the
+         * LOCAL MinIO at s3.qamelab.org -- the system of record for every HAR,
+         * page source and lambda payload the runner captures. No AWS account
+         * is involved (orchestrator CLAUDE.md, "Where job data goes").
+         *
+         * 'endpoint' is what makes that true. Without it the S3 client talks
+         * to real AWS, so every read fails however the credentials are set.
+         * This disk had neither an endpoint nor a bucket until 2026-09-08,
+         * which is why GET /file/{report} and GET /jobs/{id}/decision could
+         * not serve a single object in production while their tests passed:
+         * the tests use Storage::fake('s3runner') and so never touch a real
+         * store. A faked disk cannot tell you the real one is unconfigured.
+         *
+         * The _RUNNER-suffixed keys fall back to the plain ones so an existing
+         * deployment keeps working, while allowing this disk its own scoped,
+         * read-only MinIO credentials -- which is what it should have, since
+         * it only ever reads.
+         */
         's3runner' => [
             'driver' => 's3',
-            'key' => env('AWS_ACCESS_KEY_ID'),
-            'secret' => env('AWS_SECRET_ACCESS_KEY'),
-            'region' => env('AWS_DEFAULT_REGION'),
+            'key' => env('AWS_ACCESS_KEY_ID_RUNNER', env('AWS_ACCESS_KEY_ID')),
+            'secret' => env('AWS_SECRET_ACCESS_KEY_RUNNER', env('AWS_SECRET_ACCESS_KEY')),
+            'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
             'bucket' => env('AWS_BUCKET_RUNNER'),
+            'endpoint' => env('AWS_ENDPOINT_RUNNER', env('AWS_ENDPOINT')),
             'url' => env('AWS_URL'),
             'mock' => env('AWS_MOCK', false),
             'use_path_style_endpoint' => env('AWS_USE_PATH_STYLE_ENDPOINT', true),
