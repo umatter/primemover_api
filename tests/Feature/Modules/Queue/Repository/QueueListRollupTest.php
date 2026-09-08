@@ -128,6 +128,33 @@ class QueueListRollupTest extends TestCase
     }
 
     /**
+     * A page needs a defined order or it is not a page.
+     *
+     * Without an ORDER BY, MySQL is free to return a row on page one and again
+     * on page two, or on neither, and nothing downstream can tell that it
+     * happened. -id, the same default GET /queues has always had.
+     *
+     * @covers ::processed
+     */
+    public function test_the_lists_come_back_newest_first(): void
+    {
+        $ids = [];
+
+        for ($i = 0; $i < 3; $i++) {
+            $ids[] = $this->aRun(['processed' => 1])->id;
+        }
+
+        $page = $this->actingAs($this->user)
+            ->getJson('/api/v1/queues-processed')
+            ->assertOk()
+            ->json('data');
+
+        $served = array_values(array_intersect(array_column($page, 'id'), $ids));
+
+        $this->assertSame(array_reverse($ids), $served, 'the list is not ordered newest first');
+    }
+
+    /**
      * The other half: identical numbers, not approximately identical.
      *
      * Compared row for row against the rollup GET /queues serves, so the two

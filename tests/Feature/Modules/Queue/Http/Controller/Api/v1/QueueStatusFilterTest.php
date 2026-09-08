@@ -503,11 +503,9 @@ class QueueStatusFilterTest extends TestCase
             "a 30-row queues-processed page cost {$queries} queries; a per-row accessor would add 210"
         );
 
-        // The list is ordered -id, so the run created last is the first row of
-        // the first page. All 30 carry the same two jobs; the assertion is that
-        // the rollup survived the trip, not which run it landed on.
-        $this->assertSame($last->id, $rows->getCollection()->first()->id);
-        $this->assertSame(2, $rows->getCollection()->first()->jobs_count);
+        // The list is ordered -id, so the run created last is on the first
+        // page whatever else the fixture put in the table.
+        $this->assertSame(2, $rows->getCollection()->firstWhere('id', $last->id)->jobs_count);
     }
 
     /**
