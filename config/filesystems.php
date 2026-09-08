@@ -101,10 +101,7 @@ return [
              * checked" is not a reason for a disk to reach into a neighbour's
              * configuration.
              */
-            'use_path_style_endpoint' => env(
-                'AWS_USE_PATH_STYLE_ENDPOINT_RUNNER',
-                env('AWS_USE_PATH_STYLE_ENDPOINT', true)
-            ),
+            'use_path_style_endpoint' => env('AWS_USE_PATH_STYLE_ENDPOINT_RUNNER', env('AWS_USE_PATH_STYLE_ENDPOINT', true)),
         ],
     ],
 
