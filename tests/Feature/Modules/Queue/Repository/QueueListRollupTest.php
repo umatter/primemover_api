@@ -10,20 +10,21 @@ use Illuminate\Support\Facades\Schema;
 use Tests\TestCase;
 
 /**
- * The job-outcome rollup on the eight unpaginated queues-* lists.
+ * The job-outcome rollup on the eight queues-* lists.
  *
- * Those endpoints eager-load `jobs` in full and serialise the whole relation,
- * so the seven rollup numbers are already in PHP memory by the time anything
- * asks for them. Asking the database to recount them costs seven correlated
- * count subselects per row for nothing: on the rehearsal copy of production
- * (735 queues / 31,574 jobs) the subselects took 87 ms while fetching every one
- * of those 31,574 job rows took 2 ms.
+ * These lists used to eager-load `jobs` in full and count the rollup off the
+ * loaded relation, on the reasoning that the numbers are free once the jobs are
+ * in memory. The reasoning was sound; the premise was the bug. Hydrating every
+ * job of every run peaked at 460.5 MB against a 128 MB limit on production
+ * (735 runs / 31,574 jobs), so the three top-level lists answered 500 and
+ * served no rollup at all.
  *
- * Two things therefore have to hold together, and neither is worth much alone:
- * the lists must not emit the subselects, and the numbers they serve must be
- * the same numbers the SQL rollup would have produced -- including the legacy
- * spellings ('failed', 'skpped') that a raw status comparison splits away from
- * their canonical twins, and including the three-state decision verdicts, where
+ * They are now paginated, count in SQL over the page, and load no jobs -- the
+ * shape GET /queues always had. Three things therefore have to hold together:
+ * the lists must not hydrate the jobs they are listing, they must not fan the
+ * counting out into a query per row, and the numbers must be right -- including
+ * the legacy spellings ('failed', 'skpped') that a raw status comparison splits
+ * away from their canonical twins, and the three-state decision verdicts, where
  * NULL is unknown and is counted in neither direction.
  *
  * @internal
@@ -33,47 +34,83 @@ use Tests\TestCase;
 class QueueListRollupTest extends TestCase
 {
     /**
-     * The finding itself: the lists must not ask SQL to recount jobs they have
-     * just fetched.
+     * The finding itself: a list endpoint must not fetch the jobs it is
+     * listing.
      *
-     * Asserted on the compiled SQL rather than on a wall-clock number, because
-     * a query-count assertion cannot see this -- the subselects ride inside the
-     * ONE list query, so adding or removing them does not change how many
-     * statements run, only how much work each does.
+     * Asserted on the compiled SQL, because this is invisible to a query count
+     * -- the eager load is ONE extra statement whether it returns two job rows
+     * or 31,574, and it was the row count, not the statement count, that
+     * exhausted the memory limit.
      *
      * @covers ::processed
      */
-    public function test_the_list_endpoints_do_not_recount_jobs_they_have_already_fetched(): void
+    public function test_the_list_endpoints_do_not_hydrate_the_jobs_they_are_listing(): void
     {
         $run = $this->aRun(['processed' => 1, 'reviewed' => 1]);
         $this->jobFor($run, Queue::STATUS_SUCCESS);
 
         foreach ($this->listUrls() as $url) {
-            $statements = $this->statementsFor($url);
-
-            foreach (Queue::JOB_OUTCOME_COUNT_ATTRIBUTES as $rollup) {
-                foreach ($statements as $sql) {
-                    $this->assertStringNotContainsString(
-                        $rollup,
-                        $sql,
-                        "{$url} still asks the database for {$rollup}, over jobs it has already loaded"
-                    );
-                }
+            foreach ($this->statementsFor($url) as $sql) {
+                $this->assertStringNotContainsString(
+                    'from `jobs`',
+                    $sql,
+                    "{$url} still loads job rows; the seven counts are what a list needs, not the jobs"
+                );
             }
+        }
+    }
+
+    /**
+     * ...and does not serve them either. The rollup replaced the relation; it
+     * did not join it.
+     *
+     * @covers ::processed
+     */
+    public function test_the_list_endpoints_do_not_serve_a_nested_jobs_array(): void
+    {
+        $run = $this->aRun(['processed' => 1, 'reviewed' => 1]);
+        $this->jobFor($run, Queue::STATUS_SUCCESS);
+
+        foreach ($this->listUrls() as $url) {
+            foreach ($this->actingAs($this->user)->getJson($url)->assertOk()->json('data') as $row) {
+                $this->assertArrayNotHasKey('jobs', $row, $url);
+                $this->assertArrayHasKey('jobs_count', $row, $url);
+            }
+        }
+    }
+
+    /**
+     * And they are pages, so the peak cost is set by per_page rather than by
+     * how much history the installation has.
+     *
+     * @covers ::processed
+     * @covers ::experimentProcessed
+     */
+    public function test_the_list_endpoints_are_paginated(): void
+    {
+        for ($i = 0; $i < 4; $i++) {
+            $this->jobFor($this->aRun(['processed' => 1, 'reviewed' => 1]), Queue::STATUS_SUCCESS);
+        }
+
+        foreach ($this->listUrls() as $url) {
+            $body = $this->actingAs($this->user)->getJson($url.'?per_page=2')->assertOk()->json();
+
+            $this->assertArrayHasKey('meta', $body, "{$url} is not paginated");
+            $this->assertSame(2, $body['meta']['per_page'], "{$url} ignores per_page");
+            $this->assertLessThanOrEqual(2, count($body['data']), "{$url} served more than one page");
         }
     }
 
     /**
      * ...and does not pay for that by asking one query per row instead.
      *
-     * The failure this guards is the obvious wrong fix: dropping the subselects
-     * and letting an accessor or a lazy loadCount() fire per queue. These lists
-     * are unpaginated, so on production sizes that would be 735 extra queries
-     * where there were none.
+     * The failure this guards is the obvious wrong fix: dropping the eager load
+     * and letting an accessor or a lazy loadCount() fire per queue. Pagination
+     * caps how bad that can get, which is exactly why it would survive review.
      *
      * @covers ::processed
      */
-    public function test_the_php_rollup_costs_no_queries_at_all(): void
+    public function test_the_rollup_costs_no_query_per_row(): void
     {
         for ($i = 0; $i < 30; $i++) {
             $run = $this->aRun(['processed' => 1]);
@@ -91,15 +128,43 @@ class QueueListRollupTest extends TestCase
     }
 
     /**
-     * The other half: identical numbers, not approximately identical.
+     * A page needs a defined order or it is not a page.
      *
-     * Compared row for row against the SQL rollup the paginated GET /queues
-     * still uses, so the two surfaces can never disagree about what
-     * jobs_failed_count means.
+     * Without an ORDER BY, MySQL is free to return a row on page one and again
+     * on page two, or on neither, and nothing downstream can tell that it
+     * happened. -id, the same default GET /queues has always had.
      *
      * @covers ::processed
      */
-    public function test_the_php_rollup_matches_the_sql_rollup_row_for_row(): void
+    public function test_the_lists_come_back_newest_first(): void
+    {
+        $ids = [];
+
+        for ($i = 0; $i < 3; $i++) {
+            $ids[] = $this->aRun(['processed' => 1])->id;
+        }
+
+        $page = $this->actingAs($this->user)
+            ->getJson('/api/v1/queues-processed')
+            ->assertOk()
+            ->json('data');
+
+        $served = array_values(array_intersect(array_column($page, 'id'), $ids));
+
+        $this->assertSame(array_reverse($ids), $served, 'the list is not ordered newest first');
+    }
+
+    /**
+     * The other half: identical numbers, not approximately identical.
+     *
+     * Compared row for row against the rollup GET /queues serves, so the two
+     * surfaces can never disagree about what jobs_failed_count means. They
+     * share an implementation now, which is the point -- this pins that they
+     * still do, and that the alias table is inside it.
+     *
+     * @covers ::processed
+     */
+    public function test_the_lists_serve_the_same_numbers_as_the_sql_rollup(): void
     {
         $run = $this->aRun(['processed' => 1]);
 
@@ -121,25 +186,25 @@ class QueueListRollupTest extends TestCase
         $this->jobFor($run, Queue::STATUS_SUCCESS, ['decision_degraded' => true, 'decision_treatment_lost' => false]);
 
         $fromSql = Queue::query()->withJobOutcomeCounts()->findOrFail($run->id);
-        $fromPhp = $this->listed($run->id);
+        $fromList = $this->listed($run->id);
 
         foreach (Queue::JOB_OUTCOME_COUNT_ATTRIBUTES as $rollup) {
             $this->assertSame(
                 (int) $fromSql->getAttribute($rollup),
-                (int) $fromPhp->getAttribute($rollup),
-                "the in-memory rollup and the SQL rollup disagree about {$rollup}"
+                (int) $fromList->getAttribute($rollup),
+                "the list rollup and the SQL rollup disagree about {$rollup}"
             );
         }
 
         // Spelled out, so a change that broke both halves the same way could
         // not pass the comparison above.
-        $this->assertSame(11, $fromPhp->jobs_count);
-        $this->assertSame(4, $fromPhp->jobs_succeeded_count, "'done' is a success, and so are the two decision jobs");
-        $this->assertSame(1, $fromPhp->jobs_warning_count);
-        $this->assertSame(2, $fromPhp->jobs_failed_count, "'failed' and 'failure' are one outcome");
-        $this->assertSame(2, $fromPhp->jobs_skipped_count, "'skpped' is the runner's typo for skipped");
-        $this->assertSame(2, $fromPhp->jobs_degraded_count);
-        $this->assertSame(1, $fromPhp->jobs_treatment_lost_count);
+        $this->assertSame(11, $fromList->jobs_count);
+        $this->assertSame(4, $fromList->jobs_succeeded_count, "'done' is a success, and so are the two decision jobs");
+        $this->assertSame(1, $fromList->jobs_warning_count);
+        $this->assertSame(2, $fromList->jobs_failed_count, "'failed' and 'failure' are one outcome");
+        $this->assertSame(2, $fromList->jobs_skipped_count, "'skpped' is the runner's typo for skipped");
+        $this->assertSame(2, $fromList->jobs_degraded_count);
+        $this->assertSame(1, $fromList->jobs_treatment_lost_count);
     }
 
     /**
@@ -209,12 +274,12 @@ class QueueListRollupTest extends TestCase
     }
 
     /**
-     * The rollup rides on the model like an attribute but is not a column, and
-     * withCount() delivers it in $original where it is never dirty. The PHP
-     * twin has to land the same way, or saving a queue that came off one of
-     * these lists would try to write a jobs_count column.
+     * The rollup rides on the model like an attribute but is not a column, so
+     * withCount() delivers it in $original where it is never dirty. Saving a
+     * queue that came off one of these lists must therefore not try to write a
+     * jobs_count column.
      *
-     * @covers \App\Modules\Queue\Model\Queue::rollupFromLoadedJobs
+     * @covers ::processed
      */
     public function test_the_rollup_does_not_make_the_queue_dirty(): void
     {
@@ -228,24 +293,6 @@ class QueueListRollupTest extends TestCase
         $listed->update(['description' => 'still saveable']);
 
         $this->assertDatabaseHas('queues', ['id' => $run->id, 'description' => 'still saveable']);
-    }
-
-    /**
-     * A caller that forgets the eager load gets the right answers from SQL
-     * rather than a row of zeros.
-     *
-     * @covers \App\Modules\Queue\Model\Queue::rollupFromLoadedJobs
-     */
-    public function test_it_falls_back_to_the_subselects_when_the_jobs_are_not_loaded(): void
-    {
-        $run = $this->aRun(['processed' => 1]);
-        $this->jobFor($run, Queue::STATUS_FAILURE);
-        $this->jobFor($run, 'failed');
-
-        $bare = Queue::query()->findOrFail($run->id);
-        $this->assertFalse($bare->relationLoaded('jobs'));
-
-        $this->assertSame(2, $bare->rollupFromLoadedJobs()->jobs_failed_count);
     }
 
     /**
@@ -341,11 +388,11 @@ class QueueListRollupTest extends TestCase
     }
 
     /**
-     * The run as one of the unpaginated lists returns it.
+     * The run as one of the paginated lists returns it.
      */
     private function listed(int $id): Queue
     {
-        $listed = (new QueueRepository(new Queue()))->processed()->firstWhere('id', $id);
+        $listed = (new QueueRepository(new Queue()))->processed()->getCollection()->firstWhere('id', $id);
 
         $this->assertNotNull($listed, 'the run was not in the processed list');
 

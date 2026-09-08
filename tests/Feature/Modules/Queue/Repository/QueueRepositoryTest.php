@@ -196,7 +196,7 @@ class QueueRepositoryTest extends TestCase
         $service = new QueueRepository(new Queue());
         $result = $service->processed();
 
-        $this->assertInstanceOF(Collection::class, $result);
+        $this->assertInstanceOf(LengthAwarePaginator::class, $result);
 
         foreach ($result as $queue) {
             $this->assertInstanceOf(Queue::class, $queue);
@@ -212,7 +212,7 @@ class QueueRepositoryTest extends TestCase
         $service = new QueueRepository(new Queue());
         $result = $service->unprocessed();
 
-        $this->assertInstanceOf(Collection::class, $result);
+        $this->assertInstanceOf(LengthAwarePaginator::class, $result);
 
         foreach ($result as $queue) {
             $this->assertInstanceOf(Queue::class, $queue);
@@ -228,7 +228,7 @@ class QueueRepositoryTest extends TestCase
         $service = new QueueRepository(new Queue());
         $result = $service->reviewed();
 
-        $this->assertInstanceOf(Collection::class, $result);
+        $this->assertInstanceOf(LengthAwarePaginator::class, $result);
 
         foreach ($result as $queue) {
             $this->assertInstanceOf(Queue::class, $queue);
@@ -244,7 +244,7 @@ class QueueRepositoryTest extends TestCase
         $service = new QueueRepository(new Queue());
         $result = $service->unreviewed();
 
-        $this->assertInstanceOf(Collection::class, $result);
+        $this->assertInstanceOf(LengthAwarePaginator::class, $result);
 
         foreach ($result as $queue) {
             $this->assertInstanceOf(Queue::class, $queue);
@@ -262,7 +262,7 @@ class QueueRepositoryTest extends TestCase
         $service = new QueueRepository(new Queue());
         $result = $service->experimentUnreviewed($experiment);
 
-        $this->assertInstanceOf(Collection::class, $result);
+        $this->assertInstanceOf(LengthAwarePaginator::class, $result);
 
         foreach ($result as $queue) {
             $this->assertInstanceOf(Queue::class, $queue);
@@ -281,7 +281,7 @@ class QueueRepositoryTest extends TestCase
         $service = new QueueRepository(new Queue());
         $result = $service->experimentReviewed($experiment);
 
-        $this->assertInstanceOf(Collection::class, $result);
+        $this->assertInstanceOf(LengthAwarePaginator::class, $result);
 
         foreach ($result as $queue) {
             $this->assertInstanceOf(Queue::class, $queue);
@@ -299,7 +299,7 @@ class QueueRepositoryTest extends TestCase
         $service = new QueueRepository(new Queue());
         $result = $service->experimentUnprocessed($experiment);
 
-        $this->assertInstanceOf(Collection::class, $result);
+        $this->assertInstanceOf(LengthAwarePaginator::class, $result);
 
         foreach ($result as $queue) {
             $this->assertInstanceOf(Queue::class, $queue);
@@ -317,7 +317,7 @@ class QueueRepositoryTest extends TestCase
         $service = new QueueRepository(new Queue());
         $result = $service->experimentProcessed($experiment);
 
-        $this->assertInstanceOf(Collection::class, $result);
+        $this->assertInstanceOf(LengthAwarePaginator::class, $result);
 
         foreach ($result as $queue) {
             $this->assertInstanceOf(Queue::class, $queue);

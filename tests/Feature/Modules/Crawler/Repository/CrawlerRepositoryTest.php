@@ -94,7 +94,7 @@ class CrawlerRepositoryTest extends TestCase
         $service = new CrawlerRepository(new Crawler());
         $result = $service->processed();
 
-        $this->assertInstanceOf(Collection::class, $result);
+        $this->assertInstanceOf(LengthAwarePaginator::class, $result);
 
         foreach ($result as $crawler) {
             $this->assertInstanceOf(Crawler::class, $crawler);
@@ -136,7 +136,7 @@ class CrawlerRepositoryTest extends TestCase
         $service = new CrawlerRepository(new Crawler());
         $result = $service->reviewed();
 
-        $this->assertInstanceOf(Collection::class, $result);
+        $this->assertInstanceOf(LengthAwarePaginator::class, $result);
 
         foreach ($result as $crawler) {
             $this->assertInstanceOf(Crawler::class, $crawler);

@@ -67,7 +67,19 @@ class CrawlerRepository
             )->get();
     }
 
-    public function processed(): Collection
+    /**
+     * GET /crawlers-processed -- paginated, like every other list that has no
+     * runner behind it.
+     *
+     * Unpaginated it returned every active bot with every one of its processed
+     * runs attached, which on production peaked at 460.5 MB against a 128 MB
+     * limit and so answered 500 rather than answering at all. Nothing in the
+     * GUI, the runner or the orchestrator calls it, which is why that went
+     * unnoticed.
+     *
+     * unprocessed() below is deliberately NOT paginated -- see the note there.
+     */
+    public function processed(): LengthAwarePaginator
     {
         return $this->crawler->query()->visibleTo()->where('testing', 0)
             ->where('active', 1)
@@ -85,9 +97,23 @@ class CrawlerRepository
             ->whereHas('queues', function ($q): void {
                 $q->where('processed', 1);
             })
-            ->get();
+            // Paged output needs a defined order; without one a row can appear
+            // on two pages or on none.
+            ->orderByDesc('id')
+            ->fastPaginate(request()->input('per_page', 15));
     }
 
+    /**
+     * GET /crawlers-unprocessed -- the runner's only work feed, and the one
+     * list in this file that must stay whole.
+     *
+     * `CrawlerService.java:36` binds this path and takes the rows as the work
+     * to do. Paginating it would silently cap the runner at one page of bots
+     * per poll, with no error on either side: the queues beyond the page would
+     * simply never be picked up, which looks exactly like an experiment that
+     * quietly under-ran. Its size is bounded by pending work rather than by
+     * history, so it does not have the problem paginating solves.
+     */
     public function unprocessed(): Collection
     {
         return $this->crawler->query()->visibleTo()->assignedToCallingRunner()->where('testing', 0)
@@ -109,7 +135,11 @@ class CrawlerRepository
             ->get();
     }
 
-    public function reviewed(): Collection
+    /**
+     * GET /crawlers-reviewed -- same shape and same absence of callers as
+     * processed() above, so the same fix.
+     */
+    public function reviewed(): LengthAwarePaginator
     {
         return $this->crawler->query()->visibleTo()->where('testing', 1)
             ->where('active', 1)
@@ -127,7 +157,10 @@ class CrawlerRepository
             ->whereHas('queues', function ($q): void {
                 $q->where('reviewed', 1);
             })
-            ->get();
+            // Paged output needs a defined order; without one a row can appear
+            // on two pages or on none.
+            ->orderByDesc('id')
+            ->fastPaginate(request()->input('per_page', 15));
     }
 
     public function testing(): LengthAwarePaginator

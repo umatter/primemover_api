@@ -502,7 +502,10 @@ class QueueStatusFilterTest extends TestCase
             $queries,
             "a 30-row queues-processed page cost {$queries} queries; a per-row accessor would add 210"
         );
-        $this->assertSame(2, $rows->firstWhere('id', $last->id)->jobs_count);
+
+        // The list is ordered -id, so the run created last is on the first
+        // page whatever else the fixture put in the table.
+        $this->assertSame(2, $rows->getCollection()->firstWhere('id', $last->id)->jobs_count);
     }
 
     /**
