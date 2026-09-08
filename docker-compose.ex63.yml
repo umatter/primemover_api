@@ -2,9 +2,13 @@
 #
 # The base docker-compose.yml (and the auto-loaded docker-compose.override.yml)
 # stay portable for local dev and CI: they know nothing about traefik or the
-# shared edge network. This file joins the API's apache container to the shared
-# `ex63_internal` network so the edge traefik can reach it, and declares a
-# SAME-ORIGIN route:
+# shared edge network. This file joins the API to the shared `ex63_internal`
+# network. TWO containers need it, for opposite reasons:
+#
+#   apache -- so traefik can reach IN, serving the same-origin /api route below
+#   php    -- so the s3runner disk can reach OUT, to the MinIO holding job data
+#
+# and declares a SAME-ORIGIN route:
 #
 #     https://primemover.${DOMAIN}/api   -> this API (apache:80)
 #     https://primemover.${DOMAIN}/      -> the GUI    (ex63-infra apps.yml)
@@ -18,7 +22,7 @@
 #       -f docker-compose.yml \
 #       -f docker-compose.override.yml \
 #       -f docker-compose.ex63.yml \
-#       up -d apache
+#       up -d apache php
 #
 # Requires DOMAIN in .env (e.g. `DOMAIN=qamelab.org`) and the `ex63_internal`
 # network to already exist (the ex63-infra edge stack creates it).
@@ -46,6 +50,24 @@ services:
       traefik.http.routers.pm-api.tls.certresolver: letsencrypt
       traefik.http.routers.pm-api.middlewares: tailnet-only@file
       traefik.http.services.pm-api.loadbalancer.server.port: "80"
+
+  # php makes the OUTBOUND connection: the `s3runner` disk reads the runner's
+  # job data (HARs, page sources, lambda payloads) out of the local MinIO, which
+  # is an ex63_internal service. The public hostname is not an alternative --
+  # s3.qamelab.org answers 403 from a docker bridge address, because the edge
+  # allow-list sees a bridge IP rather than a tailnet one. So the disk is
+  # configured for http://minio:9000, which only resolves on this network.
+  #
+  # Without this block the attachment has to be made by hand
+  # (`docker network connect ex63_internal primemover-php8.1`) and a later
+  # `compose up -d` silently drops it again. Nothing errors when it is missing:
+  # GET /jobs/{id}/decision, GET /file/{report} and decisions:backfill simply
+  # stop being able to reach ~71,800 stored objects. No traefik labels here --
+  # php is dialled by apache over primemover-network, never from the edge.
+  php:
+    networks:
+      - primemover-network
+      - ex63_internal
 
 networks:
   ex63_internal:
