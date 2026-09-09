@@ -72,7 +72,16 @@ return [
     |
     */
 
-    'timezone' => env('APP_TIMEZONE', 'Europe/Berlin'),
+    /*
+     * Europe/Zurich, and the fallback matters: a queue's start_at is stored as
+     * WALL CLOCK -- the API keeps the digits it is sent and discards the offset
+     * -- so this zone decides when every scheduled run actually fires.
+     *
+     * The default used to be Europe/Berlin while the runner, the e2e, the spec
+     * DSL and the canary all assumed Europe/Zurich. Nothing broke, because the
+     * two share offsets year-round, but nothing had chosen it either.
+     */
+    'timezone' => env('APP_TIMEZONE', 'Europe/Zurich'),
 
     /*
     |--------------------------------------------------------------------------
