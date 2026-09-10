@@ -263,7 +263,6 @@ class Queue extends BaseModel
         $this->attributes['finished_at'] = self::inAppTimezone($value);
     }
 
-
     /**
      * Canonical form of a raw status_code ('' when there is none).
      *
