@@ -22,14 +22,15 @@ Hence a new bucket and a new key, scoped to it.
 
 ## Which account runs which step
 
-The split is about **which secrets each account holds**, not about what either is
-allowed to run. `primemover` is in the `docker` group and can `docker exec` the
-MinIO container perfectly well -- it simply has no way to read the root
-credentials that `mc alias set` needs.
+Only step 5 is genuinely account-bound. Steps 1-4 run either way: both accounts
+are in the `docker` group, and because the container expands its own environment
+neither has to read a secret from the host at all. That is also why the single
+quotes matter -- they keep the credentials off the host command line and out of
+its history.
 
 | step | user | why |
 |---|---|---|
-| 1-4 (alias, bucket, policy, user) | **`umatter`** | MinIO root credentials live in `/opt/ex63-infra/.env` (`umatter:qop-infra`), which `primemover` cannot read |
+| 1-4 (alias, bucket, policy, user) | **either** | the credentials are expanded inside the container, so no host-side account needs to read them. `umatter` can also read them from `/opt/ex63-infra/.env` directly if you prefer |
 | 5 (the API's `.env`) | **`primemover`** | `/opt/primemover/primemover_api/.env` is `primemover:primemover` mode 600; `umatter` cannot read or write it |
 | 6 (verify) | either | both can `docker exec` and reach `localhost:8090` |
 
@@ -40,13 +41,24 @@ will keep. Generate it, hold it yourself, and paste it into the `.env` in the
 
 ## 1. Point `mc` at the server
 
-Root credentials are the MinIO container's `MINIO_ROOT_USER` / `MINIO_ROOT_PASSWORD`
-(in the ex63-infra environment, readable by `umatter`).
-
-As `umatter`:
+The root credentials are `MINIO_ROOT_USER` / `MINIO_ROOT_PASSWORD`, interpolated
+from `/opt/ex63-infra/.env` into the **container's** environment at compose time.
+They are not set in your login shell, so the shell that expands them has to be
+the container's -- note the SINGLE quotes:
 
 ```bash
-docker exec -it ex63-minio-1 mc alias set admin http://127.0.0.1:9000 "$MINIO_ROOT_USER" "$MINIO_ROOT_PASSWORD"
+docker exec ex63-minio-1 sh -c 'mc alias set admin http://127.0.0.1:9000 "$MINIO_ROOT_USER" "$MINIO_ROOT_PASSWORD"'
+```
+
+With double quotes your shell expands them first, mc receives two empty strings,
+and -- this is the trap -- **`mc alias set` does not validate credentials**. It
+answers ``Added `admin` successfully.`` either way, and the failure surfaces one
+command later as a bare `Access Denied` from `mc mb`.
+
+Check the alias before going on:
+
+```bash
+docker exec ex63-minio-1 mc ls admin      # should list the buckets
 ```
 
 ## 2. Create the bucket
