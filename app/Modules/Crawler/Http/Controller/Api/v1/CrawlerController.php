@@ -542,6 +542,39 @@ class CrawlerController extends Controller
      * )
      */
     /**
+     * @OA\Get(
+     *     path="/crawlers/{id}/watched",
+     *     summary="Videos this bot has already watched",
+     *     description="Every video id this crawler's decisions have selected, across all of
+     *     its runs and experiments, most recently chosen first. This is the input to the
+     *     decision function's already_watched filter: the runner reads it and puts it in the
+     *     lambda payload.
+     *
+     *     Answers 409, NOT an empty list, when jobs.decision_selected_id does not exist. An
+     *     empty list is the positive claim 'this bot has watched nothing', and a caller would
+     *     then filter nothing while believing it had filtered correctly.",
+     *     operationId="getCrawlerWatched",
+     *     tags={"Crawlers"},
+     *     security={{"bearerAuth": {}}},
+     *
+     *     @OA\Parameter(name="id", in="path", required=true, @OA\Schema(type="integer")),
+     *
+     *     @OA\Response(
+     *         response=200,
+     *         description="The bot's watch history (possibly empty, which is a real answer)",
+     *
+     *         @OA\JsonContent(
+     *
+     *             @OA\Property(property="data", type="array", @OA\Items(type="string", example="XcHVvv06WVI"))
+     *         )
+     *     ),
+     *
+     *     @OA\Response(response=401, description="Unauthorized"),
+     *     @OA\Response(response=404, description="Crawler not found"),
+     *     @OA\Response(response=409, description="jobs.decision_selected_id is missing; the history is unknown")
+     * )
+     */
+    /**
      * Every video this bot has already chosen, newest first.
      *
      * The input to the decision function's `already_watched` filter, which has
