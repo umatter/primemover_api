@@ -161,12 +161,23 @@ class JobDecisionService
             return [];
         }
 
-        return [
+        $columns = [
             'decision_degraded' => $verdict->degraded,
             'decision_treatment_lost' => $verdict->treatmentLost,
             'decision_selection_mode' => '' === $verdict->selectionMode ? null : $verdict->selectionMode,
             'decision_report' => [] === $verdict->report ? null : $verdict->report,
         ];
+
+        // Its migration is separate from the other four, so it can be missing
+        // while they are present. Writing a column that does not exist fails the
+        // whole status PUT -- the runner reporting a job, not a nicety -- so ask
+        // before including it. Omitted is unknown; it never means "watched
+        // nothing".
+        if (Job::hasSelectedIdColumn()) {
+            $columns['decision_selected_id'] = $verdict->selectedId;
+        }
+
+        return $columns;
     }
 
     /**

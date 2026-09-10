@@ -112,6 +112,7 @@ final class DecisionVerdict
         public readonly bool $degraded,
         public readonly bool $treatmentLost,
         public readonly string $selectionMode,
+        public readonly ?string $selectedId,
         public readonly array $filters,
         public readonly array $warnings,
         public readonly ?string $error,
@@ -137,6 +138,7 @@ final class DecisionVerdict
             degraded: $degraded,
             treatmentLost: self::treatmentLostOf($payload, $degraded, $mode),
             selectionMode: $mode,
+            selectedId: self::selectedIdOf($payload),
             filters: $filters,
             warnings: $warnings,
             error: self::errorOf($payload),
@@ -227,6 +229,34 @@ final class DecisionVerdict
      * @param array<string, string> $filters
      * @param string[]              $warnings
      */
+    /**
+     * The id of the video this decision actually chose, or null.
+     *
+     * Null is UNKNOWN, not "chose nothing": a payload from before the field
+     * existed, an unreadable object and a decision that genuinely selected
+     * nothing are indistinguishable here, and the last of those is already
+     * reported by `degraded` with an empty xpath. Nothing should read this
+     * column as evidence that a bot watched nothing.
+     *
+     * @param array<string, mixed> $payload
+     */
+    private static function selectedIdOf(array $payload): ?string
+    {
+        $selected = $payload['selected'] ?? null;
+
+        if ( ! is_array($selected)) {
+            return null;
+        }
+
+        $id = $selected['id'] ?? null;
+
+        if ( ! is_string($id) || '' === trim($id)) {
+            return null;
+        }
+
+        return trim($id);
+    }
+
     private static function degradedOf(array $payload, array $filters, array $warnings): bool
     {
         if (array_key_exists('degraded', $payload)) {

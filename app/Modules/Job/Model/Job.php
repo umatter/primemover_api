@@ -77,6 +77,16 @@ class Job extends BaseModel
      */
     public const DECISION_CAPABILITY_COLUMN = 'decision_treatment_lost';
 
+    /**
+     * The column hasSelectedIdColumn() probes.
+     *
+     * Separate from DECISION_CAPABILITY_COLUMN because it arrives in a DIFFERENT
+     * migration and can therefore be absent while the other four are present.
+     * Probing the wrong one is how code-before-migration takes the API down --
+     * it already has, for 107 minutes -- so each migration gets its own answer.
+     */
+    public const SELECTED_ID_COLUMN = 'decision_selected_id';
+
     protected $guarded = [];
 
     protected $appends = [];
@@ -104,6 +114,8 @@ class Job extends BaseModel
      * would trade a 500 for a query storm on the same endpoints.
      */
     private static ?bool $hasDecisionColumns = null;
+
+    private static ?bool $hasSelectedIdColumn = null;
 
     /**
      * Whether jobs.decision_* actually exists in the database in front of us.
@@ -156,6 +168,30 @@ class Job extends BaseModel
     public static function forgetDecisionColumnSupport(): void
     {
         self::$hasDecisionColumns = null;
+        self::$hasSelectedIdColumn = null;
+    }
+
+    /**
+     * Whether jobs.decision_selected_id exists in the database in front of us.
+     *
+     * Same reasoning as hasDecisionColumns(), and a separate memo for a separate
+     * migration: the source is bind-mounted, so this code is live before anyone
+     * runs `php artisan migrate`, and writing a column that does not exist yet
+     * fails the whole status PUT -- which is the runner reporting a job, not a
+     * nicety. Absent means the id is simply not written; it never means the bot
+     * watched nothing.
+     */
+    public static function hasSelectedIdColumn(): bool
+    {
+        if (null !== self::$hasSelectedIdColumn) {
+            return self::$hasSelectedIdColumn;
+        }
+
+        $model = new self();
+
+        return self::$hasSelectedIdColumn = $model->getConnection()
+            ->getSchemaBuilder()
+            ->hasColumn($model->getTable(), self::SELECTED_ID_COLUMN);
     }
 
     public function crawler(): BelongsTo
