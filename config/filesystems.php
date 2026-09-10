@@ -59,6 +59,19 @@ return [
             'secret' => env('AWS_SECRET_ACCESS_KEY'),
             'region' => env('AWS_DEFAULT_REGION'),
             'bucket' => env('AWS_BUCKET'),
+            /*
+             * The same omission `s3runner` had until 2026-09-08: without an
+             * endpoint the client addresses real AWS, whatever the credentials
+             * say. That is why GET /experiments/{id}/download 500s here -- the
+             * pipeline writes the export zip to this disk and reads it straight
+             * back, and neither half can reach anything.
+             *
+             * Adding the key does not by itself configure the disk; it makes it
+             * configurable. Point AWS_ENDPOINT at the local MinIO and give
+             * AWS_BUCKET a real bucket name (it currently holds an ARN, which is
+             * not one) and the round trip works.
+             */
+            'endpoint' => env('AWS_ENDPOINT'),
             'url' => env('AWS_URL'),
             'mock' => env('AWS_MOCK', false),
             'use_path_style_endpoint' => env('AWS_USE_PATH_STYLE_ENDPOINT', true),
