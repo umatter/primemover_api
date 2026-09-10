@@ -106,12 +106,32 @@ kept for ever.
 ## 4. A user for the API, and only the API
 
 ```bash
-# pick a secret you do not reuse; 40 chars of base64 is plenty
 docker exec ex63-minio-1 mc admin user add admin primemover-api "$(openssl rand -base64 30)"
 docker exec ex63-minio-1 mc admin policy attach admin primemover-api-rw --user primemover-api
 ```
 
-Keep the secret: it is shown once, when you type it.
+The user's own password is deliberately generated inline and never read: the
+API does not use it. Give the API an **access key** under that user instead,
+which `mc` prints once, on creation:
+
+```bash
+docker exec ex63-minio-1 mc admin accesskey create admin/primemover-api \
+    --name "primemover-api (API file storage)"
+```
+
+That prints an access key and a secret key -- those two are what go in the
+`.env`, not the user's password. Copy them now; they are not retrievable
+afterwards.
+
+An access key rather than the user's own credentials, for three reasons: `mc`
+displays it (a password generated inline by `$(openssl ...)` is never shown at
+all -- an earlier version of this runbook told you to keep a secret the command
+had already thrown away), it inherits the policy attached to the user, and it can
+be revoked on its own with `mc admin accesskey rm <access-key>` without
+disturbing the user or minting anything new.
+
+Run this yourself rather than having an agent run it: the secret is printed to
+whatever terminal executes it, and it should be yours.
 
 ## 5. Wire it into the API
 
@@ -121,8 +141,8 @@ As `primemover`, in `/opt/primemover/primemover_api/.env`:
 AWS_MOCK=false
 AWS_ENDPOINT=http://minio:9000
 AWS_BUCKET=primemover-api
-AWS_ACCESS_KEY_ID=primemover-api
-AWS_SECRET_ACCESS_KEY=<the secret from step 4>
+AWS_ACCESS_KEY_ID=<the access key from step 4>
+AWS_SECRET_ACCESS_KEY=<the secret key from step 4>
 AWS_USE_PATH_STYLE_ENDPOINT=true
 ```
 
