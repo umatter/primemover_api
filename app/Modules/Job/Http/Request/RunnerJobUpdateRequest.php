@@ -58,14 +58,20 @@ class RunnerJobUpdateRequest extends UpdateJobRequest
     public const DECISION_REPORT_SHRINK_ORDER = ['warnings', 'requested', 'applied', 'llm', 'filters'];
 
     /**
-     * The four columns that carry the decision function's verdict.
+     * The columns that carry the decision function's verdict.
      */
     public const DECISION_FIELDS = [
         'decision_degraded',
         'decision_treatment_lost',
         'decision_selection_mode',
         'decision_report',
+        'decision_selected_id',
     ];
+
+    /**
+     * A YouTube video id is 11 characters; the column is 64.
+     */
+    public const DECISION_SELECTED_ID_MAX = 64;
 
     /**
      * Both models are $guarded = [], so whatever survives validation here is
@@ -115,6 +121,12 @@ class RunnerJobUpdateRequest extends UpdateJobRequest
             'decision_treatment_lost' => ['nullable', 'boolean'],
             'decision_selection_mode' => ['nullable', 'string', 'max:'.self::DECISION_SELECTION_MODE_MAX],
             'decision_report' => ['nullable', 'array'],
+            // Which video was chosen. It rides this PUT so a bot's history is
+            // current the moment a job ends, rather than as fresh as the last
+            // backfill -- the already_watched filter reads that history, and a
+            // bot could otherwise re-watch, within one session, a video it had
+            // just chosen.
+            'decision_selected_id' => ['nullable', 'string', 'max:'.self::DECISION_SELECTED_ID_MAX],
         ];
     }
 
@@ -144,6 +156,7 @@ class RunnerJobUpdateRequest extends UpdateJobRequest
 
         $this->normaliseSelectionMode();
         $this->normaliseReport();
+        $this->normaliseSelectedId();
     }
 
     /**
@@ -176,6 +189,14 @@ class RunnerJobUpdateRequest extends UpdateJobRequest
      */
     private function dropVerdictWithoutColumns(): bool
     {
+        // Its own migration, so its own question. hasDecisionColumns() answers
+        // for the four columns of one migration and cannot speak for this one;
+        // a true answer there with this column still missing would mass-assign
+        // a column the schema does not have and 500 the runner's status PUT.
+        if ( ! Job::hasSelectedIdColumn()) {
+            $this->drop('decision_selected_id');
+        }
+
         if (Job::hasDecisionColumns()) {
             return false;
         }
@@ -185,6 +206,47 @@ class RunnerJobUpdateRequest extends UpdateJobRequest
         }
 
         return true;
+    }
+
+    /**
+     * Coerce the chosen video id, or drop it.
+     *
+     * Same posture as the rest of the verdict: this rides the PUT that carries
+     * status_code, so a 422 over a malformed id would cost the job its terminal
+     * state. Anything that is not a usable string is DROPPED, leaving the
+     * column NULL -- which is "unknown", and never mistaken for "watched
+     * nothing". An over-long value is truncated rather than rejected for the
+     * same reason.
+     */
+    private function normaliseSelectedId(): void
+    {
+        if ( ! $this->has('decision_selected_id')) {
+            return;
+        }
+
+        $value = $this->input('decision_selected_id');
+
+        if (null === $value) {
+            return;
+        }
+
+        if ( ! is_string($value)) {
+            $this->drop('decision_selected_id');
+
+            return;
+        }
+
+        $value = trim($value);
+
+        if ('' === $value) {
+            $this->drop('decision_selected_id');
+
+            return;
+        }
+
+        $this->merge([
+            'decision_selected_id' => mb_substr($value, 0, self::DECISION_SELECTED_ID_MAX),
+        ]);
     }
 
     /**
