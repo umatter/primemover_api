@@ -22,7 +22,7 @@ class RunnerQueueController extends Controller
 
     /**
      * @OA\Put(
-     *     path="/api/v1/runner/queues/{queue}",
+     *     path="/runner/queues/{queue}",
      *     summary="Update queue status (Runner)",
      *     description="Update queue status, progress, and execution details from automation runner",
      *     operationId="runnerUpdateQueue",

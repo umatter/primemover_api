@@ -23,7 +23,7 @@ class RunnerJobController extends Controller
 
     /**
      * @OA\Put(
-     *     path="/api/v1/runner/jobs/{job}",
+     *     path="/runner/jobs/{job}",
      *     summary="Update job status (Runner)",
      *     description="Update job status, progress, and results from automation runner",
      *     operationId="runnerUpdateJob",

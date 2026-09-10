@@ -20,7 +20,7 @@ class RunnerAgentController extends Controller
 
     /**
      * @OA\Put(
-     *     path="/api/v1/runner/agents/{agent}",
+     *     path="/runner/agents/{agent}",
      *     summary="Update agent status (Runner)",
      *     description="Update agent information and status from automation runner",
      *     operationId="runnerUpdateAgent",

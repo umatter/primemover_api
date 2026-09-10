@@ -10,12 +10,12 @@
     },
     "servers": [
         {
-            "url": "https://pm-api.test.primemover.example/api/v1",
-            "description": "Production API Server"
+            "url": "https://primemover.qamelab.org/api/v1",
+            "description": "ex63 (tailnet only; same origin as the GUI, so no CORS)"
         },
         {
-            "url": "http://localhost:8080/api/v1",
-            "description": "Local Development Server"
+            "url": "http://localhost:8090/api/v1",
+            "description": "Local -- 8090 is PM_API_HTTP_PORT, not Laravel's default 8080"
         }
     ],
     "paths": {
@@ -827,7 +827,7 @@
                 ]
             }
         },
-        "/api/v1/runner/agents/{agent}": {
+        "/runner/agents/{agent}": {
             "put": {
                 "tags": [
                     "Runner - Agents"
@@ -4666,7 +4666,7 @@
                 ]
             }
         },
-        "/api/v1/runner/jobs/{job}": {
+        "/runner/jobs/{job}": {
             "put": {
                 "tags": [
                     "Runner - Jobs"
@@ -7095,7 +7095,7 @@
                 ]
             }
         },
-        "/api/v1/runner/queues/{queue}": {
+        "/runner/queues/{queue}": {
             "put": {
                 "tags": [
                     "Runner - Queues"
@@ -7653,12 +7653,12 @@
                 ]
             }
         },
-        "/api/v1/download/{filename}": {
+        "/download/{filename}": {
             "get": {
                 "tags": [
                     "S3"
                 ],
-                "summary": "Download file from S3",
+                "summary": "Download file from S3 (NOT FUNCTIONAL -- returns 500, see /upload)",
                 "description": "Download a file from S3 storage by filename",
                 "operationId": "downloadS3File",
                 "parameters": [
@@ -7702,13 +7702,13 @@
                 ]
             }
         },
-        "/api/v1/upload": {
+        "/upload": {
             "post": {
                 "tags": [
                     "S3"
                 ],
-                "summary": "Upload file to S3",
-                "description": "Upload a file to S3 storage",
+                "summary": "Upload file to S3 (NOT FUNCTIONAL on this deployment)",
+                "description": "Writes to the `s3` disk, which is unconfigured here: AWS_BUCKET holds\n     *     an ARN rather than a bucket name, there is no endpoint, and no AWS account is\n     *     involved. Verified 2026-09-10 -- the sibling GET /download/{filename} answers 500.\n     *\n     *     The runner job data does NOT use this. That goes to the local MinIO through the\n     *     separate `s3runner` disk, served by GET /file/{report}.",
                 "operationId": "uploadFileToS3",
                 "requestBody": {
                     "description": "File to upload",
