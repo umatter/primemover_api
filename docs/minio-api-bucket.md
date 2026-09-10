@@ -20,10 +20,30 @@ Two credentials already reach the MinIO on this box, and neither is right:
 
 Hence a new bucket and a new key, scoped to it.
 
+## Which account runs which step
+
+The split is about **which secrets each account holds**, not about what either is
+allowed to run. `primemover` is in the `docker` group and can `docker exec` the
+MinIO container perfectly well -- it simply has no way to read the root
+credentials that `mc alias set` needs.
+
+| step | user | why |
+|---|---|---|
+| 1-4 (alias, bucket, policy, user) | **`umatter`** | MinIO root credentials live in `/opt/ex63-infra/.env` (`umatter:qop-infra`), which `primemover` cannot read |
+| 5 (the API's `.env`) | **`primemover`** | `/opt/primemover/primemover_api/.env` is `primemover:primemover` mode 600; `umatter` cannot read or write it |
+| 6 (verify) | either | both can `docker exec` and reach `localhost:8090` |
+
+So the secret minted in step 4 has to cross from one account to the other. Do
+not pipe it between shells or echo it into a command line that a history file
+will keep. Generate it, hold it yourself, and paste it into the `.env` in the
+`primemover` session -- the same handling the MCP bearer tokens get.
+
 ## 1. Point `mc` at the server
 
 Root credentials are the MinIO container's `MINIO_ROOT_USER` / `MINIO_ROOT_PASSWORD`
 (in the ex63-infra environment, readable by `umatter`).
+
+As `umatter`:
 
 ```bash
 docker exec -it ex63-minio-1 mc alias set admin http://127.0.0.1:9000 "$MINIO_ROOT_USER" "$MINIO_ROOT_PASSWORD"
@@ -83,7 +103,7 @@ Keep the secret: it is shown once, when you type it.
 
 ## 5. Wire it into the API
 
-In `/opt/primemover/primemover_api/.env`:
+As `primemover`, in `/opt/primemover/primemover_api/.env`:
 
 ```
 AWS_MOCK=false
