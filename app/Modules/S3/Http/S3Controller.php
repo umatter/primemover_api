@@ -19,8 +19,8 @@ class S3Controller extends Controller
 {
     /**
      * @OA\Get(
-     *     path="/api/v1/download/{filename}",
-     *     summary="Download file from S3",
+     *     path="/download/{filename}",
+     *     summary="Download file from S3 (NOT FUNCTIONAL -- returns 500, see /upload)",
      *     description="Download a file from S3 storage by filename",
      *     operationId="downloadS3File",
      *     tags={"S3"},
@@ -58,9 +58,14 @@ class S3Controller extends Controller
 
     /**
      * @OA\Post(
-     *     path="/api/v1/upload",
-     *     summary="Upload file to S3",
-     *     description="Upload a file to S3 storage",
+     *     path="/upload",
+     *     summary="Upload file to S3 (NOT FUNCTIONAL on this deployment)",
+     *     description="Writes to the `s3` disk, which is unconfigured here: AWS_BUCKET holds
+     *     an ARN rather than a bucket name, there is no endpoint, and no AWS account is
+     *     involved. Verified 2026-09-10 -- the sibling GET /download/{filename} answers 500.
+     *
+     *     The runner job data does NOT use this. That goes to the local MinIO through the
+     *     separate `s3runner` disk, served by GET /file/{report}.",
      *     operationId="uploadFileToS3",
      *     tags={"S3"},
      *     security={{"bearerAuth": {}}},

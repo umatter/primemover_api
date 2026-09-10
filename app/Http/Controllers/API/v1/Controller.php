@@ -21,12 +21,12 @@ use Illuminate\Support\Facades\Artisan;
  * )
  *
  * @OA\Server(
- *     url="https://pm-api.test.primemover.example/api/v1",
- *     description="Production API Server"
+ *     url="https://primemover.qamelab.org/api/v1",
+ *     description="ex63 (tailnet only; same origin as the GUI, so no CORS)"
  * )
  * @OA\Server(
- *     url="http://localhost:8080/api/v1",
- *     description="Local Development Server"
+ *     url="http://localhost:8090/api/v1",
+ *     description="Local -- 8090 is PM_API_HTTP_PORT, not Laravel's default 8080"
  * )
  *
  * @OA\SecurityScheme(

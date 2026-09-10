@@ -32,19 +32,18 @@ use Tests\TestCase;
 class ApiDocumentationTest extends TestCase
 {
     /**
-     * Routes with no @OA annotation, as of 2026-09-10. Do not add to this list.
+     * Routes with no @OA annotation. Do not add to this list.
      *
-     * /upload and /download/{filename} belong to the S3Controller, whose disk
-     * has never been functional here. The three /runner/* endpoints are the
-     * runner's own contract and deserve annotating on their own merits.
+     * It held six entries for a day. Five of them turned out not to be
+     * undocumented at all: they were annotated with the /api/v1 prefix baked
+     * into the path, while the spec's servers already end in /api/v1, so the
+     * docs rendered them at /api/v1/api/v1/upload and anyone calling from the
+     * page got a 404. Mis-documented reads as documented to every check that
+     * only looks for presence, which is why that comparison normalises the
+     * prefix away now and a separate test forbids it outright.
      */
     private const UNDOCUMENTED = [
-        '/download/{x}',
-        '/runner/agents/{x}',
-        '/runner/jobs/{x}',
-        '/runner/queues/{x}',
         '/terms/{x}',
-        '/upload',
     ];
 
     public function test_no_new_api_route_is_undocumented(): void
@@ -94,6 +93,27 @@ class ApiDocumentationTest extends TestCase
         );
     }
 
+    public function test_no_annotation_repeats_the_api_v1_prefix(): void
+    {
+        // The spec's servers already end in /api/v1, so an annotation that also
+        // carries it documents /api/v1/api/v1/upload. Swagger UI renders that
+        // happily and every request from the page 404s -- a failure that looks
+        // like working documentation, which is worse than none.
+        $offenders = array_values(array_filter(
+            $this->rawAnnotatedPaths(),
+            static fn (string $path): bool => str_starts_with($path, '/api/v1')
+        ));
+
+        sort($offenders);
+
+        $this->assertSame(
+            [],
+            $offenders,
+            'these @OA paths repeat the /api/v1 the servers block already supplies; '
+            .'write them relative, e.g. path="/upload"'
+        );
+    }
+
     public function test_the_allow_list_does_not_name_routes_that_no_longer_exist(): void
     {
         // Otherwise it silently rots into a list of excuses for endpoints that
@@ -140,6 +160,28 @@ class ApiDocumentationTest extends TestCase
             foreach ($matches[1] as $path) {
                 $paths[] = $this->normalise($path);
             }
+        }
+
+        return array_values(array_unique($paths));
+    }
+
+    /**
+     * Annotated paths exactly as written, before normalisation.
+     *
+     * @return string[]
+     */
+    private function rawAnnotatedPaths(): array
+    {
+        $paths = [];
+        $files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator(app_path()));
+
+        foreach ($files as $file) {
+            if ( ! $file->isFile() || 'php' !== $file->getExtension()) {
+                continue;
+            }
+
+            preg_match_all('/path="([^"]+)"/', file_get_contents($file->getPathname()), $matches);
+            $paths = array_merge($paths, $matches[1]);
         }
 
         return array_values(array_unique($paths));
