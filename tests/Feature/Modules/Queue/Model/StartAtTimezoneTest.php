@@ -40,7 +40,8 @@ class StartAtTimezoneTest extends TestCase
 {
     use RefreshDatabase;
 
-    private Crawler $crawler;
+    /** Named to avoid shadowing TestCase::$crawler, which is protected. */
+    private Crawler $tzCrawler;
 
     protected function setUp(): void
     {
@@ -49,7 +50,7 @@ class StartAtTimezoneTest extends TestCase
         config(['app.timezone' => 'Europe/Zurich']);
 
         $user = User::factory()->create();
-        $this->crawler = Crawler::factory()->create(['user_id' => $user->id]);
+        $this->tzCrawler = Crawler::factory()->create(['user_id' => $user->id]);
     }
 
     /**
@@ -65,7 +66,7 @@ class StartAtTimezoneTest extends TestCase
         $queue = Queue::query()->create([
             'name' => 'tz',
             'description' => 'tz',
-            'crawler_id' => $this->crawler->id,
+            'crawler_id' => $this->tzCrawler->id,
             'start_at' => $sent,
         ]);
 
@@ -152,7 +153,7 @@ class StartAtTimezoneTest extends TestCase
         $queue = Queue::query()->create([
             'name' => 'tz',
             'description' => 'tz',
-            'crawler_id' => $this->crawler->id,
+            'crawler_id' => $this->tzCrawler->id,
             'start_at' => $startAt,
         ]);
 
