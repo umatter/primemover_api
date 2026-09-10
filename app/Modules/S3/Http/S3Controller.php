@@ -20,7 +20,7 @@ class S3Controller extends Controller
     /**
      * @OA\Get(
      *     path="/download/{filename}",
-     *     summary="Download file from S3 (NOT FUNCTIONAL -- returns 500, see /upload)",
+     *     summary="Download a file from the configured object store",
      *     description="Download a file from S3 storage by filename",
      *     operationId="downloadS3File",
      *     tags={"S3"},
@@ -59,10 +59,11 @@ class S3Controller extends Controller
     /**
      * @OA\Post(
      *     path="/upload",
-     *     summary="Upload file to S3 (NOT FUNCTIONAL on this deployment)",
-     *     description="Writes to the `s3` disk, which is unconfigured here: AWS_BUCKET holds
-     *     an ARN rather than a bucket name, there is no endpoint, and no AWS account is
-     *     involved. Verified 2026-09-10 -- the sibling GET /download/{filename} answers 500.
+     *     summary="Upload a file to the configured object store",
+     *     description="Writes to whichever disk S3Service::getTargetDisk() selects, which is
+     *     the same disk GET /download/{filename} reads from. With AWS_MOCK=true -- the
+     *     setting on a deployment with no AWS account, which is this one -- that is the
+     *     LOCAL disk, despite the name suggesting a test double.
      *
      *     The runner job data does NOT use this. That goes to the local MinIO through the
      *     separate `s3runner` disk, served by GET /file/{report}.",
@@ -143,7 +144,14 @@ class S3Controller extends Controller
     {
         $file = $request->file('file');
         $filename = $file->getClientOriginalName();
-        $runOn = Storage::disk('s3')->put($filename, file_get_contents($file));
+        /*
+         * The SAME disk the download half reads from. This hard-coded 's3'
+         * while S3Controller::download() goes through S3Service::downloadFile(),
+         * which honours getTargetDisk() -- so the two halves of one feature
+         * targeted different disks and could never have seen each other's
+         * files, whatever either was configured to talk to.
+         */
+        $runOn = Storage::disk(S3Service::getTargetDisk())->put($filename, file_get_contents($file));
 
         if ( ! $runOn) {
             return response()->json([
