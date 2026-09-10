@@ -61,6 +61,11 @@ Check the alias before going on:
 docker exec ex63-minio-1 mc ls admin      # should list the buckets
 ```
 
+**If the alias was wrong, re-run from step 2.** Every command in between fails
+with the same bare `Access Denied`, and repairing the alias does not retry them
+-- so it is easy to fix step 1, carry on from wherever you had got to, and end up
+with a policy and a user but no bucket.
+
 ## 2. Create the bucket
 
 Separate from `primemoverrunner` on purpose: exports the API generates and job
@@ -144,7 +149,16 @@ AWS_BUCKET=primemover-api
 AWS_ACCESS_KEY_ID=<the access key from step 4>
 AWS_SECRET_ACCESS_KEY=<the secret key from step 4>
 AWS_USE_PATH_STYLE_ENDPOINT=true
+AWS_DEFAULT_REGION=eu-central-1
 ```
+
+Each of those exactly ONCE. A duplicate is survivable but treacherous: the last
+definition wins, so editing the first occurrence silently does nothing.
+
+`AWS_DEFAULT_REGION` is **required**, even though MinIO ignores its value -- the
+SDK refuses to construct a client without one. It is the easiest line to lose
+when clearing out an older AWS block, and `s3runner` reads the same variable, so
+losing it affects both disks.
 
 Three of those are load-bearing in ways their names do not suggest:
 
