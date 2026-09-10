@@ -10,6 +10,7 @@ use App\Modules\Crawler\Model\Crawler;
 use App\Modules\Job\Model\Job;
 use App\Modules\Queue\Query\StatusQuery;
 use Carbon\Carbon;
+use DateTimeInterface;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -17,6 +18,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
+use Throwable;
 
 /**
  * @property int    $user_id
@@ -219,6 +221,76 @@ class Queue extends BaseModel
         'started_at' => 'datetime',
         'finished_at' => 'datetime',
     ];
+
+    /**
+     * Read `start_at` as the instant the caller meant, not as its digits.
+     *
+     * These three are varchar columns with a datetime cast, so Eloquent parses
+     * the incoming string and formats it back for storage using the CARBON's
+     * own zone. An offset therefore survived parsing and was then thrown away:
+     * "2030-07-15T03:00:00Z" was stored as 03:00 -- two hours early in summer --
+     * and "2030-07-15T05:00:00-05:00" as 05:00, seven hours early. Probed
+     * against the live API before this change, all six cases.
+     *
+     * Nothing errored. The queue simply started at the wrong time, or landed in
+     * the past and had its jobs marked skipped, which is expensive to diagnose
+     * because every symptom points at the runner.
+     *
+     * Converting to the application timezone here fixes that in the one place
+     * every writer passes through -- the upload pipeline, StoreQueueRequest,
+     * UpdateQueueRequest and the runner's own PUT -- rather than asking four
+     * callers to remember.
+     *
+     * A NAIVE string is unchanged: Carbon reads it in the app timezone already,
+     * so its digits are its wall clock and re-formatting returns them exactly.
+     * That is what keeps this a no-op for every current client -- the GUI and
+     * the MCP send naive local, the spec DSL and the e2e send the app zone with
+     * its matching offset -- and confines the change to the inputs that were
+     * already wrong.
+     */
+    public function setStartAtAttribute($value): void
+    {
+        $this->attributes['start_at'] = self::inAppTimezone($value);
+    }
+
+    public function setStartedAtAttribute($value): void
+    {
+        $this->attributes['started_at'] = self::inAppTimezone($value);
+    }
+
+    public function setFinishedAtAttribute($value): void
+    {
+        $this->attributes['finished_at'] = self::inAppTimezone($value);
+    }
+
+    /**
+     * One timestamp, as the application's wall clock.
+     *
+     * Anything unparseable is returned untouched rather than raising: these are
+     * varchar columns, the runner has been observed writing odd values into
+     * them, and refusing a whole queue update over a timestamp would trade a
+     * wrong start time for a lost status update.
+     */
+    private static function inAppTimezone($value): ?string
+    {
+        if (null === $value || '' === $value) {
+            return null;
+        }
+
+        if ($value instanceof DateTimeInterface) {
+            return Carbon::instance($value)
+                ->setTimezone(config('app.timezone'))
+                ->format('Y-m-d H:i:s');
+        }
+
+        try {
+            return Carbon::parse($value)
+                ->setTimezone(config('app.timezone'))
+                ->format('Y-m-d H:i:s');
+        } catch (Throwable) {
+            return (string) $value;
+        }
+    }
 
     /**
      * Canonical form of a raw status_code ('' when there is none).
