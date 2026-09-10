@@ -2301,98 +2301,37 @@
                 ]
             }
         },
-        "/crawlers/{id}": {
+        "/crawlers/{id}/watched": {
             "get": {
                 "tags": [
                     "Crawlers"
                 ],
-                "summary": "Get single crawler",
-                "description": "Retrieve details of a specific crawler",
-                "operationId": "getCrawler",
+                "summary": "Videos this bot has already watched",
+                "description": "Every video id this crawler's decisions have selected, across all of\n     *     its runs and experiments, most recently chosen first. This is the input to the\n     *     decision function's already_watched filter: the runner reads it and puts it in the\n     *     lambda payload.\n     *\n     *     Answers 409, NOT an empty list, when jobs.decision_selected_id does not exist. An\n     *     empty list is the positive claim 'this bot has watched nothing', and a caller would\n     *     then filter nothing while believing it had filtered correctly.",
+                "operationId": "getCrawlerWatched",
                 "parameters": [
                     {
                         "name": "id",
                         "in": "path",
-                        "description": "Crawler ID",
                         "required": true,
                         "schema": {
-                            "type": "integer",
-                            "example": 1
-                        }
-                    },
-                    {
-                        "name": "hours",
-                        "in": "query",
-                        "description": "Rolling window, in hours, behind every latest_queues_* count. Clamped to 1..720 rather than rejected; anything non-numeric (or absent) means the 24-hour default.",
-                        "required": false,
-                        "schema": {
-                            "type": "integer",
-                            "default": 24,
-                            "maximum": 720,
-                            "minimum": 1
+                            "type": "integer"
                         }
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "Crawler details",
+                        "description": "The bot's watch history (possibly empty, which is a real answer)",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "properties": {
                                         "data": {
-                                            "properties": {
-                                                "id": {
-                                                    "type": "integer",
-                                                    "example": 1
-                                                },
-                                                "name": {
-                                                    "type": "string",
-                                                    "example": "bot_control_01"
-                                                },
-                                                "experiment_id": {
-                                                    "type": "integer",
-                                                    "example": 1
-                                                },
-                                                "active": {
-                                                    "type": "integer",
-                                                    "example": 1
-                                                },
-                                                "latest_queues_count": {
-                                                    "description": "Runs this bot started inside the window, whatever their outcome.",
-                                                    "type": "integer",
-                                                    "example": 11
-                                                },
-                                                "latest_queues_succeeded": {
-                                                    "description": "Runs in the window whose own status_code is success (or a legacy synonym).",
-                                                    "type": "integer",
-                                                    "example": 8
-                                                },
-                                                "latest_queues_failed": {
-                                                    "description": "Runs in the window whose own status_code is failure (or the legacy 'failed'). The run produced nothing usable.",
-                                                    "type": "integer",
-                                                    "example": 1
-                                                },
-                                                "latest_queues_warning": {
-                                                    "description": "Runs in the window whose own status_code is warning (or the legacy 'warn'): the run completed but lost jobs along the way. Not a success -- 'needs attention' is failure OR warning.",
-                                                    "type": "integer",
-                                                    "example": 2
-                                                },
-                                                "latest_queues_degraded": {
-                                                    "description": "Runs in the window holding at least one job with status_code warning: job data was not written, or the decision function could not apply a filter the experiment requested. Derived from the JOBS, so a run whose own status is success can be degraded. Overlaps latest_queues_warning without containing it or being contained by it -- never add the two together.",
-                                                    "type": "integer",
-                                                    "example": 1
-                                                },
-                                                "created_at": {
-                                                    "type": "string",
-                                                    "format": "date-time"
-                                                },
-                                                "updated_at": {
-                                                    "type": "string",
-                                                    "format": "date-time"
-                                                }
-                                            },
-                                            "type": "object"
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string",
+                                                "example": "XcHVvv06WVI"
+                                            }
                                         }
                                     },
                                     "type": "object"
@@ -2405,6 +2344,9 @@
                     },
                     "404": {
                         "description": "Crawler not found"
+                    },
+                    "409": {
+                        "description": "jobs.decision_selected_id is missing; the history is unknown"
                     }
                 },
                 "security": [
@@ -2412,7 +2354,9 @@
                         "bearerAuth": []
                     }
                 ]
-            },
+            }
+        },
+        "/crawlers/{id}": {
             "put": {
                 "tags": [
                     "Crawlers"

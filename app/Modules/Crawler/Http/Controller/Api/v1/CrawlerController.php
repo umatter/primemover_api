@@ -573,8 +573,7 @@ class CrawlerController extends Controller
      *     @OA\Response(response=404, description="Crawler not found"),
      *     @OA\Response(response=409, description="jobs.decision_selected_id is missing; the history is unknown")
      * )
-     */
-    /**
+     *
      * Every video this bot has already chosen, newest first.
      *
      * The input to the decision function's `already_watched` filter, which has

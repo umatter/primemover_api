@@ -65,6 +65,35 @@ class ApiDocumentationTest extends TestCase
         );
     }
 
+    public function test_every_annotation_reached_the_generated_spec(): void
+    {
+        // An annotation that never reaches storage/api-docs/api-docs.json
+        // documents nothing: that file is what /api/documentation serves and
+        // what a client reads. generate_always is false, so writing the
+        // annotation and regenerating are two separate acts and only the first
+        // is obvious.
+        //
+        // This is not hypothetical. The watched endpoint's annotation sat in a
+        // FLOATING docblock -- one @OA block, then a second prose block, then
+        // the method -- so swagger-php never attached it, and the spec stayed
+        // at 66 paths while the source looked correctly annotated.
+        $spec = json_decode(file_get_contents(base_path('storage/api-docs/api-docs.json')), true);
+
+        $generated = array_map([$this, 'normalise'], array_keys($spec['paths'] ?? []));
+        $missing = array_values(array_diff($this->annotatedPaths(), $generated));
+
+        sort($missing);
+
+        $this->assertSame(
+            ['/experiments/upload'],
+            $missing,
+            "an @OA path is annotated but absent from the generated spec.\n"
+            .'Run `php artisan l5-swagger:generate` and commit the result. If the path is '
+            .'there but still missing, check the annotation is in the docblock ATTACHED to '
+            .'the method -- a floating one is silently ignored.'
+        );
+    }
+
     public function test_the_allow_list_does_not_name_routes_that_no_longer_exist(): void
     {
         // Otherwise it silently rots into a list of excuses for endpoints that
