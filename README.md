@@ -97,11 +97,23 @@ delivers nothing.
   With debug on, every unhandled exception returns its full stack trace to the
   browser. Error detail still lands in `storage/logs/laravel.log`.
 - **ex63 edge**: `docker-compose.ex63.yml` is an opt-in overlay that joins
-  `apache` to the shared `ex63_internal` network and routes
-  `https://primemover.${DOMAIN}/api` to it (same origin as the GUI — no CORS,
-  no second hostname). Apply with
-  `docker compose -f docker-compose.yml -f docker-compose.override.yml -f docker-compose.ex63.yml up -d apache`;
+  **both `apache` and `php`** to the shared `ex63_internal` network and routes
+  `https://primemover.${DOMAIN}/api` to apache (same origin as the GUI — no CORS,
+  no second hostname). Two containers, for opposite reasons: apache so traefik can
+  reach **in**, php so the object-store disks can reach **out** to MinIO. Apply with
+  `docker compose -f docker-compose.yml -f docker-compose.override.yml -f docker-compose.ex63.yml up -d apache php`;
   needs `DOMAIN` in `.env`. The base compose stays portable and untouched.
+  Omitting php is silent: every object read returns nothing rather than failing.
+- **Object storage — two disks, two buckets, neither is AWS**:
+  `s3runner` (read-only, bucket `primemoverrunner`) serves the runner's job data
+  through `GET /file/{report}` and `GET /jobs/{id}/decision`. The plain `s3` disk
+  (bucket `primemover-api`, its own scoped read-write key) holds what the API
+  itself creates — experiment export zips and `POST /upload`. Both point at the
+  local MinIO via `http://minio:9000`; the public hostname answers 403 from a
+  docker bridge address. `AWS_MOCK` is not a test double: it selects where the
+  `s3` disk lives (`false` = MinIO, `true` = the local disk in the container),
+  and `AWS_DEFAULT_REGION` is required by both even though MinIO ignores it.
+  Setup: `docs/minio-api-bucket.md`.
 - **Tests log nowhere**: `phpunit.xml` sets `LOG_CHANNEL=null` (a channel
   defined in `config/logging.php`). Tests run in the same container as the live
   API and used to write `testing.ERROR` lines into the production log.
