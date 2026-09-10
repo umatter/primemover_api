@@ -57,7 +57,17 @@ return [
             'driver' => 's3',
             'key' => env('AWS_ACCESS_KEY_ID'),
             'secret' => env('AWS_SECRET_ACCESS_KEY'),
-            'region' => env('AWS_DEFAULT_REGION'),
+            /*
+             * The SAME fallback s3runner has. Without one, a missing
+             * AWS_DEFAULT_REGION takes this disk out while leaving that one
+             * working -- the SDK refuses to build a client with no region
+             * ("Missing required client configuration options"), so experiment
+             * download and POST /upload 500 while GET /file/{report} carries on.
+             * Half a storage layer failing is harder to diagnose than all of it.
+             *
+             * MinIO ignores the value; the SDK only insists one exists.
+             */
+            'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
             'bucket' => env('AWS_BUCKET'),
             /*
              * The same omission `s3runner` had until 2026-09-08: without an
