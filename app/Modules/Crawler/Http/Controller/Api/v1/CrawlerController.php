@@ -8,10 +8,12 @@ use App\Modules\Crawler\Http\Request\StoreCrawlerRequest;
 use App\Modules\Crawler\Http\Request\UpdateCrawlerRequest;
 use App\Modules\Crawler\Model\Crawler;
 use App\Modules\Crawler\Repository\CrawlerRepository;
+use App\Modules\Job\Model\Job;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Resources\Json\ResourceCollection;
+use Symfony\Component\HttpFoundation\Response as ResponseAlias;
 use Tests\Feature\Modules\Crawler\Http\Controller\Api\v1\CrawlerControllerTest;
 
 /**
@@ -539,6 +541,47 @@ class CrawlerController extends Controller
      *     @OA\Response(response=404, description="Crawler not found")
      * )
      */
+    /**
+     * Every video this bot has already chosen, newest first.
+     *
+     * The input to the decision function's `already_watched` filter, which has
+     * been an empty TO-DO since the beginning because a bot's history was not
+     * answerable in one query: the chosen video lived only inside the MinIO
+     * object until jobs.decision_selected_id existed.
+     *
+     * Scope is "selected by this bot, EVER" -- every run, every experiment --
+     * which is the semantics a personalisation study wants: a bot that has seen
+     * a video has seen it, and the fact does not expire at a run boundary.
+     *
+     * It answers 409 rather than an empty list when the column is missing. An
+     * empty list is a positive claim -- "this bot has watched nothing" -- and
+     * the caller would filter nothing while believing it had filtered
+     * correctly. Absent is unknown, and unknown has to be visible; the runner
+     * turns this into `already_watched: not_implemented`, which is what it
+     * already reports today.
+     */
+    public function watched(Crawler $crawler): JsonResponse
+    {
+        if ( ! Job::hasSelectedIdColumn()) {
+            return response()->json([
+                'message' => 'jobs.decision_selected_id does not exist in this database; '
+                    .'run the migration. An empty list would claim this bot has watched '
+                    .'nothing, which is a different answer from "unknown".',
+            ], ResponseAlias::HTTP_CONFLICT);
+        }
+
+        $watched = Job::query()
+            ->select('jobs.decision_selected_id')
+            ->join('queues', 'jobs.queue_id', '=', 'queues.id')
+            ->where('queues.crawler_id', $crawler->id)
+            ->whereNotNull('jobs.decision_selected_id')
+            ->groupBy('jobs.decision_selected_id')
+            ->orderByRaw('MAX(jobs.id) DESC')
+            ->pluck('jobs.decision_selected_id');
+
+        return response()->json(['data' => $watched]);
+    }
+
     public function show(Crawler $crawler): JsonResource
     {
         $this->authorize('view', $crawler);
