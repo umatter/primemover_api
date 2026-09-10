@@ -105,10 +105,25 @@ class BackfillDecisions extends Command
         $decisions->whereHasJobData($query);
 
         if ( ! $force) {
-            $query->whereNull('decision_degraded')
-                ->whereNull('decision_treatment_lost')
-                ->whereNull('decision_selection_mode')
-                ->whereNull('decision_report');
+            // "Nothing recorded yet" OR "recorded before decision_selected_id
+            // existed". Without the second arm every row the first backfill
+            // already wrote would be skipped for ever, and the video ids -- the
+            // reason the column was added -- would only ever land on jobs run
+            // after the migration. The per-column guard in backfill() still
+            // refuses to overwrite anything non-null, so a re-read of an
+            // already-verdicted row writes the id and nothing else.
+            $query->where(function (Builder $outer): void {
+                $outer->where(function (Builder $unrecorded): void {
+                    $unrecorded->whereNull('decision_degraded')
+                        ->whereNull('decision_treatment_lost')
+                        ->whereNull('decision_selection_mode')
+                        ->whereNull('decision_report');
+                });
+
+                if (Job::hasSelectedIdColumn()) {
+                    $outer->orWhereNull('decision_selected_id');
+                }
+            });
         }
 
         return $query;
