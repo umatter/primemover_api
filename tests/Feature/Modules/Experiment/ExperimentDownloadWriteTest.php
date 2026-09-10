@@ -41,8 +41,7 @@ class ExperimentDownloadWriteTest extends TestCase
      */
     public function test_a_rejected_write_throws_naming_the_disk(): void
     {
-        Storage::shouldReceive('disk')->andReturnSelf();
-        Storage::shouldReceive('put')->andReturnFalse();
+        $this->stubStorageRejectingWrites();
 
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessageMatches('/Could not write the export archive/');
@@ -57,8 +56,7 @@ class ExperimentDownloadWriteTest extends TestCase
     {
         // The whole point: "File not found" sent whoever saw it looking at the
         // read, or at a missing experiment, rather than at an unwritable disk.
-        Storage::shouldReceive('disk')->andReturnSelf();
-        Storage::shouldReceive('put')->andReturnFalse();
+        $this->stubStorageRejectingWrites();
 
         try {
             (new StoreCreatedZipArchive())->handle($this->downloadData(), fn ($passable) => $passable);
@@ -75,13 +73,26 @@ class ExperimentDownloadWriteTest extends TestCase
         $user = User::factory()->create();
         $experiment = Experiment::factory()->create(['user_id' => $user->id]);
 
-        $zip = tempnam(sys_get_temp_dir(), 'export').'.zip';
-        file_put_contents($zip, 'not really a zip, and it does not need to be');
-
         $data = DownloadData::from(compact('experiment'));
-        $data->setPathZipArchive($zip);
+        $data->setFinalArchiveName('export.zip');
         $data->setPathUploadS3('api-data/experiments/test.zip');
 
         return $data;
+    }
+
+    /**
+     * A Storage facade that resolves the archive path but refuses the write.
+     *
+     * put() returning false rather than throwing is the whole point: it is what
+     * a misconfigured disk does, and what the pipe used to sail past.
+     */
+    private function stubStorageRejectingWrites(): void
+    {
+        $zip = tempnam(sys_get_temp_dir(), 'export');
+        file_put_contents($zip, 'not really a zip, and it does not need to be');
+
+        Storage::shouldReceive('path')->andReturn($zip);
+        Storage::shouldReceive('disk')->andReturnSelf();
+        Storage::shouldReceive('put')->andReturnFalse();
     }
 }
