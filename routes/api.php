@@ -80,6 +80,8 @@ Route::prefix('v1')->middleware('throttleIp:1000,1')
                     Route::get('crawlers-unprocessed', 'withUnprocessedQueues');
                     Route::get('crawlers-inactive', 'inactive');
                     Route::delete('crawlers/{crawler}/destroy', 'forceDelete');
+                    // The bot's watch history, for the already_watched filter.
+                    Route::get('crawlers/{crawler}/watched', 'watched');
                     // Platform-wide destructive operations: service accounts only.
                     // disableProdCrawlers() deactivates EVERY user's production
                     // crawlers; undo/cleanup are equally global.
