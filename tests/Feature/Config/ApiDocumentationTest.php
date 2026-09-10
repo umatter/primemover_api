@@ -72,10 +72,21 @@ class ApiDocumentationTest extends TestCase
         // annotation and regenerating are two separate acts and only the first
         // is obvious.
         //
-        // This is not hypothetical. The watched endpoint's annotation sat in a
-        // FLOATING docblock -- one @OA block, then a second prose block, then
-        // the method -- so swagger-php never attached it, and the spec stayed
-        // at 66 paths while the source looked correctly annotated.
+        // This is not hypothetical, and it was not a one-off. The watched
+        // endpoint's annotation sat in a FLOATING docblock -- one @OA block,
+        // then a second block, then the method -- so swagger-php never attached
+        // it and the spec stayed at 66 paths while the source looked correctly
+        // annotated.
+        //
+        // /experiments/upload is the one known exception, and the comment here
+        // used to explain it wrongly: it called it "an annotation with no route
+        // behind it". It IS a route -- POST /api/v1/experiments/upload answers
+        // 422, not 404 -- carrying a deprecated=true annotation with a unique
+        // operationId that swagger-php nonetheless does not emit. Merging its
+        // docblock with the preceding one (the fix that worked for the watched
+        // endpoint) did not change that, so the cause is something else and is
+        // NOT established. Recorded as a known gap with an honest reason rather
+        // than a plausible one; the route is deprecated, so the cost is low.
         $spec = json_decode(file_get_contents(base_path('storage/api-docs/api-docs.json')), true);
 
         $generated = array_map([$this, 'normalise'], array_keys($spec['paths'] ?? []));
