@@ -43,14 +43,16 @@ class StartAtTimezoneTest extends TestCase
     /** Named to avoid shadowing TestCase::$crawler, which is protected. */
     private Crawler $tzCrawler;
 
+    private User $tzUser;
+
     protected function setUp(): void
     {
         parent::setUp();
 
         config(['app.timezone' => 'Europe/Zurich']);
 
-        $user = User::factory()->create();
-        $this->tzCrawler = Crawler::factory()->create(['user_id' => $user->id]);
+        $this->tzUser = User::factory()->create();
+        $this->tzCrawler = Crawler::factory()->create(['user_id' => $this->tzUser->id]);
     }
 
     /**
@@ -67,6 +69,7 @@ class StartAtTimezoneTest extends TestCase
             'name' => 'tz',
             'description' => 'tz',
             'crawler_id' => $this->tzCrawler->id,
+            'user_id' => $this->tzUser->id,
             'start_at' => $sent,
         ]);
 
@@ -154,6 +157,7 @@ class StartAtTimezoneTest extends TestCase
             'name' => 'tz',
             'description' => 'tz',
             'crawler_id' => $this->tzCrawler->id,
+            'user_id' => $this->tzUser->id,
             'start_at' => $startAt,
         ]);
 
