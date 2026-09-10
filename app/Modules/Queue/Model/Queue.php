@@ -263,34 +263,6 @@ class Queue extends BaseModel
         $this->attributes['finished_at'] = self::inAppTimezone($value);
     }
 
-    /**
-     * One timestamp, as the application's wall clock.
-     *
-     * Anything unparseable is returned untouched rather than raising: these are
-     * varchar columns, the runner has been observed writing odd values into
-     * them, and refusing a whole queue update over a timestamp would trade a
-     * wrong start time for a lost status update.
-     */
-    private static function inAppTimezone($value): ?string
-    {
-        if (null === $value || '' === $value) {
-            return null;
-        }
-
-        if ($value instanceof DateTimeInterface) {
-            return Carbon::instance($value)
-                ->setTimezone(config('app.timezone'))
-                ->format('Y-m-d H:i:s');
-        }
-
-        try {
-            return Carbon::parse($value)
-                ->setTimezone(config('app.timezone'))
-                ->format('Y-m-d H:i:s');
-        } catch (Throwable) {
-            return (string) $value;
-        }
-    }
 
     /**
      * Canonical form of a raw status_code ('' when there is none).
@@ -511,5 +483,34 @@ class Queue extends BaseModel
                 AllowedFilter::scope('recent'),
                 AllowedFilter::scope('crawler'),
             ], StatusQuery::filters((new self())->getTable())));
+    }
+
+    /**
+     * One timestamp, as the application's wall clock.
+     *
+     * Anything unparseable is returned untouched rather than raising: these are
+     * varchar columns, the runner has been observed writing odd values into
+     * them, and refusing a whole queue update over a timestamp would trade a
+     * wrong start time for a lost status update.
+     */
+    private static function inAppTimezone($value): ?string
+    {
+        if (null === $value || '' === $value) {
+            return null;
+        }
+
+        if ($value instanceof DateTimeInterface) {
+            return Carbon::instance($value)
+                ->setTimezone(config('app.timezone'))
+                ->format('Y-m-d H:i:s');
+        }
+
+        try {
+            return Carbon::parse($value)
+                ->setTimezone(config('app.timezone'))
+                ->format('Y-m-d H:i:s');
+        } catch (Throwable) {
+            return (string) $value;
+        }
     }
 }

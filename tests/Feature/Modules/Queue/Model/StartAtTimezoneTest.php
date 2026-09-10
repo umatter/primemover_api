@@ -2,9 +2,9 @@
 
 namespace Tests\Feature\Modules\Queue\Model;
 
+use App\Models\User;
 use App\Modules\Crawler\Model\Crawler;
 use App\Modules\Queue\Model\Queue;
-use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
