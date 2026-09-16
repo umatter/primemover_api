@@ -20,6 +20,10 @@ class ConfigurationUpdateRequest extends FormRequest
             'name' => ['required'],
             'description' => ['nullable'],
             'active' => ['required'],
+            'preferences' => ['sometimes', 'array'],
+            'preferences.*.name' => ['required', 'string', 'max:255'],
+            'preferences.*.value' => ['present'],
+            'preferences.*.description' => ['sometimes', 'nullable', 'string'],
         ];
     }
 
@@ -37,6 +41,6 @@ class ConfigurationUpdateRequest extends FormRequest
 
     protected function prepareForValidation(): void
     {
-        $this->except(['params', 'preferences']);
+        $this->except(['params']);
     }
 }
