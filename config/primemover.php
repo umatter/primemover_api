@@ -91,20 +91,31 @@ return [
          |
          | Selection is by time, not a fixed top-N: a top-N stalls once more
          | than N are due at once. Waiting rows are ranked runnable first
-         | (start_at no older than stale_after_minutes), stale or unparseable
-         | after, oldest first within each. A poll sends at most
-         | max_jobs_per_poll jobs -- the memory guard; ~15 KB per job measured,
-         | so 10,000 is ~150 MB of the 512M limit -- and at most
-         | max_queues_per_poll waiting queues, a secondary bound. Processing rows
-         | are never cut, the first waiting row is always sent, and any poll that
-         | holds work back logs it (error when runnable work is late, warning
-         | otherwise). Never a silent cap.
+         | (start_at no more than stale_after_minutes overdue), then stale, then
+         | unparseable, then NULL start_at (the runner throws on those), oldest
+         | first within each. A poll sends at most max_jobs_per_poll jobs -- the
+         | memory guard -- and at most max_queues_per_poll waiting queues, a
+         | secondary bound. Processing rows are never cut, the first waiting row
+         | is always sent, and any poll that holds work back logs it (error when
+         | runnable work is late, warning otherwise). Never a silent cap.
+         |
+         | Memory: ~18.5 KB per job measured on this endpoint (jobs with 2
+         | behaviours and 1 report; experiment 189 averages 2.5 behaviours a
+         | job), on top of the bench's ~50 MB baseline. 10,000 jobs is ~185 MB, ~235 MB
+         | of php.ini's 512M. The 20,000 ceiling is ~370 MB, ~420 MB with the
+         | baseline: ~80% of 512M before processing rows (never cut) and an
+         | oversized first row add to it. Raise memory_limit before raising the
+         | budget past ~15,000.
          |
          | WARNING -- lookahead_minutes must be at least the largest
          | runner.UpdateInterval of any runner polling this API, plus margin
          | (code default 15, ex63 tracked config 1), or queues start late.
          | stale_after_minutes must exceed runner.MaxRedoMinutes (45), or rows
-         | the runner can still run rank as stale.
+         | the runner can still run rank as stale. Its default is 46, exactly
+         | that: a row more overdue at poll time can only be skipped by the
+         | runner, so it must not take the place of one that can still run.
+         | If a runner is configured with a larger MaxRedoMinutes, raise this
+         | to match it plus one.
          |
          | A missing, non-numeric or non-positive value means the default below
          | (so a config cache built before these keys existed is harmless), and
@@ -112,7 +123,7 @@ return [
          | max_queues_per_poll in 1..1000, max_jobs_per_poll in 1..20000.
          */
         'lookahead_minutes' => (int) (env('PM_RUNNER_LOOKAHEAD_MINUTES') ?: 30),
-        'stale_after_minutes' => (int) (env('PM_RUNNER_STALE_AFTER_MINUTES') ?: 60),
+        'stale_after_minutes' => (int) (env('PM_RUNNER_STALE_AFTER_MINUTES') ?: 46),
         'max_queues_per_poll' => (int) (env('PM_RUNNER_MAX_QUEUES_PER_POLL') ?: 300),
         'max_jobs_per_poll' => (int) (env('PM_RUNNER_MAX_JOBS_PER_POLL') ?: 10000),
     ],

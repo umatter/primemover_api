@@ -10,6 +10,8 @@ use App\Modules\Crawler\Model\Crawler;
 use App\Modules\Crawler\Pipe\Upload\CreateQueue;
 use App\Modules\Experiment\Model\DTO\QueueDto;
 use Arimolzer\IPStackFinder\Facade\IPStackFinderFacade;
+use DateTimeImmutable;
+use DateTimeZone;
 use Exception;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -128,9 +130,8 @@ class CrawlerRepository
      * picked up -- indistinguishable from an experiment that quietly under-ran.
      *
      * It used to send every unprocessed queue, with all its jobs, behaviours
-     * and reports. That is bounded by pending work, and pending work is not
-     * small: on 2026-10-06/07 an experiment uploaded nine days ahead and one
-     * poll hydrated ~11,084 queues and ~394k jobs (~15 KB each). Every poll
+     * and reports. On 2026-10-06/07 an experiment had been uploaded nine days
+     * ahead, and one poll hydrated ~11,084 queues and ~394k jobs. Every poll
      * 500'd -- out of memory at 512M, then at 2G -- for ~16 hours, and the
      * runner on ex63 started nothing, for every experiment on it.
      *
@@ -147,20 +148,27 @@ class CrawlerRepository
      *     on queues it receives.
      *   - reviewed = 1: the runner closes these on sight (SKIPPED_REVIEWED).
      *   - start_at NULL, '' or not 'Y-m-d H:i:s': such strings compare wrongly
-     *     as text, so they count as due, which is what they were before. The
-     *     runner parses the shapes it can and waits until they are due.
+     *     as text, so they count as due, which is what they were before.
      * Selection is by due TIME, not a fixed top-N "most pressing first": a
      * top-N stalls the moment more than N are due at once, or when stale rows
      * fill the top.
      *
-     * PRIORITY. Waiting rows (everything not processing) are ranked by tier,
-     * then start_at, then id. Tier 0 is runnable: a canonical start_at no
-     * older than stale_after_minutes. Tier 1 is everything else -- stale rows
-     * the runner can only skip, NULL, '', unparseable -- so poison or stale
-     * rows can never take the slots of work that can still run. Inside a tier
-     * the most overdue comes first, being closest to the runner's 45-minute
-     * loss. Queues within a crawler, and crawlers by their best queue, are
-     * returned in this order, because the runner's executor is FIFO.
+     * PRIORITY. Waiting rows (everything not processing) are ranked in four
+     * bands, then by start_at, then id:
+     *   0 runnable: a canonical start_at no more than stale_after_minutes
+     *     overdue. Most overdue first, being closest to the runner's
+     *     45-minute loss.
+     *   1 stale: older than that. The runner can only skip these, but it is
+     *     the only thing that closes them, so they drain with what is left.
+     *   2 unplaceable: '' or a non-canonical string, whose due time the API
+     *     does not compute.
+     *   3 NULL start_at (unless reviewed): the runner throws on these
+     *     (TaskManager compares the window end with a null start), which
+     *     aborts the rest of that poll's loop. They are still sent -- every
+     *     existing client and test sees them today -- but never ahead of
+     *     anything else.
+     * Bands 1-3 are "stale" in the log. Poison and stale rows can never take
+     * the slots of work that can still run.
      *
      * BUDGET. The waiting rows are walked in rank order and sent while the
      * poll stays within max_jobs_per_poll jobs -- the memory guard, since
@@ -174,11 +182,25 @@ class CrawlerRepository
      * is not a silent pagination cap: it never drops work, only defers the
      * least urgent, and says so.
      *
+     * RESPONSE ORDER. The runner walks the response crawler by crawler, queue
+     * by queue, and a NULL start_at ends that walk. So: processing rows first
+     * (they never reach the executor, and a timed-out one frees its worker
+     * slot before new work is scheduled), then waiting rows in rank order,
+     * NULL rows last; crawlers by their first row, except that a crawler
+     * carrying a NULL row goes after every crawler that does not. Only what
+     * follows the first NULL row is then lost to the throw: the other NULL
+     * rows, and the rest of any further crawler that carries one.
+     *
      * TIME. start_at is a varchar holding the app-timezone wall clock
-     * ('Y-m-d H:i:s', Queue::setStartAtAttribute), so the bounds are computed
-     * in PHP -- arithmetic in UTC, which is exact across a DST change, then
-     * formatted in the app zone -- and compared as strings. Never SQL NOW():
-     * MySQL runs on the container clock.
+     * ('Y-m-d H:i:s', Queue::setStartAtAttribute). The window bound is
+     * computed in PHP -- arithmetic in UTC, then formatted in the app zone --
+     * and compared as a string in SQL; never SQL NOW(), since MySQL runs on
+     * the container clock. That comparison is never late, including across
+     * the DST fall-back. Ranking and the error/warning decision instead read
+     * each start_at as an instant, the way the response serialises it
+     * (createFromFormat in the app zone, which reads the repeated 02:xx hour
+     * as standard time), because a wall-clock string compare misplaces rows
+     * by an hour on that night.
      *
      * CONFIG (config/primemover.php, 'runner'). lookahead_minutes must be at
      * least the largest runner.UpdateInterval of any runner polling this API,
@@ -188,18 +210,18 @@ class CrawlerRepository
     public function unprocessed(): Collection
     {
         $lookahead = $this->runnerSetting('lookahead_minutes', 30, 15);
-        $staleAfter = $this->runnerSetting('stale_after_minutes', 60, 46);
+        $staleAfter = $this->runnerSetting('stale_after_minutes', 46, 46);
         $queueCap = $this->runnerSetting('max_queues_per_poll', 300, 1, 1000);
         $jobBudget = $this->runnerSetting('max_jobs_per_poll', 10000, 1, 20000);
 
         // Arithmetic in UTC, where adding minutes is unambiguous across a DST
         // change, then formatted as the stored wall clock. Never SQL NOW().
-        $zone = (string) config('app.timezone');
+        $zone = new DateTimeZone((string) config('app.timezone'));
         $now = Carbon::now('UTC');
         $wall = fn (Carbon $t): string => $t->copy()->setTimezone($zone)->format('Y-m-d H:i:s');
         $dueBy = $wall($now->copy()->addMinutes($lookahead));
-        $staleBefore = $wall($now->copy()->subMinutes($staleAfter));
-        $nowWall = $wall($now);
+        $nowTs = $now->getTimestamp();
+        $staleTs = $nowTs - 60 * $staleAfter;
 
         // Step 1: one narrow scan of the candidate rows. select() on the
         // Eloquent subquery replaces Crawler's six withCount rollups with the
@@ -216,21 +238,37 @@ class CrawlerRepository
                     ->orWhere('queues.start_at', '<=', $dueBy)
                     ->orWhere('queues.start_at', 'not like', self::CANONICAL_START_AT);
             })
-            ->get(['queues.id', 'queues.crawler_id', 'queues.start_at', 'queues.processing']);
+            ->get(['queues.id', 'queues.crawler_id', 'queues.start_at', 'queues.processing', 'queues.reviewed']);
 
         [$processing, $waiting] = $rows->partition(fn ($r): bool => 1 === (int) $r->processing);
 
-        $tier = fn ($r): int => (is_string($r->start_at)
-            && 1 === preg_match(self::CANONICAL_START_AT_REGEX, $r->start_at)
-            && strcmp($r->start_at, $staleBefore) >= 0) ? 0 : 1;
         $waiting = $waiting
-            ->map(fn ($r): object => (object) [
-                'id' => (int) $r->id,
-                'start_at' => $r->start_at,
-                'tier' => $tier($r),
-            ])
-            ->sort(fn ($a, $b): int => [$a->tier, (string) $a->start_at, $a->id] <=> [$b->tier, (string) $b->start_at, $b->id])
+            ->map(function ($r) use ($zone, $staleTs): object {
+                $at = self::startInstant($r->start_at, $zone);
+                $band = match (true) {
+                    null !== $at => $at >= $staleTs ? 0 : 1,
+                    null !== $r->start_at, 1 === (int) $r->reviewed => 2,
+                    default => 3,
+                };
+
+                return (object) [
+                    'id' => (int) $r->id,
+                    'start_at' => $r->start_at,
+                    'at' => $at,
+                    'band' => $band,
+                    'tier' => 0 === $band ? 0 : 1,
+                ];
+            })
+            ->sort(fn ($a, $b): int => [$a->band, $a->at ?? 0, (string) $a->start_at, $a->id]
+                <=> [$b->band, $b->at ?? 0, (string) $b->start_at, $b->id])
             ->values();
+
+        // A processing row with a NULL start_at throws in the runner too (in
+        // the processing-timeout check), so it goes last with the others.
+        [$processingNull, $processingDated] = $processing
+            ->map(fn ($r): object => (object) ['id' => (int) $r->id, 'start_at' => $r->start_at])
+            ->sortBy('id')
+            ->partition(fn ($r): bool => null === $r->start_at);
         $processingIds = $processing->map(fn ($r): int => (int) $r->id)->values()->all();
 
         // Job counts only for the rows the walk can reach, through the
@@ -282,8 +320,9 @@ class CrawlerRepository
                 'stale_held_back' => $heldBack->where('tier', 1)->count(),
                 'processing_sent' => count($processingIds),
                 'lookahead_minutes' => $lookahead,
+                'stale_after_minutes' => $staleAfter,
                 'due_by' => $dueBy,
-                'stale_before' => $staleBefore,
+                'stale_before' => $wall($now->copy()->subMinutes($staleAfter)),
                 'first_held_back_queue_id' => $first->id,
                 'first_held_back_start_at' => $first->start_at,
             ];
@@ -292,21 +331,30 @@ class CrawlerRepository
 
             // Error only when work that could still run, and is already due,
             // waits: that is lateness. Otherwise only future or stale work waits.
-            if (0 === $first->tier && strcmp((string) $first->start_at, $nowWall) <= 0) {
+            if (0 === $first->tier && $first->at <= $nowTs) {
                 Log::error($message, $context);
             } else {
                 Log::warning($message, $context);
             }
         }
 
-        // Step 2: hydrate only what is sent -- waiting ids in priority order,
-        // then processing ids. The position in $ids is the response order.
-        $ids = array_merge(array_map(fn ($r): int => $r->id, $sent), $processingIds);
+        // Step 2: hydrate only what is sent. The position in $ids is the
+        // response order: processing rows, waiting rows by rank (NULL ones
+        // last), processing rows with a NULL start_at.
+        $ids = array_merge(
+            $processingDated->pluck('id')->all(),
+            array_map(fn ($r): int => $r->id, $sent),
+            $processingNull->pluck('id')->all(),
+        );
         if ([] === $ids) {
             // Serialises as {"data":[]}.
             return $this->crawler->newCollection();
         }
         $rank = array_flip($ids);
+        $throwsInRunner = array_flip(array_merge(
+            array_map(fn ($r): int => $r->id, array_filter($sent, fn ($r): bool => 3 === $r->band)),
+            $processingNull->pluck('id')->all(),
+        ));
         $crawlerOf = $rows->mapWithKeys(fn ($r): array => [(int) $r->id => (int) $r->crawler_id])->all();
         $crawlerIds = array_values(array_unique(array_map(fn (int $id): int => $crawlerOf[$id], $ids)));
 
@@ -337,9 +385,14 @@ class CrawlerRepository
             $crawler->setRelation('queues', $crawler->queues->sortBy(fn ($q): int => $rank[(int) $q->id])->values());
         }
 
+        $order = fn ($c): array => [
+            $c->queues->contains(fn ($q): bool => isset($throwsInRunner[(int) $q->id])) ? 1 : 0,
+            $rank[(int) $c->queues->first()->id],
+        ];
+
         return $crawlers
             ->filter(fn ($c): bool => $c->queues->isNotEmpty())
-            ->sortBy(fn ($c): int => $rank[(int) $c->queues->first()->id])
+            ->sort(fn ($a, $b): int => $order($a) <=> $order($b))
             ->values();
     }
 
@@ -518,6 +571,22 @@ class CrawlerRepository
                 'upload' => $exception->getMessage(),
             ]);
         }
+    }
+
+    /**
+     * The instant a start_at denotes, read the way the response serialises it
+     * (Eloquent's datetime cast: createFromFormat in the app zone, so the
+     * repeated hour of a DST fall-back reads as standard time). NULL for
+     * anything that is not the canonical 'Y-m-d H:i:s'.
+     */
+    private static function startInstant(mixed $startAt, DateTimeZone $zone): ?int
+    {
+        if ( ! is_string($startAt) || 1 !== preg_match(self::CANONICAL_START_AT_REGEX, $startAt)) {
+            return null;
+        }
+        $parsed = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $startAt, $zone);
+
+        return false === $parsed ? null : $parsed->getTimestamp();
     }
 
     /**

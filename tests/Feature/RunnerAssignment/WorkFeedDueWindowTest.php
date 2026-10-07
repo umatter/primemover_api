@@ -8,9 +8,12 @@ use App\Modules\Job\Model\Job;
 use App\Modules\Queue\Model\Queue;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Events\QueryExecuted;
+use Illuminate\Log\LogManager;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Mockery;
 
 /**
  * GET /crawlers-unprocessed hands the runner the work that is due, not every
@@ -524,6 +527,426 @@ class WorkFeedDueWindowTest extends RunnerAssignmentTestCase
     }
 
     /**
+     * A row more than stale_after_minutes overdue can only be skipped by the
+     * runner; it must not take the slot of one the runner can still run, even
+     * though it is older.
+     *
+     * @covers ::unprocessed
+     */
+    public function test_a_row_past_stale_after_ranks_behind_runnable_work(): void
+    {
+        Log::spy();
+        $this->onlyMine();
+        config(['primemover.runner.max_queues_per_poll' => 1]);
+
+        $this->queueOn($this->forDefault, ['start_at' => '2026-10-09 03:59:00']);
+        $runnable = $this->queueOn($this->forDefault, ['start_at' => '2026-10-09 05:59:00']);
+
+        $this->assertSame([(int) $runnable->id], $this->feedQueueIds());
+        Log::shouldHaveReceived('warning')
+            ->once()
+            ->withArgs(fn (string $message, array $context): bool => 1 === $context['stale_held_back']
+                && 0 === $context['runnable_held_back']
+                && 60 === $context['stale_after_minutes']
+                && '2026-10-09 05:00:00' === $context['stale_before']);
+        Log::shouldNotHaveReceived('error');
+    }
+
+    /**
+     * stale_before is inclusive: a row exactly stale_after_minutes overdue is
+     * still runnable, and as the most overdue it goes first.
+     *
+     * @covers ::unprocessed
+     */
+    public function test_a_row_exactly_at_stale_before_is_still_runnable(): void
+    {
+        Log::spy();
+        $this->onlyMine();
+        config(['primemover.runner.max_queues_per_poll' => 1]);
+
+        $atTheEdge = $this->queueOn($this->forDefault, ['start_at' => '2026-10-09 05:00:00']);
+        $this->queueOn($this->forDefault, ['start_at' => '2026-10-09 05:59:00']);
+
+        $this->assertSame([(int) $atTheEdge->id], $this->feedQueueIds());
+    }
+
+    /**
+     * @covers ::unprocessed
+     */
+    public function test_stale_after_follows_config_with_a_floor(): void
+    {
+        Log::spy();
+        $this->onlyMine();
+        config(['primemover.runner.max_queues_per_poll' => 1]);
+
+        // 90 minutes: 04:40 (80 late) is runnable and the most overdue; 04:20
+        // (100 late) is stale.
+        config(['primemover.runner.stale_after_minutes' => 90]);
+        $this->queueOn($this->forDefault, ['start_at' => '2026-10-09 04:20:00']);
+        $at0440 = $this->queueOn($this->forDefault, ['start_at' => '2026-10-09 04:40:00']);
+        $this->queueOn($this->forDefault, ['start_at' => '2026-10-09 05:59:00']);
+        $this->assertSame([(int) $at0440->id], $this->feedQueueIds());
+
+        // Below the runner's MaxRedoMinutes: floored to 46, so 05:20 (40 late)
+        // is runnable and goes ahead of 05:59.
+        $this->onlyMine();
+        config(['primemover.runner.stale_after_minutes' => 30]);
+        $at0520 = $this->queueOn($this->forDefault, ['start_at' => '2026-10-09 05:20:00']);
+        $this->queueOn($this->forDefault, ['start_at' => '2026-10-01 06:00:00']);
+        $this->queueOn($this->forDefault, ['start_at' => '2026-10-09 05:59:00']);
+        $this->assertSame([(int) $at0520->id], $this->feedQueueIds());
+    }
+
+    /**
+     * The default stale_after is the runner's MaxRedoMinutes plus one: a row
+     * 50 minutes late is already lost and must not lead the feed.
+     *
+     * @covers ::unprocessed
+     */
+    public function test_the_default_stale_after_is_one_minute_past_the_runners_redo_limit(): void
+    {
+        Log::spy();
+        $this->onlyMine();
+        config([
+            'primemover.runner' => [
+                'default_user_id' => $this->defaultRunner->id,
+                'max_queues_per_poll' => 1,
+            ],
+        ]);
+
+        $this->queueOn($this->forDefault, ['start_at' => '2026-10-09 05:10:00']);
+        $at0520 = $this->queueOn($this->forDefault, ['start_at' => '2026-10-09 05:20:00']);
+
+        $this->assertSame([(int) $at0520->id], $this->feedQueueIds());
+    }
+
+    /**
+     * At 01:30Z on 2026-10-25 the wall clock reads 02:30 CET, and a stored
+     * 02:10 is read (by the cast, so by the runner) as 01:10Z: 20 minutes late
+     * and runnable. A wall-clock string compare against stale_before (00:30Z,
+     * 02:30 CEST) would rank it stale behind a row that really is 91 minutes
+     * late.
+     *
+     * @covers ::unprocessed
+     */
+    public function test_ranking_reads_start_at_as_an_instant_across_the_dst_change(): void
+    {
+        Log::spy();
+        $this->onlyMine();
+        config(['primemover.runner.max_queues_per_poll' => 1]);
+        Carbon::setTestNow(Carbon::parse('2026-10-25T01:30:00Z'));
+
+        $runnable = $this->queueOn($this->forDefault, ['start_at' => '2026-10-25 02:10:00']);
+        $this->queueOn($this->forDefault, ['start_at' => '2026-10-25 01:59:00']);
+
+        $this->assertSame([(int) $runnable->id], $this->feedQueueIds());
+        Log::shouldHaveReceived('warning')->once();
+        Log::shouldNotHaveReceived('error');
+    }
+
+    /**
+     * At 00:40Z on 2026-10-25 the wall clock reads 02:40 CEST, but a stored
+     * 02:05 means 01:05Z, 25 minutes ahead: held back, it is not late.
+     *
+     * @covers ::unprocessed
+     */
+    public function test_the_lateness_check_reads_start_at_as_an_instant_across_the_dst_change(): void
+    {
+        Log::spy();
+        $this->onlyMine();
+        config(['primemover.runner.max_queues_per_poll' => 1]);
+        Carbon::setTestNow(Carbon::parse('2026-10-25T00:40:00Z'));
+
+        $first = $this->queueOn($this->forDefault, ['start_at' => '2026-10-25 02:00:00']);
+        $this->queueOn($this->forDefault, ['start_at' => '2026-10-25 02:05:00']);
+
+        $this->assertSame([(int) $first->id], $this->feedQueueIds());
+        Log::shouldHaveReceived('warning')->once();
+        Log::shouldNotHaveReceived('error');
+    }
+
+    /**
+     * Held-back runnable work that is not due yet is not late: warning, not
+     * error.
+     *
+     * @covers ::unprocessed
+     */
+    public function test_held_back_work_that_is_not_yet_due_logs_a_warning(): void
+    {
+        Log::spy();
+        $this->onlyMine();
+        config(['primemover.runner.max_queues_per_poll' => 1]);
+
+        $at0610 = $this->queueOn($this->forDefault, ['start_at' => '2026-10-09 06:10:00']);
+        $at0620 = $this->queueOn($this->forDefault, ['start_at' => '2026-10-09 06:20:00']);
+
+        $this->assertSame([(int) $at0610->id], $this->feedQueueIds());
+        Log::shouldHaveReceived('warning')
+            ->once()
+            ->withArgs(fn (string $message, array $context): bool => 1 === $context['runnable_held_back']
+                && (int) $at0620->id === $context['first_held_back_queue_id']);
+        Log::shouldNotHaveReceived('error');
+    }
+
+    /**
+     * Step 1 must drop inactive rows itself. Step 2 would hide them anyway
+     * (Crawler::queues() filters active), but by then an inactive row would
+     * have taken a slot, and the feed could come back empty while runnable
+     * work was logged as held back.
+     *
+     * @covers ::unprocessed
+     */
+    public function test_an_inactive_row_takes_no_slot(): void
+    {
+        Log::spy();
+        $this->onlyMine();
+        config(['primemover.runner.max_queues_per_poll' => 1]);
+
+        $this->queueOn($this->forDefault, ['start_at' => '2026-10-09 05:10:00', 'active' => 0]);
+        $active = $this->queueOn($this->forDefault, ['start_at' => '2026-10-09 05:20:00']);
+
+        $this->assertSame([(int) $active->id], $this->feedQueueIds());
+        Log::shouldNotHaveReceived('error');
+        Log::shouldNotHaveReceived('warning');
+    }
+
+    /**
+     * A string with a canonical prefix sorts like a time but is not one the
+     * API places in time; it ranks with the stale rows, not ahead of runnable
+     * work.
+     *
+     * @covers ::unprocessed
+     */
+    public function test_non_canonical_start_at_ranks_behind_runnable_work(): void
+    {
+        Log::spy();
+        $this->onlyMine();
+        config(['primemover.runner.max_queues_per_poll' => 1]);
+
+        foreach (['2026-10-09 05:30:00.000', '2026-10-09 05:20:00 ', '2026-10-09 5:25:00'] as $raw) {
+            $queue = $this->queueOn($this->forDefault, ['start_at' => '2026-10-09 05:30:00']);
+            DB::table('queues')->where('id', $queue->id)->update(['start_at' => $raw]);
+        }
+        $runnable = $this->queueOn($this->forDefault, ['start_at' => '2026-10-09 05:59:00']);
+
+        $this->assertSame([(int) $runnable->id], $this->feedQueueIds());
+    }
+
+    /**
+     * Behind the runnable rows: canonical stale rows (the runner closes them),
+     * then start_at values the API cannot place in time (a reviewed NULL is
+     * closed on sight, so it belongs here), then NULL, which the runner
+     * throws on.
+     *
+     * @covers ::unprocessed
+     */
+    public function test_null_start_at_comes_after_every_other_row(): void
+    {
+        $this->onlyMine();
+
+        $null = $this->queueOn($this->forDefault, ['start_at' => null]);
+        $reviewedNull = $this->queueOn($this->forDefault, ['start_at' => null, 'reviewed' => 1]);
+        $isoT = $this->queueOn($this->forDefault, ['start_at' => '2026-10-09 05:00:00']);
+        DB::table('queues')->where('id', $isoT->id)->update(['start_at' => '2026-10-09T05:00:00']);
+        $stale = $this->queueOn($this->forDefault, ['start_at' => '2026-10-01 06:00:00']);
+        $runnable = $this->queueOn($this->forDefault, ['start_at' => '2026-10-09 05:59:00']);
+
+        $this->assertSame(
+            [(int) $runnable->id, (int) $stale->id, (int) $reviewedNull->id, (int) $isoT->id, (int) $null->id],
+            $this->feedQueueIds()
+        );
+    }
+
+    /**
+     * Processing rows never reach the executor, and a timed-out one frees its
+     * worker slot, so they lead: a crawler holding only a processing row goes
+     * ahead of one holding the most urgent waiting row.
+     *
+     * @covers ::unprocessed
+     */
+    public function test_processing_rows_lead_the_feed(): void
+    {
+        $this->onlyMine();
+
+        $processing = $this->queueOn($this->forDefault, ['start_at' => '2026-10-09 05:58:00', 'processing' => 1]);
+        $waiting = $this->queueOn($this->unassigned, ['start_at' => '2026-10-09 05:10:00']);
+
+        $this->assertSame([(int) $processing->id, (int) $waiting->id], $this->feedQueueIds());
+        $this->assertSame(
+            [(int) $this->forDefault['crawler']->id, (int) $this->unassigned['crawler']->id],
+            $this->feedCrawlerIds()
+        );
+    }
+
+    /**
+     * The runner walks the response in order and throws on a NULL start_at
+     * (TaskManager compares the window end with it), which ends that poll's
+     * walk. A crawler carrying one therefore goes after every crawler that
+     * does not, however urgent its other rows, so the throw cannot cost
+     * another crawler its stale rows' closing or its processing timeout.
+     *
+     * @covers ::unprocessed
+     */
+    public function test_a_crawler_carrying_a_null_start_at_goes_last(): void
+    {
+        $this->onlyMine();
+
+        $null = $this->queueOn($this->unassigned, ['start_at' => null]);
+        $urgent = $this->queueOn($this->unassigned, ['start_at' => '2026-10-09 05:10:00']);
+        $stale = $this->queueOn($this->forDefault, ['start_at' => '2026-10-01 06:00:00']);
+
+        $this->assertSame([(int) $stale->id, (int) $urgent->id, (int) $null->id], $this->feedQueueIds());
+        $this->assertSame(
+            [(int) $this->forDefault['crawler']->id, (int) $this->unassigned['crawler']->id],
+            $this->feedCrawlerIds()
+        );
+    }
+
+    /**
+     * A processing row with a NULL start_at throws in the runner's timeout
+     * check, so it is placed last like any other NULL row.
+     *
+     * @covers ::unprocessed
+     */
+    public function test_a_processing_row_with_a_null_start_at_goes_last(): void
+    {
+        $this->onlyMine();
+
+        $nullProcessing = $this->queueOn($this->forDefault, ['start_at' => null, 'processing' => 1]);
+        $processing = $this->queueOn($this->unassigned, ['start_at' => '2026-10-09 05:58:00', 'processing' => 1]);
+        $waiting = $this->queueOn($this->unassigned, ['start_at' => '2026-10-09 05:10:00']);
+
+        $this->assertSame(
+            [(int) $processing->id, (int) $waiting->id, (int) $nullProcessing->id],
+            $this->feedQueueIds()
+        );
+    }
+
+    /**
+     * The job budget starts at what the processing rows carry, and a row that
+     * brings the total exactly to the budget still fits.
+     *
+     * @covers ::unprocessed
+     */
+    public function test_processing_rows_count_against_the_job_budget(): void
+    {
+        Log::spy();
+        $this->onlyMine();
+        config(['primemover.runner.max_jobs_per_poll' => 100]);
+
+        $processing = $this->queueOn($this->forDefault, ['start_at' => '2026-10-09 05:58:00', 'processing' => 1], 60);
+        $at0510 = $this->queueOn($this->forDefault, ['start_at' => '2026-10-09 05:10:00'], 20);
+        $at0520 = $this->queueOn($this->forDefault, ['start_at' => '2026-10-09 05:20:00'], 30);
+
+        $this->assertSame([(int) $processing->id, (int) $at0510->id], $this->feedQueueIds());
+        Log::shouldHaveReceived('error')
+            ->once()
+            ->withArgs(fn (string $message, array $context): bool => 'jobs' === $context['bound_by']
+                && 80 === $context['jobs_sent']
+                && 1 === $context['processing_sent']
+                && (int) $at0520->id === $context['first_held_back_queue_id']);
+
+        $this->freshLogSpy();
+        config(['primemover.runner.max_jobs_per_poll' => 110]);
+        $this->assertSame(
+            [(int) $processing->id, (int) $at0510->id, (int) $at0520->id],
+            $this->feedQueueIds(),
+            'a row that brings the total exactly to the budget fits'
+        );
+        Log::shouldNotHaveReceived('error');
+        Log::shouldNotHaveReceived('warning');
+    }
+
+    /**
+     * A non-numeric or non-positive setting means its default, and the two
+     * caps have ceilings: a mistyped PM_RUNNER_MAX_JOBS_PER_POLL must not turn
+     * off the memory guard. Read back from the holdback log, which reports
+     * the values in force.
+     *
+     * @covers ::unprocessed
+     */
+    public function test_settings_fall_back_on_bad_values_and_are_clamped(): void
+    {
+        $this->onlyMine();
+        // Both due and runnable at any stale_after, so every holdback is an error.
+        $this->queueOn($this->forDefault, ['start_at' => '2026-10-09 05:40:00'], 1);
+        $this->queueOn($this->forDefault, ['start_at' => '2026-10-09 05:50:00'], 1);
+
+        // Held back by the queue cap; the job budget under test.
+        foreach ([0 => 10000, -5 => 10000, 'lots' => 10000, 999999 => 20000, 15000 => 15000] as $configured => $expected) {
+            config(['primemover.runner.max_queues_per_poll' => 1, 'primemover.runner.max_jobs_per_poll' => $configured]);
+            $this->assertSame($expected, $this->heldBackContext()['max_jobs_per_poll'], "max_jobs_per_poll = {$configured}");
+        }
+
+        // Held back by the job budget; the queue cap under test.
+        foreach ([0 => 300, 'many' => 300, 5000 => 1000, 2 => 2] as $configured => $expected) {
+            config(['primemover.runner.max_jobs_per_poll' => 1, 'primemover.runner.max_queues_per_poll' => $configured]);
+            $this->assertSame($expected, $this->heldBackContext()['max_queues_per_poll'], "max_queues_per_poll = {$configured}");
+        }
+
+        foreach ([0 => 30, 'soon' => 30, 120 => 120] as $configured => $expected) {
+            config(['primemover.runner.lookahead_minutes' => $configured]);
+            $this->assertSame($expected, $this->heldBackContext()['lookahead_minutes'], "lookahead_minutes = {$configured}");
+        }
+
+        foreach ([0 => 46, 'stale' => 46, 600 => 600] as $configured => $expected) {
+            config(['primemover.runner.stale_after_minutes' => $configured]);
+            $this->assertSame($expected, $this->heldBackContext()['stale_after_minutes'], "stale_after_minutes = {$configured}");
+        }
+    }
+
+    /**
+     * What the incident was about: the cost of a poll. Only the sent queues
+     * and their crawlers are hydrated, and jobs are counted only for the
+     * prefix the walk can reach (cap + 1 rows), not for every due row.
+     *
+     * @covers ::unprocessed
+     */
+    public function test_only_the_sent_work_is_loaded(): void
+    {
+        Log::spy();
+        $this->onlyMine();
+        config(['primemover.runner.max_queues_per_poll' => 2]);
+
+        $sent = [
+            $this->queueOn($this->forDefault, ['start_at' => '2026-10-09 05:10:00'], 3),
+            $this->queueOn($this->forDefault, ['start_at' => '2026-10-09 05:20:00'], 3),
+        ];
+        $firstHeldBack = $this->queueOn($this->forDefault, ['start_at' => '2026-10-09 05:30:00'], 4);
+        $this->queueOn($this->forDefault, ['start_at' => '2026-10-09 05:40:00'], 4);
+        $this->queueOn($this->forDefault, ['start_at' => '2026-10-09 05:50:00'], 4);
+        $this->queueOn($this->forDefault, ['start_at' => '2026-10-12 06:00:00'], 5);
+        // The unassigned crawler is a feed crawler with nothing due.
+        $this->queueOn($this->unassigned, ['start_at' => '2026-10-12 06:00:00'], 5);
+
+        $hydrated = ['jobs' => 0, 'queues' => 0, 'crawlers' => 0];
+        Job::retrieved(function () use (&$hydrated): void {
+            $hydrated['jobs']++;
+        });
+        Queue::retrieved(function () use (&$hydrated): void {
+            $hydrated['queues']++;
+        });
+        Crawler::retrieved(function () use (&$hydrated): void {
+            $hydrated['crawlers']++;
+        });
+        $countSql = [];
+        DB::listen(function (QueryExecuted $query) use (&$countSql): void {
+            if (str_contains($query->sql, 'count(*) as n') && str_contains($query->sql, 'jobs')) {
+                $countSql[] = $query->sql;
+            }
+        });
+
+        $this->assertSame([(int) $sent[0]->id, (int) $sent[1]->id], $this->feedQueueIds());
+
+        $this->assertSame(['jobs' => 6, 'queues' => 2, 'crawlers' => 1], $hydrated);
+        $this->assertCount(1, $countSql);
+        $this->assertSame(1, preg_match('/in \(([\d, ]+)\)/', $countSql[0], $match));
+        $counted = array_map('intval', explode(',', $match[1]));
+        sort($counted);
+        $this->assertSame([(int) $sent[0]->id, (int) $sent[1]->id, (int) $firstHeldBack->id], $counted);
+    }
+
+    /**
      * A queue on $tree's crawler with every flag pinned (the factory randomises
      * them) and $jobs active jobs.
      *
@@ -577,6 +1000,37 @@ class WorkFeedDueWindowTest extends RunnerAssignmentTestCase
             ->map(fn (Crawler $crawler): int => (int) $crawler->id)
             ->values()
             ->all();
+    }
+
+    /**
+     * The context of the one holdback log a poll writes. The poll must hold
+     * runnable, already-due work back, so the log is an error.
+     *
+     * @return array<string, mixed>
+     */
+    private function heldBackContext(): array
+    {
+        $this->freshLogSpy();
+        $this->feedQueueIds();
+        $captured = null;
+        Log::shouldHaveReceived('error')
+            ->once()
+            ->withArgs(function (string $message, array $context) use (&$captured): bool {
+                $captured = $context;
+
+                return true;
+            });
+
+        return $captured;
+    }
+
+    /**
+     * Log::spy() keeps the spy it already installed, calls and all; this
+     * starts a clean one.
+     */
+    private function freshLogSpy(): void
+    {
+        Log::swap(Mockery::spy(LogManager::class));
     }
 
     /**
