@@ -345,14 +345,16 @@ class CrawlerController extends Controller
      * print(crawlers_data)
      * ```
      *
-     * Partitioned by runner assignment: returns only crawlers whose experiment is assigned to the calling runner account (unassigned ones go to the default runner).",
+     * Partitioned by runner assignment: returns only crawlers whose experiment is assigned to the calling runner account (unassigned ones go to the default runner).
+     *
+     * Only work that is due: queues whose start_at is at or before now + PM_RUNNER_LOOKAHEAD_MINUTES (default 30), plus every overdue, processing, reviewed or unparseable one. At most PM_RUNNER_MAX_JOBS_PER_POLL jobs (default 10000) and PM_RUNNER_MAX_QUEUES_PER_POLL queues (default 300) per poll, runnable work first. Processing queues are never cut, and a poll that holds work back logs it.",
      *     operationId="getCrawlersWithUnprocessedQueues",
      *     tags={"Crawlers"},
      *     security={{"bearerAuth": {}}},
      *
      *     @OA\Response(
      *         response=200,
-     *         description="List of crawlers with unprocessed queues",
+     *         description="Crawlers with due, overdue or processing unprocessed queues",
      *
      *         @OA\JsonContent(
      *             type="object",
