@@ -111,8 +111,11 @@ class ConfigurationController extends Controller
      */
     public function store(ConfigurationStoreRequest $request): JsonResource
     {
-        $configuration = $this->repository->save($request->validated());
-        // TODO $configuration->fresh()->params()->create($request->getParamsList());
+        $configuration = $this->repository->save(
+            $request->configurationAttributes(),
+            $request->paramsAttributes(),
+            $request->preferencesAttributes(),
+        );
 
         return JsonResource::make($configuration);
     }
@@ -199,6 +202,8 @@ class ConfigurationController extends Controller
      */
     public function update(ConfigurationUpdateRequest $request, Configuration $configuration): JsonResource
     {
+        $this->authorize('update', $configuration);
+
         return JsonResource::make($this->repository->update($request->validated(), $configuration));
     }
 
@@ -230,6 +235,8 @@ class ConfigurationController extends Controller
      */
     public function destroy(Configuration $configuration): JsonResource
     {
+        $this->authorize('delete', $configuration);
+
         return JsonResource::make($this->repository->delete($configuration));
     }
 }

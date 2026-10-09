@@ -3,9 +3,10 @@
 namespace App\Modules\Param\Http\Controller\Api\v1;
 
 use App\Http\Controllers\API\v1\Controller;
+use App\Modules\Param\Http\Request\ParamStoreRequest;
+use App\Modules\Param\Http\Request\ParamUpdateRequest;
 use App\Modules\Param\Model\Param;
 use App\Modules\Param\Repository\ParamRepository;
-use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
@@ -101,9 +102,9 @@ class ParamController extends Controller
      *     @OA\Response(response=422, description="Validation error")
      * )
      */
-    public function store(Request $request): JsonResource
+    public function store(ParamStoreRequest $request): JsonResource
     {
-        $param = $this->repository->save($request->all());
+        $param = $this->repository->save($request->payload());
 
         return JsonResource::make($param);
     }
@@ -193,9 +194,9 @@ class ParamController extends Controller
      *     @OA\Response(response=422, description="Validation error")
      * )
      */
-    public function update(Request $request, Param $param): JsonResource
+    public function update(ParamUpdateRequest $request, Param $param): JsonResource
     {
-        return JsonResource::make($this->repository->update($request->all(), $param));
+        return JsonResource::make($this->repository->update($request->payload(), $param));
     }
 
     /**
@@ -233,6 +234,8 @@ class ParamController extends Controller
      */
     public function destroy(Param $param): ResourceCollection
     {
+        $this->authorize('delete', $param);
+
         return ResourceCollection::make($this->repository->delete($param));
     }
 }

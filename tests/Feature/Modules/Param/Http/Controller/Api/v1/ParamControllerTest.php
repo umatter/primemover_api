@@ -5,9 +5,9 @@ namespace Tests\Feature\Modules\Param\Http\Controller\Api\v1;
 use App\Modules\Param\Http\Controller\Api\v1\ParamController;
 use App\Modules\Param\Model\Param;
 use App\Modules\Param\Repository\ParamRepository;
-use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Resources\Json\ResourceCollection;
+use Laravel\Passport\Passport;
 use Tests\TestCase;
 
 /**
@@ -75,15 +75,10 @@ class ParamControllerTest extends TestCase
             ],
         ]);
 
-        $this->actingAs($this->user);
-        $request = new Request($data);
+        // Through HTTP: store() validates via ParamStoreRequest now.
+        Passport::actingAs($this->user);
+        $this->postJson('/api/v1/params', $data)->assertCreated();
 
-        $controller = new ParamController(new ParamRepository(new Param()));
-        $result = $controller->store($request);
-
-        $this->assertInstanceOf(JsonResource::class, $result);
-        $this->assertInstanceOf(Param::class, $result->resource);
-        // $this->assertDatabaseHas("params", $request->all());
         $this->assertDatabaseCount('params', 11);
     }
 
@@ -237,17 +232,14 @@ class ParamControllerTest extends TestCase
             ]),
         ];
 
-        $request = new Request($data);
-
         $param = Param::create($data);
 
-        $controller = new ParamController(new ParamRepository(new Param()));
-        $result = $controller->update($request, $param);
+        // Through HTTP: update() validates via ParamUpdateRequest now.
+        Passport::actingAs($this->user);
+        $this->putJson('/api/v1/params/'.$param->id, $data)->assertOk();
 
         $data['search_terms'] = json_encode($data['search_terms']);
         $this->assertDatabaseHas('params', $data);
-        $this->assertInstanceOf(JsonResource::class, $result);
-        $this->assertInstanceOf(Param::class, $result->resource);
     }
 
     /**
