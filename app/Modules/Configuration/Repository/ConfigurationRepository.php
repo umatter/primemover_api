@@ -30,7 +30,7 @@ class ConfigurationRepository
 
     public function getById(Configuration $configuration): Configuration
     {
-        return $configuration->load(['crawler', 'params', 'preferences']);
+        return $configuration->load(['crawler', 'params', 'preferences'])->loadCount('crawlers');
     }
 
     /**
