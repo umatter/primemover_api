@@ -36,8 +36,10 @@ class AgentStoreRequest extends FormRequest
             'user_id' => Auth::id(),
             'active' => true,
             'identification' => $this->input('identification', IdentificationEnum::default()),
-            'multilogin_profile' => $this->input('multiLoginProfile'),
-            'multilogin_id' => $this->input('multiLoginId'),
+            // The model's own names first; the camelCase spellings are an older
+            // client's and stay accepted as a fallback (umatter/primemover_api#92).
+            'multilogin_profile' => $this->input('multilogin_profile', $this->input('multiLoginProfile')),
+            'multilogin_id' => $this->input('multilogin_id', $this->input('multiLoginId')),
         ]);
     }
 }
