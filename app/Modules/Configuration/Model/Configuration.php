@@ -28,7 +28,7 @@ class Configuration extends BaseModel
 
     protected $guarded = [];
 
-    protected $visible = ['id', 'name', 'description', 'params', 'preferences'];
+    protected $visible = ['id', 'name', 'description', 'active', 'params', 'preferences'];
 
     public function crawler(): HasOne
     {

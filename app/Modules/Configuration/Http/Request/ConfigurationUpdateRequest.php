@@ -19,11 +19,14 @@ class ConfigurationUpdateRequest extends FormRequest
         return [
             'name' => ['required'],
             'description' => ['nullable'],
-            'active' => ['required'],
+            // Optional: absent keeps the current value, so a client editing
+            // preferences never has to guess it.
+            'active' => ['sometimes'],
             'preferences' => ['sometimes', 'array'],
             'preferences.*.name' => ['required', 'string', 'max:255'],
             'preferences.*.value' => ['present'],
             'preferences.*.description' => ['sometimes', 'nullable', 'string'],
+            'preferences.*.active' => ['sometimes', 'boolean'],
         ];
     }
 

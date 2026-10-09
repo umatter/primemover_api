@@ -135,6 +135,97 @@ class ConfigurationPreferencesUpdateTest extends TestCase
     }
 
     /**
+     * active is not readable from any response before this change, so a client
+     * that had to send it could only guess -- and guessing true re-activated an
+     * inactive configuration.
+     *
+     * @covers ::update
+     */
+    public function test_an_update_without_active_keeps_the_configurations_active(): void
+    {
+        $this->configuration->update(['active' => 0]);
+
+        Passport::actingAs($this->user);
+
+        $response = $this->putJson('/api/v1/configurations/'.$this->configuration->id, [
+            'name' => 'renamed',
+            'preferences' => [],
+        ])->assertOk();
+
+        $this->assertSame(0, (int) $this->configuration->fresh()->active);
+        $this->assertSame('renamed', $this->configuration->fresh()->name);
+        $this->assertSame(0, (int) $response->json('data.active'));
+    }
+
+    /**
+     * @covers ::update
+     */
+    public function test_a_preference_can_be_deactivated(): void
+    {
+        $preference = $this->configuration->preferences()->create([
+            'name' => 'location',
+            'value' => 'US-IL-CHICAGO',
+            'active' => 1,
+            'user_id' => $this->user->id,
+        ]);
+
+        Passport::actingAs($this->user);
+
+        $this->putJson('/api/v1/configurations/'.$this->configuration->id, $this->payload([
+            'preferences' => [
+                ['name' => 'location', 'value' => 'US-IL-CHICAGO', 'active' => false],
+            ],
+        ]))->assertOk();
+
+        $this->assertSame(0, (int) $preference->fresh()->active);
+    }
+
+    /**
+     * @covers ::update
+     */
+    public function test_a_value_change_does_not_reactivate_an_inactive_preference(): void
+    {
+        $preference = $this->configuration->preferences()->create([
+            'name' => 'location',
+            'value' => 'US-IL-CHICAGO',
+            'active' => 0,
+            'user_id' => $this->user->id,
+        ]);
+
+        Passport::actingAs($this->user);
+
+        $this->putJson('/api/v1/configurations/'.$this->configuration->id, $this->payload([
+            'preferences' => [
+                ['name' => 'location', 'value' => 'CH-BE-BERN'],
+            ],
+        ]))->assertOk();
+
+        $preference->refresh();
+        $this->assertSame('CH-BE-BERN', $preference->value);
+        $this->assertSame(0, (int) $preference->active);
+    }
+
+    /**
+     * @covers ::update
+     */
+    public function test_a_new_preference_sent_without_active_is_active(): void
+    {
+        Passport::actingAs($this->user);
+
+        $this->putJson('/api/v1/configurations/'.$this->configuration->id, $this->payload([
+            'preferences' => [
+                ['name' => 'usage_type', 'value' => 'only_searches'],
+            ],
+        ]))->assertOk();
+
+        $this->assertDatabaseHas('preferences', [
+            'preferencable_id' => $this->configuration->id,
+            'name' => 'usage_type',
+            'active' => 1,
+        ]);
+    }
+
+    /**
      * @param  array<string, mixed> $overrides
      * @return array<string, mixed>
      */

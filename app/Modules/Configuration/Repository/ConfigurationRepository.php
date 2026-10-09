@@ -53,7 +53,10 @@ class ConfigurationRepository
                     [
                         'value' => $preference['value'],
                         'description' => $preference['description'] ?? $existing?->description,
-                        'active' => 1,
+                        // Sent wins; otherwise an existing row keeps its state and a
+                        // new one starts active. Never deactivating silently, never
+                        // re-activating silently either.
+                        'active' => (int) ($preference['active'] ?? $existing?->active ?? 1),
                         'user_id' => Auth::id(),
                     ]
                 );
