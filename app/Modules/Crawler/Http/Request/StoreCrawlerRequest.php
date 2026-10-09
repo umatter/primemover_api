@@ -22,6 +22,7 @@ class StoreCrawlerRequest extends FormRequest
             'proxy_id' => ['nullable'],
             'configuration_id' => ['nullable'],
             'description' => ['nullable'],
+            'testing' => ['sometimes', 'boolean'],
         ];
     }
 
