@@ -23,6 +23,7 @@ enum JobType: string
     case handleAlert = 'handlealertjob';
     case tryHandleAlert = 'tryhandlealertjob';
     case lambdaSingleSelect = 'lambdasingleselectjob';
+    case clearStorage = 'clearstoragejob';
 
     public static function values(): array
     {
