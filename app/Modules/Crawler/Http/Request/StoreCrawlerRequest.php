@@ -23,9 +23,9 @@ class StoreCrawlerRequest extends FormRequest
             // crawlers table; without them here, $request->validated() silently strips them and
             // the crawler is created with no agent/proxy/configuration. Another study's
             // item is refused: what a bot does with it is shared (AttachableToCrawler).
-            'agent_id' => ['nullable', 'exists:agents,id', new AttachableToCrawler(Agent::class, 'agent_id')],
-            'proxy_id' => ['nullable', 'exists:proxies,id', new AttachableToCrawler(Proxy::class, 'proxy_id')],
-            'configuration_id' => ['nullable', 'exists:configurations,id', new AttachableToCrawler(Configuration::class, 'configuration_id')],
+            'agent_id' => ['nullable', 'integer', 'exists:agents,id', new AttachableToCrawler(Agent::class, 'agent_id')],
+            'proxy_id' => ['nullable', 'integer', 'exists:proxies,id', new AttachableToCrawler(Proxy::class, 'proxy_id')],
+            'configuration_id' => ['nullable', 'integer', 'exists:configurations,id', new AttachableToCrawler(Configuration::class, 'configuration_id')],
             'description' => ['nullable'],
             'testing' => ['sometimes', 'boolean'],
         ];

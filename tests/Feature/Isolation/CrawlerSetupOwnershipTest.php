@@ -82,7 +82,7 @@ class CrawlerSetupOwnershipTest extends IsolationTestCase
             $this->assertSame($item->id, (int) $this->mine['crawler']->fresh()->{$column});
         } else {
             // "not found", not "forbidden": do not confirm that someone else's id exists.
-            $response->assertUnprocessable()->assertJsonValidationErrors($column);
+            $response->assertUnprocessable()->assertJsonValidationErrors([$column => 'could not be found']);
             $this->assertNotSame($item->id, (int) $this->mine['crawler']->fresh()->{$column});
         }
     }
@@ -138,6 +138,38 @@ class CrawlerSetupOwnershipTest extends IsolationTestCase
         ])->assertOk();
     }
 
+    public function test_nothing_is_enforced_on_create_while_isolation_is_off(): void
+    {
+        $this->disableIsolation();
+
+        $this->postJson('/api/v1/crawlers', $this->createPayload('theirs'))->assertCreated();
+    }
+
+    public function test_the_service_account_creates_with_anything(): void
+    {
+        Passport::actingAs($this->serviceAccount);
+
+        $this->postJson('/api/v1/crawlers', $this->createPayload('theirs'))->assertCreated();
+    }
+
+    /**
+     * `exists` accepts a list of existing ids; without `integer` the ownership rule then
+     * cast an array to string (500).
+     */
+    public function test_a_list_of_ids_is_a_422_not_a_500(): void
+    {
+        $ids = [$this->item('agent', 'mine')->id, $this->item('agent', 'mine')->id];
+
+        $this->putJson('/api/v1/crawlers/'.$this->mine['crawler']->id, [
+            'name' => 'renamed',
+            'experiment_id' => $this->mine['experiment']->id,
+            'agent_id' => $ids,
+        ])->assertUnprocessable()->assertJsonValidationErrors('agent_id');
+
+        $this->postJson('/api/v1/crawlers', [...$this->createPayload('unattached mine'), 'agent_id' => $ids])
+            ->assertUnprocessable()->assertJsonValidationErrors('agent_id');
+    }
+
     public function test_the_service_account_attaches_anything(): void
     {
         Passport::actingAs($this->serviceAccount);
@@ -147,6 +179,21 @@ class CrawlerSetupOwnershipTest extends IsolationTestCase
             'experiment_id' => $this->mine['experiment']->id,
             'agent_id' => $this->item('agent', 'theirs')->id,
         ])->assertOk();
+    }
+
+    /**
+     * POST crawlers with all three items owned as $owner describes.
+     *
+     * @return array<string, mixed>
+     */
+    private function createPayload(string $owner): array
+    {
+        $payload = ['name' => 'new bot', 'experiment_id' => $this->mine['experiment']->id];
+        foreach (self::FIELDS as $field => [, $column]) {
+            $payload[$column] = $this->item($field, $owner)->id;
+        }
+
+        return $payload;
     }
 
     /**

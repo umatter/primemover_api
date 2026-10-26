@@ -48,6 +48,10 @@ class AttachableToCrawler implements ValidationRule
             return; // presence is a separate rule's job
         }
 
+        if ( ! is_int($value) && ! (is_string($value) && ctype_digit($value))) {
+            return; // `integer` reports it; rules after a failed one still run
+        }
+
         if (null !== $this->crawler && (string) $this->crawler->getAttribute($this->foreignKey) === (string) $value) {
             return;
         }
