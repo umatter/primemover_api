@@ -127,15 +127,15 @@ class ConfigurationStoreTest extends TestCase
     }
 
     /**
+     * Values are strings on the wire; a number is refused rather than converted.
+     *
      * @covers ::store
      */
-    public function test_a_numeric_preference_value_is_stored_as_its_string_form(): void
+    public function test_a_non_string_preference_value_is_a_422(): void
     {
-        $response = $this->postJson('/api/v1/configurations', $this->payload([
+        $this->postJson('/api/v1/configurations', $this->payload([
             'preferences' => [['name' => 'aversion_left', 'value' => 0.3]],
-        ]))->assertCreated();
-
-        $this->assertSame('0.3', $response->json('data.preferences.0.value'));
+        ]))->assertUnprocessable()->assertJsonValidationErrors('preferences.0.value');
     }
 
     /**
