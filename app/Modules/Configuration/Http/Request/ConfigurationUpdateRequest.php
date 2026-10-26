@@ -47,18 +47,5 @@ class ConfigurationUpdateRequest extends FormRequest
     protected function prepareForValidation(): void
     {
         $this->except(['params']);
-
-        // Values are strings, but pmspec's `updates:` blocks come from YAML, so a
-        // weight such as 0.3 arrives as a number. Keep storing its string form.
-        $preferences = $this->input('preferences');
-        if (is_array($preferences)) {
-            $this->merge(['preferences' => array_map(function ($preference) {
-                if (is_array($preference) && (is_int($preference['value'] ?? null) || is_float($preference['value'] ?? null))) {
-                    $preference['value'] = (string) $preference['value'];
-                }
-
-                return $preference;
-            }, $preferences)]);
-        }
     }
 }

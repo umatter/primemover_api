@@ -259,23 +259,19 @@ class ConfigurationPreferencesUpdateTest extends TestCase
     }
 
     /**
-     * pmspec's `updates:` blocks come from YAML, so a weight arrives as a number.
+     * Values are strings on the wire (every client sends them so); a number is refused
+     * rather than silently converted.
      *
      * @covers ::update
      */
-    public function test_a_numeric_value_is_stored_as_its_string_form(): void
+    public function test_a_non_string_value_is_a_422(): void
     {
+        $this->withExceptionHandling();
         Passport::actingAs($this->user);
 
         $this->putJson('/api/v1/configurations/'.$this->configuration->id, $this->payload([
-            'preferences' => [
-                ['name' => 'aversion_left', 'value' => 0.3],
-                ['name' => 'order', 'value' => 2],
-            ],
-        ]))->assertOk();
-
-        $this->assertDatabaseHas('preferences', ['name' => 'aversion_left', 'value' => '0.3']);
-        $this->assertDatabaseHas('preferences', ['name' => 'order', 'value' => '2']);
+            'preferences' => [['name' => 'aversion_left', 'value' => 0.3]],
+        ]))->assertUnprocessable()->assertJsonValidationErrors('preferences.0.value');
     }
 
     /**
