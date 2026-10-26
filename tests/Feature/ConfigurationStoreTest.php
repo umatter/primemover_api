@@ -107,6 +107,38 @@ class ConfigurationStoreTest extends TestCase
     }
 
     /**
+     * "" and whitespace reach validation as null (TrimStrings, ConvertEmptyStringsToNull)
+     * and preferences.value is NOT NULL: with only `present` this was a 500.
+     *
+     * @covers ::store
+     */
+    public function test_an_empty_preference_value_is_a_422_and_creates_nothing(): void
+    {
+        $before = Configuration::count();
+
+        $this->postJson('/api/v1/configurations', $this->payload([
+            'preferences' => [
+                ['name' => 'location', 'value' => 'US-IL-CHICAGO'],
+                ['name' => 'usage_type', 'value' => '  '],
+            ],
+        ]))->assertUnprocessable()->assertJsonValidationErrors('preferences.1.value');
+
+        $this->assertSame($before, Configuration::count());
+    }
+
+    /**
+     * @covers ::store
+     */
+    public function test_a_numeric_preference_value_is_stored_as_its_string_form(): void
+    {
+        $response = $this->postJson('/api/v1/configurations', $this->payload([
+            'preferences' => [['name' => 'aversion_left', 'value' => 0.3]],
+        ]))->assertCreated();
+
+        $this->assertSame('0.3', $response->json('data.preferences.0.value'));
+    }
+
+    /**
      * @param  array<string, mixed> $overrides
      * @return array<string, mixed>
      */
