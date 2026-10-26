@@ -15,7 +15,7 @@ class ConfigurationRepository
 
     public function all(): QueryBuilder
     {
-        return Configuration::queryBuilder()->with(['params', 'preferences']);
+        return Configuration::queryBuilder()->ownedByCaller()->with(['params', 'preferences']);
     }
 
     public function additional($configurations): array

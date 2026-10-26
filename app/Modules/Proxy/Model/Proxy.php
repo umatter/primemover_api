@@ -3,11 +3,13 @@
 namespace App\Modules\Proxy\Model;
 
 use App\Models\BaseModel;
+use App\Models\Concerns\ScopesToLibraryOwner;
 use App\Models\User;
 use App\Modules\Crawler\Model\Crawler;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
@@ -26,6 +28,7 @@ use Spatie\QueryBuilder\QueryBuilder;
 class Proxy extends BaseModel
 {
     use HasFactory;
+    use ScopesToLibraryOwner;
 
     public const TYPES = ['http', 'brightdata', 'oxylabs'];
 
@@ -36,6 +39,12 @@ class Proxy extends BaseModel
     public function crawler(): HasOne
     {
         return $this->hasOne(Crawler::class);
+    }
+
+    /** Every crawler using this item; crawler -> item is not unique. */
+    public function crawlers(): HasMany
+    {
+        return $this->hasMany(Crawler::class);
     }
 
     public function user(): BelongsTo

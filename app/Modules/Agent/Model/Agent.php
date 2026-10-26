@@ -3,12 +3,14 @@
 namespace App\Modules\Agent\Model;
 
 use App\Models\BaseModel;
+use App\Models\Concerns\ScopesToLibraryOwner;
 use App\Models\User;
 use App\Modules\Crawler\Model\Crawler;
 use App\Modules\Preference\Model\Preference;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Spatie\QueryBuilder\AllowedFilter;
@@ -27,6 +29,7 @@ use Spatie\QueryBuilder\QueryBuilder;
 class Agent extends BaseModel
 {
     use HasFactory;
+    use ScopesToLibraryOwner;
 
     protected $fillable = ['name', 'description', 'identification', 'multilogin_id', 'multilogin_profile', 'location', 'active', 'user_id'];
 
@@ -35,6 +38,12 @@ class Agent extends BaseModel
     public function crawler(): HasOne
     {
         return $this->hasOne(Crawler::class);
+    }
+
+    /** Every crawler using this item; crawler -> item is not unique. */
+    public function crawlers(): HasMany
+    {
+        return $this->hasMany(Crawler::class);
     }
 
     public function user(): BelongsTo

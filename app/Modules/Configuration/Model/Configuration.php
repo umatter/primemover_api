@@ -3,6 +3,7 @@
 namespace App\Modules\Configuration\Model;
 
 use App\Models\BaseModel;
+use App\Models\Concerns\ScopesToLibraryOwner;
 use App\Models\User;
 use App\Modules\Crawler\Model\Crawler;
 use App\Modules\Param\Model\Param;
@@ -25,6 +26,7 @@ use Spatie\QueryBuilder\QueryBuilder;
 class Configuration extends BaseModel
 {
     use HasFactory;
+    use ScopesToLibraryOwner;
 
     protected $guarded = [];
 
