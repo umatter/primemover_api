@@ -225,6 +225,59 @@ class ConfigurationPreferencesUpdateTest extends TestCase
         ]);
     }
 
+    /** @return array<string, array{0: mixed}> */
+    public static function emptyValues(): array
+    {
+        return [
+            'empty string' => [''],
+            'whitespace' => ['   '],
+            'null' => [null],
+        ];
+    }
+
+    /**
+     * TrimStrings + ConvertEmptyStringsToNull turn "" and whitespace into null,
+     * and preferences.value is NOT NULL: with only `present` this was a 500.
+     *
+     * @covers ::update
+     *
+     * @dataProvider emptyValues
+     */
+    public function test_an_empty_value_is_a_422_and_writes_nothing(mixed $value): void
+    {
+        $this->withExceptionHandling();
+        Passport::actingAs($this->user);
+
+        $this->putJson('/api/v1/configurations/'.$this->configuration->id, $this->payload([
+            'preferences' => [
+                ['name' => 'location', 'value' => 'CH-BE-BERN'],
+                ['name' => 'ideology', 'value' => $value, 'active' => false],
+            ],
+        ]))->assertUnprocessable()->assertJsonValidationErrors('preferences.1.value');
+
+        $this->assertSame(0, $this->configuration->preferences()->count());
+    }
+
+    /**
+     * pmspec's `updates:` blocks come from YAML, so a weight arrives as a number.
+     *
+     * @covers ::update
+     */
+    public function test_a_numeric_value_is_stored_as_its_string_form(): void
+    {
+        Passport::actingAs($this->user);
+
+        $this->putJson('/api/v1/configurations/'.$this->configuration->id, $this->payload([
+            'preferences' => [
+                ['name' => 'aversion_left', 'value' => 0.3],
+                ['name' => 'order', 'value' => 2],
+            ],
+        ]))->assertOk();
+
+        $this->assertDatabaseHas('preferences', ['name' => 'aversion_left', 'value' => '0.3']);
+        $this->assertDatabaseHas('preferences', ['name' => 'order', 'value' => '2']);
+    }
+
     /**
      * @param  array<string, mixed> $overrides
      * @return array<string, mixed>
