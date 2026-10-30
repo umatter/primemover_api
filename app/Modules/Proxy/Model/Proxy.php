@@ -2,6 +2,7 @@
 
 namespace App\Modules\Proxy\Model;
 
+use App\Access\Isolation;
 use App\Models\BaseModel;
 use App\Models\Concerns\ScopesToLibraryOwner;
 use App\Models\User;
@@ -35,6 +36,24 @@ class Proxy extends BaseModel
     protected $guarded = [];
 
     protected $visible = ['id', 'name', 'description', 'hostname', 'port', 'username', 'type', 'password'];
+
+    /**
+     * The password goes only to callers that bypass isolation: the runners, which
+     * log in as service accounts and need it to open the connection. A researcher
+     * never needs it back -- the GUI only writes it -- and returning it gave every
+     * login every proxy's credentials (umatter/primemover_api#96). Nothing changes
+     * while isolation is off.
+     */
+    public function toArray(): array
+    {
+        $array = parent::toArray();
+
+        if ( ! Isolation::bypasses()) {
+            unset($array['password']);
+        }
+
+        return $array;
+    }
 
     public function crawler(): HasOne
     {
