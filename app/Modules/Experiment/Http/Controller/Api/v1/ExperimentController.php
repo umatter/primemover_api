@@ -431,7 +431,7 @@ class ExperimentController extends Controller
      *                         @OA\Property(property="crawler_id", type="integer", example=2029),
      *                         @OA\Property(property="name", type="string", nullable=true, example="pilot_24"),
      *                         @OA\Property(property="consecutive", type="integer", description="Never-started runs back from the bot's latest finished run to its last run that did start, inside the window.", example=5),
-     *                         @OA\Property(property="since", type="string", nullable=true, description="started_at of the first run of that streak inside the window."),
+     *                         @OA\Property(property="since", type="string", format="date-time", nullable=true, description="started_at of the first run of that streak inside the window."),
      *                         @OA\Property(property="latest_run_id", type="integer"),
      *                         @OA\Property(property="reason", type="string", nullable=true, description="status_message of the latest of those runs.")
      *                     )

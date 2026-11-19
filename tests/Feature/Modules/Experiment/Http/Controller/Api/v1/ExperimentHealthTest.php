@@ -511,7 +511,10 @@ class ExperimentHealthTest extends TestCase
         $this->assertSame($dead->id, $listed[0]['crawler_id']);
         $this->assertSame($dead->name, $listed[0]['name']);
         $this->assertSame(3, $listed[0]['consecutive']);
-        $this->assertSame($first->fresh()->getRawOriginal('started_at'), $listed[0]['since']);
+        $this->assertSame(
+            Carbon::parse($first->fresh()->getRawOriginal('started_at'))->toIso8601String(),
+            $listed[0]['since']
+        );
         $this->assertSame($latest->id, $listed[0]['latest_run_id']);
         $this->assertSame('initialisation failed - Multilogin LOCK_PROFILE_ERROR', $listed[0]['reason']);
     }

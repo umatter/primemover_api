@@ -411,7 +411,7 @@ class ExperimentHealth
             }
 
             $bots[$botId]['consecutive']++;
-            $bots[$botId]['since'] = null === $run->started_at ? null : (string) $run->started_at;
+            $bots[$botId]['since'] = self::isoOrRaw($run->started_at);
         }
 
         $bots = array_values($bots);
@@ -456,10 +456,23 @@ class ExperimentHealth
             return null;
         }
 
+        return self::isoOrRaw($latest);
+    }
+
+    /**
+     * A stored timestamp as ISO 8601 with its offset, or as stored if it does
+     * not parse; null stays null.
+     */
+    private static function isoOrRaw(mixed $stored): ?string
+    {
+        if (null === $stored || '' === $stored) {
+            return null;
+        }
+
         try {
-            return Carbon::parse((string) $latest)->toIso8601String();
+            return Carbon::parse((string) $stored)->toIso8601String();
         } catch (Throwable) {
-            return (string) $latest;
+            return (string) $stored;
         }
     }
 }
