@@ -405,7 +405,7 @@ class ExperimentHealthTest extends TestCase
     /**
      * The property that makes this endpoint worth having: its cost does not
      * grow with the study. A GUI summing client-side pays one request per page
-     * of crawlers and one per run; this pays the same five grouped queries for
+     * of crawlers and one per run; this pays the same six queries for
      * a study with 3 runs and for one with 240.
      *
      * @covers ::for
@@ -486,6 +486,132 @@ class ExperimentHealthTest extends TestCase
         $this->withExceptionHandling();
 
         $this->getJson('/api/v1/experiments/'.$this->study->id.'/health')->assertUnauthorized();
+    }
+
+    /**
+     * Experiment 240: four bots failed to start every run for a week and no
+     * number anywhere said "this bot is dead".
+     *
+     * @covers ::for
+     */
+    public function test_a_bot_whose_latest_runs_never_started_is_listed_with_its_streak(): void
+    {
+        $dead = $this->botFor($this->study);
+
+        $ok = $this->runWithStatus(Queue::STATUS_SUCCESS, $this->hoursAgo(20), $dead);
+        $this->jobsFor($ok, [Queue::STATUS_SUCCESS]);
+
+        $first = $this->neverStarted($dead, $this->hoursAgo(9));
+        $this->neverStarted($dead, $this->hoursAgo(6));
+        $latest = $this->neverStarted($dead, $this->hoursAgo(3), 'initialisation failed - Multilogin LOCK_PROFILE_ERROR');
+
+        $listed = $this->health()['bots_not_starting'];
+
+        $this->assertCount(1, $listed);
+        $this->assertSame($dead->id, $listed[0]['crawler_id']);
+        $this->assertSame($dead->name, $listed[0]['name']);
+        $this->assertSame(3, $listed[0]['consecutive']);
+        $this->assertSame($first->fresh()->getRawOriginal('started_at'), $listed[0]['since']);
+        $this->assertSame($latest->id, $listed[0]['latest_run_id']);
+        $this->assertSame('initialisation failed - Multilogin LOCK_PROFILE_ERROR', $listed[0]['reason']);
+    }
+
+    /**
+     * "Latest" is the point: a bot that failed to start this morning and has
+     * run since is not the bot to look at.
+     *
+     * @covers ::for
+     */
+    public function test_a_bot_that_started_again_is_not_listed(): void
+    {
+        $this->neverStarted($this->bot, $this->hoursAgo(9));
+        $this->neverStarted($this->bot, $this->hoursAgo(6));
+        $ran = $this->runWithStatus(Queue::STATUS_WARNING, $this->hoursAgo(3));
+        $ran->update(['processed' => 1]);
+        $this->jobsFor($ran, [Queue::STATUS_SUCCESS, Queue::STATUS_WARNING]);
+
+        $this->assertSame([], $this->health()['bots_not_starting']);
+    }
+
+    /**
+     * A run that failed AFTER it started is a failed run, not a bot that does
+     * not start; and a run still open says nothing yet.
+     *
+     * @covers ::for
+     */
+    public function test_a_run_that_failed_after_starting_and_an_open_run_do_not_count(): void
+    {
+        $midway = $this->runWithStatus(Queue::STATUS_FAILURE, $this->hoursAgo(5));
+        $midway->update(['processed' => 1]);
+        $this->jobsFor($midway, [Queue::STATUS_SUCCESS, Queue::STATUS_FAILURE, Queue::STATUS_SKIPPED]);
+
+        $other = $this->botFor($this->study);
+        $this->neverStarted($other, $this->hoursAgo(4));
+        $open = $this->runWithStatus(Queue::STATUS_RUNNING, $this->hoursAgo(1), $other);
+        $open->update(['processed' => 0]);
+
+        $listed = $this->health()['bots_not_starting'];
+
+        $this->assertCount(1, $listed, 'the open run does not hide the streak before it');
+        $this->assertSame($other->id, $listed[0]['crawler_id']);
+        $this->assertSame(1, $listed[0]['consecutive']);
+    }
+
+    /**
+     * Both shapes of a never-started run count: jobs with no status (reported
+     * before the API marked them) and jobs marked 'skipped' (after), and the
+     * legacy 'failed' spelling of the run.
+     *
+     * @covers ::for
+     */
+    public function test_old_and_new_rows_count_alike_and_the_longest_streak_comes_first(): void
+    {
+        $old = $this->runWithStatus('failed', $this->hoursAgo(8));
+        $old->update(['processed' => 1]);
+        $this->jobsFor($old, [null, null]);
+        $new = $this->neverStarted($this->bot, $this->hoursAgo(4));
+        $new->skipUnstartedJobs();
+
+        $other = $this->botFor($this->study);
+        $this->neverStarted($other, $this->hoursAgo(2));
+
+        $listed = $this->health()['bots_not_starting'];
+
+        $this->assertSame([$this->bot->id, $other->id], array_column($listed, 'crawler_id'));
+        $this->assertSame([2, 1], array_column($listed, 'consecutive'));
+    }
+
+    /**
+     * The streak is counted inside the window, like every other number here.
+     *
+     * @covers ::for
+     */
+    public function test_the_streak_is_counted_inside_the_window(): void
+    {
+        $this->neverStarted($this->bot, $this->hoursAgo(40));
+        $this->neverStarted($this->bot, $this->hoursAgo(3));
+
+        $this->assertSame(1, $this->health()['bots_not_starting'][0]['consecutive']);
+        $this->assertSame(2, $this->health(['hours' => 48])['bots_not_starting'][0]['consecutive']);
+    }
+
+    private function hoursAgo(int $hours): string
+    {
+        return Carbon::now()->subHours($hours)->format('Y-m-d H:i:s');
+    }
+
+    private function neverStarted(Crawler $bot, string $startedAt, string $message = 'initialisation failed'): Queue
+    {
+        $run = Queue::factory()->create([
+            'crawler_id' => $bot->id,
+            'status_code' => Queue::STATUS_FAILURE,
+            'status_message' => $message,
+            'started_at' => $startedAt,
+            'processed' => 1,
+        ]);
+        $this->jobsFor($run, [null, null]);
+
+        return $run;
     }
 
     /**

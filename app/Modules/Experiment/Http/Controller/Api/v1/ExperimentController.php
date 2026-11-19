@@ -424,6 +424,18 @@ class ExperimentController extends Controller
      *                 @OA\Property(property="bad_jobs", type="integer", description="jobs.failure + jobs.warning.", example=37),
      *                 @OA\Property(property="treatment_lost_jobs", type="integer", description="Jobs whose decision_treatment_lost is true: the bot was configured to be treated and produced control-arm data, so that session is scientifically void. The alarm. Such a job is routinely status_code success -- nothing about it failed.", example=4),
      *                 @OA\Property(property="degraded_jobs", type="integer", description="Jobs whose decision_degraded is true: a filter the crawler REQUESTED did not apply. 'A human should look at this decision.'", example=9),
+     *                 @OA\Property(property="bots_not_starting", type="array", description="Bots whose latest finished run in the window never started: it ended 'failure' and none of its jobs ran. One entry per bot, longest streak first; empty when every bot's latest run started.",
+     *
+     *                     @OA\Items(type="object",
+     *
+     *                         @OA\Property(property="crawler_id", type="integer", example=2029),
+     *                         @OA\Property(property="name", type="string", nullable=true, example="pilot_24"),
+     *                         @OA\Property(property="consecutive", type="integer", description="Never-started runs back from the bot's latest finished run to its last run that did start, inside the window.", example=5),
+     *                         @OA\Property(property="since", type="string", nullable=true, description="started_at of the first run of that streak inside the window."),
+     *                         @OA\Property(property="latest_run_id", type="integer"),
+     *                         @OA\Property(property="reason", type="string", nullable=true, description="status_message of the latest of those runs.")
+     *                     )
+     *                 ),
      *                 @OA\Property(property="last_finished_at", type="string", format="date-time", nullable=true, description="When this study last finished a run, ACROSS ALL TIME -- the one field here that is deliberately not window-scoped, because it is what makes an empty window readable: 'last finished 5 days ago' and 'never ran' are different situations. null means no run has ever finished.", example="2026-09-07T08:12:00.000000Z")
      *             )
      *         )
