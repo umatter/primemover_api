@@ -19,11 +19,16 @@ class ConfigurationUpdateRequest extends FormRequest
         return [
             'name' => ['required'],
             'description' => ['nullable'],
-            'active' => ['required'],
+            // Optional: absent keeps the current value, so a client editing
+            // preferences never has to guess it.
+            'active' => ['sometimes'],
             'preferences' => ['sometimes', 'array'],
             'preferences.*.name' => ['required', 'string', 'max:255'],
-            'preferences.*.value' => ['present'],
+            // The column is NOT NULL, and the middleware has already turned "" and
+            // whitespace into null: without `required` that was a 500, not a 422.
+            'preferences.*.value' => ['required', 'string'],
             'preferences.*.description' => ['sometimes', 'nullable', 'string'],
+            'preferences.*.active' => ['sometimes', 'boolean'],
         ];
     }
 
