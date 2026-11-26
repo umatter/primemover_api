@@ -299,6 +299,8 @@ class AgentController extends Controller
      */
     public function update(AgentUpdateRequest $request, Agent $agent): JsonResource
     {
+        $this->authorize('update', $agent);
+
         $agent = $this->repository->update($request->validated(), $agent);
 
         return JsonResource::make($agent);
@@ -331,6 +333,8 @@ class AgentController extends Controller
      */
     public function destroy(Agent $agent): JsonResource
     {
+        $this->authorize('delete', $agent);
+
         return JsonResource::make($this->repository->delete($agent));
     }
 }

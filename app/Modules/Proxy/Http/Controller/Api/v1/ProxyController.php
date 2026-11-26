@@ -5,9 +5,9 @@ namespace App\Modules\Proxy\Http\Controller\Api\v1;
 use App\Http\Controllers\API\v1\Controller;
 use App\Modules\Proxy\Http\Request\ProxyIndexRequest;
 use App\Modules\Proxy\Http\Request\ProxyStoreRequest;
+use App\Modules\Proxy\Http\Request\ProxyUpdateRequest;
 use App\Modules\Proxy\Model\Proxy;
 use App\Modules\Proxy\Repository\ProxyRepository;
-use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
@@ -220,9 +220,11 @@ class ProxyController extends Controller
      *     @OA\Response(response=422, description="Validation error")
      * )
      */
-    public function update(Request $request, Proxy $proxy): JsonResource
+    public function update(ProxyUpdateRequest $request, Proxy $proxy): JsonResource
     {
-        return JsonResource::make($this->repository->update($request->all(), $proxy));
+        $this->authorize('update', $proxy);
+
+        return JsonResource::make($this->repository->update($request->validated(), $proxy));
     }
 
     /**
@@ -260,6 +262,8 @@ class ProxyController extends Controller
      */
     public function destroy(Proxy $proxy): ResourceCollection
     {
+        $this->authorize('delete', $proxy);
+
         return ResourceCollection::make($this->repository->delete($proxy));
     }
 }

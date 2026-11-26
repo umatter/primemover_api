@@ -4,18 +4,22 @@ namespace App\Providers;
 
 use App\Access\Isolation;
 use App\Models\User;
+use App\Modules\Agent\Model\Agent;
 use App\Modules\Configuration\Model\Configuration;
 use App\Modules\Crawler\Model\Crawler;
 use App\Modules\Experiment\Model\Experiment;
 use App\Modules\Job\Model\Job;
 use App\Modules\Param\Model\Param;
+use App\Modules\Proxy\Model\Proxy;
 use App\Modules\Queue\Model\Queue;
 use App\Modules\Report\Model\Report;
+use App\Policies\AgentPolicy;
 use App\Policies\ConfigurationPolicy;
 use App\Policies\CrawlerPolicy;
 use App\Policies\ExperimentPolicy;
 use App\Policies\JobPolicy;
 use App\Policies\ParamPolicy;
+use App\Policies\ProxyPolicy;
 use App\Policies\QueuePolicy;
 use App\Policies\ReportPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
@@ -33,6 +37,8 @@ class AuthServiceProvider extends ServiceProvider
         Report::class => ReportPolicy::class,
         Configuration::class => ConfigurationPolicy::class,
         Param::class => ParamPolicy::class,
+        Agent::class => AgentPolicy::class,
+        Proxy::class => ProxyPolicy::class,
     ];
 
     public function boot(): void

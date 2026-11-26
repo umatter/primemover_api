@@ -13,6 +13,7 @@ class AgentRepository
     public function all(?int $perPage = null): LengthAwarePaginator
     {
         return Agent::queryBuilder()
+            ->ownedByCaller()
             ->with('preferences')
             ->fastPaginate($perPage ?? request()->input('per_page', 15));
     }

@@ -14,7 +14,7 @@ class ProxyRepository
 
     public function all($data): ResourceCollection
     {
-        $proxies = Proxy::queryBuilder();
+        $proxies = Proxy::queryBuilder()->ownedByCaller();
 
         return ResourceCollection::make($proxies->paginate())
             ->additional([

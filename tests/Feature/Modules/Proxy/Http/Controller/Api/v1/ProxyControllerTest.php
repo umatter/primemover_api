@@ -6,10 +6,10 @@ use App\Modules\Proxy\Http\Controller\Api\v1\ProxyController;
 use App\Modules\Proxy\Http\Request\ProxyIndexRequest;
 use App\Modules\Proxy\Http\Request\ProxyStoreRequest;
 use App\Modules\Proxy\Model\Proxy;
-use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 use Illuminate\Support\Facades\App;
+use Laravel\Passport\Passport;
 use Mockery;
 use Tests\TestCase;
 
@@ -106,22 +106,23 @@ class ProxyControllerTest extends TestCase
     {
         $proxy = Proxy::factory()->create();
 
-        $data = new Request([
+        $data = [
             'name' => 'name updated',
             'description' => 'description',
             'hostname' => 'hostname',
             'port' => 8080,
             'username' => 'username',
             'password' => 'password',
-            'type' => 'type',
+            'type' => 'http',
             'active' => 0,
-        ]);
+        ];
 
-        $result = $this->testObject->update($data, $proxy);
+        // Through HTTP: update() takes a ProxyUpdateRequest now, validated and authorized.
+        Passport::actingAs($this->user);
+        $response = $this->putJson('/api/v1/proxies/'.$proxy->id, $data)->assertOk();
 
-        $this->assertDatabaseHas('proxies', $data->all());
-        $this->assertInstanceOf(JsonResource::class, $result);
-        $this->assertInstanceOf(Proxy::class, $result->resource);
+        $this->assertDatabaseHas('proxies', [...$data, 'id' => $proxy->id]);
+        $this->assertSame('name updated', $response->json('data.name'));
     }
 
     /**
