@@ -40,11 +40,17 @@ class Behavior extends BaseModel
         return $query->where('job_id', $jobId);
     }
 
+    /** Every behaviour of every job in one run (queue). */
+    public function scopeQueue(Builder $query, int $queueId): Builder
+    {
+        return $query->whereHas('job', fn (Builder $q) => $q->where('queue_id', $queueId));
+    }
+
     public static function queryBuilder(): QueryBuilder
     {
         return QueryBuilder::for(self::class)
             ->allowedSorts(['id', 'name', 'created_at', 'updated_at'])
             ->defaultSort('-id')
-            ->allowedFilters([AllowedFilter::scope('job')]);
+            ->allowedFilters([AllowedFilter::scope('job'), AllowedFilter::scope('queue')]);
     }
 }

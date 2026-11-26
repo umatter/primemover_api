@@ -9,13 +9,22 @@ use Illuminate\Support\Facades\Auth;
 
 class BehaviorRepository
 {
+    /** Page size when the caller does not ask; unchanged for existing clients. */
+    public const DEFAULT_PER_PAGE = 10;
+
+    /** Enough for a whole run's behaviours in one page. */
+    public const MAX_PER_PAGE = 500;
+
     public function __construct(protected Behavior $behavior) {}
 
     public function all(): LengthAwarePaginator
     {
+        $perPage = (int) request()->query('per_page', self::DEFAULT_PER_PAGE);
+
         return Behavior::queryBuilder()
             ->with(['job', 'user'])
-            ->paginate(10);
+            ->paginate(max(1, min(self::MAX_PER_PAGE, $perPage)))
+            ->withQueryString();
     }
 
     public function getById(int $id): Behavior|Model
