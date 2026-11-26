@@ -127,16 +127,16 @@ class ExperimentRepositoryTest extends TestCase
     /**
      * @covers ::forceDelete
      */
-    public function forceDelete(): void
+    public function test_force_delete(): void
     {
         $experiment = Experiment::factory()->create();
 
         $service = new ExperimentRepository(new Experiment());
         $result = $service->forceDelete($experiment);
 
-        $this->assertDatabaseMissing('experiments', $experiment->toArray());
-        $this->assertTrue($result['deleted']);
-        $this->assertInstanceOf(Experiment::class, $result['experiment']);
+        // It never ran before (no test_ prefix) and asserted an array; forceDelete returns a bool.
+        $this->assertTrue($result);
+        $this->assertModelMissing($experiment);
     }
 
     /**

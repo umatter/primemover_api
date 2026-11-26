@@ -8,6 +8,7 @@ use App\Facades\Services\DataMapper;
 use App\Modules\Crawler\Http\Request\CrawlerUploadRequest;
 use App\Modules\Crawler\Model\Crawler;
 use App\Modules\Crawler\Pipe\Upload\CreateQueue;
+use App\Modules\Crawler\SetupCleanup;
 use App\Modules\Experiment\Model\DTO\QueueDto;
 use Arimolzer\IPStackFinder\Facade\IPStackFinderFacade;
 use DateTimeImmutable;
@@ -463,11 +464,11 @@ class CrawlerRepository
 
     public function forceDelete(Crawler $crawler): Collection
     {
-        $crawler->proxy()->delete();
-        $crawler->agent()->delete();
-        $crawler->configuration()->delete();
+        // Its agent, proxy and configuration go too, unless another crawler uses them.
+        $setup = SetupCleanup::of([$crawler]);
         $crawler->queues()->delete();
         $crawler->delete();
+        $setup->deleteUnused();
 
         return $this->crawler->query()->visibleTo()->with([
             'experiment',

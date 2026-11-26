@@ -4,6 +4,7 @@ namespace App\Modules\Experiment\Repository;
 
 use App\Facades\Services\DataMapper;
 use App\Facades\Services\PreferenceService;
+use App\Modules\Crawler\SetupCleanup;
 use App\Modules\Experiment\Facade\ExperimentService;
 use App\Modules\Experiment\Http\Request\ExperimentUploadRequest;
 use App\Modules\Experiment\Model\DTO\CrawlerDto;
@@ -79,13 +80,14 @@ class ExperimentRepository
 
     public function forceDelete(Experiment $experiment): bool
     {
+        // The crawlers' agents, proxies and configurations go too, unless a crawler
+        // outside this experiment uses them.
+        $setup = SetupCleanup::of($experiment->crawlers()->get());
         $experiment->crawlers()->each(function ($crawler): void {
-            $crawler->proxy()->delete();
-            $crawler->agent()->delete();
-            $crawler->configuration()->delete();
             $crawler->queues()->delete();
         });
         $experiment->crawlers()->delete();
+        $setup->deleteUnused();
 
         return $experiment->delete();
     }
