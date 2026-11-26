@@ -3,12 +3,12 @@
 namespace Tests\Feature\Modules\Configuration\Http\Controller\Api\v1;
 
 use App\Modules\Configuration\Http\Controller\Api\v1\ConfigurationController;
-use App\Modules\Configuration\Http\Request\ConfigurationStoreRequest;
 use App\Modules\Configuration\Http\Request\ConfigurationUpdateRequest;
 use App\Modules\Configuration\Model\Configuration;
 use App\Modules\Configuration\Repository\ConfigurationRepository;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Resources\Json\ResourceCollection;
+use Laravel\Passport\Passport;
 use Mockery as m;
 use Tests\TestCase;
 
@@ -44,15 +44,14 @@ class ConfigurationControllerTest extends TestCase
             'user_id' => $this->user->id,
         ];
 
-        $request = m::mock(ConfigurationStoreRequest::class)->makePartial();
-        $request->allows('validated')->andReturns($data);
+        // Through HTTP: store() now reads params and preferences off the
+        // validated request, which a partial mock cannot provide.
+        Passport::actingAs($this->user);
 
-        $controller = new ConfigurationController(new ConfigurationRepository(new Configuration()));
-        $result = $controller->store($request);
+        $id = $this->postJson('/api/v1/configurations', $data)->assertCreated()->json('data.id');
 
         $this->assertDatabaseHas('configurations', $data);
-        $this->assertInstanceOf(JsonResource::class, $result);
-        $this->assertInstanceOf(Configuration::class, $result->resource);
+        $this->assertSame(1, Configuration::findOrFail($id)->params()->count());
     }
 
     /**

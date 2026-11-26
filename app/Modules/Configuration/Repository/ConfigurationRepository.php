@@ -6,6 +6,7 @@ use App\Modules\Configuration\Facade\Factory\ConfigurationFactory;
 use App\Modules\Configuration\Model\Configuration;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Spatie\QueryBuilder\QueryBuilder;
 
 class ConfigurationRepository
@@ -29,15 +30,33 @@ class ConfigurationRepository
 
     public function getById(Configuration $configuration): Configuration
     {
-        return $configuration->load(['crawler', 'params', 'preferences']);
+        return $configuration->load(['crawler', 'params', 'preferences'])->loadCount('crawlers');
     }
 
-    public function save(array $data): Configuration
+    /**
+     * Creates the configuration and, when given, its params row and preferences
+     * -- all or nothing, so a failed child never leaves a configuration without
+     * a treatment behind.
+     *
+     * @param array<string, mixed>|null        $params
+     * @param array<int, array<string, mixed>> $preferences
+     */
+    public function save(array $data, ?array $params = null, array $preferences = []): Configuration
     {
-        $configuration = ConfigurationFactory::create($data);
-        $configuration->save();
+        return DB::transaction(function () use ($data, $params, $preferences): Configuration {
+            $configuration = ConfigurationFactory::create($data);
+            $configuration->save();
 
-        return $configuration;
+            if (null !== $params) {
+                $configuration->params()->create($params);
+            }
+
+            foreach ($preferences as $preference) {
+                $configuration->preferences()->create($preference);
+            }
+
+            return $configuration->load(['params', 'preferences']);
+        });
     }
 
     public function update(array $data, Configuration $configuration): array

@@ -28,7 +28,7 @@ class Configuration extends BaseModel
 
     protected $guarded = [];
 
-    protected $visible = ['id', 'name', 'description', 'params', 'preferences'];
+    protected $visible = ['id', 'name', 'description', 'params', 'preferences', 'crawlers_count'];
 
     public function crawler(): HasOne
     {
@@ -38,6 +38,16 @@ class Configuration extends BaseModel
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    /**
+     * Every crawler using this configuration. crawler() above is the legacy
+     * has-one; nothing enforces it, and one configuration can sit under several
+     * crawlers -- in several experiments.
+     */
+    public function crawlers(): HasMany
+    {
+        return $this->hasMany(Crawler::class);
     }
 
     public function params(): HasMany
