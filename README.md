@@ -169,6 +169,11 @@ Experiment → Crawler → Configuration (params, preferences)
 
 See the [Development Guide](docs/development.md) for detailed workflow and code standards.
 
+## Funding
+
+Development of PrimeMover was funded by the Swiss National Science Foundation (SNSF),
+grants 100018_207698 and CRSK-1_190429.
+
 ## License
 
 This project is licensed under the MIT License.
