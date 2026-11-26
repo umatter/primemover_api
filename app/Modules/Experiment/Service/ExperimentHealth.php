@@ -142,6 +142,8 @@ class ExperimentHealth
             $health['degraded_jobs'] = $decisions['degraded'];
         }
 
+        $health['bots_not_starting'] = $this->botsNotStarting($experimentId, $since);
+
         $health['last_finished_at'] = $this->lastFinishedAt($experimentId);
 
         return $health;
@@ -335,6 +337,91 @@ class ExperimentHealth
      * quite different from "3 bots, 3 runs"), and a study's size is a property
      * of the study, not of the window.
      */
+    /**
+     * Bots whose latest finished run in the window never started, newest
+     * streak first.
+     *
+     * One failed start is noise; a bot whose last five runs all failed before
+     * the first job is dead, and nothing said so. In experiment 240 four bots
+     * (three with a profile lock Multilogin never released, one with a dead
+     * proxy exit) failed 129 runs in a row over a week: each run was a separate
+     * 'failure' row with the same message, and no number anywhere counted them
+     * per bot.
+     *
+     * A run "never started" if it ended 'failure' and none of its jobs ran --
+     * every job has no status or is 'skipped'. `consecutive` counts such runs
+     * back from the bot's latest finished run to its last run that did start,
+     * inside the window only: a streak older than the window reads as the
+     * window's worth, and `since` is then the window's first such run.
+     *
+     * @return array<int, array{crawler_id: int, name: ?string, consecutive: int, since: ?string, latest_run_id: int, reason: ?string}>
+     */
+    private function botsNotStarting(int $experimentId, Carbon $since): array
+    {
+        $ran = DB::table('jobs')
+            ->whereColumn('jobs.queue_id', 'queues.id')
+            ->whereNotNull('jobs.status_code')
+            ->whereNotIn('jobs.status_code', Queue::statusVariants(Queue::STATUS_SKIPPED));
+
+        $runs = $this->runsInWindow($experimentId, $since)
+            ->where('queues.processed', 1)
+            ->orderBy('queues.crawler_id')
+            ->orderByDesc('queues.started_at')
+            ->orderByDesc('queues.id')
+            ->select(
+                'queues.id',
+                'queues.crawler_id',
+                'crawlers.name as crawler_name',
+                'queues.status_code',
+                'queues.status_message',
+                'queues.started_at'
+            )
+            ->selectRaw('exists('.$ran->toSql().') as any_job_ran', $ran->getBindings())
+            ->get();
+
+        $bots = [];
+        $closed = [];
+
+        foreach ($runs as $run) {
+            $botId = (int) $run->crawler_id;
+
+            if (isset($closed[$botId])) {
+                continue;
+            }
+
+            $neverStarted = Queue::STATUS_FAILURE === Queue::normalizeStatus($run->status_code)
+                && ! $run->any_job_ran;
+
+            if ( ! $neverStarted) {
+                // The newest run that did start ends the streak, if there is one.
+                $closed[$botId] = true;
+
+                continue;
+            }
+
+            if ( ! isset($bots[$botId])) {
+                $bots[$botId] = [
+                    'crawler_id' => $botId,
+                    'name' => $run->crawler_name,
+                    'consecutive' => 0,
+                    'since' => null,
+                    'latest_run_id' => (int) $run->id,
+                    'reason' => null === $run->status_message ? null : (string) $run->status_message,
+                ];
+            }
+
+            $bots[$botId]['consecutive']++;
+            $bots[$botId]['since'] = self::isoOrRaw($run->started_at);
+        }
+
+        $bots = array_values($bots);
+
+        usort($bots, static fn (array $a, array $b): int => [$b['consecutive'], $a['crawler_id']]
+            <=> [$a['consecutive'], $b['crawler_id']]);
+
+        return $bots;
+    }
+
     private function botCount(int $experimentId): int
     {
         return DB::table('crawlers')->where('experiment_id', $experimentId)->count();
@@ -369,10 +456,23 @@ class ExperimentHealth
             return null;
         }
 
+        return self::isoOrRaw($latest);
+    }
+
+    /**
+     * A stored timestamp as ISO 8601 with its offset, or as stored if it does
+     * not parse; null stays null.
+     */
+    private static function isoOrRaw(mixed $stored): ?string
+    {
+        if (null === $stored || '' === $stored) {
+            return null;
+        }
+
         try {
-            return Carbon::parse((string) $latest)->toIso8601String();
+            return Carbon::parse((string) $stored)->toIso8601String();
         } catch (Throwable) {
-            return (string) $latest;
+            return (string) $stored;
         }
     }
 }

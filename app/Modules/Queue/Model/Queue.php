@@ -16,6 +16,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Str;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 use Throwable;
@@ -104,6 +105,15 @@ class Queue extends BaseModel
      * "scheduled", and never dropped from a tally.
      */
     public const STATUS_UNKNOWN = 'unknown';
+
+    /**
+     * The outcomes of a finished run after which a job with no status never ran.
+     * Not 'success' or 'warning': there the runner reports on every job itself.
+     */
+    public const UNSTARTED_JOBS_RUN_STATUSES = [
+        self::STATUS_FAILURE,
+        self::STATUS_SKIPPED,
+    ];
 
     /**
      * Sort rank per canonical status. Higher is worse. ORDERING ONLY.
@@ -261,6 +271,44 @@ class Queue extends BaseModel
     public function setFinishedAtAttribute($value): void
     {
         $this->attributes['finished_at'] = self::inAppTimezone($value);
+    }
+
+    /**
+     * Mark the jobs of this run that never ran as 'skipped'.
+     *
+     * A run that ends before any job starts -- the browser or profile never came
+     * up ('initialisation failed'), the start time had passed, or the run died
+     * on an uncaught error -- is reported by the runner on the queue alone. Its
+     * jobs kept status_code NULL, which every reader shows as "not run yet": in
+     * experiment 240 four bots failed to start 129 runs in a row and 13,290 jobs
+     * sat there looking pending while the experiment was running.
+     *
+     * Only for a run that is finished (processed) and ended 'failure' or
+     * 'skipped', and only jobs that have no status at all: a job the runner did
+     * report on is never touched, so this is safe to repeat.
+     *
+     * @return int the number of jobs marked
+     */
+    public function skipUnstartedJobs(): int
+    {
+        $status = self::normalizeStatus($this->status_code);
+
+        if ( ! $this->processed || ! in_array($status, self::UNSTARTED_JOBS_RUN_STATUSES, true)) {
+            return 0;
+        }
+
+        $reason = trim((string) $this->status_message);
+
+        return Job::query()
+            ->where('queue_id', $this->getKey())
+            ->whereNull('status_code')
+            ->update([
+                'status_code' => self::STATUS_SKIPPED,
+                'status_message' => Str::limit(
+                    'not run: the run ended '.$status.('' === $reason ? '' : ' - '.$reason),
+                    500
+                ),
+            ]);
     }
 
     /**

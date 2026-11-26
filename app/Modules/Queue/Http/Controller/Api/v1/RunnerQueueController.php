@@ -192,6 +192,11 @@ class RunnerQueueController extends Controller
 
         $updated = $this->repository->update($data, $queue);
 
+        // A run that ended before its jobs ran says so on the queue only; the
+        // jobs would otherwise keep no status and read as "not run yet" for
+        // good. Also on a repeat report: it only touches jobs with no status.
+        $updated->skipUnstartedJobs();
+
         if ( ! $repeat) {
             $this->logBadOutcome($updated);
         }

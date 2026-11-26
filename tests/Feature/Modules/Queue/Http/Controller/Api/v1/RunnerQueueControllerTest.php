@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Modules\Queue\Http\Controller\Api\v1;
 
+use App\Modules\Job\Model\Job;
 use App\Modules\Queue\Http\Request\RunnerQueueUpdateRequest;
 use App\Modules\Queue\Model\Queue;
 use App\Modules\Queue\Repository\QueueRepository;
@@ -202,6 +203,141 @@ class RunnerQueueControllerTest extends TestCase
         $this->updateQueue($queue, ['status_message' => ['a' => 'b']])
             ->assertStatus(422)
             ->assertJsonValidationErrors('status_message');
+    }
+
+    /**
+     * Experiment 240: four bots failed to start 129 runs in a row. Each run was
+     * reported 'failure' on the queue, and its jobs -- 13,290 of them -- kept no
+     * status at all, which every reader shows as "not run yet".
+     *
+     * @covers ::update
+     */
+    public function test_the_jobs_of_a_run_that_never_started_become_skipped(): void
+    {
+        $queue = $this->runningRun();
+        $first = $this->jobOf($queue, null);
+        $second = $this->jobOf($queue, null);
+
+        $this->updateQueue($queue, [
+            'status_code' => Queue::STATUS_FAILURE,
+            'status_message' => 'initialisation failed - browser/profile startup did not complete for crawler 2029',
+            'processing' => false,
+            'processed' => true,
+        ])->assertOk();
+
+        foreach ([$first, $second] as $job) {
+            $fresh = $job->fresh();
+            $this->assertSame(Queue::STATUS_SKIPPED, $fresh->status_code);
+            $this->assertSame(
+                'not run: the run ended failure - initialisation failed - '
+                    .'browser/profile startup did not complete for crawler 2029',
+                $fresh->status_message
+            );
+        }
+    }
+
+    /**
+     * A run that died half way: what the runner said about a job stays.
+     *
+     * @covers ::update
+     */
+    public function test_a_job_the_runner_reported_on_is_never_overwritten(): void
+    {
+        $queue = $this->runningRun();
+        $done = $this->jobOf($queue, Queue::STATUS_SUCCESS, 'successfully finished job');
+        $failed = $this->jobOf($queue, Queue::STATUS_FAILURE, 'click failed');
+        $never = $this->jobOf($queue, null);
+
+        $this->updateQueue($queue, [
+            'status_code' => Queue::STATUS_FAILURE,
+            'status_message' => 'uncaught error',
+            'processing' => false,
+            'processed' => true,
+        ])->assertOk();
+
+        $this->assertSame(Queue::STATUS_SUCCESS, $done->fresh()->status_code);
+        $this->assertSame('successfully finished job', $done->fresh()->status_message);
+        $this->assertSame(Queue::STATUS_FAILURE, $failed->fresh()->status_code);
+        $this->assertSame(Queue::STATUS_SKIPPED, $never->fresh()->status_code);
+    }
+
+    /**
+     * The runner reports 'init failed' twice: first with the code 'running'
+     * (JoblistState RUNNING_INITFAILED), then 'failure' with processed. Only
+     * the second says the run is over. And a run that ends 'success' or
+     * 'warning' reports on its own jobs, so a status-less job there is a real
+     * unknown and stays one.
+     *
+     * @covers ::update
+     *
+     * @dataProvider reportsThatLeaveJobsAlone
+     *
+     * @param array<string, mixed> $report
+     */
+    public function test_jobs_keep_no_status_while_the_run_is_not_over_or_ended_well(array $report): void
+    {
+        $queue = $this->runningRun();
+        $job = $this->jobOf($queue, null);
+
+        $this->updateQueue($queue, $report)->assertOk();
+
+        $this->assertNull($job->fresh()->status_code);
+        $this->assertNull($job->fresh()->status_message);
+    }
+
+    /**
+     * @return array<string, array{0: array<string, mixed>}>
+     */
+    public static function reportsThatLeaveJobsAlone(): array
+    {
+        return [
+            'init failed, still running' => [[
+                'status_code' => Queue::STATUS_RUNNING,
+                'status_message' => 'init failed',
+            ]],
+            'failure not yet processed' => [[
+                'status_code' => Queue::STATUS_FAILURE,
+                'processed' => false,
+            ]],
+            'success' => [[
+                'status_code' => Queue::STATUS_SUCCESS,
+                'processed' => true,
+            ]],
+            'warning' => [[
+                'status_code' => Queue::STATUS_WARNING,
+                'processed' => true,
+            ]],
+        ];
+    }
+
+    /**
+     * A run skipped because its start time had passed never ran a job either.
+     *
+     * @covers ::update
+     */
+    public function test_the_jobs_of_a_skipped_run_become_skipped(): void
+    {
+        $queue = $this->runningRun();
+        $job = $this->jobOf($queue, null);
+
+        $this->updateQueue($queue, [
+            'status_code' => 'skpped',
+            'status_message' => 'timed out - start time was more than 60 minutes ago',
+            'processed' => true,
+        ])->assertOk();
+
+        $this->assertSame(Queue::STATUS_SKIPPED, $job->fresh()->status_code);
+        $this->assertStringStartsWith('not run: the run ended skipped - timed out', $job->fresh()->status_message);
+    }
+
+    private function jobOf(Queue $queue, ?string $status, ?string $message = null): Job
+    {
+        return Job::factory()->create([
+            'queue_id' => $queue->id,
+            'user_id' => $this->user->id,
+            'status_code' => $status,
+            'status_message' => $message,
+        ]);
     }
 
     private function runningRun(): Queue
